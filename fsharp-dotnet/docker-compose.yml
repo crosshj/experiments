@@ -1,0 +1,7 @@
+version: '2'
+services:
+  dotnet-fsharp-bare:
+    container_name: fsharp-dotnet
+    build: .
+    entrypoint: ["/bin/sh"]
+    tty: true
