@@ -1,0 +1,29 @@
+{
+  "name": "image-maker",
+  "version": "1.0.0",
+  "description": "create and serve a PNG image",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crosshj/experiments/tree/master/image-maker"
+  },
+  "keywords": [
+    "image_manipulation"
+  ],
+  "author": "Harrison Cross",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.4",
+    "express-less": "^0.1.0",
+    "node-png": "^0.4.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "reload": "^2.2.1"
+  }
+}
