@@ -1,0 +1,77 @@
+<html>
+
+  <head>
+    <style>
+      .plus, .minus, .north:before, .south:before, .east:before, .west:before {
+        background-color: grey;
+        width: 40px;
+        height: 40px;
+        text-align : center;
+        margin-left: 15px;
+        margin-right: 15px;
+        border-radius: 20px;
+        line-height: 40px;
+        padding: 0px;
+        font-size: 20px;
+        font-weight: bold;
+        font-family: monospace;
+        display: inline-block;
+        opacity: 0.3;
+      }
+      .north, .south, .east, .west {
+        display: inline-block;
+      }
+      .north:before, .south:before, .east:before {
+        content: '>';
+      }
+      .south {
+        transform: rotate(90deg);
+      }
+      .north {
+        transform: rotate(-90deg);
+      }
+      .west:before {
+        content: '<';
+      }
+      .magnify, .upper, .middle, .lower {
+        text-align: center;
+        margin-top: 0px;
+      }
+      .magnify {
+        margin-top: 25px;
+      }
+
+      .not-selectable {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: default;
+      }
+    </style>
+    <script>
+    </script>
+  </head>
+
+  <body class="not-selectable">
+    <div class="pan">
+      <div class="upper">
+        <div class="north"></div>
+      </div>
+      <div class="middle">
+        <div class="west"></div>
+        <div class="east"></div>
+      </div>
+      <div class="lower">
+        <div class="south"></div>
+      </div>
+    </div>
+    <div class="magnify">
+      <div class="plus">+</div>
+      <div class="minus">-</div>
+    </div>
+  </body>
+
+</html>
