@@ -18,6 +18,9 @@
         display: inline-block;
         opacity: 0.3;
       }
+      .magnify .button:hover, .pan .button:hover:before {
+        background-color: white;
+      }
       .north, .south, .east, .west {
         display: inline-block;
       }
@@ -58,19 +61,19 @@
   <body class="not-selectable">
     <div class="pan">
       <div class="upper">
-        <div class="north"></div>
+        <div class="button north"></div>
       </div>
       <div class="middle">
-        <div class="west"></div>
-        <div class="east"></div>
+        <div class="button west"></div>
+        <div class="button east"></div>
       </div>
       <div class="lower">
-        <div class="south"></div>
+        <div class="button south"></div>
       </div>
     </div>
     <div class="magnify">
-      <div class="plus">+</div>
-      <div class="minus">-</div>
+      <div class="button plus">+</div>
+      <div class="button minus">-</div>
     </div>
   </body>
 
