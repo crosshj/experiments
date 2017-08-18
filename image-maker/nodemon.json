@@ -1,4 +1,4 @@
 {
   "verbose": true,
-  "ext": "css less js json"
+  "ext": "css less js json htm html"
 }
