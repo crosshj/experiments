@@ -55,7 +55,7 @@
     </style>
     <script>
       function clickHandler(message){
-        parent.postMessage(message, 'http://localhost:3133/');
+        parent.postMessage(message, window.location.href);
         console.log()
       }
     </script>
