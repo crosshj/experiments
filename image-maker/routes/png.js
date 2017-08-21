@@ -2,13 +2,15 @@ const routes = require('express').Router();
 const PNG = require('node-png').PNG;
 
 //http://progur.com/2017/02/create-mandelbrot-fractal-javascript.html
-var magnificationFactor = 600;
-var panX = 2.5;
-var panY = 1.4;
+
 
 routes.get('/', function (req, res) {
 	res.set('Content-Type', 'image/png');
-	const png = new PNG({ width: 2048, height: 1536 });
+	const png = new PNG({ width: 1024, height: 768 });
+
+  var magnificationFactor = req.query.mag;
+  var panX = req.query.panx;
+  var panY = req.query.pany;
 
 	for (var y = 0; y < png.height; y++) {
 		for (var x = 0; x < png.width; x++) {
