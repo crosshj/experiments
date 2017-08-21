@@ -1,5 +1,4 @@
 <html>
-
   <head>
     <style>
       .plus, .minus, .north:before, .south:before, .east:before, .west:before {
@@ -55,25 +54,29 @@
       }
     </style>
     <script>
+      function clickHandler(message){
+        parent.postMessage(message, 'http://localhost:3133/');
+        console.log()
+      }
     </script>
   </head>
 
   <body class="not-selectable">
     <div class="pan">
       <div class="upper">
-        <div class="button north"></div>
+        <div class="button north" onclick="clickHandler('north')"></div>
       </div>
       <div class="middle">
-        <div class="button west"></div>
-        <div class="button east"></div>
+        <div class="button west" onclick="clickHandler('west')"></div>
+        <div class="button east" onclick="clickHandler('east')"></div>
       </div>
       <div class="lower">
-        <div class="button south"></div>
+        <div class="button south" onclick="clickHandler('south')"></div>
       </div>
     </div>
     <div class="magnify">
-      <div class="button plus">+</div>
-      <div class="button minus">-</div>
+      <div class="button plus" onclick="clickHandler('plus')">+</div>
+      <div class="button minus" onclick="clickHandler('minus')">-</div>
     </div>
   </body>
 

@@ -12,6 +12,7 @@ const app = express();
 app.set('port', process.env.PORT || port);
 
 app.use('/components', express.static('components'));
+app.use('/static', express.static('static'));
 
 app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, '.', 'index.htm'));
