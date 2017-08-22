@@ -1,0 +1,24 @@
+{
+  "name": "command-line-wizardry",
+  "version": "1.0.0",
+  "description": "![image](https://cloud.githubusercontent.com/assets/1816471/18290702/8ee0e934-7452-11e6-8f93-cf14c1e39af5.png)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crosshj/command-line-wizardry.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crosshj/command-line-wizardry/issues"
+  },
+  "homepage": "https://github.com/crosshj/command-line-wizardry#readme",
+  "dependencies": {
+    "columnify": "^1.5.4",
+    "d3-node": "^0.2.0",
+    "request": "^2.79.0"
+  }
+}
