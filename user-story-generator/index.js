@@ -4,9 +4,9 @@
 
   var ui = {
     usButton: document.getElementById('submit'),
-    nounInput: document.getElementById('noun'),
-    actionInput: document.getElementById('action'),
-    valueInput: document.getElementById('value'),
+    nounInput: document.getElementById('x-noun'),
+    actionInput: document.getElementById('x-action'),
+    valueInput: document.getElementById('x-value'),
     output: document.getElementById('userstory'),
     outputContainer: document.getElementById('output'),
     inputContainer: document.getElementById('input'),
