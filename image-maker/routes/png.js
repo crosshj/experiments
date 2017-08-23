@@ -1,6 +1,8 @@
 const routes = require('express').Router();
 const PNG = require('node-png').PNG;
 
+//TODO: smooth colors - http://linas.org/art-gallery/escape/escape.html
+
 //http://progur.com/2017/02/create-mandelbrot-fractal-javascript.html
 
 
@@ -22,9 +24,9 @@ routes.get('/', function (req, res) {
 			var ay = y / magnificationFactor - panY;
 			var inSet = checkIfBelongsToMandelbrotSet(ex, ay);
 			if (!inSet) {
-				png.data[idx] = 0;
-				png.data[idx + 1] = 0;
-				png.data[idx + 2] = 0;
+				png.data[idx] = 255;
+				png.data[idx + 1] = 255;
+				png.data[idx + 2] = 255;
 				png.data[idx + 3] = 255;
 			} else {
 				var rgb = hslToRgb.apply(null, hslFromInset(inSet));
@@ -49,14 +51,15 @@ function hslFromInset(inSet){
   return [
     1-((inSet/5)+.25),
     inSet, //inSet < .4 ? .5-inSet : inSet,
-    inSet*.9
+    inSet > .075 ? inSet : .074
   ];
 }
 
 function checkIfBelongsToMandelbrotSet(x, y) {
 	var realComponentOfResult = x;
 	var imaginaryComponentOfResult = y;
-	var maxIterations = 900;
+	var maxIterations = 1500;
+  var escapeRadius = 0.0029; //5
 	for (var i = 0; i < maxIterations; i++) {
 		var tempRealComponent = realComponentOfResult * realComponentOfResult - imaginaryComponentOfResult * imaginaryComponentOfResult + x;
 		var tempImaginaryComponent = 2 * realComponentOfResult * imaginaryComponentOfResult + y;
@@ -64,7 +67,7 @@ function checkIfBelongsToMandelbrotSet(x, y) {
 		imaginaryComponentOfResult = tempImaginaryComponent;
 
 		// Return a number as a percentage
-		if (realComponentOfResult * imaginaryComponentOfResult > 5)
+		if (realComponentOfResult * imaginaryComponentOfResult > escapeRadius)
 			return (i / maxIterations);
 	}
 	return 0;   // Return zero if in set
