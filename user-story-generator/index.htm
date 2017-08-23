@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Story Generator</title>
+  <link rel="stylesheet" href="index.css">
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- The client library requires jQuery  -->
+  <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+</head>
+<body>
+
+
+<div class="container">
+
+    <div id="input" class="inner us-generator">
+
+    <form class="us-form">
+      <header>
+        <h1>User Story Generator</h1>
+      </header>
+      <p>
+        <input type="text" id="noun" placeholder="a user" autocapitalize="off">
+      </p>
+      <p>
+        <input type="text" id="action" placeholder="an action" autocapitalize="off">
+      </p>
+      <p>
+        <input type="text" id="value" placeholder="some value delivered" autocapitalize="off">
+      </p>
+      <button id="submit">Use Me</button>
+    </form>
+
+  </div>
+
+  <div id="output" class="us-output">
+    <div class="inner">
+      <h2 id="userstory"></h2>
+      <button id="more">Expand scope!</button>
+    </div>
+  </div>
+
+  <div id="trello" class="us-trello">
+    <div class="inner">
+      <a id="back" href="#">Back</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>
