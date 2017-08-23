@@ -18,7 +18,8 @@
   "homepage": "https://github.com/crosshj/command-line-wizardry#readme",
   "dependencies": {
     "columnify": "^1.5.4",
-    "d3-node": "^0.2.0",
+    "d3-node": "^1.1.1",
+    "open": "0.0.5",
     "request": "^2.79.0"
   }
 }
