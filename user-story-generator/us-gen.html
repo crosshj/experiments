@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Story Generator</title>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- The client library requires jQuery  -->
+  <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+</head>
+<body>
+
+
+<div class="container">
+
+    <div id="input" class="inner us-generator">
+
+    <form class="us-form">
+      <header>
+        <h1>User Story Generator</h1>
+      </header>
+      <p>
+        <input type="text" id="x-noun" placeholder="a user" autocapitalize="off" autocomplete="off">
+      </p>
+      <p>
+        <input type="text" id="x-action" placeholder="an action" autocapitalize="off" autocomplete="off">
+      </p>
+      <p>
+        <input type="text" id="x-value" placeholder="some value delivered" autocapitalize="off" autocomplete="off">
+      </p>
+      <button id="submit">Use Me</button>
+    </form>
+
+  </div>
+
+  <div id="output" class="us-output">
+    <div class="inner">
+      <h2 id="userstory"></h2>
+      <button id="more">Expand scope!</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function(){
+
+  var userStory;
+
+  var ui = {
+    usButton: document.getElementById('submit'),
+    nounInput: document.getElementById('x-noun'),
+    actionInput: document.getElementById('x-action'),
+    valueInput: document.getElementById('x-value'),
+    output: document.getElementById('userstory'),
+    outputContainer: document.getElementById('output'),
+    inputContainer: document.getElementById('input'),
+    moreButton: document.getElementById('more'),
+    back: document.getElementById('back')
+  };
+
+  var templates = {
+    success: document.getElementById('card-success')
+  }
+
+  function generateUserStory(e) {
+    e.preventDefault();
+    var noun = ui.nounInput.value || 'user';
+    var action = ui.actionInput.value || 'order a widget';
+    var value = ui.valueInput.value || 'a really cool thing';
+    userStory = 'As a ' + noun + ',<br/> I want to ' + action + ',<br/> so there is ' + value;
+    ui.output.innerHTML = userStory;
+    ui.outputContainer.classList.add('fade-in');
+    ui.inputContainer.classList.add('slide-down');
+    return false;
+  }
+
+  function resetResult () {
+    ui.outputContainer.classList.add('slide-up');
+  }
+
+  function resetPage(e) {
+    if (this.classList.contains('slide-up')) {
+      ui.outputContainer.classList.remove('slide-up');
+      ui.outputContainer.classList.remove('fade-in');
+      ui.nounInput.focus();
+      ui.actionInput.value = '';
+      ui.valueInput.value = '';
+    }
+  }
+
+  function clearFocus() {
+    this.value = '';
+  }
+
+  ui.usButton.addEventListener('click', generateUserStory, false);
+
+  ui.moreButton.addEventListener('click', resetResult, false);
+
+  ui.outputContainer.addEventListener('transitionend', resetPage, false);
+
+  ui.nounInput.addEventListener('focus', clearFocus, false);
+
+  ui.actionInput.addEventListener('focus', clearFocus, false);
+  
+  ui.valueInput.addEventListener('focus', clearFocus, false);
+
+})();
+</script>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    position: relative;
+  }
+
+  h1,
+  h2 {
+    margin-top: 0;
+  }
+
+  h1 {
+    font-weight: 300;
+    font-size: 1em;
+    margin-bottom: 0;
+  }
+
+  input,
+  button,
+  .button {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    border-radius: 5px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 20px;
+    margin-bottom: 0;
+    border: 3px solid white;
+    transition: all .2s;
+  }
+
+  button,
+  .button {
+    border: 0;
+    padding: 10px 30px;
+    cursor: pointer;
+    font-size: .8em;
+    text-decoration: none;
+  }
+
+  input:focus,
+  button:focus {
+    outline: none;
+  }
+
+  label {
+    display: block;
+    margin-bottom: .1em;
+  }
+
+  p {
+    margin: .5em 0;
+  }
+
+  header {
+    text-align: center;
+    padding: 20px ;
+  }
+
+  header p {
+    font-size: .5em;
+  }
+
+  header .caveat {
+    font-size: .35em;
+  }
+
+  .container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* --- input page --- */
+
+  .us-form {
+    position: relative;
+    font-size: 3em;
+    font-weight: 300;
+    z-index: 10;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .us-form button {
+    display: block;
+    width: 100%;
+    margin-top: 1em;
+    transition: all .3s cubic-bezier(0.550, 0.085, 0.680, 0.530);
+  }
+
+  /* --- output page --- */
+
+  .us-output {
+    position: relative;
+    z-index: -1;
+    opacity: 0;
+    transform: scale(10);
+    font-size: 2em;
+  }
+
+  .us-output .inner {
+    position: absolute;
+    top: 50%;
+  }
+
+  .us-output h2 {
+    font-weight: 300;
+  }
+
+  .us-output button,
+  .us-output .button {
+    border: 3px solid;
+  }
+
+  /* --- animation stuff --- */
+
+  .hide {
+    opacity: 0;
+    z-index: -1;
+    display: none;
+  }
+
+  .fade-in {
+    z-index: 10;
+    opacity: 1;
+    transform: scale(1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: all .5s cubic-bezier(0.250, 0.460, 0.450, 0.940);
+    text-align: center;
+  }
+
+  .slide-up {
+  /*transform: translateY(-100%);*/
+  /*transform: scale(10);*/
+  opacity: 0;
+  }
+
+  .fade-in .inner,
+  .us-generator.inner {
+    margin: auto;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+  }
+
+  .us-generator.inner {
+    width: 50%;
+  }
+
+  .fade-in .inner {
+    width: 70%;
+  }
+
+  /* --- colors --- */
+
+  a {
+    color: #2c3e50;
+  }
+
+  body {
+    background: #3498db;
+    color: white;
+  }
+
+  input {
+    border-color: #2980b9;
+  }
+
+  input:focus {
+    border-color: #34495e;
+  }
+
+  label {
+    color: rgba(255,255,255,0.7);
+  }
+
+  header p {
+    color: #2c3e50;
+  }
+
+  h1 {
+    border-color: #263645;
+  }
+
+  .us-form button {
+    background: transparent;
+    color: white;
+    border: 3px solid white;
+  }
+
+  .us-form button:hover {
+    background: #2980b9;
+  }
+
+  .us-output button,
+  .us-output .button {
+    background: transparent;
+    border-color: white;
+    color: white;
+  }
+
+  .fade-in {
+    background: #9b59b6;
+  }
+
+  @media (max-width: 960px) {
+    .us-generator.inner,
+    .fade-in .inner {
+      width: 100%;
+      transform: translate(0,0);
+      top: 0;
+      left: 0;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .us-form {
+      font-size: 2em;
+    }
+    .us-output {
+      font-size: 1.5em;
+    }
+  }
+
+  .container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    perspective: 1200px;
+  }
+
+  .pull-down {
+    transform: translateY(0);
+    visibility: visible;
+    z-index: 10000;
+  }
+
+  #card-success {
+    padding: 40px;
+    display: none;
+    background: white;
+    margin-top: 20px;
+  }
+
+  #card-success h2,
+  #card-success a {
+    color: #34495e;
+  }
+
+  #card-success.visible {
+    display: block;
+  }
+
+  #back {
+    display: none;
+  }
+
+  #back.visible {
+    display: inline-block;
+  }
+  </style>
+</body>
+</html>
