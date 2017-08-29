@@ -1,3 +1,9 @@
+/*
+see https://github.com/wadey/node-microtime for an example of native node module
+setup with minimal extra code
+
+*/
+
 const routes = require('express').Router();
 const fs = require('fs');
 const PNG = require('node-png').PNG;
