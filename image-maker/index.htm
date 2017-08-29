@@ -7,8 +7,13 @@
     <script src="/static/client.js"></script>
     <script src="/reload/reload.js"></script>
     <script>
+      const query = document.location.search.split('?').pop();
       document.addEventListener('DOMContentLoaded', function(){
-        window.postMessage('init', window.location.href);
+        if (query){
+          window.postMessage(query + 'init', window.location.href);
+          return;
+        }
+        window.postMessage('fractalinit', window.location.href);
       }, false);
     </script>
   </head>

@@ -4,8 +4,13 @@
 function receiveMessage(event){
   const image = document.getElementById('main_image');
 
+  // ./?chop
+  if (event.data === 'chopinit'){
+    return;
+  }
+
   //./png?mag=348040563.5232469&panx=1.9854872904239196&pany=-0.000014568622124230988&width=1920&height=1080
-  if(event.data === 'init'){
+  if(event.data === 'fractalinit'){
     image.src = "./png?" +
       "mag=348040563.5232469&" + //"mag=374606.88409205293&" +
       "panx=1.9854867732428236&" +//"panx=1.77402235874246&" +
