@@ -1,17 +1,26 @@
-
-
-
 function receiveMessage(event){
   const image = document.getElementById('main_image');
 
-  // ./?chop
   if (event.data === 'chopinit'){
-    return;
+    return chopListener(event, image);
   }
 
+  fractalListener(event, image);
+}
+window.addEventListener("message", receiveMessage, false);
+
+function chopListener(event, image){
+  // ./chop?width=1232&height=1014
+  image.src = "./chop?" +
+  "width=" + document.body.scrollWidth + "&" +
+  "height=" + document.body.scrollHeight;
+  return;
+}
+
+function fractalListener(event, image){
   //./png?mag=348040563.5232469&panx=1.9854872904239196&pany=-0.000014568622124230988&width=1920&height=1080
   if(event.data === 'fractalinit'){
-    image.src = "./png?" +
+    image.src = "./fractal?" +
       "mag=348040563.5232469&" + //"mag=374606.88409205293&" +
       "panx=1.9854867732428236&" +//"panx=1.77402235874246&" +
       "pany=-0.000014568622124230988&" +//"pany=-0.005048224154787757&" +
@@ -49,11 +58,10 @@ function receiveMessage(event){
     newVals.panx = newVals.panx + panAmount*1.75;
     newVals.pany = newVals.pany + panAmount*1.75;
   }
-  const newSrc = `./png?mag=${newVals.mag}&panx=${newVals.panx}&pany=${newVals.pany}&` +
+  const newSrc = `./fractal?mag=${newVals.mag}&panx=${newVals.panx}&pany=${newVals.pany}&` +
     "width=" + document.body.scrollWidth + "&" +
     "height=" + document.body.scrollHeight;
   //console.log({newVals, newSrc});
   image.src = newSrc;
   //console.log('Event from child:', event.data);
 }
-window.addEventListener("message", receiveMessage, false);

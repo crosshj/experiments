@@ -13,6 +13,9 @@
           window.postMessage(query + 'init', window.location.href);
           return;
         }
+        const controlsIframe = document.getElementById('controls');
+        controlsIframe.src = "components/controls.htm";
+        controlsIframe.style.display = "block";
         window.postMessage('fractalinit', window.location.href);
       }, false);
     </script>
@@ -21,6 +24,6 @@
     <div class="wrapper">
       <img id="main_image"/>
     </div>
-    <iframe class="controls" src="components/controls.htm"/>
+    <iframe id="controls" class="controls" src=""/>
   </body>
 </html>
