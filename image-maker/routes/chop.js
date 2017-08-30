@@ -23,8 +23,8 @@ routes.get('/', function (req, res) {
 
 	function readCallback(read){
 		const chopped = choppedImage(read, meta);
-		const xOffset = Math.floor((meta.width - png.width) * .9);
-		const yOffset = Math.floor((meta.height - png.height) * .9);
+		const xOffset = Math.floor((meta.width - png.width) * .5);
+		const yOffset = Math.floor((meta.height - png.height) * .5);
 		console.log({yOffset, xOffset});
 		for (var y = 0; y < png.height; y++) {
 			for (var x = 0; x < png.width; x++) {
@@ -60,7 +60,7 @@ routes.get('/', function (req, res) {
 		png.pack().pipe(res);
 	}
 	
-	fs.createReadStream(__dirname + '/../images/jellyfish.png')
+	fs.createReadStream(__dirname + '/../images/jellyfish2.png')
 		.pipe(new PNG({
 			filterType: 4
 		}))
