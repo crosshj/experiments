@@ -2,11 +2,14 @@
 see https://github.com/wadey/node-microtime for an example of native node module
 setup with minimal extra code
 
+https://community.risingstack.com/using-buffers-node-js-c-plus-plus/
+
 */
 
 const routes = require('express').Router();
 const fs = require('fs');
 const PNG = require('node-png').PNG;
+const native = require('../native');
 
 routes.get('/', function (req, res) {
 	res.set('Content-Type', 'image/png');
@@ -22,27 +25,31 @@ routes.get('/', function (req, res) {
 	}
 
 	function readCallback(read){
-		const chopped = choppedImage(read, meta);
 		const xOffset = Math.floor((meta.width - png.width) * .5);
 		const yOffset = Math.floor((meta.height - png.height) * .5);
-		console.log({yOffset, xOffset});
+
+		var imgArray = new Array(png.height * png.width * 4);
 		for (var y = 0; y < png.height; y++) {
 			for (var x = 0; x < png.width; x++) {
 				var metaidx = (meta.width * (y + yOffset) + x + xOffset) << 2;
 				var idx = (png.width * y + x) << 2;
 				
-				const choppedColor = {
-					red: chopped[metaidx],
-					green: chopped[metaidx + 1],
-					blue: chopped[metaidx + 2]
-				};
-
-				png.data[idx] = choppedColor.red;
-				png.data[idx + 1] = choppedColor.green;
-				png.data[idx + 2] = choppedColor.blue;
-				png.data[idx + 3] = 255;
+				imgArray[idx] = read[metaidx];
+				imgArray[idx + 1] = read[metaidx + 1];
+				imgArray[idx + 2] = read[metaidx + 2];
+				imgArray[idx + 3] = 255;
 			}
 		}
+
+		imgArray = choppedImage(imgArray, {
+			width: png.width,
+			height: png.height
+		});
+
+		for (var i = 0; i < png.height * png.width * 4; i++){
+			png.data[i] = imgArray[i];
+		}
+
 		png.pack().pipe(res);		
 	}
 
@@ -62,15 +69,16 @@ routes.get('/', function (req, res) {
 	
 	fs.createReadStream(__dirname + '/../images/jellyfish2.png')
 		.pipe(new PNG({
-			filterType: 4
+			//filterType: 4
 		}))
 		.on('metadata', readMetaCallback)
 		.on('parsed', readCallback)
 		.on('error', readErrCallback);
 });
 
+// NOTE: won't work if native module not built: npm run build
 function choppedImage(data, meta){
-	return data;
+	return native.chop(data).data;
 }
 
 module.exports = routes;
