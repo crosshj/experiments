@@ -2,7 +2,11 @@
 see https://github.com/wadey/node-microtime for an example of native node module
 setup with minimal extra code
 
+native module buffers
 https://community.risingstack.com/using-buffers-node-js-c-plus-plus/
+
+cache buffer?
+https://www.bennadel.com/blog/2681-turning-buffers-into-readable-streams-in-node-js.htm
 
 */
 
@@ -20,40 +24,35 @@ routes.get('/', function (req, res) {
 
 	let meta = {};
 
-	function readMetaCallback(metaData){
+	function readMetaCallback(metaData) {
 		meta = JSON.parse(JSON.stringify(metaData));
 	}
 
-	function readCallback(read){
+	function readCallback(read) {
 		const xOffset = Math.floor((meta.width - png.width) * .5);
 		const yOffset = Math.floor((meta.height - png.height) * .5);
 
-		var imgArray = new Array(png.height * png.width * 4);
+		// NOTE: won't work if native module not built
+		const bufferSize = meta.height * meta.width * 4;
+		const chopped = native.chop(read, bufferSize);
+
+		// TODO: do this cropping in module
 		for (var y = 0; y < png.height; y++) {
 			for (var x = 0; x < png.width; x++) {
 				var metaidx = (meta.width * (y + yOffset) + x + xOffset) << 2;
 				var idx = (png.width * y + x) << 2;
-				
-				imgArray[idx] = read[metaidx];
-				imgArray[idx + 1] = read[metaidx + 1];
-				imgArray[idx + 2] = read[metaidx + 2];
-				imgArray[idx + 3] = 255;
+
+				png.data[idx] = chopped[metaidx];
+				png.data[idx + 1] = chopped[metaidx + 1];
+				png.data[idx + 2] = chopped[metaidx + 2];
+				png.data[idx + 3] = 255;
 			}
 		}
 
-		imgArray = choppedImage(imgArray, {
-			width: png.width,
-			height: png.height
-		});
-
-		for (var i = 0; i < png.height * png.width * 4; i++){
-			png.data[i] = imgArray[i];
-		}
-
-		png.pack().pipe(res);		
+		png.pack().pipe(res);
 	}
 
-	function readErrCallback(err){
+	function readErrCallback(err) {
 		console.log(err);
 		for (var y = 0; y < png.height; y++) {
 			for (var x = 0; x < png.width; x++) {
@@ -66,7 +65,7 @@ routes.get('/', function (req, res) {
 		}
 		png.pack().pipe(res);
 	}
-	
+
 	fs.createReadStream(__dirname + '/../images/jellyfish2.png')
 		.pipe(new PNG({
 			//filterType: 4
@@ -75,10 +74,5 @@ routes.get('/', function (req, res) {
 		.on('parsed', readCallback)
 		.on('error', readErrCallback);
 });
-
-// NOTE: won't work if native module not built: npm run build
-function choppedImage(data, meta){
-	return native.chop(data).data;
-}
 
 module.exports = routes;

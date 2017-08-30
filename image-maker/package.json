@@ -21,6 +21,7 @@
   "dependencies": {
     "express": "^4.15.4",
     "express-less": "^0.1.0",
+    "nan": "^2.7.0",
     "node-png": "^0.4.3"
   },
   "devDependencies": {
