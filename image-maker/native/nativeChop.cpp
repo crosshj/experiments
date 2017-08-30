@@ -9,6 +9,8 @@ NAN_METHOD(chop) {
 	
 	char * retval = new char[size];
 	for(unsigned int i = 0; i < size; i++ ) {
+		// FIX: not sure why this does not work right
+		//retval[i] = (i%4 == 3) ? buffer[i] : (char)(buffer[i] * 0.9);
 		retval[i] = buffer[i];
 	}
 

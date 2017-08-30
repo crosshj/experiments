@@ -35,6 +35,7 @@ routes.get('/', function (req, res) {
 		// NOTE: won't work if native module not built
 		const bufferSize = meta.height * meta.width * 4;
 		const chopped = native.chop(read, bufferSize);
+		//const chopped = read;
 
 		// TODO: do this cropping in module
 		for (var y = 0; y < png.height; y++) {
