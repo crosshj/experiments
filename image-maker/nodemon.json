@@ -1,4 +1,7 @@
 {
   "verbose": true,
-  "ext": "css less js json htm html"
+  "ext": "css less js json htm html cpp gyp",
+  "execMap": {
+    "js": "cd native && node-gyp configure build && cd .. && node index"
+  }
 }
