@@ -2,6 +2,8 @@
 
 http://www.puritys.me/docs-blog/article-286-How-to-pass-the-paramater-of-Node.js-or-io.js-into-native-C-C++-function..html
 
+https://stackoverflow.com/questions/28658499/how-do-i-iterate-over-properties-in-an-object
+
 see https://github.com/wadey/node-microtime for an example of native node module
 setup with minimal extra code
 
