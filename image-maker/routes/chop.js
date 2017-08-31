@@ -1,15 +1,3 @@
-/*
-see https://github.com/wadey/node-microtime for an example of native node module
-setup with minimal extra code
-
-native module buffers
-https://community.risingstack.com/using-buffers-node-js-c-plus-plus/
-
-cache buffer?
-https://www.bennadel.com/blog/2681-turning-buffers-into-readable-streams-in-node-js.htm
-
-*/
-
 const routes = require('express').Router();
 const fs = require('fs');
 const PNG = require('node-png').PNG;
@@ -29,26 +17,22 @@ routes.get('/', function (req, res) {
 	}
 
 	function readCallback(read) {
-		const xOffset = Math.floor((meta.width - png.width) * .5);
-		const yOffset = Math.floor((meta.height - png.height) * .5);
+		const xOffset = Math.floor((meta.width - png.width) * .5) + 100;
+		const yOffset = Math.floor((meta.height - png.height) * .5) - 100;
 
 		// NOTE: won't work if native module not built
-		const chopped = native.chop(read);
+		const chopped = native.chop(
+			read,
+			meta.width,
+			meta.height,
+			xOffset,
+			yOffset,
+			png.width,
+			png.height
+		);
 		//const chopped = read;
 
-		// TODO: do this cropping in module
-		for (var y = 0; y < png.height; y++) {
-			for (var x = 0; x < png.width; x++) {
-				var metaidx = (meta.width * (y + yOffset) + x + xOffset) << 2;
-				var idx = (png.width * y + x) << 2;
-
-				png.data[idx] = chopped[metaidx];
-				png.data[idx + 1] = chopped[metaidx + 1];
-				png.data[idx + 2] = chopped[metaidx + 2];
-				png.data[idx + 3] = chopped[metaidx + 3];
-			}
-		}
-
+		png.data = chopped;
 		png.pack().pipe(res);
 	}
 
