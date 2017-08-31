@@ -33,8 +33,7 @@ routes.get('/', function (req, res) {
 		const yOffset = Math.floor((meta.height - png.height) * .5);
 
 		// NOTE: won't work if native module not built
-		const bufferSize = meta.height * meta.width * 4;
-		const chopped = native.chop(read, bufferSize);
+		const chopped = native.chop(read);
 		//const chopped = read;
 
 		// TODO: do this cropping in module
@@ -46,7 +45,7 @@ routes.get('/', function (req, res) {
 				png.data[idx] = chopped[metaidx];
 				png.data[idx + 1] = chopped[metaidx + 1];
 				png.data[idx + 2] = chopped[metaidx + 2];
-				png.data[idx + 3] = 255;
+				png.data[idx + 3] = chopped[metaidx + 3];
 			}
 		}
 
