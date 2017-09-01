@@ -13,6 +13,9 @@ https://community.risingstack.com/using-buffers-node-js-c-plus-plus/
 cache buffer?
 https://www.bennadel.com/blog/2681-turning-buffers-into-readable-streams-in-node-js.htm
 
+hexagons
+https://cboard.cprogramming.com/c-programming/165802-printing-hexagon-using-loops.html
+
 */
 
 #include <nan.h>
