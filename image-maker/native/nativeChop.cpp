@@ -29,6 +29,11 @@ int rampColor(int value, float thresh){
 	return ramped;
 }
 
+int getGrid(int x, int y){
+	int gridDim = 75;
+	return (x % gridDim == y % gridDim || x % gridDim + y % gridDim == gridDim) ? 0 : 1;
+}
+
 NAN_METHOD(chop) {
 	//TODO: defensive
 	char * buffer = (char *) node::Buffer::Data(info[0]->ToObject());
@@ -47,16 +52,21 @@ NAN_METHOD(chop) {
 	char * retval = new char[size];
 	
 	// crop and apply filter
-
-
 	for (int y = 0; y < cropHeight && y < height; y++) {
 		for (int x = 0; x < cropWidth; x++) {
 			int metaidx = (width * (y + cropOriginY) + x + cropOriginX) << 2;
 			int idx = (cropWidth * y + x) << 2;
+			int grid = getGrid(x, y);
 
-			retval[idx] = rampColor(buffer[metaidx] & 0xff, 1.175);
-			retval[idx + 1] = rampColor(buffer[metaidx + 1] & 0xff, 1.071);
-			retval[idx + 2] = (char)((rand() % 256/4) + ((buffer[metaidx + 2] & 0xff) * 0.75));
+			retval[idx] = (grid == 0)
+				? 128
+				: rampColor(buffer[metaidx] & 0xff, 1.175);
+			retval[idx + 1] = (grid == 0)
+				? 128
+				: rampColor(buffer[metaidx + 1] & 0xff, 1.071);
+			retval[idx + 2] = (grid == 0)
+				? 128
+				: (char)((rand() % 256/4) + ((buffer[metaidx + 2] & 0xff) * 0.75));
 			retval[idx + 3] = buffer[metaidx + 3];
 		}
 	}
