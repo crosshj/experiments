@@ -2,6 +2,7 @@ function receiveMessage(event){
   const image = document.getElementById('main_image');
 
   if (event.data === 'chopinit'){
+    setupFullScreen();  
     return chopListener(event, image);
   }
 
@@ -9,11 +10,11 @@ function receiveMessage(event){
 }
 window.addEventListener("message", receiveMessage, false);
 
-function chopListener(event, image){
+function chopListener(event, image, width, height){
   // ./chop?width=1232&height=1014
   image.src = "./chop?" +
-  "width=" + document.body.scrollWidth + "&" +
-  "height=" + document.body.scrollHeight;
+  "width=" + (width || window.screen.width) + "&" +
+  "height=" + (height || window.screen.height);
   return;
 }
 
@@ -64,4 +65,46 @@ function fractalListener(event, image){
   //console.log({newVals, newSrc});
   image.src = newSrc;
   //console.log('Event from child:', event.data);
+}
+
+function setupFullScreen(){
+  //console.log('--- setup fullscreen');
+  var mainImage = document.getElementById("main_image");
+  var fullscreenDiv = document.getElementById("wrapper");
+
+  function fullScreenChangeHandler(event){
+    //console.log(event);
+  }
+
+  ['webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange', 'MSFullscreenChange']
+    .forEach(event => {
+      document.addEventListener(event, fullScreenChangeHandler);
+    });
+
+  function isFullScreen(){
+    return document.webkitIsFullScreen || document.isFullScreen; // OR other vendor prefixed fullscreen boolean
+  }
+
+  function goFullscreen(fullscreenDiv){
+    var fullscreenFunc = fullscreenDiv.requestFullscreen;
+    if (!fullscreenFunc) {
+      ['mozRequestFullScreen', 'msRequestFullscreen', 'webkitRequestFullScreen']
+        .forEach(function (req) {
+          fullscreenFunc = fullscreenFunc || fullscreenDiv[req];
+        });
+    }
+    fullscreenFunc && fullscreenFunc.call(fullscreenDiv);
+  }
+
+  function exitFullscreen(){
+    document.exitFullscreen && document.exitFullscreen();
+    document.webkitExitFullscreen && document.webkitExitFullscreen();
+  }
+
+  function imgClickHandler() {
+    //chopListener(null, mainImage, window.screen.width, window.screen.height);
+    isFullScreen() ? exitFullscreen() : goFullscreen.call(null, fullscreenDiv);
+  }
+
+  mainImage.addEventListener('click', imgClickHandler);
 }
