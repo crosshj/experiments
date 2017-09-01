@@ -22,6 +22,13 @@ https://cboard.cprogramming.com/c-programming/165802-printing-hexagon-using-loop
 using namespace Nan;  
 using namespace v8;
 
+int rampColor(int value, float thresh){
+	int ramped = value * thresh < 256
+		? value * thresh
+		: value;
+	return ramped;
+}
+
 NAN_METHOD(chop) {
 	//TODO: defensive
 	char * buffer = (char *) node::Buffer::Data(info[0]->ToObject());
@@ -47,22 +54,8 @@ NAN_METHOD(chop) {
 			int metaidx = (width * (y + cropOriginY) + x + cropOriginX) << 2;
 			int idx = (cropWidth * y + x) << 2;
 
-			// retval[idx] = (((buffer[metaidx] & 0xff) * 1.4) < 255)
-			// 	? (int)((buffer[metaidx] & 0xff) * 1.1)
-			// 	: buffer[metaidx];
-
-			float thresh = 1.175;
-			int redValue = buffer[metaidx] & 0xff;
-			int redRamped = ((redValue * thresh) < 256)
-						? redValue * thresh
-						: buffer[metaidx];
- 
-			// if (redValue == 210 & x < 1000){
-			// 	printf("--- original: %d, new: %d, maybe: %d\n", redValue, redRamped, redValue * thresh);
-			// }
-
-			retval[idx] = redRamped;
-			retval[idx + 1] = buffer[metaidx + 1];
+			retval[idx] = rampColor(buffer[metaidx] & 0xff, 1.175);
+			retval[idx + 1] = rampColor(buffer[metaidx + 1] & 0xff, 1.071);
 			retval[idx + 2] = (char)((rand() % 256/4) + ((buffer[metaidx + 2] & 0xff) * 0.75));
 			retval[idx + 3] = buffer[metaidx + 3];
 		}
