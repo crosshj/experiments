@@ -35,8 +35,11 @@ NAN_METHOD(chop) {
 	//TODO: pass in array of sources/targets here?
 
 	char * retval = new char[size];
-	// crop in module
-	for (int y = 0; y < cropHeight; y++) {
+	
+	// crop and apply filter
+
+
+	for (int y = 0; y < cropHeight && y < height; y++) {
 		for (int x = 0; x < cropWidth; x++) {
 			int metaidx = (width * (y + cropOriginY) + x + cropOriginX) << 2;
 			int idx = (cropWidth * y + x) << 2;
@@ -44,7 +47,19 @@ NAN_METHOD(chop) {
 			// retval[idx] = (((buffer[metaidx] & 0xff) * 1.4) < 255)
 			// 	? (int)((buffer[metaidx] & 0xff) * 1.1)
 			// 	: buffer[metaidx];
-			retval[idx] = buffer[metaidx];
+
+			float thresh = 1.175;
+			int redValue = buffer[metaidx] & 0xff;
+			int redRamped = ((redValue * thresh) < 256)
+						? redValue * thresh
+						: buffer[metaidx];
+ 
+			if (redValue == 210 & x < 1000){
+				int redValue = 
+				printf("--- original: %d, new: %d, maybe: %d\n", (int)redValue, redRamped, (int)(redValue * thresh));
+			}
+
+			retval[idx] = redRamped;
 			retval[idx + 1] = buffer[metaidx + 1];
 			retval[idx + 2] = (char)((rand() % 256/4) + ((buffer[metaidx + 2] & 0xff) * 0.75));
 			retval[idx + 3] = buffer[metaidx + 3];
