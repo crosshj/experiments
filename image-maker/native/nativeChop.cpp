@@ -54,10 +54,9 @@ NAN_METHOD(chop) {
 						? redValue * thresh
 						: buffer[metaidx];
  
-			if (redValue == 210 & x < 1000){
-				int redValue = 
-				printf("--- original: %d, new: %d, maybe: %d\n", (int)redValue, redRamped, (int)(redValue * thresh));
-			}
+			// if (redValue == 210 & x < 1000){
+			// 	printf("--- original: %d, new: %d, maybe: %d\n", redValue, redRamped, redValue * thresh);
+			// }
 
 			retval[idx] = redRamped;
 			retval[idx + 1] = buffer[metaidx + 1];
