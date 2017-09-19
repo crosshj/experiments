@@ -1,6 +1,6 @@
 # experiments
 
-cli-bar-chart - quick d3 bar chart from json data   
+[cli-bar-chart](/cli-bar-chart) - quick d3 bar chart from json data   
 drive-window - do things to a window after opening   
 fsharp-dotnet - fsharp project running/building a simple program in docker   
 image-maker - create and serve a PNG image   
