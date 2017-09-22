@@ -19,7 +19,7 @@ scree.text=`
 `;
 foo.document.body.appendChild(scree);
 
-(new Array(100).fill())
+(new Array(10).fill())
 	.map((x, i)=>{
 		setTimeout(()=>{
 			var n = foo.document.createElement('p');
