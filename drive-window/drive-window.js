@@ -1,4 +1,4 @@
-
+(function (){
 var foo = window.open("about:blank", "newWindowName", null, false);
 
 setTimeout(()=>{
@@ -37,4 +37,4 @@ foo.document.body.appendChild(scree);
 		},i*200)
 	});
 foo.focus();
- 
+})(); 
