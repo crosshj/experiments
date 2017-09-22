@@ -4,8 +4,8 @@ var foo = window.open("about:blank", "newWindowName", null, false);
 setTimeout(()=>{
 	var deev = foo.document.createElement('div')
 	deev.innerHTML=`
-		<img alt="" class="avatar width-full rounded-2" height="230" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
-		This demo, the parent window drives
+		<img alt="" class="avatar width-full rounded-0" height="130" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
+		<p>This demo, the parent window drives</p>
 	`;
 	foo.document.body.appendChild(deev);
 	foo.document.title = "drive-window-child";
