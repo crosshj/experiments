@@ -1,5 +1,5 @@
 
-var foo = window.open("about:blank", "_blank");
+var foo = window.open("about:blank", "_blank", "newWindowName");
 
 var pee = foo.document.createElement('p')
 pee.innerText="This demo, the parent window drives";
