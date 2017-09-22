@@ -1,9 +1,12 @@
 
 var foo = window.open("about:blank", "_blank", "newWindowName");
 
-var pee = foo.document.createElement('p')
-pee.innerText="This demo, the parent window drives";
-foo.document.body.appendChild(pee);
+var deev = foo.document.createElement('div')
+deev.innerText=`
+ 	<img alt="" class="avatar width-full rounded-2" height="230" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
+	This demo, the parent window drives
+`;
+foo.document.body.appendChild(deev);
 
 var scree = foo.document.createElement('script');
 scree.text=`
@@ -25,3 +28,4 @@ foo.document.body.appendChild(scree);
 		},i*200)
 	});
 foo.focus();
+ 
