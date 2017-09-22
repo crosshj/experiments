@@ -10,7 +10,7 @@ foo.document.body.appendChild(deev);
 
 var scree = foo.document.createElement('script');
 scree.text=`
-	fetch(\`${document.querySelectorAll('img')[0].src}\`)
+	fetch(\`\${document.querySelectorAll('img')[0].src}\`)
 		.then((res)=>{
 			if(!res){ return console.log("res not defined"); }
 			console.log("res: ", res);
