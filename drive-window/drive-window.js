@@ -2,7 +2,7 @@
 var foo = window.open("about:blank", "newWindowName", null, false);
 
 var deev = foo.document.createElement('div')
-deev.innerText=`
+deev.innerHTML=`
  	<img alt="" class="avatar width-full rounded-2" height="230" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
 	This demo, the parent window drives
 `;
