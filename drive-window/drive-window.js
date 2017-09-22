@@ -37,4 +37,5 @@ foo.document.body.appendChild(scree);
 		},i*200)
 	});
 foo.focus();
+delete foo;
 })(); 
