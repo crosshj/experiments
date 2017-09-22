@@ -1,5 +1,5 @@
 
-var foo = window.open("about:blank", "_blank", "newWindowName");
+var foo = window.open("about:blank", "newWindowName", null, false);
 
 var deev = foo.document.createElement('div')
 deev.innerText=`
