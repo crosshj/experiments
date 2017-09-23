@@ -7,15 +7,23 @@
     <script src="/static/client.js"></script>
     <script src="/reload/reload.js"></script>
     <script>
+      const query = document.location.search.split('?').pop();
       document.addEventListener('DOMContentLoaded', function(){
-        window.postMessage('init', window.location.href);
+        if (query){
+          window.postMessage(query + 'init', window.location.href);
+          return;
+        }
+        const controlsIframe = document.getElementById('controls');
+        controlsIframe.src = "components/controls.htm";
+        controlsIframe.style.display = "block";
+        window.postMessage('fractalinit', window.location.href);
       }, false);
     </script>
   </head>
   <body>
-    <div class="wrapper">
+    <div class="wrapper" id="wrapper">
       <img id="main_image"/>
     </div>
-    <iframe class="controls" src="components/controls.htm"/>
+    <iframe id="controls" class="controls" src=""/>
   </body>
 </html>

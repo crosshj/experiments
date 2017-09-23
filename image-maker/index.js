@@ -4,7 +4,8 @@ const reload = require('reload');
 const path = require('path');
 const expressLess = require('express-less');
 
-const pngroute = require('./routes/png');
+const fractalroute = require('./routes/fractal');
+const choproute = require('./routes/chop');
 
 const port = 3133;
 
@@ -20,7 +21,8 @@ app.get('/', (req, res) => {
 
 app.use('/css', expressLess(__dirname + '/css', { cache: true }));
 
-app.use('/png', pngroute);
+app.use('/fractal', fractalroute);
+app.use('/chop', choproute);
 
 reload(app, {
 	verbose: true,

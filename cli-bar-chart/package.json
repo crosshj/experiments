@@ -4,6 +4,7 @@
   "description": "![image](https://cloud.githubusercontent.com/assets/1816471/18290702/8ee0e934-7452-11e6-8f93-cf14c1e39af5.png)",
   "main": "index.js",
   "scripts": {
+    "start": "node chart_express",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,7 @@
   "dependencies": {
     "columnify": "^1.5.4",
     "d3-node": "^1.1.1",
+    "express": "^4.15.4",
     "open": "0.0.5",
     "request": "^2.79.0"
   }

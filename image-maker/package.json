@@ -2,9 +2,9 @@
   "name": "image-maker",
   "version": "1.0.0",
   "description": "create and serve a PNG image",
-  "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "build": "cd ./native && node-gyp configure build",
     "watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +20,7 @@
   "dependencies": {
     "express": "^4.15.4",
     "express-less": "^0.1.0",
+    "nan": "^2.7.0",
     "node-png": "^0.4.3"
   },
   "devDependencies": {
