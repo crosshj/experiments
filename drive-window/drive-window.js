@@ -14,9 +14,10 @@ setTimeout(()=>{
 
 setTimeout(()=>{
 	var scree = foo.document.createElement('script');
-	scree.className = "from-child-script";
+	
 	scree.text=`
 		var deev = document.createElement('div');
+		deev.className = "from-child-script";
 		deev.innerHTML=\`
 			<img alt="" class="avatar width-full rounded-2" height="130" width="130" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
 			<p>This demo, the parent window drives</p>
