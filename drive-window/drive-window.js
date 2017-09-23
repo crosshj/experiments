@@ -3,6 +3,7 @@ var foo = window.open("about:blank", "newWindowName", null, false);
 
 setTimeout(()=>{
 	var deev = foo.document.createElement('div')
+	deev.className = "from-parent";
 	deev.innerHTML=`
 		<img alt="" class="avatar width-full rounded-0" height="230" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
 		<p>This demo, the parent window drives</p>
@@ -13,6 +14,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
 	var scree = foo.document.createElement('script');
+	deev.className = "from-child-script";
 	scree.text=`
 		var deev = document.createElement('div');
 		deev.innerHTML=\`
@@ -36,8 +38,11 @@ setTimeout(()=>{
 			var n = foo.document.createElement('p');
 			n.innerText=i + "  ---WOooo";
 			foo.document.body.appendChild(n);
-		},i*200)
+		},i*100)
 	});
 
-foo.focus();
+setTimeout(()=>{
+	foo.focus();
+}, 0);
+
 })(); 
