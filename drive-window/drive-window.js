@@ -14,7 +14,7 @@ setTimeout(()=>{
 
 setTimeout(()=>{
 	var scree = foo.document.createElement('script');
-	deev.className = "from-child-script";
+	scree.className = "from-child-script";
 	scree.text=`
 		var deev = document.createElement('div');
 		deev.innerHTML=\`
