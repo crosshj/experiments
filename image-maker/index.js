@@ -16,7 +16,7 @@ app.use('/components', express.static('components'));
 app.use('/static', express.static('static'));
 
 app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, '.', 'index.htm'));
+	res.sendFile(path.join(__dirname, 'static', 'index.htm'));
 });
 
 app.use('/css', expressLess(__dirname + '/css', { cache: true }));
