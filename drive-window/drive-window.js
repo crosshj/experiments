@@ -1,5 +1,5 @@
 (function (){
-var foo = window.open("about:blank", "newWindowName", null, false);
+var foo = window.open("", "newWindowName", null, false);
 
 setTimeout(()=>{
 	var deev = foo.document.createElement('div')
