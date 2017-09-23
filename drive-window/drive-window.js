@@ -9,24 +9,26 @@ setTimeout(()=>{
 	`;
 	foo.document.body.appendChild(deev);
 	foo.document.title = "drive-window-child";
-},1);
+}, 0);
 
-var scree = foo.document.createElement('script');
-scree.text=`
-	var deev = document.createElement('div');
-	deev.innerHTML=\`
-		<img alt="" class="avatar width-full rounded-2" height="130" width="130" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
-		<p>This demo, the parent window drives</p>
-	\`;
-	document.body.appendChild(deev);
-	fetch(\`\${document.querySelectorAll('img')[0].src}\`)
-		.then((res)=>{
-			if(!res){ return console.log("res not defined"); }
-			console.log("res: ", res);
-		})
-		.catch(err => console.log("some error", err))
-`;
-foo.document.body.appendChild(scree);
+setTimeout(()=>{
+	var scree = foo.document.createElement('script');
+	scree.text=`
+		var deev = document.createElement('div');
+		deev.innerHTML=\`
+			<img alt="" class="avatar width-full rounded-2" height="130" width="130" src="https://avatars0.githubusercontent.com/u/1816471?v=4&amp;s=460" width="230">
+			<p>This demo, the parent window drives</p>
+		\`;
+		document.body.appendChild(deev);
+		fetch(\`\${document.querySelectorAll('img')[0].src}\`)
+			.then((res)=>{
+				if(!res){ return console.log("res not defined"); }
+				console.log("res: ", res);
+			})
+			.catch(err => console.log("some error", err))
+	`;
+	foo.document.body.appendChild(scree);
+}, 0);
 
 (new Array(10).fill())
 	.map((x, i)=>{
@@ -36,6 +38,6 @@ foo.document.body.appendChild(scree);
 			foo.document.body.appendChild(n);
 		},i*200)
 	});
+
 foo.focus();
-delete foo;
 })(); 
