@@ -19,6 +19,7 @@ https://cboard.cprogramming.com/c-programming/165802-printing-hexagon-using-loop
 */
 
 #include <nan.h>
+#include "objects.cpp"
 using namespace Nan;  
 using namespace v8;
 

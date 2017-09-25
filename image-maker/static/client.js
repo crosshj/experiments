@@ -15,6 +15,10 @@ function chopListener(event, image, width, height){
   image.src = "./chop?" +
   "width=" + (width || window.screen.width) + "&" +
   "height=" + (height || window.screen.height);
+  image.className = 'loading';
+  image.onload = function (e){
+    e.target.className = '';
+  }
   return;
 }
 
