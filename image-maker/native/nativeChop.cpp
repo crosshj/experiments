@@ -79,11 +79,41 @@ NAN_METHOD(chop) {
 	);
 }
 
+NAN_METHOD(test) {
+	char * buffer = (char *) node::Buffer::Data(info[0]->ToObject());
+	int width = info[1]->Int32Value();
+	int height = info[2]->Int32Value();
+	int size = height * width * 4;
+	int* picArray = new int[size];
+
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int idx = (width * y + x) << 2;
+			picArray[idx] = buffer[idx] & 0xff;
+			picArray[idx+1] = buffer[idx+1] & 0xff;
+			picArray[idx+2] = buffer[idx+2] & 0xff;
+		}
+	}
+
+	Picture* pic = new Picture(width, height, 10, 10);
+	pic->set((int*)picArray);
+	char* retval = (char*)pic->get();
+
+	info.GetReturnValue().Set(
+		Nan::NewBuffer(retval, size).ToLocalChecked()
+	);
+}
+
 NAN_MODULE_INIT(init) {  
 	Nan::Set(
 		target,
 		New<String>("chop").ToLocalChecked(),
 		GetFunction(New<FunctionTemplate>(chop)).ToLocalChecked()
+	);
+	Nan::Set(
+		target,
+		New<String>("test").ToLocalChecked(),
+		GetFunction(New<FunctionTemplate>(test)).ToLocalChecked()
 	);
 }
 

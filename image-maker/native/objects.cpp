@@ -70,7 +70,6 @@ void Picture::set (int* picArray) {
     //   whichY = 0;
     // }
     blocks[whichBlock].set(whichX, whichY, (int*)picArray[i*3]);
-    
   }
 }
 
