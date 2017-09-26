@@ -61,6 +61,7 @@ void Picture::set (int* picArray) {
 
     // LAME?? (or is the above lame??)
     // https://stackoverflow.com/questions/514637/is-it-more-efficient-to-branch-or-multiply
+    // http://cpp.sh/2uxyy
     if (i % height == 0){
       whichY++;
     }
