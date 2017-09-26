@@ -1,6 +1,6 @@
 const fs = require('fs');
 const PNG = require('node-png').PNG;
-const native = require('../native');
+const native = require('../native/debug.js');
 
 const png = new PNG({
     width: 100,
@@ -9,7 +9,7 @@ const png = new PNG({
 
 function readCallback(image) {
     const data = native.test(image, 100, 100);
-    console.log('TODO: some testing here');
+    //console.log('TODO: some testing here');
 }
 
 function readErrCallback(err) {

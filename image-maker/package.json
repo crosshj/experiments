@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "build": "cd ./native && node-gyp configure build",
+    "build.debug": "cd ./native && node-gyp configure build --debug",
     "watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
