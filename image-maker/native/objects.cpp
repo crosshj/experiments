@@ -54,20 +54,21 @@ Picture::Picture (int w, int h, int bw, int bh) {
 }
 
 void Picture::set (int* picArray) {
-  int whichY = -1;
+  //int whichY = -1;
   for (int i = 0; i < width*height; i++) {
     int whichBlock = i%width/blockWidth + i/height/blockHeight*width/blockWidth;
     int whichX = (i%width)%(whichBlock%(width/blockWidth)*blockWidth);
+    int whichY = i/width % blockHeight;
 
     // LAME?? (or is the above lame??)
     // https://stackoverflow.com/questions/514637/is-it-more-efficient-to-branch-or-multiply
     // http://cpp.sh/2uxyy
-    if (i % height == 0){
-      whichY++;
-    }
-    if (whichY > blockHeight){
-      whichY = 0;
-    }
+    // if (i % height == 0){
+    //   whichY++;
+    // }
+    // if (whichY > blockHeight){
+    //   whichY = 0;
+    // }
     blocks[whichBlock].set(whichX, whichY, (int*)picArray[i*3]);
     
   }
