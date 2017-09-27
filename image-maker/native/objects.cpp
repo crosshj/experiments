@@ -4,14 +4,20 @@
 #define NATIVECHOP_H
 
 class Pixel {
-  int red, green, blue;
+  int red, green, blue, alpha;
 
   public:
-    void set(int, int, int);
-};
+    void set(int, int, int, int);
+    char* get();
+  };
 
-void Pixel::set (int r, int g, int b) {
-  red=r; green=g; blue=b;
+void Pixel::set (int r, int g, int b, int a) {
+  red=r; green=g; blue=b; alpha=a;
+}
+
+char* Pixel::get(){
+  char pixel [4] = { red, green, blue, alpha};
+  return pixel;
 }
 
 // ----------------------------------------------------
@@ -23,6 +29,7 @@ class Block {
     Block() {}
     void init(int, int);
     void set(int, int, int*);
+    char* getRow(int);
     void rotate(int);
     Pixel* upperLeftEdge ();
     Pixel* upperRightEdge ();
@@ -38,7 +45,20 @@ void Block::init (int w, int h) {
 
 void Block::set (int x, int y, int* blockArray){
   //std::cout << x << " " << y << " " << blockArray[0] << std::endl; 
-  pixels[width*y + x].set(blockArray[0], blockArray[1], blockArray[2]);
+  pixels[width*y + x].set(blockArray[0], blockArray[1], blockArray[2], blockArray[3]);
+}
+
+char* Block::getRow(int rowNumber){
+  Pixel* rowPixels = &pixels[rowNumber*width];
+  char* returnArray = new char[width*4];
+  for(int i=0; i < width; i++){
+    char* pixel = rowPixels[i].get();
+    returnArray[i*4] = pixel[0];
+    returnArray[i*4+1] = pixel[1];
+    returnArray[i*4+1] = pixel[2];
+    returnArray[i*4+2] = pixel[3];
+  }
+  return returnArray;
 }
 
 // ----------------------------------------------------
@@ -79,21 +99,26 @@ void Picture::set (int* picArray) {
     // if (whichY > blockHeight){
     //   whichY = 0;
     // }
-    blocks[whichBlock].set(whichX, whichY, &picArray[i*3]);
+    blocks[whichBlock].set(whichX, whichY, &picArray[i*4]);
   }
 }
 
 char* Picture::get () {
   char* picArray = new char[width*height*3];
   //std::cout << "Size of image: " << width*height*3 << std::endl;
-  
+  int currentPicArrayMember = 0;
   // top to bottom
   for (int j = 0; j < height/blockHeight; j++) {
     // each horizontal line of block
-    for (int k = 0; k < blockheight; k++) {
+    for (int k = 0; k < blockHeight; k++) {
       // each block in row
       for (int i = 0; i < width/blockWidth; i++) {
-        
+        char* blockRow = blocks[j*(width/blockWidth) + i].getRow(k);
+        // each pixel in row
+        for (int l = 0; l < blockWidth; l++) {
+          picArray[currentPicArrayMember] = blockRow[l];
+          currentPicArrayMember++;
+        }
       }
     }
   }

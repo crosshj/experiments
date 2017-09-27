@@ -92,6 +92,7 @@ NAN_METHOD(test) {
 			picArray[idx] = buffer[idx] & 0xff;
 			picArray[idx+1] = buffer[idx+1] & 0xff;
 			picArray[idx+2] = buffer[idx+2] & 0xff;
+			picArray[idx+3] = buffer[idx+3] & 0xff;
 		}
 	}
 

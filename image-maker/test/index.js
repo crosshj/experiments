@@ -9,7 +9,13 @@ const png = new PNG({
 
 function readCallback(image) {
     const data = native.test(image, 100, 100);
-    //console.log('TODO: some testing here');
+    png.pack().pipe(fs.createWriteStream(__dirname + '/../images/out.png'));
+    (new Array(10)).fill().forEach((_, i) =>{
+        console.log({
+            in: image[i],
+            out: data[i]
+        });
+    });
 }
 
 function readErrCallback(err) {
