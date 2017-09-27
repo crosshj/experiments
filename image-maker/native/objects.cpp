@@ -65,6 +65,11 @@ char* Block::getRow(int rowNumber){
   return returnArray;
 }
 
+void Block::rotate(int degrees){
+  // x' = x * cos(a) + y * sin(a)
+  // y' = y * cos(a) - x * sin(a)
+}
+
 // ----------------------------------------------------
 class Picture {
   Block* blocks;
