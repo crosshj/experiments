@@ -2,20 +2,28 @@ const fs = require('fs');
 const PNG = require('node-png').PNG;
 const native = require('../native/debug.js');
 
+const WIDTH = 100;
+const HEIGHT = 100;
+
 const png = new PNG({
-    width: 100,
-    height: 100
+    width: WIDTH,
+    height: HEIGHT
 });
 
 function readCallback(image) {
-    const data = native.test(image, 100, 100);
+    const blockWidth = 50;
+    const blockHeight = 2;
+    const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight);
+    png.data = data;
     png.pack().pipe(fs.createWriteStream(__dirname + '/../images/out.png'));
-    (new Array(10)).fill().forEach((_, i) =>{
-        console.log({
-            in: image[i],
-            out: data[i]
-        });
-    });
+    var testPassed = true;
+    for (var i=0; i<WIDTH*HEIGHT*4; i++){
+        if (image[i] !== data[i]){
+            testPassed = false;
+            break;
+        }
+    }
+    console.log(`Test ${testPassed ? 'PASSED' : 'FAILED'}`);
 }
 
 function readErrCallback(err) {
@@ -24,8 +32,8 @@ function readErrCallback(err) {
 
 fs.createReadStream(__dirname + '/../images/test.png')
     .pipe(new PNG({
-        width: 100,
-        height: 100
+        width: WIDTH,
+        height: HEIGHT
     }))
     .on('parsed', readCallback)
     .on('error', readErrCallback);

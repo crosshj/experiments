@@ -83,25 +83,27 @@ NAN_METHOD(test) {
 	char * buffer = (char *) node::Buffer::Data(info[0]->ToObject());
 	int width = info[1]->Int32Value();
 	int height = info[2]->Int32Value();
+	int blockWidth = info[3]->Int32Value();
+	int blockHeight = info[4]->Int32Value();
 	int size = height * width * 4;
-	int* picArray = new int[size];
+	char* picArray = new char[size];
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			int idx = (width * y + x) << 2;
-			picArray[idx] = buffer[idx] & 0xff;
-			picArray[idx+1] = buffer[idx+1] & 0xff;
-			picArray[idx+2] = buffer[idx+2] & 0xff;
-			picArray[idx+3] = buffer[idx+3] & 0xff;
+			picArray[idx] = buffer[idx];
+			picArray[idx+1] = buffer[idx+1];
+			picArray[idx+2] = buffer[idx+2];
+			picArray[idx+3] = buffer[idx+3];
 		}
 	}
 
-	Picture* pic = new Picture(width, height, 10, 10);
-	pic->set((int*)picArray);
-	char* retval = (char*)pic->get();
+	Picture* pic = new Picture(width, height, blockWidth, blockHeight);
+	pic->set(picArray);
+	char* retVal = pic->get();
 
 	info.GetReturnValue().Set(
-		Nan::NewBuffer(retval, size).ToLocalChecked()
+		Nan::NewBuffer(retVal, size).ToLocalChecked()
 	);
 }
 
