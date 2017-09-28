@@ -100,6 +100,7 @@ NAN_METHOD(test) {
 
 	Picture* pic = new Picture(width, height, blockWidth, blockHeight);
 	pic->set(picArray);
+	pic->rotateBlock(0, 360);
 	char* retVal = pic->get();
 
 	info.GetReturnValue().Set(

@@ -3,6 +3,8 @@
 #ifndef NATIVECHOP_H
 #define NATIVECHOP_H
 
+#define PI 3.14159
+
 class Pixel {
   int red, green, blue, alpha;
 
@@ -30,6 +32,7 @@ class Block {
     void init(int, int);
     void set(int, int, char*);
     char* getRow(int);
+    char* getColumn(int);
     void rotate(int);
     // Pixel* upperLeftEdge ();
     // Pixel* upperRightEdge ();
@@ -65,14 +68,35 @@ char* Block::getRow(int rowNumber){
   return returnArray;
 }
 
+// another solution - https://stackoverflow.com/questions/848025/rotating-bitmaps-in-code
 void Block::rotate(int degrees){
-  // x' = x * cos(a) + y * sin(a)
-  // y' = y * cos(a) - x * sin(a)
-  
+  //TODO: defensive - right angles rotate, ie. only 90, 180, 270
+
+  //TODO: defensive - block must be square dimensions
+
   //create a temp array
-  //rotate to that array
-  //copy array values to old array
+  Pixel* tempPixels = new Pixel [width*height];
+
+  for (int d=degrees; d > 0; d = d-90){
+    //rotate to that array
+    for(int x=0; x < width; x++){
+      for(int y=0; y < height; y++){
+        int newX = width - y -1;
+        int newY = x;
+        char* oldPixel = getPixel(x, y).get();
+        tempPixels[newY*width + newX].set(oldPixel[0], oldPixel[1], oldPixel[2], oldPixel[3]);
+      }
+    }
+
+    //copy array values to old array
+    for(int i = 0; i < width*height; i++){
+      char* tempPixel = tempPixels[i].get();
+      pixels[i].set(tempPixel[0], tempPixel[1], tempPixel[2], tempPixel[3]);
+    }
+  }
+
   //delete temp array
+  delete[] tempPixels;
 }
 
 // ----------------------------------------------------
@@ -84,6 +108,7 @@ class Picture {
     Picture(int, int, int, int);
     void set(char*);
     char* get();
+    void rotateBlock(int, int);
   };
 
 Picture::Picture (int w, int h, int bw, int bh) {
@@ -139,5 +164,8 @@ char* Picture::get () {
   return picArray;
 }
 
+void Picture::rotateBlock (int blockNumber, int degrees){
+  blocks[blockNumber].rotate(degrees);
+}
 
 #endif

@@ -11,8 +11,8 @@ const png = new PNG({
 });
 
 function readCallback(image) {
-    const blockWidth = 50;
-    const blockHeight = 2;
+    const blockWidth = 10;
+    const blockHeight = 10;
     const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight);
     png.data = data;
     png.pack().pipe(fs.createWriteStream(__dirname + '/../images/out.png'));
@@ -27,7 +27,7 @@ function readCallback(image) {
 }
 
 function readErrCallback(err) {
-    console.log(err);
+    console.log('Failed Test', err);
 }
 
 fs.createReadStream(__dirname + '/../images/test.png')
