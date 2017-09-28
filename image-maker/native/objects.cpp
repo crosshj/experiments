@@ -68,6 +68,11 @@ char* Block::getRow(int rowNumber){
 void Block::rotate(int degrees){
   // x' = x * cos(a) + y * sin(a)
   // y' = y * cos(a) - x * sin(a)
+  
+  //create a temp array
+  //rotate to that array
+  //copy array values to old array
+  //delete temp array
 }
 
 // ----------------------------------------------------
