@@ -69,6 +69,7 @@ char* Block::getRow(int rowNumber){
 }
 
 // another solution - https://stackoverflow.com/questions/848025/rotating-bitmaps-in-code
+// https://stackoverflow.com/questions/42519/how-do-you-rotate-a-two-dimensional-array
 void Block::rotate(int degrees){
   //TODO: defensive - right angles rotate, ie. only 90, 180, 270
 
