@@ -1,7 +1,7 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "pixel.h"
+#include <pixel.h>
 
 class Block {
     Pixel* pixels;

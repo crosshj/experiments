@@ -19,8 +19,12 @@ https://cboard.cprogramming.com/c-programming/165802-printing-hexagon-using-loop
 */
 
 #include <time.h>
+#include <iostream>
+
 #include <nan.h>
 #include <picture.h>
+
+
 using namespace Nan;  
 using namespace v8;
 
@@ -99,8 +103,16 @@ NAN_METHOD(test) {
 		pic->rotateBlock(0, 360);
 	} else {
 		for (int i=0; i< rotate; i++ ){
+			int swapOne = rand() % (height/blockHeight * width/blockWidth);
+			int swapTwo = swapOne;
+			while (swapOne == swapTwo){
+				swapTwo = rand() % (height/blockHeight * width/blockWidth);
+			}
+			pic->swapBlocks(swapOne, swapTwo);
+
 			int randIndex = rand() % (height/blockHeight * width/blockWidth);
 			pic->rotateBlock(randIndex, 90);
+
 			//int randIndex = rand() % (height/blockHeight * width/blockWidth);
 			// pic->rotateBlock(i, degrees[randIndex]);
 		}

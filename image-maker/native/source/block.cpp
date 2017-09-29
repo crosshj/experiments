@@ -1,4 +1,4 @@
-#include "block.h"
+#include <block.h>
 
 Pixel Block::getPixel(int x, int y){
     return pixels[y*width + x];

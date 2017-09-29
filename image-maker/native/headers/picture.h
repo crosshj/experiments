@@ -3,7 +3,7 @@
 #ifndef PICTURE_H
 #define PICTURE_H
 
-#include "block.h"
+#include <block.h>
 
 class Picture {
     Block* blocks;
@@ -14,6 +14,7 @@ class Picture {
         void set(char*);
         char* get();
         void rotateBlock(int, int);
+        void swapBlocks(int, int);
 };
 
 #endif

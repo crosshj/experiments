@@ -1,4 +1,4 @@
-#include "pixel.h"
+#include <pixel.h>
 
 void Pixel::set (char r, char g, char b, char a) {
     red=r; green=g; blue=b; alpha=a;

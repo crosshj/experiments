@@ -1,4 +1,5 @@
-#include "picture.h"
+#include <picture.h>
+#include <algorithm>
 
 Picture::Picture (int w, int h, int bw, int bh) {
     blocksQty = (w/bw)*(h/bh);
@@ -56,3 +57,7 @@ char* Picture::get () {
 void Picture::rotateBlock (int blockNumber, int degrees){
     blocks[blockNumber].rotate(degrees);
 }
+
+void Picture::swapBlocks(int blockOne, int blockTwo){
+    std::swap(blocks[blockOne], blocks[blockTwo]);
+};
