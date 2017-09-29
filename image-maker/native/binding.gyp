@@ -3,6 +3,7 @@
         "target_name": "nativeChop",
         "sources": [
             "nativeChop.cpp",
+            "source/comparison.cpp",
             "source/picture.cpp",
             "source/block.cpp",
             "source/pixel.cpp"

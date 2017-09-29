@@ -9,16 +9,15 @@ class Block {
     Pixel getPixel(int, int);
 
     public:
-        Block() {}
         void init(int, int);
         void set(int, int, char*);
         char* getRow(int);
         char* getColumn(int);
         void rotate(int);
-        // Pixel* upperLeftEdge ();
-        // Pixel* upperRightEdge ();
-        // Pixel* lowerLeftEdge ();
-        // Pixel* lowerRightEdge ();
+        Pixel* upperLeftEdge ();
+        Pixel* upperRightEdge ();
+        Pixel* lowerLeftEdge ();
+        Pixel* lowerRightEdge ();
 };
 
 #endif
