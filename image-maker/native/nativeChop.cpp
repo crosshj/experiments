@@ -88,34 +88,24 @@ NAN_METHOD(test) {
 	int blockHeight = info[4]->Int32Value();
 	int rotate = info[5]->Int32Value();
 	int size = height * width * 4;
-	char* picArray = new char[size];
 
 	srand ( (unsigned int)time(NULL) ); //initialize the random seed
 	const int degrees[3] = {'90', '180', '270'};
 
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			int idx = (width * y + x) << 2;
-			picArray[idx] = buffer[idx];
-			picArray[idx+1] = buffer[idx+1];
-			picArray[idx+2] = buffer[idx+2];
-			picArray[idx+3] = buffer[idx+3];
-		}
-	}
-
 	Picture* pic = new Picture(width, height, blockWidth, blockHeight);
-	pic->set(picArray);
+	pic->set(buffer);
 
 	if (rotate < 2){
 		pic->rotateBlock(0, 360);
 	} else {
-		for (int i=0; i< height/blockHeight * width/blockWidth; i++ ){
-			int randIndex = rand() % 3;
-			pic->rotateBlock(i, degrees[randIndex]);
+		for (int i=0; i< rotate; i++ ){
+			int randIndex = rand() % (height/blockHeight * width/blockWidth);
+			pic->rotateBlock(randIndex, 90);
+			//int randIndex = rand() % (height/blockHeight * width/blockWidth);
+			// pic->rotateBlock(i, degrees[randIndex]);
 		}
 	}
 	char* retVal = pic->get();
-	delete[] picArray;
 	
 	info.GetReturnValue().Set(
 		Nan::NewBuffer(retVal, size).ToLocalChecked()

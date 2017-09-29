@@ -11,9 +11,9 @@ const png = new PNG({
 });
 
 function readCallback(image) {
-    const blockWidth = 10;
-    const blockHeight = 10;
-    const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight, 100);
+    const blockWidth = 5;
+    const blockHeight = 5;
+    const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight, 10000);
     png.data = data;
     png.pack().pipe(fs.createWriteStream(__dirname + '/../images/out.png'));
 
