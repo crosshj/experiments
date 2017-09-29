@@ -18,14 +18,15 @@ https://cboard.cprogramming.com/c-programming/165802-printing-hexagon-using-loop
 
 */
 
+#include <time.h>
 #include <nan.h>
-#include "objects.cpp"
+#include <picture.h>
 using namespace Nan;  
 using namespace v8;
 
-int rampColor(int value, float thresh){
+int rampColor(int value, double thresh){
 	int ramped = value * thresh < 256
-		? value * thresh
+		? (int)(value * thresh)
 		: value;
 	return ramped;
 }
@@ -85,8 +86,12 @@ NAN_METHOD(test) {
 	int height = info[2]->Int32Value();
 	int blockWidth = info[3]->Int32Value();
 	int blockHeight = info[4]->Int32Value();
+	int rotate = info[5]->Int32Value();
 	int size = height * width * 4;
 	char* picArray = new char[size];
+
+	srand ( (unsigned int)time(NULL) ); //initialize the random seed
+	const int degrees[3] = {'90', '180', '270'};
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -100,9 +105,18 @@ NAN_METHOD(test) {
 
 	Picture* pic = new Picture(width, height, blockWidth, blockHeight);
 	pic->set(picArray);
-	pic->rotateBlock(0, 360);
-	char* retVal = pic->get();
 
+	if (rotate < 2){
+		pic->rotateBlock(0, 360);
+	} else {
+		for (int i=0; i< height/blockHeight * width/blockWidth; i++ ){
+			int randIndex = rand() % 3;
+			pic->rotateBlock(i, degrees[randIndex]);
+		}
+	}
+	char* retVal = pic->get();
+	delete[] picArray;
+	
 	info.GetReturnValue().Set(
 		Nan::NewBuffer(retVal, size).ToLocalChecked()
 	);
