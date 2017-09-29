@@ -13,18 +13,11 @@ const png = new PNG({
 function readCallback(image) {
     const blockWidth = 10;
     const blockHeight = 10;
-    const rotateTimes = 1;
-    const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight, rotateTimes);
+    const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight, 100);
     png.data = data;
     png.pack().pipe(fs.createWriteStream(__dirname + '/../images/out.png'));
-    var testPassed = true;
-    for (var i=0; i<WIDTH*HEIGHT*4; i++){
-        if (image[i] !== data[i]){
-            testPassed = false;
-            break;
-        }
-    }
-    console.log(`Test ${testPassed ? 'PASSED' : 'FAILED'}`);
+
+    console.log(`Rotations written!!`);
 }
 
 function readErrCallback(err) {
