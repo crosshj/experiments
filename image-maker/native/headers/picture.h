@@ -21,7 +21,7 @@ class Picture {
         void swapBlocks(int, int);
 
         Neighbors* getNeighbors(int);
-        Comparison* compare(Neighbors);
+        Comparison* compare(Neighbors*);
 };
 
 #endif

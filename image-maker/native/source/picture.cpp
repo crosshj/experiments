@@ -93,6 +93,6 @@ Neighbors* Picture::getNeighbors(int blockNumber){
     return neighbors;
 };
 
-Comparison* Picture::compare(Neighbors neighbors){
-    return new Comparison;
+Comparison* Picture::compare(Neighbors* neighbors){
+    return new Comparison(neighbors);
 };
