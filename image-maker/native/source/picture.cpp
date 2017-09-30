@@ -1,6 +1,8 @@
 #include <picture.h>
 #include <algorithm>
 
+#define INVALID_BLOCK_INDEX -1
+
 Picture::Picture (int w, int h, int bw, int bh) {
     blocksQty = (w/bw)*(h/bh);
     width = w; height = h; blockWidth = bw; blockHeight = bh;
@@ -60,4 +62,37 @@ void Picture::rotateBlock (int blockNumber, int degrees){
 
 void Picture::swapBlocks(int blockOne, int blockTwo){
     std::swap(blocks[blockOne], blocks[blockTwo]);
+};
+
+Block* Picture::getBlock(int index){
+    return index >= 0 && (index < width/blockWidth * height/blockHeight)
+        ? &blocks[index]
+        : new Block();
+}
+
+Neighbors* Picture::getNeighbors(int blockNumber){
+    Block* self;
+    Block* north;
+    Block* south;
+    Block* east;
+    Block* west;
+    int blocksInRow = width/blockWidth;
+    self = getBlock(blockNumber);
+    north = getBlock(blockNumber - blocksInRow);
+    south = getBlock(blockNumber + blocksInRow);
+    east = getBlock(blockNumber % blocksInRow != (blocksInRow - 1)
+        ? blockNumber + 1
+        : INVALID_BLOCK_INDEX
+    );
+    west = getBlock(blockNumber % blocksInRow != 0
+        ? blockNumber - 1
+        : INVALID_BLOCK_INDEX
+    );
+
+    Neighbors* neighbors = new Neighbors(self, north, south, east, west);
+    return neighbors;
+};
+
+Comparison* Picture::compare(Neighbors neighbors){
+    return new Comparison;
 };
