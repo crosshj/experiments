@@ -2,6 +2,10 @@
 #include <comparison.h>
 #include <neighbors.h>
 
+// TODO: color vs B&W compare
+// https://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
+// bw = 0.3*r + 0.6*g + 0.1*b;
+
 Comparison::Comparison (Neighbors* n) {
     _neighbors = n;
 
