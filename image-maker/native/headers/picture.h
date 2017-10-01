@@ -11,6 +11,9 @@ class Picture {
     Block* blocks;
     int width, height, blockWidth, blockHeight, blocksQty;
 
+    Neighbors* getNeighbors(int);
+    Comparison* compare(Neighbors*);
+
     public:
         Picture(int, int, int, int);
         void set(char*);
@@ -19,9 +22,7 @@ class Picture {
         Block* getBlock(int);
         void rotateBlock(int, int);
         void swapBlocks(int, int);
-
-        Neighbors* getNeighbors(int);
-        Comparison* compare(Neighbors*);
+        void swapRotateBestMatch(int, int);
 };
 
 #endif

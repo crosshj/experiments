@@ -4,8 +4,8 @@
   "description": "create and serve a PNG image",
   "scripts": {
     "start": "node index.js",
-    "build": "cd ./native && node-gyp configure build",
-    "build.debug": "cd ./native && node-gyp configure build --debug",
+    "build": "cd ./native && node-gyp configure build -j 8",
+    "build.debug": "cd ./native && node-gyp configure build --debug -j 8",
     "watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

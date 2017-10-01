@@ -108,10 +108,10 @@ NAN_METHOD(test) {
 			while (swapOne == swapTwo){
 				swapTwo = rand() % (height/blockHeight * width/blockWidth);
 			}
-			pic->swapBlocks(swapOne, swapTwo);
+			pic->swapRotateBestMatch(swapOne, swapTwo);
 
-			int randIndex = rand() % (height/blockHeight * width/blockWidth);
-			pic->rotateBlock(randIndex, 90);
+			//int randIndex = rand() % (height/blockHeight * width/blockWidth);
+			//pic->rotateBlock(randIndex, 90);
 
 			//int randIndex = rand() % (height/blockHeight * width/blockWidth);
 			// pic->rotateBlock(i, degrees[randIndex]);

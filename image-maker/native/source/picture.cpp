@@ -96,3 +96,16 @@ Neighbors* Picture::getNeighbors(int blockNumber){
 Comparison* Picture::compare(Neighbors* neighbors){
     return new Comparison(neighbors);
 };
+
+void Picture::swapRotateBestMatch(int blockOne, int blockTwo){
+    swapBlocks(blockOne, blockTwo);
+    for(int i=0; i<2; i++){
+        int currentBlock = (i == 0)
+            ? blockOne
+            : blockTwo;
+        Comparison* comparison = compare(getNeighbors(currentBlock));
+        //based on comparison, rotate
+        int bestRotateDegrees = comparison->bestRotateMatch();
+        rotateBlock(currentBlock, bestRotateDegrees);
+    }
+}

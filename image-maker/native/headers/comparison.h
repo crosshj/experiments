@@ -5,11 +5,13 @@
 
     class Comparison {
         Neighbors* _neighbors;
-
         public:
-            Comparison (Neighbors* n) {
-                _neighbors = n;
-            }
+            Comparison (Neighbors* n);
+            int topToTop, topToRight, topToBottom, topToLeft,
+                rightToRight, rightToBottom, rightToLeft,
+                bottomToBottom, bottomToLeft,
+                leftToLeft;
+            int bestRotateMatch(); 
     };
 
 #endif
