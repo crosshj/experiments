@@ -14,10 +14,10 @@ class Block {
         char* getRow(int);
         char* getColumn(int);
         void rotate(int);
-        Pixel* upperLeftEdge ();
-        Pixel* upperRightEdge ();
-        Pixel* lowerLeftEdge ();
-        Pixel* lowerRightEdge ();
+        Pixel* northEdge ();
+        Pixel* southEdge ();
+        Pixel* eastEdge ();
+        Pixel* westEdge ();
 };
 
 #endif

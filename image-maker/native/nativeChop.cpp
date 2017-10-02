@@ -94,7 +94,7 @@ NAN_METHOD(test) {
 	int size = height * width * 4;
 
 	srand ( (unsigned int)time(NULL) ); //initialize the random seed
-	const int degrees[3] = {'90', '180', '270'};
+	//int degrees[3] = {90, 180, 270};
 
 	Picture* pic = new Picture(width, height, blockWidth, blockHeight);
 	pic->set(buffer);
