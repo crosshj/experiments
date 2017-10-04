@@ -1,4 +1,5 @@
 #include <block.h>
+#define BW true
 
 Pixel Block::getPixel(int x, int y){
     return pixels[y*width + x];
@@ -20,11 +21,19 @@ char* Block::getRow(int rowNumber){
   char* returnArray = new char[width*4];
   for(int i=0; i < width; i++){
     char* pixel = rowPixels[i].get();
-    returnArray[i*4] = pixel[0];
-    returnArray[i*4+1] = pixel[1];
-    returnArray[i*4+2] = pixel[2];
-    returnArray[i*4+3] = pixel[3];
-    delete[] pixel;
+    if(BW){
+      char pixelBW = rowPixels[i].getBW();
+      returnArray[i*4] = pixelBW;
+      returnArray[i*4+1] = pixelBW;
+      returnArray[i*4+2] = pixelBW;
+      returnArray[i*4+3] = (char)255;
+    } else {
+      returnArray[i*4] = pixel[0];
+      returnArray[i*4+1] = pixel[1];
+      returnArray[i*4+2] = pixel[2];
+      returnArray[i*4+3] = pixel[3];
+      delete[] pixel;
+    }
   }
   return returnArray;
 }

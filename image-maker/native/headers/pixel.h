@@ -7,6 +7,7 @@
         public:
             void set(char, char, char, char);
             char* get();
+            char getBW();
     };
 
 #endif
