@@ -7,11 +7,12 @@
         Neighbors* _neighbors;
         public:
             Comparison (Neighbors* n);
-            int topToTop, topToRight, topToBottom, topToLeft,
-                rightToRight, rightToBottom, rightToLeft,
-                bottomToBottom, bottomToLeft,
-                leftToLeft;
-            int bestRotateMatch(); 
+            int topToTop,    topToRight,    topToBottom,    topToLeft,
+                rightToTop,  rightToRight,  rightToBottom,  rightToLeft,
+                bottomToTop, bottomToRight, bottomToBottom, bottomToLeft,
+                leftToTop,   leftToRight,   leftToBottom,   leftToLeft;
+            int bestRotateMatch();
+            int comparePixelRows(int, bool, Pixel*, Pixel*);
     };
 
 #endif

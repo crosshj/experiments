@@ -14,6 +14,7 @@ class Block {
         char* getRow(int);
         char* getColumn(int);
         void rotate(int);
+        int getWidth(){ return width; }
         Pixel* northEdge ();
         Pixel* southEdge ();
         Pixel* eastEdge ();

@@ -1,5 +1,5 @@
 #include <block.h>
-#define BW true
+#define BW false
 
 Pixel Block::getPixel(int x, int y){
     return pixels[y*width + x];
@@ -104,7 +104,7 @@ Pixel* Block::eastEdge (){
 Pixel* Block::westEdge (){
   Pixel* edge = new Pixel[height];
   int currentEdgeItem = 0;
-  for(int i = 0; i < (height-1)*width + 2; i++){
+  for(int i = 0; i < height*width; i++){
     if(i%width == 0){
       edge[currentEdgeItem] = pixels[i];
       currentEdgeItem++;
