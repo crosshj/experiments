@@ -35,8 +35,8 @@ void Picture::set (char* picArray) {
 }
 
 char* Picture::get () {
-    char* picArray = new char[width*height*3];
-    //std::cout << "Size of image: " << width*height*3 << std::endl;
+    char* picArray = new char[width*height*4];
+    //std::cout << "Size of image: " << width*height*4 << std::endl;
     int currentPicArrayMember = 0;
     // top to bottom
     for (int j = 0; j < height/blockHeight; j++) {
@@ -47,8 +47,9 @@ char* Picture::get () {
             char* blockRow = blocks[j*(width/blockWidth) + i].getRow(k);
             // each pixel in row
             for (int l = 0; l < blockWidth*4; l++) {
-            picArray[currentPicArrayMember] = blockRow[l];
-            currentPicArrayMember++;
+                //TODO: segfaults sometimes, bad access
+                picArray[currentPicArrayMember] = blockRow[l];
+                currentPicArrayMember++;
             }
         }
         }

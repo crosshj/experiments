@@ -4,3 +4,4 @@ node_modules
 image-maker/native/build/*
 
 image-maker/images/out.png
+npm-debug.log
