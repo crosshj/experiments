@@ -91,6 +91,7 @@ NAN_METHOD(test) {
 	int blockWidth = info[3]->Int32Value();
 	int blockHeight = info[4]->Int32Value();
 	int rotate = info[5]->Int32Value();
+	int tolerance = info[6]->Int32Value();
 	int size = height * width * 4;
 
 	srand ( (unsigned int)time(NULL) ); //initialize the random seed
@@ -99,16 +100,19 @@ NAN_METHOD(test) {
 	Picture* pic = new Picture(width, height, blockWidth, blockHeight);
 	pic->set(buffer);
 
-	if (rotate < 2){
+	if (rotate < 1){
+		// no effect, for test
 		pic->rotateBlock(0, 360);
 	} else {
-		for (int i=0; i< rotate; i++ ){
+		for (int i=0; i < rotate; i++ ){
 			int swapOne = rand() % (height/blockHeight * width/blockWidth);
 			int swapTwo = swapOne;
 			while (swapOne == swapTwo){
 				swapTwo = rand() % (height/blockHeight * width/blockWidth);
 			}
-			pic->swapRotateBestMatch(swapOne, swapTwo);
+			while (!pic->swapRotateBestMatch(swapOne, swapTwo, tolerance)){
+				swapTwo = rand() % (height/blockHeight * width/blockWidth);
+			}
 
 			//int randIndex = rand() % (height/blockHeight * width/blockWidth);
 			//pic->rotateBlock(randIndex, 90);

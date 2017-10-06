@@ -98,7 +98,8 @@ Comparison* Picture::compare(Neighbors* neighbors){
     return new Comparison(neighbors);
 };
 
-void Picture::swapRotateBestMatch(int blockOne, int blockTwo){
+bool Picture::swapRotateBestMatch(int blockOne, int blockTwo, int tolerance){
+    bool withinTolerance = true;
     swapBlocks(blockOne, blockTwo);
     for(int i=0; i<2; i++){
         int currentBlock = (i == 0)
@@ -106,7 +107,15 @@ void Picture::swapRotateBestMatch(int blockOne, int blockTwo){
             : blockTwo;
         Comparison* comparison = compare(getNeighbors(currentBlock));
         //based on comparison, rotate
-        int bestRotateDegrees = comparison->bestRotateMatch();
-        rotateBlock(currentBlock, bestRotateDegrees);
+        int bestRotateDegrees = comparison->bestRotateMatch(tolerance);
+        if(bestRotateDegrees == -1){
+            withinTolerance = false;
+        } else {
+            rotateBlock(currentBlock, bestRotateDegrees);
+        }
     }
+    if (!withinTolerance){
+        swapBlocks(blockOne, blockTwo);
+    }
+    return withinTolerance;
 }

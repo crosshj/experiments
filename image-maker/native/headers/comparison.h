@@ -11,7 +11,7 @@
                 rightToTop,  rightToRight,  rightToBottom,  rightToLeft,
                 bottomToTop, bottomToRight, bottomToBottom, bottomToLeft,
                 leftToTop,   leftToRight,   leftToBottom,   leftToLeft;
-            int bestRotateMatch();
+            int bestRotateMatch(int);
             int comparePixelRows(int, bool, Pixel*, Pixel*);
     };
 

@@ -130,11 +130,11 @@ int Comparison::comparePixelRows(int width, bool forward, Pixel* row1, Pixel* ro
             : pixelValue2 - pixelValue1;
     }
     int average = difference / width;
-    //std::cout << forward << std::endl;
+
     return average;
 }
 
-int Comparison::bestRotateMatch(){
+int Comparison::bestRotateMatch(int tolerance){
     int bestRotate = 0;
 
     int zeroDeg = (topToTop + rightToRight + bottomToBottom + leftToLeft) / 4;
@@ -152,9 +152,14 @@ int Comparison::bestRotateMatch(){
     }
     int twoSeventyDeg = (topToLeft + rightToTop + bottomToRight + leftToBottom) / 4;
     if(twoSeventyDeg < minDiff){
-        //minDiff = twoSeventyDeg;
+        minDiff = twoSeventyDeg;
         bestRotate = 270;
     }
 
-    return bestRotate;
+    if(minDiff < tolerance){
+        std::cout << "minDiff is less than tolerance: " << minDiff << std::endl;
+    }
+    return minDiff < tolerance
+        ? bestRotate
+        : -1;
 }

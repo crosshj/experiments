@@ -22,7 +22,7 @@ class Picture {
         Block* getBlock(int);
         void rotateBlock(int, int);
         void swapBlocks(int, int);
-        void swapRotateBestMatch(int, int);
+        bool swapRotateBestMatch(int, int, int);
 };
 
 #endif
