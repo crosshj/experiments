@@ -156,9 +156,6 @@ int Comparison::bestRotateMatch(int tolerance){
         bestRotate = 270;
     }
 
-    if(minDiff < tolerance){
-        std::cout << "minDiff is less than tolerance: " << minDiff << std::endl;
-    }
     return minDiff < tolerance
         ? bestRotate
         : -1;
