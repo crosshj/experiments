@@ -107,13 +107,13 @@ bool Picture::swapRotateBestMatch(int blockOne, int blockTwo, int tolerance){
 
     swapBlocks(blockOne, blockTwo);
 
-    Comparison* comparison = compare(getNeighbors(blockOne));
-    bestRotateDegreesOne = comparison->bestRotateMatch(tolerance);
-    delete comparison;
+    Comparison* comparisonOne = compare(getNeighbors(blockOne));
+    bestRotateDegreesOne = comparisonOne->bestRotateMatch(tolerance);
+    delete comparisonOne;
 
-    comparison = compare(getNeighbors(blockTwo));
-    bestRotateDegreesTwo = comparison->bestRotateMatch(tolerance);
-    delete comparison;
+    Comparison* comparisonTwo = compare(getNeighbors(blockTwo));
+    bestRotateDegreesTwo = comparisonTwo->bestRotateMatch(tolerance);
+    delete comparisonTwo;
 
 
     if (bestRotateDegreesOne > -1 && bestRotateDegreesTwo > -1){

@@ -7,6 +7,7 @@
     "build": "cd ./native && node-gyp configure build -j 8",
     "build.debug": "cd ./native && node-gyp configure build --debug -j 8",
     "debug": "lldb -- `which node` ./test/rotate.js",
+    "debug.windows": "gdb --args node test/rotate",
     "watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
