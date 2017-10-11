@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <picture.h>
 #include <algorithm>
 
@@ -100,22 +102,28 @@ Comparison* Picture::compare(Neighbors* neighbors){
 
 bool Picture::swapRotateBestMatch(int blockOne, int blockTwo, int tolerance){
     bool withinTolerance = true;
+    int bestRotateDegreesOne = -1;
+    int bestRotateDegreesTwo = -1;
+
     swapBlocks(blockOne, blockTwo);
-    for(int i=0; i<2; i++){
-        int currentBlock = (i == 0)
-            ? blockOne
-            : blockTwo;
-        Comparison* comparison = compare(getNeighbors(currentBlock));
-        //based on comparison, rotate
-        int bestRotateDegrees = comparison->bestRotateMatch(tolerance);
-        if(bestRotateDegrees == -1){
-            withinTolerance = false;
-        } else {
-            rotateBlock(currentBlock, bestRotateDegrees);
-        }
-    }
-    if (!withinTolerance){
+
+    Comparison* comparison = compare(getNeighbors(blockOne));
+    bestRotateDegreesOne = comparison->bestRotateMatch(tolerance);
+    delete comparison;
+
+    comparison = compare(getNeighbors(blockTwo));
+    bestRotateDegreesTwo = comparison->bestRotateMatch(tolerance);
+    delete comparison;
+
+
+    if (bestRotateDegreesOne > -1 && bestRotateDegreesTwo > -1){
+        rotateBlock(blockOne, bestRotateDegreesOne);
+        rotateBlock(blockTwo, bestRotateDegreesTwo);
+        std::cout << "Good swap: " << blockOne << " " << blockTwo << std::endl;
+    } else {
+        withinTolerance = false;
         swapBlocks(blockOne, blockTwo);
     }
+
     return withinTolerance;
 }
