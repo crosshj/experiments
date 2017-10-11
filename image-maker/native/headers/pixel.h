@@ -7,6 +7,8 @@
         public:
             void set(char, char, char, char);
             char* get();
+            int* getHSV();
+            void setHSV(int, int, int);
             char getBW();
     };
 

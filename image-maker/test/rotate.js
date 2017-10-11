@@ -13,7 +13,9 @@ const png = new PNG({
 function readCallback(image) {
     const blockWidth = 30;
     const blockHeight = 30;
-    const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight, 10000);
+    const numberOfRotates = 3;
+    const tolerance = 70;
+    const data = native.test(image, WIDTH, HEIGHT, blockWidth, blockHeight, numberOfRotates, tolerance);
     png.data = data;
     png.pack().pipe(fs.createWriteStream(__dirname + '/../images/out.png'));
 
