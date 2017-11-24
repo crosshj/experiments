@@ -25,7 +25,7 @@ window.ghPageHelper = (function () {
           [{ source }, { site }].forEach(base => {
             const a = document.createElement('a');
             a.className = base.site ? 'demo' : 'source'
-            a.href = `${base.site || base.source}/${root}/${base.source ? '/tree/gh-pages/' : ''}${j.path}`;
+            a.href = `${base.site || base.source}/${root}/${base.source ? 'tree/gh-pages/' : ''}${j.path}`;
             a.textContent = base.site ? '[demo]' : '[source]';
             li.appendChild(a);
           });
