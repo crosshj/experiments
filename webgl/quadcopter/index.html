@@ -36,12 +36,12 @@
 	</head>
 	<body ontouchstart="">
 		<div id="reset" class="noselect" onclick="resetQuad(quadcopter)">RESET</div>
-		<script src="https://dl.dropboxusercontent.com/s/xvr3u99gnkggwxw/three.min.js?dl=0"></script>
-		<script src="https://dl.dropboxusercontent.com/s/7pdtzyoo2hqmlg0/app.js?dl=0"></script>
-		<script src="https://dl.dropboxusercontent.com/u/3587259/Code/Threejs/OrbitControls.js"></script>
+		<script src="js/three.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/OrbitControls.js"></script>
 		<script>
 			var loader = new THREE.XHRLoader();
-			loader.load( 'https://dl.dropboxusercontent.com/s/rqlhm66iy2zr7is/app.json?dl=0', function ( text ) {
+			loader.load( 'app.json', function ( text ) {
 
 				var player = new APP.Player();
 				player.load( JSON.parse( text ) );
