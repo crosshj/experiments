@@ -1,13 +1,13 @@
 window.ghPageHelper = (function () {
 
   //usage: appendChildLinks('#projects', 'crosshj', 'baseFolder') 
-  function appendChildLinks(rootSelector, username) {
+  function appendChildLinks(rootSelector, username, baseFolder) {
     const site = document.location.origin;
     const source = `https://github.com/${username}`;
     const root = document.location.pathname.split('/')[1];
     var folder = document.location.pathname.split(`/${root}/`)[1].replace(/\/$/,'');
 
-    fetch(`https://api.github.com/repos/${username}/${root}/contents/${folder}?ref=gh-pages`)
+    fetch(`https://api.github.com/repos/${username}/${root}/contents/${baseFolder ? `${baseFolder}/` : ''}${folder}?ref=gh-pages`)
       .then(res => res.json())
       .then(json => {
         console.table(json);
