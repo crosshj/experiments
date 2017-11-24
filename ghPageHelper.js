@@ -6,9 +6,8 @@ window.ghPageHelper = (function () {
     const source = `https://github.com/${username}`;
     const root = document.location.pathname.split('/')[1];
     var folder = document.location.pathname.split(`/${root}/`)[1].replace(/\/$/,'');
-    var folder = folder ? `${folder}/` : '';
 
-    fetch(`https://api.github.com/repos/${username}/${root}/${folder}contents?ref=gh-pages`)
+    fetch(`https://api.github.com/repos/${username}/${root}/contents/${folder}?ref=gh-pages`)
       .then(res => res.json())
       .then(json => {
         console.table(json);
