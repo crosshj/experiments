@@ -13,7 +13,9 @@ window.ghPageHelper = (function () {
 
         const rootEl = document.querySelector(rootSelector);
         var ul = document.createElement('ul');
-        json.forEach(j => {
+        json
+          .filter(x => x.type==='dir')
+          .forEach(j => {
           const li = document.createElement('li');
           li.textContent = j.name;
           [{ source }, { site }].forEach(base => {
