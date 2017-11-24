@@ -13,6 +13,9 @@ window.ghPageHelper = (function () {
         console.table(json);
 
         const rootEl = document.querySelector(rootSelector);
+        const header = document.createElement('h1');
+        header.innerText = `${root}/${folder}`;
+        rootEl.appendChild(header);
         var ul = document.createElement('ul');
         json
           .filter(x => x.type==='dir')
