@@ -1,0 +1,53 @@
+/*http://www.colourlovers.com/palette/2504357/Sun_of_yesterday*/
+/*http://www.w3schools.com/css/css_border.asp*/
+canvas {
+	border: 10px solid #C08654;
+	-moz-box-shadow: black 2px 2px 2px;
+	background-color: black;
+}
+body {
+	margin: 0px;
+	overflow-y: hidden;
+	background-color: #3F1427;
+}
+#mainContainer {
+	width: 100%;
+}
+#canvasContainer {
+	width: 660px;
+	height: 500px;
+	margin: 0px auto;
+	padding: 0px
+}
+#header {
+	width: 100%;
+	background-color: #F2DA52;
+	height: 13%;
+	text-align: center;
+	line-height: 6em;
+}
+#fontHeaderMain {
+	/*float: left;
+	position: relative;
+	left: 25%;
+*/
+	color: #5B3132;
+	font-family: 'Oxygen', sans-serif;
+	font-style: bold;
+	font-size: 70px
+}
+#fontHeaderOther {
+	/*float: right;
+	position: relative;
+	right: 30%;
+*/
+	color: #C08654;
+	font-family: 'Oxygen', sans-serif;
+	font-style: normal;
+	font-size: 30px
+}
+#footer {
+	width: 100%;
+   background-color: #5B3132;
+	height: 9999px;
+}
