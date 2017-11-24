@@ -4,9 +4,9 @@ window.ghPageHelper = (function () {
   function appendChildLinks(rootSelector, username, baseFolder) {
     const site = document.location.origin;
     const source = `https://github.com/${username}`;
-    const root = document.location.pathname;
+    const root = document.location.pathname.replace(/\/$/,'');
 
-    fetch(`https://api.github.com/repos/${username}${root}${baseFolder || ''}?ref=gh-pages`)
+    fetch(`https://api.github.com/repos/${username}${root}${baseFolder ? `/${baseFolder}` : ''}?ref=gh-pages`)
       .then(res => res.json())
       .then(json => {
         console.table(json);
