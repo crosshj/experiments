@@ -23,7 +23,7 @@ window.ghPageHelper = (function () {
           const li = document.createElement('li');
           const span = document.createElement('span');
           span.textContent = j.name;
-          li.appendChild(span)
+          li.appendChild(span);
           [{ source }, { site }].forEach(base => {
             const a = document.createElement('a');
             a.className = base.site ? 'demo' : 'source'
