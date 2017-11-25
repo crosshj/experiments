@@ -18,7 +18,7 @@ window.ghPageHelper = (function () {
         rootEl.appendChild(header);
         var ul = document.createElement('ul');
         json
-          .filter(x => x.type==='dir')
+          .filter(x => x.type==='dir' && x.name !== '_layouts' && x.name !== 'assets')
           .forEach(j => {
           const li = document.createElement('li');
           li.textContent = j.name;
