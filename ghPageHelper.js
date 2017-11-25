@@ -110,7 +110,14 @@ window.ghPageHelper = (function () {
       @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
       @media (min-width:1281px) { /* hi-res laptops and desktops */ }
     `;
-    //document.body.appendChild(css);
+    // ^^^ fix this, may not need
+    css.innerHTML = `
+      li > span {
+          min-width: 175px;
+          display: inline-block;
+      }
+    `;
+    document.body.appendChild(css);
   }
 
   var helper = { appendChildLinks };
