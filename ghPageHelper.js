@@ -21,7 +21,9 @@ window.ghPageHelper = (function () {
           .filter(x => x.type==='dir' && x.name !== '_layouts' && x.name !== 'assets')
           .forEach(j => {
           const li = document.createElement('li');
-          li.textContent = j.name;
+          const span = document.createElement('span');
+          span.textContent = j.name;
+          li.appendChild(span)
           [{ source }, { site }].forEach(base => {
             const a = document.createElement('a');
             a.className = base.site ? 'demo' : 'source'
