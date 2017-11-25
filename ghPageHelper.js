@@ -108,7 +108,7 @@ window.ghPageHelper = (function () {
       @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
       @media (min-width:1281px) { /* hi-res laptops and desktops */ }
     `;
-    document.body.appendChild(css);
+    //document.body.appendChild(css);
   }
 
   var helper = { appendChildLinks };
