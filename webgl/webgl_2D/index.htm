@@ -21,7 +21,7 @@
       })(); 
     </script>   
     
-    <link rel="stylesheet" type="text/css" href="https://dl.dropbox.com/s/chlju2qcdy56z4d/webgl.css">    
+    <link rel="stylesheet" type="text/css" href="source/webgl.css">    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
     <script type="text/javascript">
@@ -32,7 +32,7 @@
       $.ajax({
           async: false,
           //url: 'https://dl-web.dropbox.com/get/CODE/webgl_2D/WebGL%20Demo_files/shader1.vs?w=1df65891',
-          url: 'https://dl.dropboxusercontent.com/s/hn3k0m4rl2unuoc/shader2.vs',
+          url: 'source/shader2.vs',
           success: function (data) {
               console.log("Got VS source.");
               vs_source = $(data).html();
@@ -44,7 +44,7 @@
       $.ajax({
           async: false,
           //url: 'https://dl-web.dropbox.com/get/CODE/webgl_2D/WebGL%20Demo_files/shader1.fs?w=84c29044',
-          url: 'https://dl.dropboxusercontent.com/s/1rxm31751tbduxi/shader2.fs',
+          url: 'source/shader2.fs',
           success: function (data) {
               console.log("Got FS source.");
               fs_source = $(data).html();
@@ -55,7 +55,7 @@
       // MODEL
       $.ajax({
           async: false,
-          url: 'https://dl.dropboxusercontent.com/s/h34w18g5z9p3w6n/model.js',
+          url: 'source/model.js',
           success: function (data) {
               console.log("Got model source.");
               model_source = data;
@@ -64,10 +64,10 @@
       });      
     </script>
 
-    <script src="https://dl.dropbox.com/s/2c1wgqege6yo7lc/sylvester.js" type="text/javascript"></script>    
-    <script src="https://dl.dropbox.com/s/7s9m0g7j13y6uly/glUtils.js" type="text/javascript"></script>    
-    <script src="https://dl.dropbox.com/s/yvu0tr1e4wes3kf/webgl-demo.js" type="text/javascript"></script>    
-    <script src="https://dl.dropbox.com/s/gxlj15fjnfe61y3/other.js" type="text/javascript"></script> 
+    <script src="source/sylvester.js" type="text/javascript"></script>    
+    <script src="source/glUtils.js" type="text/javascript"></script>    
+    <script src="source/webgl-demo.js" type="text/javascript"></script>    
+    <script src="source/other.js" type="text/javascript"></script> 
 
     <!-- Fragment shader program -->    
     <!--script id="shader-fs" type="x-shader/x-fragment" src="https://dl-web.dropbox.com/get/CODE/webgl_2D/WebGL%20Demo_files/shaderFrag1.js?w=7dad396b"></script-->  
