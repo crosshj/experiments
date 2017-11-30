@@ -45,6 +45,10 @@ window.ghPageHelper = (function () {
         font-family: monospace;
         font-size: smaller;
       }
+
+      a.source {
+          display: none;
+      }
       
       #projects {
         width: 100%;
