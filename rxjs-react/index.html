@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>rxjs experiment</title>
+    <title>rxjs + react</title>
     <meta name="description" content="Simple online clock that can work as a stopwatch or countdown timer with start, pause and reset functions.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
@@ -16,15 +16,21 @@
     }
   </style>
   <body>
-    <input type="text" id="text-input"/>
+    <h3>RX listens here:</h3>
+    <input type="text" id="text-input" placeholder="enter text here"/>
+    
+    <h3>React renders here:</h3>
     <div id="output" style="
         background-color: aquamarine;
         padding: 20px;
-        margin: 20px;
-    ">Capped Text Length</div>
+        max-width: 200px;
+    ">Hello + your text shows up here (up to max characters)</div>
+    <div id="container"></div>
   </body>
   <script src="https://unpkg.com/rxjs@beta/bundles/rxjs.umd.js"></script>
-  <!-- <script src="https://npmcdn.com/@reactivex/rxjs@5.0.0-beta.2/dist/global/Rx.umd.js"></script> -->
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
   <script>
     // DOM elements
     const input = document.getElementById('text-input');
@@ -46,11 +52,24 @@
     //   .pipe(map(o => `${o} !!!`))
     //   .subscribe(o => console.log(o));
 
+    function renderReact(name){
+      const HelloComponent = function({name='No Name Provided'}) {
+          return React.createElement("div", null, "Hello ", name);
+      };
+
+      ReactDOM.render(
+        React.createElement(HelloComponent, {name}),
+        document.getElementById('output')
+      );
+    }
+
     fromEvent(input, 'input')
       .pipe(
         map(e => e.target.value),
         filter(text => text.length < 10),
       )
-      .subscribe(o => output.innerHTML = o);
+      .subscribe(o => renderReact(o));
+
+
   </script>
 </html>
