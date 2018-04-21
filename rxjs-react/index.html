@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Final countdown</title>
+    <meta name="description" content="Simple online clock that can work as a stopwatch or countdown timer with start, pause and reset functions.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Roboto";
+        font-weight: bold;
+        font-size: 50vh;
+        background-color: #333333;
+        color: #CCCCCC;
+      }
+      #clock {
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+      .alert {
+        color: #FF5D5D;
+      }
+      @media (min-aspect-ratio: 1/1) {
+        body {
+          font-size: 50vh;
+        }
+      }
+      @media (max-aspect-ratio: 1/1) {
+        body {
+          font-size: 30vw;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  </head>
+  <body>
+    <div id="clock">
+      <span id="minutes"></span>:<span id="seconds"></span>
+    </div>
+    <div>began life as https://github.com/szimek/final-countdown</div>
+  </body>
+  <script src="https://npmcdn.com/@reactivex/rxjs@5.0.0-beta.2/dist/global/Rx.umd.js"></script>
+  <script>
+    // TODO
+    // - customize total and alert time (separate page)
+    // - ffw/rwd
+
+    // DOM elements
+    const clock = document.getElementById('clock');
+    const minutes = document.getElementById('minutes');
+    const seconds = document.getElementById('seconds');
+
+    // Options
+    const params = new URLSearchParams(location.search.slice(1));
+    const totalTime = parseInt(params.get('time'), 10) || 20 * 60; // 20 minutes
+    const alertTime = parseInt(params.get('alert'), 10) || 3 * 60; // 3 minutes
+    let direction = params.get('direction') === 'up' ? 'up' : 'down';
+
+    // Helper stuff
+    const toTime = (seconds) => ({
+      seconds: Math.floor(seconds % 60),
+      minutes: Math.floor(seconds / 60),
+      alert: direction === 'up' ? seconds > totalTime - alertTime : seconds < alertTime
+    });
+    const pad = (number) => number <= 9 ? ('0' + number) : number.toString();
+
+    // Clock stuff
+    const initialValue = direction === 'up' ? 0 : totalTime;
+    const inc = (acc) => acc + 1;
+    const dec = (acc) => acc - 1;
+    const incOrDec = (acc) => (direction === 'up' ? inc : dec)(acc)
+    const reset = () => initialValue;
+    const stillCan = (seconds) => direction === 'up' ? seconds <= totalTime : seconds >= 0;
+    const render = (time) => {
+      clock.classList[time.alert ? 'add' : 'remove']('alert');
+      minutes.innerHTML = pad(time.minutes);
+      seconds.innerHTML = pad(time.seconds);
+    }
+
+    const interval$ = Rx.Observable.interval(1000);
+    const click$ = Rx.Observable.fromEvent(document, 'click');
+    const dblclick$ = Rx.Observable.fromEvent(document, 'dblclick');
+    const toggleOrReset$ = Rx.Observable.merge(
+      click$.mapTo((isRunning) => !isRunning),
+      dblclick$.mapTo(() => false)
+    )
+      .startWith(false)
+      .scan((isRunning, toggleOrFalse) => toggleOrFalse(isRunning))
+      .do((isRunning) => console.log('Running:', isRunning))
+      .share();
+
+    const start$ = toggleOrReset$.filter((isRunning) => isRunning);
+    const stop$ = toggleOrReset$.filter((isRunning) => !isRunning);
+    const incOrDecOrReset$ = Rx.Observable.merge(
+      interval$.takeUntil(Rx.Observable.merge(stop$, dblclick$)).mapTo(incOrDec),
+      dblclick$.mapTo(reset)
+    );
+
+    start$
+      .switchMapTo(incOrDecOrReset$)
+      .startWith(initialValue)
+      .scan((seconds, incOrDecOrReset) => incOrDecOrReset(seconds))
+      .takeWhile(stillCan)
+      .map(toTime)
+      .subscribe(render);
+  </script>
+</html>
