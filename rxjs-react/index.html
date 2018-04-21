@@ -2,80 +2,55 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Final countdown</title>
+    <title>rxjs experiment</title>
     <meta name="description" content="Simple online clock that can work as a stopwatch or countdown timer with start, pause and reset functions.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
   </head>
-  <body>
-    <div id="clock">
-      <span id="minutes"></span>:<span id="seconds"></span>
-    </div>
-    <div>began life as https://github.com/szimek/final-countdown</div>
-  </body>
-  <script src="https://npmcdn.com/@reactivex/rxjs@5.0.0-beta.2/dist/global/Rx.umd.js"></script>
-  <script>
-    // TODO
-    // - customize total and alert time (separate page)
-    // - ffw/rwd
-
-    // DOM elements
-    const clock = document.getElementById('clock');
-    const minutes = document.getElementById('minutes');
-    const seconds = document.getElementById('seconds');
-
-    // Options
-    const params = new URLSearchParams(location.search.slice(1));
-    const totalTime = parseInt(params.get('time'), 10) || 20 * 60; // 20 minutes
-    const alertTime = parseInt(params.get('alert'), 10) || 3 * 60; // 3 minutes
-    let direction = params.get('direction') === 'up' ? 'up' : 'down';
-
-    // Helper stuff
-    const toTime = (seconds) => ({
-      seconds: Math.floor(seconds % 60),
-      minutes: Math.floor(seconds / 60),
-      alert: direction === 'up' ? seconds > totalTime - alertTime : seconds < alertTime
-    });
-    const pad = (number) => number <= 9 ? ('0' + number) : number.toString();
-
-    // Clock stuff
-    const initialValue = direction === 'up' ? 0 : totalTime;
-    const inc = (acc) => acc + 1;
-    const dec = (acc) => acc - 1;
-    const incOrDec = (acc) => (direction === 'up' ? inc : dec)(acc)
-    const reset = () => initialValue;
-    const stillCan = (seconds) => direction === 'up' ? seconds <= totalTime : seconds >= 0;
-    const render = (time) => {
-      clock.classList[time.alert ? 'add' : 'remove']('alert');
-      minutes.innerHTML = pad(time.minutes);
-      seconds.innerHTML = pad(time.seconds);
+  <style>
+    body {
+      font-family: monospace;
     }
+    #clock {
+      font-size: larger;
+    }
+  </style>
+  <body>
+    <input type="text" id="text-input"/>
+    <div id="output" style="
+        background-color: aquamarine;
+        padding: 20px;
+        margin: 20px;
+    ">Capped Text Length</div>
+  </body>
+  <script src="https://unpkg.com/rxjs@beta/bundles/rxjs.umd.js"></script>
+  <!-- <script src="https://npmcdn.com/@reactivex/rxjs@5.0.0-beta.2/dist/global/Rx.umd.js"></script> -->
+  <script>
+    // DOM elements
+    const input = document.getElementById('text-input');
+    const output = document.getElementById('output');
 
-    const interval$ = Rx.Observable.interval(1000);
-    const click$ = Rx.Observable.fromEvent(document, 'click');
-    const dblclick$ = Rx.Observable.fromEvent(document, 'dblclick');
-    const toggleOrReset$ = Rx.Observable.merge(
-      click$.mapTo((isRunning) => !isRunning),
-      dblclick$.mapTo(() => false)
-    )
-      .startWith(false)
-      .scan((isRunning, toggleOrFalse) => toggleOrFalse(isRunning))
-      .do((isRunning) => console.log('Running:', isRunning))
-      .share();
+    const { of, fromEvent, from, range } = rxjs;
+    const { Observable } = rxjs;
+    const { map, filter } = rxjs.operators;
 
-    const start$ = toggleOrReset$.filter((isRunning) => isRunning);
-    const stop$ = toggleOrReset$.filter((isRunning) => !isRunning);
-    const incOrDecOrReset$ = Rx.Observable.merge(
-      interval$.takeUntil(Rx.Observable.merge(stop$, dblclick$)).mapTo(incOrDec),
-      dblclick$.mapTo(reset)
-    );
+    // const myArray = [1, 2, 3];
 
-    start$
-      .switchMapTo(incOrDecOrReset$)
-      .startWith(initialValue)
-      .scan((seconds, incOrDecOrReset) => incOrDecOrReset(seconds))
-      .takeWhile(stillCan)
-      .map(toTime)
-      .subscribe(render);
+    // console.log('Normal');
+    // const myNewArray = myArray
+    //   .map(o => `${o} !!!`)
+    //   .forEach(o => console.log(o));
+
+    // console.log('RxJS');
+    // const myObservable = from(myArray)
+    //   .pipe(map(o => `${o} !!!`))
+    //   .subscribe(o => console.log(o));
+
+    fromEvent(input, 'input')
+      .pipe(
+        map(e => e.target.value),
+        filter(text => text.length < 10),
+      )
+      .subscribe(o => output.innerHTML = o);
   </script>
 </html>
