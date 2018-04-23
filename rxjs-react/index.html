@@ -40,6 +40,8 @@
     const { Observable } = rxjs;
     const { map, filter } = rxjs.operators;
 
+    const { render } = ReactDOM;
+
     // const myArray = [1, 2, 3];
 
     // console.log('Normal');
@@ -52,24 +54,33 @@
     //   .pipe(map(o => `${o} !!!`))
     //   .subscribe(o => console.log(o));
 
+    // aHR0cHM6Ly9wLjRjYWNoZS5uZXQvMTMwODA1NzE2NjAyNi5naWYK
+
     function renderReact(name){
       const HelloComponent = function({name='No Name Provided'}) {
-          return React.createElement("div", null, "Hello ", name);
+          const attributes = {};
+          const innerHTML = `Hello ${name}`;
+          return React.createElement(
+            "div",
+            attributes,
+            innerHTML
+          );
       };
 
-      ReactDOM.render(
+      render(
         React.createElement(HelloComponent, {name}),
         document.getElementById('output')
       );
     }
 
-    fromEvent(input, 'input')
+    const obs = fromEvent(input, 'input')
       .pipe(
         map(e => e.target.value),
         filter(text => text.length < 10),
       )
-      .subscribe(o => renderReact(o));
 
+    obs.subscribe(o => console.log(o));
+    obs.subscribe(o => renderReact(o));
 
   </script>
 </html>
