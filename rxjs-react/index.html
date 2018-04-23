@@ -41,6 +41,7 @@
     const { map, filter } = rxjs.operators;
 
     const { render } = ReactDOM;
+    const { createContext, createElement } = React;
 
     // const myArray = [1, 2, 3];
 
@@ -56,19 +57,33 @@
 
     // aHR0cHM6Ly9wLjRjYWNoZS5uZXQvMTMwODA1NzE2NjAyNi5naWYK
 
-    function renderReact(name){
-      const HelloComponent = function({name='No Name Provided'}) {
-          const attributes = {};
-          const innerHTML = `Hello ${name}`;
-          return React.createElement(
-            "div",
-            attributes,
-            innerHTML
-          );
-      };
+    const HelloComponent = function({name='No Name Provided'}) {
+        const attributes = {};
+        const innerHTML = `Hello ${name}`;
+        return React.createElement(
+          "div",
+          attributes,
+          innerHTML
+        );
+    };
 
+    const Context = createContext();
+    const providerAttributes = { value: 'foo'};
+
+    const Consumer = createElement(
+      Context.Consumer,
+      null,
+      (value) => createElement(HelloComponent, {name: value})
+    );
+    const Provider = (name) => createElement(
+      Context.Provider,
+      { value: name },
+      Consumer //but this could be nested way deeper
+    );
+
+    function renderReact(name){
       render(
-        React.createElement(HelloComponent, {name}),
+        createElement(() => Provider(name)),
         document.getElementById('output')
       );
     }
@@ -80,7 +95,28 @@
       )
 
     obs.subscribe(o => console.log(o));
+    //should not be constantly calling render!!!  BAH!!!
     obs.subscribe(o => renderReact(o));
+
+    /*
+    // want to do it like this
+    // think I need to make provider a class
+    function Provider(){
+      const obs = fromEvent(input, 'input')
+        .pipe(
+          map(e => e.target.value),
+          filter(text => text.length < 10),
+        )
+
+      obs.subscribe(o => this.setState(o));
+    }
+
+    // just one call to render
+    render(
+      createElement(Provider),
+      document.getElementById('output')
+    );
+    */
 
   </script>
 </html>
