@@ -24,7 +24,7 @@
         background-color: aquamarine;
         padding: 20px;
         max-width: 200px;
-    ">Hello + your text shows up here (up to max characters)</div>
+    "></div>
     <div id="container"></div>
   </body>
   <script src="https://unpkg.com/rxjs@beta/bundles/rxjs.umd.js"></script>
@@ -41,82 +41,66 @@
     const { map, filter } = rxjs.operators;
 
     const { render } = ReactDOM;
-    const { createContext, createElement } = React;
+    const { createContext, createElement, Component } = React;
 
-    // const myArray = [1, 2, 3];
+    window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {}; //STUPID
 
-    // console.log('Normal');
-    // const myNewArray = myArray
-    //   .map(o => `${o} !!!`)
-    //   .forEach(o => console.log(o));
+    const Context = createContext();
 
-    // console.log('RxJS');
-    // const myObservable = from(myArray)
-    //   .pipe(map(o => `${o} !!!`))
-    //   .subscribe(o => console.log(o));
+    // -------------------------------------------------------------------------
 
-    // aHR0cHM6Ly9wLjRjYWNoZS5uZXQvMTMwODA1NzE2NjAyNi5naWYK
+    class Consumer2 extends Component {
+      constructor(props){
+        super(props);
+        this.state$ = props.state$;
+        this.state = { name: 'Default'};
+      }
 
-    const HelloComponent = function({name='No Name Provided'}) {
+      componentWillMount(){
+        this.state$
+          .subscribe(o => this.setState({name: o}))
+      }
+
+      render(){
         const attributes = {};
-        const innerHTML = `Hello ${name}`;
+        const innerHTML = `Hello ${(this.state||{}).name}`;
         return React.createElement(
           "div",
           attributes,
           innerHTML
         );
-    };
-
-    const Context = createContext();
-    const providerAttributes = { value: 'foo'};
+      }
+    }
 
     const Consumer = createElement(
       Context.Consumer,
       null,
-      (value) => createElement(HelloComponent, {name: value})
-    );
-    const Provider = (name) => createElement(
-      Context.Provider,
-      { value: name },
-      Consumer //but this could be nested way deeper
+      (value) => createElement(Consumer2, {state$: value})
     );
 
-    function renderReact(name){
-      render(
-        createElement(() => Provider(name)),
-        document.getElementById('output')
-      );
+    function connect(context, component, observable, selector){
+      //TODO: fit Consumer & Consumer2 in here somehow
     }
 
+    // -------------------------------------------------------------------------
+
+    const Provider = (observable) => createElement(
+      Context.Provider,
+      { value: observable },
+      Consumer //nested shallow here, but this could be nested way deeper
+    );
+
+    // -------------------------------------------------------------------------
     const obs = fromEvent(input, 'input')
       .pipe(
         map(e => e.target.value),
         filter(text => text.length < 10),
       )
 
-    obs.subscribe(o => console.log(o));
-    //should not be constantly calling render!!!  BAH!!!
-    obs.subscribe(o => renderReact(o));
-
-    /*
-    // want to do it like this
-    // think I need to make provider a class
-    function Provider(){
-      const obs = fromEvent(input, 'input')
-        .pipe(
-          map(e => e.target.value),
-          filter(text => text.length < 10),
-        )
-
-      obs.subscribe(o => this.setState(o));
-    }
-
-    // just one call to render
     render(
-      createElement(Provider),
+      createElement(() => Provider(obs)),
       document.getElementById('output')
     );
-    */
 
   </script>
 </html>
