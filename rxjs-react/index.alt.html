@@ -56,8 +56,6 @@
 
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {}; //STUPID
 
-    const Context = createContext();
-
     // -------------------------------------------------------------------------
 
     class RXConnector extends Component {
@@ -73,14 +71,14 @@
       }
 
       render(){
-        return fragment(null, this.props.children(this.state));
+        return fragment(null, this.props.render(this.state));
       }
     }
     const Connector = (props, children) => createElement(RXConnector, props, children);
 
     // -------------------------------------------------------------------------
 
-    const Root = ({ name = 'Default' }) => div(null, `Root Text: ${name}`);
+    const Root = ({ name = '' }) => div(null, `Root Text: ${name}`);
 
     // -------------------------------------------------------------------------
 
@@ -91,7 +89,7 @@
       );
 
     render(
-      Connector({ observable }, Root),
+      Connector({ observable, render: Root }),
       document.getElementById('output')
     );
 
