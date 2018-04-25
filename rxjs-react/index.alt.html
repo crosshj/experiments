@@ -58,22 +58,38 @@
 
     // -------------------------------------------------------------------------
 
-    class RXConnector extends Component {
-      constructor(props){
-        super(props);
-        this.observable = props.observable;
-        this.state = {};
-      }
+    // class RXConnector extends Component {
+    //   constructor(props){
+    //     super(props);
+    //     this.observable = props.observable;
+    //     this.state = {};
+    //   }
 
-      componentWillMount(){
-        this.observable
-          .subscribe(o => this.setState({name: o}))
-      }
+    //   componentWillMount(){
+    //     this.observable
+    //       .subscribe(o => this.setState({name: o}))
+    //   }
 
-      render(){
-        return fragment(null, this.props.render(this.state));
-      }
+    //   render(){
+    //     return fragment(null, this.props.render(this.state));
+    //   }
+    // }
+    function RXConnector(props) {
+      //Component.call(this, props);
+      this.state = {};
+      props.observable$.subscribe(o => this.setState({name: o}));
+      this.render = () => fragment(null, props.render(this.state));
     }
+    RXConnector.prototype = Object.create(Component.prototype);
+    //RXConnector.prototype.constructor = RXConnector;
+
+    // RXConnector.prototype.componentWillMount = function() {
+    //   this.observable$.subscribe(o => this.setState({name: o}));
+    // }
+    // RXConnector.prototype.render = function() {
+    //   return fragment(null, this.props.render(this.state));
+    // }
+
     const Connector = (props, children) => createElement(RXConnector, props, children);
 
     // -------------------------------------------------------------------------
@@ -82,14 +98,17 @@
 
     // -------------------------------------------------------------------------
 
-    const observable = fromEvent(input, 'input')
+    const observable$ = fromEvent(input, 'input')
       .pipe(
         map(e => e.target.value),
         filter(text => text.length < 10),
       );
 
+    // TODO: flux style with actions and reducers
+    // eg: http://rudiyardley.com/redux-single-line-of-code-rxjs/
+
     render(
-      Connector({ observable, render: Root }),
+      Connector({ observable$, render: Root }),
       document.getElementById('output')
     );
 
