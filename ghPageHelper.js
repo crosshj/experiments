@@ -39,7 +39,7 @@ window.ghPageHelper = (function () {
 
     const expiry = typeof options.expireSeconds === 'number'
       ? options.expireSeconds
-      : 5 * 60; // 5 min default
+      : 30 * 60; // 30 min default
 
     const cacheKey = url;
     const cached = localStorage.getItem(cacheKey);
