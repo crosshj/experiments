@@ -200,9 +200,9 @@ window.ghPageHelper = (function () {
       }
       @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
       @media (min-width:1281px) { /* hi-res laptops and desktops */ }
-    `;
+    //`;
     // ^^^ fix this, may not need
-    css.innerHTML = `
+    //css.innerHTML = `
       li > span {
           min-width: 175px;
           display: inline-block;
