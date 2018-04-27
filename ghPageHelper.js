@@ -132,6 +132,10 @@ window.ghPageHelper = (function () {
       a.source {
           display: none;
       }
+
+      a.demo {
+          margin-left: 15px;
+      }
       
       #projects {
         width: 100%;
