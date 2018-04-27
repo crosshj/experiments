@@ -1,5 +1,88 @@
 window.ghPageHelper = (function () {
 
+  function rejectStatusError(response) {
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    return response;
+  }  
+
+  //https://stackoverflow.com/a/16427747
+  function lsTest() {
+    var test = 'test';
+    try {
+      localStorage.setItem(test, test);
+      localStorage.removeItem(test);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //https://stackoverflow.com/a/7616484
+  function hashCode(stringToHash = '') {
+    var hash = 0, i, chr;
+    if (stringToHash.length === 0) return hash;
+    for (i = 0; i < stringToHash.length; i++) {
+      chr = stringToHash.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+  }
+
+  //adapted from: https://www.sitepoint.com/cache-fetched-ajax-requests/
+  const fetchCached = (url, options = {}) => {
+    if (!lsTest()) {
+      return fetch(url, options);
+    }
+
+    const expiry = typeof options.expireSeconds === 'number'
+      ? options.expireSeconds
+      : 5 * 60; // 5 min default
+
+    const cacheKey = url;
+    const cached = localStorage.getItem(cacheKey);
+    // TODO: maybe add when cached to item itself to make viewing easier
+    const whenCached = localStorage.getItem(cacheKey + ':ts');
+    const cacheToken = localStorage.getItem('session_hash');
+
+    let age = whenCached
+      ? (Date.now() - whenCached) / 1000
+      : expiry;
+
+    if (cached && age < expiry) {
+      let response = new Response(new Blob([cached]));
+      return Promise.resolve(response);
+    }
+
+    localStorage.removeItem(cacheKey);
+    localStorage.removeItem(cacheKey + ':ts');
+
+    const fetchPromise = fetch(url, options)
+      .then(rejectStatusError)
+      .then(response => {
+        let ct = response.headers.get('Content-Type');
+        // only cache text and json
+        if (!ct || !(ct.match(/application\/json/i) || ct.match(/text\//i))) {
+          return response;
+        }
+        response.clone().text()
+          .then(content => {
+            //TODO: don't cache when response has json.error in body?
+            localStorage.setItem(cacheKey, content);
+            localStorage.setItem(cacheKey + ':ts', Date.now());
+          });
+        return response;
+      });
+    /*
+      NOTE: perhaps this promise could be saved and given to subsequent and immediate
+      fetch's of same url  as a form of debounce?
+    */
+    return fetchPromise;
+  };
+  
+  
   //usage: appendChildLinks('#projects', 'crosshj', 'baseFolder') 
   function appendChildLinks(rootSelector, username, baseFolder) {
     const site = document.location.origin;
@@ -7,7 +90,7 @@ window.ghPageHelper = (function () {
     const root = document.location.pathname.split('/')[1];
     var folder = document.location.pathname.split(`/${root}/`)[1].replace(/\/$/,'');
 
-    fetch(`https://api.github.com/repos/${username}/${root}/contents/${baseFolder ? `${baseFolder}/` : ''}${folder}?ref=gh-pages`)
+    fetchCached(`https://api.github.com/repos/${username}/${root}/contents/${baseFolder ? `${baseFolder}/` : ''}${folder}?ref=gh-pages`)
       .then(res => res.json())
       .then(json => {
         console.table(json);
