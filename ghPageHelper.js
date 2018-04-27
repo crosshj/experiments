@@ -180,7 +180,7 @@ window.ghPageHelper = (function () {
       @media (min-width:480px) {
         /* smartphones, Android phones, landscape iPhone */
         #projects {
-          width: 70%;
+          width: 100%;
           font-size: large;
         }
       }
