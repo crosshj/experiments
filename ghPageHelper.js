@@ -187,17 +187,22 @@ window.ghPageHelper = (function () {
       @media (min-width:600px) {
         /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
         #projects {
-          width: 60%;
+          width: 90%;
         }
       }
       @media (min-width:801px) {
         /* tablet, landscape iPad, lo-res laptops ands desktops */
         #projects {
-          width: 45%;
+          width: 60%;
           font-size: larger;
         }
       }
-      @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
+      @media (min-width:1025px) { 
+        /* big landscape tablets, laptops, and desktops */
+        #projects {
+          width: 40%;
+        }
+      }
       @media (min-width:1281px) { /* hi-res laptops and desktops */ }
     // ^^^ fix this, may not need
 
