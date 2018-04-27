@@ -173,8 +173,8 @@ window.ghPageHelper = (function () {
       @media (min-width:320px) {
         /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
         #projects {
-          font-size: small;
-          width: 90%;
+          font-size: smaller;
+          width: 100%;
         }
       }
       @media (min-width:480px) {
