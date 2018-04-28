@@ -8,7 +8,11 @@ spread syntax: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 flux-y rxjs - started from:  http://rudiyardley.com/redux-single-line-of-code-rxjs/
 
+rxr: https://github.com/dacz/rxr-redux-example/tree/master/docs
+
+
 react new Context API: https://reactjs.org/docs/context.html
 
 rxjs learning: https://www.learnrxjs.io/operators/transformation/scan.html
+
 
