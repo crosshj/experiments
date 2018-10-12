@@ -1,0 +1,15 @@
+{
+  "name": "rangers",
+  "version": "1.0.0",
+  "description": "line rangers stats",
+  "main": "most_used.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "columnify": "^1.5.4",
+    "request": "^2.88.0"
+  }
+}
