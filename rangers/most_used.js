@@ -50,7 +50,7 @@ fow
 var columns = columnify(data, options)
 console.log(`
 <pre>
-Most Used Rangers
+Most Used Rangers (NOT LIVE DATA)
 -----------------------------------------
 ${columns}
 </pre>

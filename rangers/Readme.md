@@ -1,6 +1,4 @@
-these are node experiments
-
-there is no browser view (YET) for these experiments
+Analytics for Line Rangers
 
 
 TODO:
