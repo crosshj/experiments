@@ -9,7 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.1",
+    "cached-request": "^1.1.4",
     "columnify": "^1.5.4",
-    "request": "^2.88.0"
+    "nodemon": "^1.18.4",
+    "request": "^2.88.0",
+    "ws": "^6.1.0"
   }
 }
