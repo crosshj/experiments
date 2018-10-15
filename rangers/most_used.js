@@ -16,12 +16,12 @@ function mostUsed({
       all.push(i);
     });
 
-    const team2 = item.playerUnitPvPTeams['1'] ||
-      item.playerUnitTeams['2'] ||
-      [];
-    team2.forEach((i) => {
-      all.push(i);
-    });
+    // const team2 = item.playerUnitPvPTeams['1'] ||
+    //   item.playerUnitTeams['2'] ||
+    //   [];
+    // team2.forEach((i) => {
+    //   all.push(i);
+    // });
 
     return all;
 
@@ -59,7 +59,23 @@ function mostUsed({
     });
   var columns = columnify(data, options)
 
-  //console.log('this');
+  var safeRangers = rangers.filter(x =>
+    x.unitCode[0] === 'u' &&
+    x.unitCategoryType !== 'INT' &&
+    translateWords['en-UNIT'][x.unitNameCode] &&
+    x.created
+  );
+
+  var biggest = (prop) => safeRangers.reduce((big, curr) => {
+    if (curr[prop] > big[prop]){
+      big = curr;
+    }
+    return big;
+  }, rangers[0]);
+  var initHP = biggest('initialHp');
+  console.log(translateWords['en-UNIT'][initHP.unitNameCode]);
+  //console.log(initHP.unitCode);
+  console.log(initHP);
 
   return `
 <pre>
