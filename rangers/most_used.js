@@ -16,12 +16,12 @@ function mostUsed({
       all.push(i);
     });
 
-    // const team2 = item.playerUnitPvPTeams['1'] ||
-    //   item.playerUnitTeams['2'] ||
-    //   [];
-    // team2.forEach((i) => {
-    //   all.push(i);
-    // });
+    const team2 = item.playerUnitPvPTeams['1'] ||
+      item.playerUnitTeams['2'] ||
+      [];
+    team2.forEach((i) => {
+      all.push(i);
+    });
 
     return all;
 
@@ -57,7 +57,7 @@ function mostUsed({
       data.push({ name: x.name, average: average.toFixed(2), count: levels.length })
       //console.log(x.name, ' :\t\t', average.toFixed(2))
     });
-  var columns = columnify(data, options)
+
 
   var safeRangers = rangers.filter(x =>
     x.unitCode[0] === 'u' &&
@@ -66,25 +66,55 @@ function mostUsed({
     x.created
   );
 
-  var biggest = (prop) => safeRangers.reduce((big, curr) => {
-    if (curr[prop] > big[prop]){
-      big = curr;
-    }
-    return big;
-  }, rangers[0]);
-  var initHP = biggest('initialHp');
-  console.log(translateWords['en-UNIT'][initHP.unitNameCode]);
-  //console.log(initHP.unitCode);
-  console.log(initHP);
+  function topByProp(p, number, full) {
+    var sortDesc = (prop) => safeRangers.sort((a,b) => b[prop] - a[prop]);
+    var initHPsorted = sortDesc(p);
+    var initialHpTop = [];
+    (new Array(number)).fill().forEach((a, i) => {
+      var x = initHPsorted[i];
+      var min = {
+        name: translateWords['en-UNIT'][x.unitNameCode],
+        [p]: x[p]
+      };
+      initialHpTop.push(!full
+        ? min
+        : Object.assign({}, x, min)
+      );
+    });
+    return initialHpTop;
+  }
+
+  //console.log(JSON.stringify(fow[0], null, '\t'));
+  //console.log(topByProp('initialAttack', 3, true));
+
+  const lister = (long, prop) => {
+    return `
+Top Rangers by ${long}
+-----------------------------------------
+${columnify(topByProp(prop, 30),
+  {config: {[prop]: {align: 'right'}}}
+)}`;
+  };
 
   return `
 <pre>
+
 Most Used Rangers
 -----------------------------------------
-${columns}
+${columnify(data, options)}
+
+${lister('Initial HP', 'initialHp')}
+
+${lister('HP increase Amount', 'hpIncreaseAmount')}
+
+${lister('Initial Attack', 'initialAttack')}
+
+${lister('Attack Range', 'attackRange')}
+
+${lister('Moving Speed', 'movingSpeed')}
+
 </pre>
 `;
-  //console.log(JSON.stringify(fow[0], null, '\t'));
 }
 
 const getMostUsed = (callback) => {
