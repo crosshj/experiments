@@ -85,7 +85,7 @@ function mostUsed({
   }
 
   //console.log(JSON.stringify(fow[0], null, '\t'));
-  //console.log(topByProp('initialAttack', 3, true));
+  console.log(Object.keys(topByProp('initialAttack', 3, true)[0]).join(', '));
 
   const lister = (long, prop) => {
     return `
@@ -111,7 +111,15 @@ ${lister('Initial Attack', 'initialAttack')}
 
 ${lister('Attack Range', 'attackRange')}
 
+${lister('Attack Delay', 'attackDelay')}
+
 ${lister('Moving Speed', 'movingSpeed')}
+
+${lister('Production Speed', 'productionSpeed')}
+
+${lister('Summon Energy', 'summonEnergy')}
+
+${lister('Critical Probability', 'criticalProbability')}
 
 </pre>
 `;
