@@ -96,6 +96,42 @@ ${columnify(topByProp(prop, 30),
 )}`;
   };
 
+
+  // https://gist.github.com/jonlabelle/5375315
+  function lowerCase(str){
+    return str.toLowerCase();
+  }
+
+  function upperCase(str){
+    return str.toUpperCase();
+  }
+
+  function unCamelCase(str){
+    str = str.replace(/([a-z\xE0-\xFF])([A-Z\xC0\xDF])/g, '$1 $2');
+    str = str.toLowerCase(); //add space between camelCase text
+    return str;
+  }
+
+  function properCase(str){
+    return lowerCase(str).replace(/^\w|\s\w/g, upperCase);
+  }
+
+  const camelBreak = (str) => properCase(unCamelCase(str));
+
+  const stats = [
+    'initialHp',
+    'hpIncreaseAmount',
+    'initialAttack',
+    'attackRange',
+    'attackDelay',
+    'movingSpeed',
+    'productionSpeed',
+    'summonEnergy',
+    'criticalProbability'
+  ].map(x => {
+    return lister(camelBreak(x), x)
+  }).join('\n')
+
   return `
 <pre>
 
@@ -103,23 +139,7 @@ Most Used Rangers
 -----------------------------------------
 ${columnify(data, options)}
 
-${lister('Initial HP', 'initialHp')}
-
-${lister('HP increase Amount', 'hpIncreaseAmount')}
-
-${lister('Initial Attack', 'initialAttack')}
-
-${lister('Attack Range', 'attackRange')}
-
-${lister('Attack Delay', 'attackDelay')}
-
-${lister('Moving Speed', 'movingSpeed')}
-
-${lister('Production Speed', 'productionSpeed')}
-
-${lister('Summon Energy', 'summonEnergy')}
-
-${lister('Critical Probability', 'criticalProbability')}
+${stats}
 
 </pre>
 `;
