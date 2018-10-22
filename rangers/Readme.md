@@ -1,7 +1,7 @@
 Analytics for Line Rangers
 
 
-TODO:
+### TODO:
 
 - use live data, feed UI with API calls but don't hammer server
 - determine what is best spend / reward ratios
@@ -9,7 +9,7 @@ TODO:
 - ...
 
 
-Notes:
+### Notes:
 
 With this project, I attempted (am attempting) to create a different workflow than I am used to.  Here are some details of what I see is the norm and how I have deviated.
 
