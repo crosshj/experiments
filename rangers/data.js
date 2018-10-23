@@ -5,6 +5,9 @@ var cachedRequest = require('cached-request')(request)
 var cacheDirectory = "./.cache";
 cachedRequest.setCacheDirectory(cacheDirectory);
 
+const ONE_HOUR = 60 /*minutes*/ * 60 /*seconds*/ * 1000 /*milliseconds*/;
+cachedRequest.setValue('ttl', ONE_HOUR);
+
 var pvp, rangers, translateWords;
 
 function tryParse(input){
