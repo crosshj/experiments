@@ -23,3 +23,16 @@ DEVIATION (minimal auto-reload):
 - script on client accepts code sent through nodemon notification to client (websocket)
 - client only partially reloads based on wishes of developer
 - files are not served, but are accessed from file system in browser
+
+
+### Persistence:
+
+I would prefer that persistence is completely forgein to this repo, but...  Some of the things I plan on doing will require some trend graphs which track PVP over time.  So I've included persistence in `persist_stats.js`
+
+This file requires a mongo DB and a config file called `.secret.json` which looks like:
+
+```
+{
+    "mongoUrl": "mongodb://{your mongo server hostname}:27017/"
+}
+```
