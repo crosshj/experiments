@@ -43,7 +43,7 @@ function writePvp(callback, records = []){
             // });
 
             if(!willWrite){
-                return cb('Record already written recently');
+                return cb('Record already written recently', readData);
             }
             collection.insertMany(records.map(x => ({ createdDate: now, ...x })), cb);
         };
@@ -65,7 +65,7 @@ const mostUsedCb = (err, data) => {
     if(err) return console.log({ err });
     writePvp((err, data) => {
         if(err){
-            return console.log({ err });
+            return console.log({ err, data });
         }
         readPvp((err, data) => console.log({ err, data }));
     }, [{ top: data }]);
