@@ -1,3 +1,15 @@
+/*
+
+would like a graph that shows trends of pvp over time
+https://canvasjs.com/javascript-charts/custom-legend-chart/
+https://canvasjs.com/javascript-charts/spline-chart-legends/
+https://canvasjs.com/javascript-charts/multi-series-spline-area-chart/
+
+http://nodesimplified.com/top-5-best-open-source-javascript-chart-library/
+
+*/
+
+
 var columnify = require('columnify')
 var fetch = require('./data');
 
