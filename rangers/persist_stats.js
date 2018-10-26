@@ -26,7 +26,7 @@ function readPvp(callback, query = {}){
 function writePvp(callback, records = []){
     const op = (collection, cb) => {
         const readCb = (readErr, readData) => {
-            const now = new Date(Date.now()).toISOString();
+
             const MS_PER_MINUTE = 60000;
             const sixtyMinutesAgo = new Date( Date.now() - 60 * MS_PER_MINUTE );
             const lastRecord = readData[readData.length - 1];
@@ -35,6 +35,8 @@ function writePvp(callback, records = []){
                 : undefined;
 
             const willWrite = !lastWriteDate || lastWriteDate <= sixtyMinutesAgo;
+            const now = new Date(Date.now()).toLocaleString();
+
             // console.log({
             //     //now,
             //     las: lastWriteDate,

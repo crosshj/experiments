@@ -7,6 +7,8 @@ https://canvasjs.com/javascript-charts/multi-series-spline-area-chart/
 
 http://nodesimplified.com/top-5-best-open-source-javascript-chart-library/
 
+https://hackernoon.com/creating-stunning-charts-with-vue-js-and-chart-js-28af584adc0a
+
 */
 
 
