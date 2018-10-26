@@ -2,7 +2,7 @@ var columnify = require('columnify')
 var fetch = require('./data');
 
 function mostUsed({
-  pvp, rangers, translateWords
+  pvp, rangers, translateWords, dataOnly
 }) {
   var foo = pvp.playerInfo.reduce((all, item) => {
     if (!item.playerUnitPvPTeams && !item.playerUnitTeams){
@@ -84,8 +84,6 @@ function mostUsed({
     return initialHpTop;
   }
 
-  //console.log(JSON.stringify(fow[0], null, '\t'));
-  console.log(Object.keys(topByProp('initialAttack', 3, true)[0]).join(', '));
 
   const lister = (long, prop) => {
     return `
@@ -132,6 +130,13 @@ ${columnify(topByProp(prop, 30),
     return lister(camelBreak(x), x)
   }).join('\n')
 
+  if(dataOnly){
+    return data;
+  }
+
+  //console.log(JSON.stringify(fow[0], null, '\t'));
+  console.log(Object.keys(topByProp('initialAttack', 3, true)[0]).join(', '));
+
   return `
 <pre>
 
@@ -145,12 +150,12 @@ ${stats}
 `;
 }
 
-const getMostUsed = (callback) => {
+const getMostUsed = (callback, { dataOnly } ) => {
   fetch((err, {
     pvp, rangers, translateWords
   } = {}) => {
     callback( err, mostUsed({
-        pvp, rangers, translateWords
+        pvp, rangers, translateWords, dataOnly
       })
     )
   });
