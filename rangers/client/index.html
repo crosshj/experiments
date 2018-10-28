@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        body {
+            background: #32373a;
+        }
+    </style>
+    <script>
+        function onMouseOver(e){
+            e.dataSeries.lineThickness = e.chart.data[e.dataSeriesIndex].lineThickness * 2;
+            e.chart.render();
+        }
+
+        function onMouseOut(e){
+            e.dataSeries.lineThickness = e.chart.data[e.dataSeriesIndex].lineThickness / 2;
+            e.chart.render();
+        }
+
+        function hydrateDates(data) {
+            data.forEach(x => {
+                x.mouseover = onMouseOver;
+                x.mouseout = onMouseOut;
+                x.dataPoints.forEach(y => {
+                    y.x = new Date(y.x)
+                    y.y = Number(y.y)
+                })
+            })
+        }
+        function showChart({ data }) {
+            hydrateDates(data);
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                //theme: "light2", // "light1", "light2", "dark1", "dark2"
+                theme: 'dark2',
+                animationEnabled: true,
+                title: {
+                    //text: "Internet users"
+                },
+                axisX: {
+                    lineColor: "black",
+                    labelFontColor: "black",
+                    gridThickness: 0,
+                    tickLength: 0,
+                    labelFormatter: function () {
+                        return " ";
+                    }
+                },
+                axisY2: {
+                    gridThickness: 0,
+                    title: "",
+                    suffix: "",
+                    titleFontColor: "black",
+                    labelFontColor: "black",
+                    tickLength: 0,
+                    labelFormatter: function () {
+                        return " ";
+                    }
+                },
+                legend: {
+                    cursor: "pointer",
+                    fontSize: 13,
+                    itemmouseover: function (e) {
+                        e.dataSeries.lineThickness = e.chart.data[e.dataSeriesIndex].lineThickness * 2;
+                        e.dataSeries.markerSize = e.chart.data[e.dataSeriesIndex].markerSize + 2;
+                        e.chart.render();
+                    },
+                    itemmouseout: function (e) {
+                        e.dataSeries.lineThickness = e.chart.data[e.dataSeriesIndex].lineThickness / 2;
+                        e.dataSeries.markerSize = e.chart.data[e.dataSeriesIndex].markerSize - 2;
+                        e.chart.render();
+                    },
+                    itemclick: function (e) {
+                        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                            e.dataSeries.visible = false;
+                        } else {
+                            e.dataSeries.visible = true;
+                        }
+                        e.chart.render();
+                    },
+                },
+                toolTip: {
+                    //shared: true
+                    content: "{name} : {y} : {x}"
+                },
+                data
+            });
+            chart.render();
+        }
+
+        window.onload = function () {
+            fetch('./data')
+                .then(x => x.json())
+                .then(function (data) {
+                    window.data = data.r;
+                    showChart({ data: data.r })
+                });
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="chartContainer" style="height: 600px; width: 100%;"></div>
+    <script src="./canvasjs.min.js"></script>
+</body>
+
+</html>

@@ -54,22 +54,32 @@ function writePvp(callback, records = []){
     doMongo(op, callback);
 }
 
-// const records = [{ foo: 'bar' }];
-// writePvp((err, data) => {
-//     console.log({ err, data });
-//     readPvp((err, data) => console.log({ err, data }));
-// }, records);
+function pullAndSave(){
+    // const records = [{ foo: 'bar' }];
+    // writePvp((err, data) => {
+    //     console.log({ err, data });
+    //     readPvp((err, data) => console.log({ err, data }));
+    // }, records);
 
-const opts = {
-    dataOnly: true
+    const opts = {
+        dataOnly: true
+    };
+    const mostUsedCb = (err, data) => {
+        if(err) return console.log({ err });
+        writePvp((err, data) => {
+            if(err){
+                return console.log({ err, data });
+            }
+            readPvp((err, data) => console.log({ err, data }));
+        }, [{ top: data }]);
+    };
+    mostUsed(mostUsedCb, opts);
+}
+
+module.exports = {
+    writePvp, readPvp
 };
-const mostUsedCb = (err, data) => {
-    if(err) return console.log({ err });
-    writePvp((err, data) => {
-        if(err){
-            return console.log({ err, data });
-        }
-        readPvp((err, data) => console.log({ err, data }));
-    }, [{ top: data }]);
-};
-mostUsed(mostUsedCb, opts);
+
+if (!module.parent) {
+    pullAndSave()
+}
