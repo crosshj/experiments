@@ -1,6 +1,6 @@
 /*
 
-would like a graph that shows trends of pvp over time
+graph trends of pvp over time
 https://canvasjs.com/javascript-charts/custom-legend-chart/
 https://canvasjs.com/javascript-charts/spline-chart-legends/
 https://canvasjs.com/javascript-charts/multi-series-spline-area-chart/
@@ -8,6 +8,17 @@ https://canvasjs.com/javascript-charts/multi-series-spline-area-chart/
 http://nodesimplified.com/top-5-best-open-source-javascript-chart-library/
 
 https://hackernoon.com/creating-stunning-charts-with-vue-js-and-chart-js-28af584adc0a
+
+
+ITERATE:
+
+- normalize:
+  - usage numbers should be percentage of total rangers used
+  - combine ranger evolution series into one ranger
+
+- track gear:
+  - what is popular gear
+  - what gear is popular for ranger
 
 */
 

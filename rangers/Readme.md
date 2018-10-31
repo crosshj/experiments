@@ -8,6 +8,10 @@ Analytics for Line Rangers
 - determine rangers / gear from top pvp users
 - ...
 
+### Line Rangers Links:
+
+- http://notice2.line.me/LGRGS/android/document/notice
+
 
 ### Notes:
 

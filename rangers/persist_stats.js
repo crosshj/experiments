@@ -49,12 +49,13 @@ function writePvp(callback, records = []){
             }
             collection.insertMany(records.map(x => ({ createdDate: now, ...x })), cb);
         };
+        // read first before writing
         readPvp(readCb, {});
     };
     doMongo(op, callback);
 }
 
-function pullAndSave(){
+function pullAndSave(cb){
     // const records = [{ foo: 'bar' }];
     // writePvp((err, data) => {
     //     console.log({ err, data });
@@ -65,21 +66,19 @@ function pullAndSave(){
         dataOnly: true
     };
     const mostUsedCb = (err, data) => {
-        if(err) return console.log({ err });
+        if(err) return cb(err);
         writePvp((err, data) => {
-            if(err){
-                return console.log({ err, data });
-            }
-            readPvp((err, data) => console.log({ err, data }));
+            if(err) return cb(err, data)
+            readPvp(cb);
         }, [{ top: data }]);
     };
     mostUsed(mostUsedCb, opts);
 }
 
 module.exports = {
-    writePvp, readPvp
+    writePvp, readPvp, pullAndSave
 };
 
 if (!module.parent) {
-    pullAndSave()
+    pullAndSave((err, data) => console.log({ err, data }))
 }

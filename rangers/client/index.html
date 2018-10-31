@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <title>Top</title>
     <style>
         body {
             background: #32373a;
@@ -82,7 +83,7 @@
                 },
                 toolTip: {
                     //shared: true
-                    content: "{name} : {y} : {x}"
+                    content: "{name} : {y}<br/>{x}"
                 },
                 data
             });
@@ -98,10 +99,27 @@
                 });
         }
 
+        window.pullRangers = function () {
+            const opts = {
+                method: 'post'
+            };
+            fetch('./pull', opts)
+                .then(x => x.json())
+                .then(function (data) {
+                    if(data.err) {
+                        console.error(data.err);
+                        return;
+                    }
+                    window.data = data.r;
+                    showChart({ data: data.r })
+                });
+        }
+
     </script>
 </head>
 
 <body>
+    <button onclick="pullRangers()">Pull</button>
     <div id="chartContainer" style="height: 600px; width: 100%;"></div>
     <script src="./canvasjs.min.js"></script>
 </body>

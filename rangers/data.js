@@ -23,6 +23,14 @@ function requestUrl(url, callback){
   cachedRequest(options, (e,a,t) => callback(e, tryParse(t)) );
 }
 
+// NOTE: this is needed in order to track gear
+function getPlayerInfo(playerId, callback){
+  // https://rangers.lerico.net/api/getPlayer/u610d9edfeaf01bdb67f66a4a1d02317f
+  const playerUrl = `https://rangers.lerico.net/api/getPlayer/${playerId}`;
+
+  // TODO: fetch url and return results
+}
+
 function fetch(callback){
   const urls = [
     'https://rangers.lerico.net/api/getPvps',
