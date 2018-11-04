@@ -95,6 +95,22 @@ function getAllPlayerInfo(pvp, callback){
   });
 }
 
+function getTranslateWords(array){
+  const allWords = array.reduce((all, one) => {
+    var words = {};
+    const tag = `en-${one.tag}`;
+    if(!one.results[tag]){
+      words = {
+        [tag]: one.results
+      };
+    } else {
+      words = one.results;
+    }
+    return {...all, ...words };
+  }, {})
+  return allWords;
+}
+
 function fetch(callback){
   const urls = [
     'https://rangers.lerico.net/api/getPvps',
@@ -104,7 +120,13 @@ function fetch(callback){
     'https://rangers.lerico.net/api/v2/stages/normal',
     'https://rangers.lerico.net/api/v2/stages/special',
     'https://rangers.lerico.net/api/getEquipments',
-    'https://rangers.lerico.net/api/getEquipmentAttrs'
+    'https://rangers.lerico.net/api/getEquipmentAttrs',
+    'https://rangers.lerico.net/api/getSkills',
+    'https://rangers.lerico.net/api/translate/en/SKILL',
+    'https://rangers.lerico.net/api/translate/en/PROPERTIES',
+    'https://rangers.lerico.net/api/translate/en/EQUIP',
+    'https://rangers.lerico.net/api/translate/en/CUSTOM_SHORTFORM',
+    'https://rangers.lerico.net/api/translate/en/CUSTOM',
   ];
   async.map(urls, requestUrl, function(err, results) {
       if(err) {
@@ -112,13 +134,7 @@ function fetch(callback){
       }
       const pvp = results[0];
       const rangers = results[1];
-      if(!results[2]['en-UNIT']){
-        translateWords = {
-          'en-UNIT': results[2]
-        };
-      } else {
-        translateWords = results[2];
-      }
+
       const stages = {
         advent: results[3],
         normal: results[4],
@@ -126,12 +142,29 @@ function fetch(callback){
       };
       const gear = results[6];
       const gearAttrs = results[7];
+      const skills = results[8];
+
+      const words = Object.entries({
+        UNIT: results[2],
+        SKILL: results[9],
+        PROPERTIES: results[10],
+        EQUIP: results[11],
+        CUSTOM_SHORTFORM: results[12],
+        CUSTOM: results[13]
+      })
+        .map(x => ({
+          tag: x[0],
+          results: x[1]
+        }));
+
+      const translateWords = getTranslateWords(words);
+
       getAllPlayerInfo(pvp, (e, p) => {
         if(e){
           return callback(e);
         }
         callback(undefined, {
-          pvp:p, rangers, translateWords, stages, gear, gearAttrs
+          pvp:p, rangers, translateWords, stages, gear, gearAttrs, skills
         });
       });
   });

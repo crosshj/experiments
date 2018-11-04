@@ -144,6 +144,7 @@ function topRangers(pvp, translateWords) {
     .map(x => {
       var obj = {};
       //console.log(translateWords['en-UNIT'][x + '_nm'])
+      //console.log(Object.keys(translateWords));
       obj.name = translateWords['en-UNIT'][x + '_nm'];
 
       var levels = membersByRanger[x].map(y => y.unitLevel);
@@ -193,16 +194,26 @@ function uniqueGear(gearOfType){
   return uniqueGearOfType;
 }
 
-// function translateAllGearName(gearOfType){
-//   const translateGearName = (gear) => {
-//     const translated =
-//   };
-//   const transGearOfType = [
-//     gearOfType[0],
-//     translateGearName(gearOfType[1]),
-//   ];
-//   return transGearOfType;
-// }
+function translateAllGearName(gearOfType, translateWords){
+  const translateGearName = (gear, words) => {
+    const translated = (item) => ({
+      ...item,
+      ...{
+        name: (words['en-EQUIP'][item.itemCode + '_nm'] || '')
+          .replace(']', '] ')
+          .replace('\\n', ' ')
+          .replace(/[ ]{2,}/g, ' ')
+          .replace(' \'', '\'')
+      }
+    });
+    return gear.map(translated);
+  };
+  const transGearOfType = [
+    gearOfType[0],
+    translateGearName(gearOfType[1], translateWords),
+  ];
+  return transGearOfType;
+}
 
 function topGear(pvp, translateWords){
   var allTeamMembers = getAllTeamMembers(pvp);
@@ -217,10 +228,10 @@ function topGear(pvp, translateWords){
   var allArmor = allGear.map(x => x.ARMOR);
 
   const unique = propsMap({allWeapon, allAcc, allArmor}, uniqueGear);
-  //const uniqueTranslated = propsMap(unique, translateAllGearName);
+  const uniqueTranslated = propsMap(unique, (x) => translateAllGearName(x, translateWords));
   //console.log(unique);
 
-  return unique;
+  return uniqueTranslated;
 }
 
 function mostUsed({
