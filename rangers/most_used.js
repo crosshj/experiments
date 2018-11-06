@@ -22,16 +22,15 @@ ITERATE:
 
 */
 
-
-const propsMap = (object, func) => Object.entries(object)
-  .map(func)
-  .reduce((all, one) => {
-    return { ...all, ...{ [one[0]]: one[1] } };
-  }, {});
-
-
 var columnify = require('columnify')
 var fetch = require('./data');
+
+const {
+  quickSave,
+  clone,
+  propsMap,
+} = require('./utilities');
+
 
 function formattedResults(rangers, translateWords, data) {
   var options = { minWidth: 10 };
@@ -160,7 +159,7 @@ function topRangers(pvp, translateWords) {
   return { rangers: rangersWithCount };
 }
 
-const uniqueWithCapture = (collection, uniquePropName) => {
+const uniqueWithCapture = (collection, uniquePropName, words) => {
   const results = collection.reduce((all, one) => {
     const propValue = one[uniquePropName];
     //console.log(propValue);
@@ -171,14 +170,34 @@ const uniqueWithCapture = (collection, uniquePropName) => {
     return all;
   }, {});
   //console.log(Object.keys(results));
+
+  const topUser = (gearUses) => {
+    const uses = gearUses
+      .reduce((all, one) => {
+        const name = words['en-UNIT'][one.unitCode + '_nm'];
+        if(!all[name]){
+          all[name] = 0;
+        }
+        all[name]++;
+        return all;
+      }, {});
+    const topUser = Object.entries(uses)
+      .sort((a, b) => b[1] - a[1]);
+    //return `${topUser[0][0]} - ${topUser[0][1]}`;
+    //return [ topUser[0], topUser[1], topUser[2] ];
+    return topUser; //.slice(0,5);
+  };
+
   const interim = Object.entries(results)
     .map(x => {
       const key = x[0];
       const value = x[1];
-      return {
+      const output = {
         [uniquePropName]: key,
-        length: value.length
-      }
+        length: value.length,
+        top: topUser(value)
+      };
+      return output;
     })
     .sort((a,b) => b.length - a.length);
 
@@ -186,10 +205,10 @@ const uniqueWithCapture = (collection, uniquePropName) => {
   return interim;
 }
 
-function uniqueGear(gearOfType){
+function uniqueGear(gearOfType, words){
   const uniqueGearOfType = [
     gearOfType[0],
-    uniqueWithCapture(gearOfType[1], 'itemCode'),
+    uniqueWithCapture(gearOfType[1], 'itemCode', words),
   ];
   return uniqueGearOfType;
 }
@@ -204,9 +223,11 @@ function translateAllGearName(gearOfType, translateWords){
           .replace('\\n', ' ')
           .replace(/[ ]{2,}/g, ' ')
           .replace(' \'', '\'')
+          .replace('- ', '')
       }
     });
     return gear.map(translated);
+    //return gear.map(translated).map(({ length, top, name}) => ({ length, top, name}));
   };
   const transGearOfType = [
     gearOfType[0],
@@ -219,7 +240,23 @@ function topGear(pvp, translateWords){
   var allTeamMembers = getAllTeamMembers(pvp);
 
   var allGear = allTeamMembers
-    .map(x => x.equipMap)
+    .map(x => {
+      const unitCode = x.unitCode;
+      var equipMap = clone(x.equipMap);
+      if( !equipMap ){
+        return undefined;
+      }
+      if(equipMap.WEAPON) {
+        equipMap.WEAPON.unitCode = unitCode;
+      }
+      if(equipMap.ACC){
+        equipMap.ACC.unitCode = unitCode;
+      }
+      if(equipMap.ARMOR){
+        equipMap.ARMOR.unitCode = unitCode;
+      }
+      return equipMap;
+    })
     .filter(x => !!x);
   //console.log(allTeamMembers[0]);
 
@@ -227,26 +264,87 @@ function topGear(pvp, translateWords){
   var allAcc = allGear.map(x => x.ACC);
   var allArmor = allGear.map(x => x.ARMOR);
 
-  const unique = propsMap({allWeapon, allAcc, allArmor}, uniqueGear);
+  const unique = propsMap({allWeapon, allAcc, allArmor}, (x) => uniqueGear(x, translateWords));
   const uniqueTranslated = propsMap(unique, (x) => translateAllGearName(x, translateWords));
   //console.log(unique);
 
+  //console.log(uniqueTranslated.allAcc[0]);
+
   return uniqueTranslated;
+}
+
+const flattenGearType = (gearType) => {
+  return gearType.reduce((all, one) => {
+    one.top.forEach(t => {
+      all.push({
+        name: one.name,
+        ranger: t[0],
+        count: t[1]
+      })
+    });
+    return all;
+  }, []);
+};
+
+const addGearToRangers = (rangers, gear) => {
+
+  const weaponsFlat = flattenGearType(gear.allWeapon);
+  const accFlat = flattenGearType(gear.allAcc);
+  const armorFlat = flattenGearType(gear.allArmor);
+  //console.log(armorFlat[0]);
+  rangers.forEach(r => {
+    r.topWeapons = weaponsFlat
+      .filter(x => x.ranger === r.name)
+      .map(({ name, count }) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+    r.topAcc = accFlat
+      .filter(x => x.ranger === r.name)
+      .map(({ name, count }) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+    r.topArmor = armorFlat
+      .filter(x => x.ranger === r.name)
+      .map(({ name, count }) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+  });
+  return rangers;
+}
+
+function rangersOfInterest(rangers){
+  const interested = [
+    'Gold Champagne Cony',
+    'Edward Elric',
+    'Starlit Sea Pico',
+    'Ace Soldier Moon',
+    'Shish Kebab Brown',
+    'Super Hero Moon',
+    'Mermaid Cony',
+    'Paladin Moon',
+    'Goddess Jessica',
+    'Judo Team Captain Rachel'
+  ].map(x => x.toLowerCase());
+
+  return rangers
+    .filter(r => interested.includes(
+      r.name.toLowerCase()
+    ));
 }
 
 function mostUsed({
   pvp, rangers, translateWords, dataOnly, full
 }) {
-  const { rangers: _rangers } = topRangers(pvp, translateWords);
+  let { rangers: _rangers } = topRangers(pvp, translateWords);
   const gear = topGear(pvp, translateWords);
+
+  _rangers = addGearToRangers(_rangers, gear);
 
   if (dataOnly && !full) {
     return _rangers;
   }
 
   if (dataOnly && full) {
+    quickSave(rangersOfInterest(_rangers), './.rangersWithGear.json');
     return {
-      rangers: _rangers.length,
+      rangers: _rangers,
       gear: {
         weapons: gear.allWeapon,
         acc: gear.allAcc,
@@ -275,7 +373,13 @@ if (!module.parent) {
   const dataOnly = true;
   const full = true;
   getMostUsed(
-    (err, data) => console.log(dataOnly ? JSON.stringify({ err, data }, null, '\t') : err || data),
+    (err, data) => {
+      // console.log(
+      //   dataOnly
+      //     ? JSON.stringify({ err, data }, null, '\t')
+      //     : err || data
+      // );
+    },
     { dataOnly, full }
   );
 }

@@ -1,6 +1,12 @@
 
 var async = require('async');
 const fs = require('fs');
+
+const {
+  ensureRequireJSON,
+  tryParse
+} = require('./utilities');
+
 var request = require('request')
 var cachedRequest = require('cached-request')(request)
 var cacheDirectory = "./.cache";
@@ -11,28 +17,6 @@ cachedRequest.setValue('ttl', ONE_HOUR);
 
 const HARD_CACHE_JSON = './.cache/hardCache.json';
 const hardCache = ensureRequireJSON(HARD_CACHE_JSON) || {};
-
-const logNice = (item) => {
-  console.log(JSON.stringify(item, null, '\t'));
-};
-
-function ensureRequireJSON(path){
-  let json;
-  try {
-    json = require(path);
-  } catch(e) {
-    fs.openSync(path, 'w');
-  }
-  return json;
-};
-
-function tryParse(input){
-  var output;
-  try {
-    output = JSON.parse(input);
-  } catch(e) { /* do nothing */ }
-  return output;
-}
 
 let cachedRequests = 0;
 let fetchedRequests = 0;
@@ -66,12 +50,7 @@ function getPlayerInfo(item, callback){
   requestUrl(playerUrl, callback);
 }
 
-function quickSave(data, path){
-  fs.writeFileSync(path, JSON.stringify(data, null, '\t'));
-}
-
 function overlayFullPlayerInfo(pvp, allPlayerInfo){
-  const mapped = JSON.parse(JSON.stringify(pvp));
   //console.log(Object.keys(pvp));
   // console.log(JSON.stringify(pvp.playerInfo[1].playerUnitPvPTeams, null, '\t'));
   // console.log(JSON.stringify({
