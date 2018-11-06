@@ -1,4 +1,6 @@
-const { readPvp, pullAndSave } = require('../persist_stats');
+const {
+    readPvp, pullAndSave, killCache
+} = require('../persist_stats');
 
 const express = require('express');
 const app = express();
@@ -85,6 +87,11 @@ app.get('/data', (req, res) => {
 });
 
 app.post('/pull', (req, res) => {
+    //TODO: should not kill cache if within will-not-write window
+    //TODO: should (conditionally) kill cache in persist stats module
+    //SEE: writePvp for willWrite logic
+    killCache();
+//    res.json({});
     pullAndSave((err, d) => {
         // if(err){
         //     return res.json({ err, d });

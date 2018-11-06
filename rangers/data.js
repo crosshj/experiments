@@ -8,19 +8,23 @@ const {
 } = require('./utilities');
 
 var request = require('request')
-var cachedRequest = require('cached-request')(request)
-var cacheDirectory = "./.cache";
-cachedRequest.setCacheDirectory(cacheDirectory);
 
-const ONE_HOUR = 60 /*minutes*/ * 60 /*seconds*/ * 1000 /*milliseconds*/;
-cachedRequest.setValue('ttl', ONE_HOUR);
+function getCachedRequest(){
+  var cachedRequest = require('cached-request')(request)
+  var cacheDirectory = "./.cache";
+  cachedRequest.setCacheDirectory(cacheDirectory);
 
-const HARD_CACHE_JSON = './.cache/hardCache.json';
-const hardCache = ensureRequireJSON(HARD_CACHE_JSON) || {};
+  const ONE_HOUR = 60 /*minutes*/ * 60 /*seconds*/ * 1000 /*milliseconds*/;
+  cachedRequest.setValue('ttl', ONE_HOUR);
+  return cachedRequest;
+}
+
+const HARD_CACHE_JSON = './.hardCache.json';
 
 let cachedRequests = 0;
 let fetchedRequests = 0;
 function requestUrl(url, callback){
+  const hardCache = ensureRequireJSON(HARD_CACHE_JSON) || {};
   if(hardCache[url]){
     //console.log(`CACHED: ${url}`);
     cachedRequests++;
@@ -29,6 +33,7 @@ function requestUrl(url, callback){
   //console.log(`FETCH: ${url}`)
   fetchedRequests++;
   var options = { url };
+  const cachedRequest = getCachedRequest();
   cachedRequest(options, (e,a,t) => {
     const results = tryParse(t);
     if(results){

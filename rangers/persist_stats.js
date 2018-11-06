@@ -4,6 +4,9 @@ const mostUsed = require('./most_used');
 const url = require('./.secret.json').mongoUrl;
 const dbName = 'rangers';
 
+const fse = require('fs-extra');
+const HARD_CACHE_JSON = './.hardCache.json';
+
 function doMongo(operation, callback){
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
         if(err){
@@ -66,8 +69,10 @@ function pullAndSave(cb){
         dataOnly: true
     };
     const mostUsedCb = (err, data) => {
+        //console.log('most used');
         if(err) return cb(err);
         writePvp((err, data) => {
+            //console.log('write pvp');
             if(err) return cb(err, data)
             readPvp(cb);
         }, [{ top: data }]);
@@ -75,8 +80,22 @@ function pullAndSave(cb){
     mostUsed(mostUsedCb, opts);
 }
 
+function killCache(){
+    try {
+        fse.writeFileSync(
+            HARD_CACHE_JSON,
+            ''
+        );
+        delete require.cache[require.resolve(HARD_CACHE_JSON)];
+        fse.removeSync('./.cache');
+        //console.log('cache removed');
+    } catch (err) {
+        console.log(`Error removing cache: ${err}`);
+    }
+}
+
 module.exports = {
-    writePvp, readPvp, pullAndSave
+    writePvp, readPvp, pullAndSave, killCache
 };
 
 if (!module.parent) {
