@@ -28,6 +28,7 @@ var fetch = require('./data');
 const {
   quickSave,
   clone,
+  logNice,
   propsMap,
   safeAccess
 } = require('./utilities');
@@ -164,6 +165,8 @@ const uniqueWithCapture = (collection, uniquePropName, words) => {
   const results = collection.reduce((all, one) => {
     const propValue = safeAccess(() => one[uniquePropName]);
     if(!propValue){
+      console.trace('propValue should not be null');
+      // logNice(one);
       return all;
     }
     //console.log(propValue);
@@ -264,9 +267,12 @@ function topGear(pvp, translateWords){
     .filter(x => !!x);
   //console.log(allTeamMembers[0]);
 
-  var allWeapon = allGear.map(x => x.WEAPON);
-  var allAcc = allGear.map(x => x.ACC);
-  var allArmor = allGear.map(x => x.ARMOR);
+  var allWeapon = allGear.map(x => x.WEAPON)
+    .filter(x => !!x);
+  var allAcc = allGear.map(x => x.ACC)
+    .filter(x => !!x);
+  var allArmor = allGear.map(x => x.ARMOR)
+    .filter(x => !!x);
 
   const unique = propsMap({allWeapon, allAcc, allArmor}, (x) => uniqueGear(x, translateWords));
   const uniqueTranslated = propsMap(unique, (x) => translateAllGearName(x, translateWords));
