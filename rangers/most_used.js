@@ -29,6 +29,7 @@ const {
   quickSave,
   clone,
   propsMap,
+  safeAccess
 } = require('./utilities');
 
 
@@ -161,7 +162,10 @@ function topRangers(pvp, translateWords) {
 
 const uniqueWithCapture = (collection, uniquePropName, words) => {
   const results = collection.reduce((all, one) => {
-    const propValue = one[uniquePropName];
+    const propValue = safeAccess(() => one[uniquePropName]);
+    if(!propValue){
+      return all;
+    }
     //console.log(propValue);
     if(!all[propValue]){
       all[propValue] = [];

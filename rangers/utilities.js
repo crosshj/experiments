@@ -31,9 +31,9 @@ const propsMap = (object, func) => Object.entries(object)
         return { ...all, ...{ [one[0]]: one[1] } };
     }, {});
 
-    const logNice = (item) => {
-        console.log(JSON.stringify(item, null, '\t'));
-      };
+const logNice = (item) => {
+    console.log(JSON.stringify(item, null, '\t'));
+};
 
 const ensureRequireJSON = (path) => {
     let json;
@@ -45,12 +45,18 @@ const ensureRequireJSON = (path) => {
     return json;
 };
 
-const tryParse = (input) => {
+const safeAccess = (fn) => {
     var output;
     try {
-        output = JSON.parse(input);
-    } catch (e) { /* do nothing */ }
+        output = fn();
+    } catch (e) {
+        /* do nothing */
+    }
     return output;
+};
+
+const tryParse = (input) => {
+    return safeAccess(() => JSON.parse(input));
 }
 
 module.exports = {
@@ -58,6 +64,7 @@ module.exports = {
     quickSave,
     clone,
     propsMap,
+    safeAccess,
     ensureRequireJSON,
     tryParse
 };
