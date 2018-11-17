@@ -47,12 +47,16 @@ function requestUrl(url, callback){
   });
 }
 
+function politeRequest(url, callback, delay = 2000){
+  setTimeout(() => requestUrl(url, callback), delay);
+}
+
 //NOTE: this is needed in order to track top gear usage
 function getPlayerInfo(item, callback){
   // https://rangers.lerico.net/api/getPlayer/u610d9edfeaf01bdb67f66a4a1d02317f
   const playerId = item;
   const playerUrl = `https://rangers.lerico.net/api/getPlayer/${playerId}`;
-  requestUrl(playerUrl, callback);
+  politeRequest(playerUrl, callback);
 }
 
 function overlayFullPlayerInfo(pvp, allPlayerInfo){
@@ -73,7 +77,18 @@ function overlayFullPlayerInfo(pvp, allPlayerInfo){
 function getAllPlayerInfo(pvp, callback){
   // all players in series, get player info and add to pvp
   const allPlayerIds = pvp.playerInfo.map(x => x.mid);
-  async.mapSeries(allPlayerIds, getPlayerInfo, (error, results) => {
+
+  var done = 0;
+  const doEach = (item, callback) => {
+    done += 1;
+    process.stdout.write(`\rFetching player Info: ${
+      (100 * done/allPlayerIds.length ).toFixed(0)
+    }% `);
+    getPlayerInfo(item, callback);
+  };
+
+  async.mapSeries(allPlayerIds, doEach, (error, results) => {
+    console.log('\nDone fetching player info.');
     const overlayed = overlayFullPlayerInfo(pvp, results);
     callback(null, overlayed);
   });
@@ -112,7 +127,9 @@ function fetch(callback){
     'https://rangers.lerico.net/api/translate/en/CUSTOM_SHORTFORM',
     'https://rangers.lerico.net/api/translate/en/CUSTOM',
   ];
-  async.map(urls, requestUrl, function(err, results) {
+  urls.forEach(url => console.log(`Fetching ${url} ...`))
+  async.map(urls, politeRequest, function(err, results) {
+      console.log('Done fetching main api.');
       if(err) {
         return callback(err);
       }

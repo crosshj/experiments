@@ -109,15 +109,16 @@ ${stats}
 }
 
 function getAllTeamMembers(pvp){
-  const all = pvp.playerInfo.reduce((all, item) => {
+  const all = pvp.playerInfo.reduce((all, item, index) => {
     if (!item.playerUnitPvPTeams && !item.playerUnitTeams) {
       return all;
     }
+    //if(index === 1) logNice(item.playerUnitPvPTeams);
     const team1 = item.playerUnitPvPTeams['1'] || [];
     team1.forEach((i) => {
       all.push(i);
     });
-    const team2 = item.playerUnitPvPTeams['1'] || [];
+    const team2 = item.playerUnitPvPTeams['2'] || [];
     team2.forEach((i) => {
       all.push(i);
     });
@@ -330,7 +331,8 @@ function rangersOfInterest(rangers){
     'Mermaid Cony',
     'Paladin Moon',
     'Goddess Jessica',
-    'Judo Team Captain Rachel'
+    'Judo Team Captain Rachel',
+    'Poseidon Brown'
   ].map(x => x.toLowerCase());
 
   return rangers
