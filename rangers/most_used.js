@@ -349,12 +349,14 @@ function mostUsed({
 
   _rangers = addGearToRangers(_rangers, gear);
 
+  console.log('Saving rangers of interest!');
+  quickSave(rangersOfInterest(_rangers), './.rangersWithGear.json');
+
   if (dataOnly && !full) {
     return _rangers;
   }
 
   if (dataOnly && full) {
-    quickSave(rangersOfInterest(_rangers), './.rangersWithGear.json');
     return {
       rangers: _rangers,
       gear: {
