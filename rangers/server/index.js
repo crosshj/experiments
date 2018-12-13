@@ -109,4 +109,4 @@ app.get('/*', function(req, res){
     res.sendFile(path, {root: __dirname + '/../client'});
 });
 
-app.listen(port, () => console.log(`Stats server on port ${port}!`))
+app.listen(port, () => console.log(`Stats server at http://localhost:${port}!`))

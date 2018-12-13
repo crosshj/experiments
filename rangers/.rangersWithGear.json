@@ -1,36 +1,40 @@
 [
 	{
 		"name": "Gold Champagne Cony",
-		"average": "202.02",
-		"count": 92,
+		"average": "209.00",
+		"count": 95,
 		"topWeapons": [
 			{
 				"name": "Planet Sniper",
-				"count": 36
+				"count": 43
 			},
 			{
 				"name": "[SF] Ryu's Gloves",
-				"count": 20
+				"count": 23
 			},
 			{
 				"name": "[FA] Führer's Longsword",
-				"count": 12
+				"count": 8
 			},
 			{
 				"name": "[Conan] Soccer ball",
-				"count": 9
+				"count": 8
 			},
 			{
-				"name": "Guardian Bow",
-				"count": 6
+				"name": "[AA] Phoenix's Magatama",
+				"count": 5
 			},
 			{
 				"name": "Thunder Brown's Glove",
 				"count": 5
 			},
 			{
-				"name": "[AA] Phoenix's Magatama",
-				"count": 3
+				"name": "Guardian Bow",
+				"count": 1
+			},
+			{
+				"name": "[Conan] Tranquilizer watch",
+				"count": 1
 			},
 			{
 				"name": "[SP] Swift Sword",
@@ -40,31 +44,166 @@
 		"topAcc": [
 			{
 				"name": "[FA] Xiao-Mei's Panda Doll",
-				"count": 41
+				"count": 40
 			},
 			{
 				"name": "Angel Wing Ring",
-				"count": 16
+				"count": 19
 			},
 			{
-				"name": "Dark Wing Purse",
+				"name": "Invincible Belt",
 				"count": 10
 			},
 			{
 				"name": "Thunder Brown's Cape",
-				"count": 8
+				"count": 9
 			},
 			{
 				"name": "[Conan] Detective Badge",
 				"count": 6
 			},
 			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
+				"name": "Dark Wing Purse",
 				"count": 4
 			},
 			{
-				"name": "Invincible Belt",
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 3
+			},
+			{
+				"name": "[AA] Godot's Mask",
+				"count": 2
+			},
+			{
+				"name": "[SF] Ryu's Headband",
+				"count": 1
+			},
+			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 1
+			}
+		],
+		"topArmor": [
+			{
+				"name": "[FA] Roy's Gloves",
+				"count": 55
+			},
+			{
+				"name": "[SF] Ryu's Wear",
+				"count": 14
+			},
+			{
+				"name": "Cloud Wing Helmet",
+				"count": 8
+			},
+			{
+				"name": "Goddess Cony's Bracelet",
+				"count": 5
+			},
+			{
+				"name": "[Kid] Silk hat",
+				"count": 5
+			},
+			{
+				"name": "Cloud Wing Shoes",
+				"count": 3
+			},
+			{
+				"name": "[SF] Chun-Li's China Dress",
+				"count": 2
+			},
+			{
+				"name": "Queen Sally's Glove",
+				"count": 1
+			},
+			{
+				"name": "[Pili] Wind Outfit",
+				"count": 1
+			},
+			{
+				"name": "[FA] Alphonse's Helmet",
+				"count": 1
+			}
+		]
+	},
+	{
+		"name": "Starlit Sea Pico",
+		"average": "160.48",
+		"count": 67,
+		"topWeapons": [
+			{
+				"name": "[SF] Ryu's Gloves",
+				"count": 33
+			},
+			{
+				"name": "[FA] Führer's Longsword",
+				"count": 17
+			},
+			{
+				"name": "Guardian Bow",
+				"count": 5
+			},
+			{
+				"name": "Goddess Cony’s Wand",
+				"count": 3
+			},
+			{
+				"name": "Dark God Hammer",
+				"count": 2
+			},
+			{
+				"name": "[AA] Phoenix's Magatama",
+				"count": 2
+			},
+			{
+				"name": "[FA] Winry's Wrench",
+				"count": 1
+			},
+			{
+				"name": "[Conan] Soccer ball",
+				"count": 1
+			},
+			{
+				"name": "Queen Sally's Magic Wand",
+				"count": 1
+			},
+			{
+				"name": "Galaxy Broom",
+				"count": 1
+			},
+			{
+				"name": "[AA] Godot's Mug",
+				"count": 1
+			}
+		],
+		"topAcc": [
+			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 40
+			},
+			{
+				"name": "Dark Wing Purse",
+				"count": 10
+			},
+			{
+				"name": "[FA] Xiao-Mei's Panda Doll",
 				"count": 4
+			},
+			{
+				"name": "Angel Wing Ring",
+				"count": 3
+			},
+			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 3
+			},
+			{
+				"name": "Invincible Belt",
+				"count": 2
+			},
+			{
+				"name": "Thunder Brown's Cape",
+				"count": 2
 			},
 			{
 				"name": "[SF] Ryu's Headband",
@@ -75,134 +214,7 @@
 				"count": 1
 			},
 			{
-				"name": "[FA] State Alche mist's Token",
-				"count": 1
-			}
-		],
-		"topArmor": [
-			{
-				"name": "[FA] Roy's Gloves",
-				"count": 56
-			},
-			{
-				"name": "[SF] Ryu's Wear",
-				"count": 13
-			},
-			{
-				"name": "Cloud Wing Helmet",
-				"count": 6
-			},
-			{
-				"name": "Goddess Cony's Bracelet",
-				"count": 4
-			},
-			{
-				"name": "[FA] Alphonse's Helmet",
-				"count": 3
-			},
-			{
-				"name": "Cloud Wing Shoes",
-				"count": 3
-			},
-			{
-				"name": "Guardian Shield",
-				"count": 3
-			},
-			{
-				"name": "[SF] Chun-Li's China Dress",
-				"count": 1
-			},
-			{
-				"name": "[Kid] Silk hat",
-				"count": 1
-			},
-			{
-				"name": "Queen Sally's Glove",
-				"count": 1
-			},
-			{
-				"name": "[AA] Phoenix's Suit",
-				"count": 1
-			}
-		]
-	},
-	{
-		"name": "Starlit Sea Pico",
-		"average": "155.23",
-		"count": 66,
-		"topWeapons": [
-			{
-				"name": "[SF] Ryu's Gloves",
-				"count": 28
-			},
-			{
-				"name": "[FA] Führer's Longsword",
-				"count": 25
-			},
-			{
-				"name": "Guardian Bow",
-				"count": 5
-			},
-			{
-				"name": "Dark God Hammer",
-				"count": 3
-			},
-			{
-				"name": "Goddess Cony’s Wand",
-				"count": 2
-			},
-			{
-				"name": "[Conan] Soccer ball",
-				"count": 1
-			},
-			{
-				"name": "[AA] Phoenix's Magatama",
-				"count": 1
-			},
-			{
-				"name": "[FA] Winry's Wrench",
-				"count": 1
-			}
-		],
-		"topAcc": [
-			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 34
-			},
-			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 6
-			},
-			{
-				"name": "Dark Wing Purse",
-				"count": 5
-			},
-			{
-				"name": "[FA] Xiao-Mei's Panda Doll",
-				"count": 5
-			},
-			{
-				"name": "[SF] Ryu's Headband",
-				"count": 5
-			},
-			{
-				"name": "Invincible Belt",
-				"count": 3
-			},
-			{
-				"name": "Angel Wing Ring",
-				"count": 3
-			},
-			{
-				"name": "Thunder Brown's Cape",
-				"count": 2
-			},
-			{
 				"name": "Glorious Tear Belt",
-				"count": 2
-			},
-			{
-				"name": "[AA] Phoenix's Badge",
 				"count": 1
 			}
 		],
@@ -212,75 +224,67 @@
 				"count": 34
 			},
 			{
-				"name": "[FA] Roy's Gloves",
-				"count": 12
+				"name": "[SF] Ryu's Wear",
+				"count": 9
 			},
 			{
-				"name": "[SF] Ryu's Wear",
-				"count": 5
+				"name": "[FA] Roy's Gloves",
+				"count": 7
 			},
 			{
 				"name": "Queen Sally's Glove",
 				"count": 4
 			},
 			{
-				"name": "[FA] Alphonse's Helmet",
-				"count": 3
+				"name": "[Kid] Silk hat",
+				"count": 4
 			},
 			{
 				"name": "Goddess Cony's Bracelet",
 				"count": 3
 			},
 			{
-				"name": "[Kid] Silk hat",
+				"name": "[SF] Chun-Li's China Dress",
 				"count": 2
 			},
 			{
-				"name": "[SF] Chun-Li's China Dress",
-				"count": 1
-			},
-			{
-				"name": "Guardian Shield",
-				"count": 1
-			},
-			{
 				"name": "Cloud Wing Helmet",
-				"count": 1
+				"count": 2
+			},
+			{
+				"name": "[FA] Alphonse's Helmet",
+				"count": 2
 			}
 		]
 	},
 	{
 		"name": "Edward Elric",
-		"average": "168.08",
-		"count": 60,
+		"average": "174.38",
+		"count": 64,
 		"topWeapons": [
 			{
+				"name": "[SF] Ryu's Gloves",
+				"count": 17
+			},
+			{
 				"name": "[FA] Führer's Longsword",
-				"count": 20
+				"count": 17
 			},
 			{
 				"name": "Dark God Hammer",
-				"count": 16
-			},
-			{
-				"name": "[SF] Ryu's Gloves",
-				"count": 11
-			},
-			{
-				"name": "[AA] Godot's Mug",
-				"count": 5
+				"count": 13
 			},
 			{
 				"name": "Goddess Cony’s Wand",
-				"count": 4
+				"count": 8
+			},
+			{
+				"name": "[AA] Godot's Mug",
+				"count": 6
 			},
 			{
 				"name": "Queen Sally's Magic Wand",
 				"count": 3
-			},
-			{
-				"name": "Galaxy Broom",
-				"count": 1
 			}
 		],
 		"topAcc": [
@@ -289,65 +293,65 @@
 				"count": 20
 			},
 			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 9
+			},
+			{
 				"name": "Angel Wing Key",
 				"count": 8
 			},
 			{
-				"name": "Invincible Belt",
-				"count": 8
-			},
-			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 5
+				"name": "[AA] Godot's Mask",
+				"count": 7
 			},
 			{
 				"name": "[SP] Sea Necklace",
-				"count": 5
+				"count": 4
 			},
 			{
-				"name": "Dark Wing Purse",
-				"count": 3
-			},
-			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 3
+				"name": "Invincible Belt",
+				"count": 4
 			},
 			{
 				"name": "Glorious Tear Belt",
-				"count": 3
+				"count": 4
 			},
 			{
-				"name": "[AA] Godot's Mask",
+				"name": "[SF] Ryu's Headband",
 				"count": 2
 			},
 			{
-				"name": "Destiny Watch",
+				"name": "[FA] Xiao-Mei's Panda Doll",
+				"count": 2
+			},
+			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 2
+			},
+			{
+				"name": "Dark Wing Purse",
 				"count": 1
 			},
 			{
 				"name": "Goddess Cony's Tiara",
 				"count": 1
-			},
-			{
-				"name": "Thunder Brown's Cape",
-				"count": 1
 			}
 		],
 		"topArmor": [
 			{
-				"name": "[FA] Roy's Gloves",
-				"count": 20
+				"name": "[SF] Ryu's Wear",
+				"count": 24
 			},
 			{
-				"name": "[SF] Ryu's Wear",
-				"count": 20
+				"name": "[FA] Roy's Gloves",
+				"count": 23
+			},
+			{
+				"name": "Cloud Wing Shoes",
+				"count": 4
 			},
 			{
 				"name": "Queen Sally's Glove",
-				"count": 6
-			},
-			{
-				"name": "[FA] Alphonse's Helmet",
 				"count": 4
 			},
 			{
@@ -355,16 +359,12 @@
 				"count": 3
 			},
 			{
-				"name": "Cloud Wing Shoes",
-				"count": 2
-			},
-			{
 				"name": "Goddess Cony's Bracelet",
 				"count": 2
 			},
 			{
-				"name": "[Pili] Wind Outfit",
-				"count": 1
+				"name": "[FA] Alphonse's Helmet",
+				"count": 2
 			},
 			{
 				"name": "[SF] Chun-Li's China Dress",
@@ -378,8 +378,8 @@
 	},
 	{
 		"name": "Ace Soldier Moon",
-		"average": "219.82",
-		"count": 57,
+		"average": "220.44",
+		"count": 61,
 		"topWeapons": [
 			{
 				"name": "Dark God Hammer",
@@ -387,15 +387,19 @@
 			},
 			{
 				"name": "[SF] Chun-Li's Bracelet",
-				"count": 20
+				"count": 18
+			},
+			{
+				"name": "[FA] Edward's Spear",
+				"count": 6
 			},
 			{
 				"name": "[SF] Chun-Li's Bracelet",
 				"count": 5
 			},
 			{
-				"name": "[FA] Edward's Spear",
-				"count": 4
+				"name": "Dark Mage Staff",
+				"count": 3
 			},
 			{
 				"name": "[SF] Ryu's Gloves",
@@ -406,38 +410,42 @@
 				"count": 1
 			},
 			{
-				"name": "Galaxy Broom",
+				"name": "Planet Sniper",
 				"count": 1
 			},
 			{
-				"name": "Dark Mage Staff",
+				"name": "[AA] Godot's Mug",
+				"count": 1
+			},
+			{
+				"name": "Galaxy Broom",
 				"count": 1
 			}
 		],
 		"topAcc": [
 			{
 				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 17
+				"count": 20
+			},
+			{
+				"name": "Dark Wing Purse",
+				"count": 14
 			},
 			{
 				"name": "Invincible Belt",
 				"count": 13
 			},
 			{
-				"name": "Dark Wing Purse",
-				"count": 10
-			},
-			{
-				"name": "[SF] Ryu's Headband",
-				"count": 6
-			},
-			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
+				"name": "[FA] Xiao-Mei's Panda Doll",
 				"count": 5
 			},
 			{
-				"name": "[FA] Xiao-Mei's Panda Doll",
-				"count": 2
+				"name": "[SF] Ryu's Headband",
+				"count": 3
+			},
+			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 3
 			},
 			{
 				"name": "[FA] Philosopher's Stone",
@@ -445,10 +453,6 @@
 			},
 			{
 				"name": "Glorious Tear Belt",
-				"count": 1
-			},
-			{
-				"name": "[AA] Edgeworth's Badge",
 				"count": 1
 			}
 		],
@@ -459,65 +463,57 @@
 			},
 			{
 				"name": "[SF] Ryu's Wear",
-				"count": 12
+				"count": 17
 			},
 			{
 				"name": "[FA] Roy's Gloves",
-				"count": 6
+				"count": 7
 			},
 			{
 				"name": "[SF] Chun-Li's China Dress",
 				"count": 3
+			},
+			{
+				"name": "Queen Sally's Glove",
+				"count": 2
 			},
 			{
 				"name": "[FA] Alphonse's Helmet",
 				"count": 2
 			},
 			{
-				"name": "[Kid] Silk hat",
-				"count": 2
-			},
-			{
-				"name": "Queen Sally's Glove",
-				"count": 1
-			},
-			{
-				"name": "[Pili] Wind Outfit",
-				"count": 1
-			},
-			{
-				"name": "[SF] Chun-Li's China Dress",
+				"name": "[AA] Edgeworth's Suit",
 				"count": 1
 			}
 		]
 	},
 	{
-		"name": "Shish Kebab Brown",
-		"average": "167.98",
-		"count": 42,
+		"name": "Super Hero Moon",
+		"average": "166.60",
+		"count": 53,
 		"topWeapons": [
 			{
-				"name": "Planet Sniper",
-				"count": 16
-			},
-			{
 				"name": "[FA] Führer's Longsword",
-				"count": 6
-			},
-			{
-				"name": "[Conan] Soccer ball",
-				"count": 6
-			},
-			{
-				"name": "[SF] Ryu's Gloves",
-				"count": 4
-			},
-			{
-				"name": "Thunder Brown's Glove",
-				"count": 3
+				"count": 23
 			},
 			{
 				"name": "Guardian Bow",
+				"count": 10
+			},
+			{
+				"name": "Dark God Hammer",
+				"count": 5
+			},
+			{
+				"name": "Planet Sniper",
+				"count": 4
+			},
+			{
+				"name": "Goddess Cony’s Wand",
+				"count": 2
+			},
+			{
+				"name": "[SF] Ryu's Gloves",
 				"count": 2
 			},
 			{
@@ -529,7 +525,150 @@
 				"count": 1
 			},
 			{
+				"name": "[Conan] Soccer ball",
+				"count": 1
+			},
+			{
+				"name": "[SP] Swift Sword",
+				"count": 1
+			},
+			{
+				"name": "[Conan] Tranquilizer watch",
+				"count": 1
+			},
+			{
+				"name": "[AA] Godot's Mug",
+				"count": 1
+			}
+		],
+		"topAcc": [
+			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 9
+			},
+			{
+				"name": "Dark Wing Purse",
+				"count": 7
+			},
+			{
+				"name": "Invincible Belt",
+				"count": 7
+			},
+			{
+				"name": "Angel Wing Ring",
+				"count": 6
+			},
+			{
+				"name": "[FA] Xiao-Mei's Panda Doll",
+				"count": 5
+			},
+			{
+				"name": "[SF] Ryu's Headband",
+				"count": 5
+			},
+			{
+				"name": "[FA] Philosopher's Stone",
+				"count": 4
+			},
+			{
+				"name": "[Conan] Detective Badge",
+				"count": 3
+			},
+			{
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 2
+			},
+			{
+				"name": "Glorious Tear Belt",
+				"count": 2
+			},
+			{
+				"name": "Guardian Medal",
+				"count": 1
+			},
+			{
+				"name": "[MIKU] Snowman",
+				"count": 1
+			},
+			{
+				"name": "[AA] Godot's Mask",
+				"count": 1
+			}
+		],
+		"topArmor": [
+			{
+				"name": "Cloud Wing Shoes",
+				"count": 21
+			},
+			{
+				"name": "[SF] Ryu's Wear",
+				"count": 17
+			},
+			{
+				"name": "Queen Sally's Glove",
+				"count": 4
+			},
+			{
+				"name": "[SF] Chun-Li's China Dress",
+				"count": 4
+			},
+			{
+				"name": "[FA] Roy's Gloves",
+				"count": 3
+			},
+			{
+				"name": "[Kid] Silk hat",
+				"count": 2
+			},
+			{
+				"name": "[AA] Phoenix's Suit",
+				"count": 1
+			},
+			{
+				"name": "[SF] Chun-Li's China Dress",
+				"count": 1
+			}
+		]
+	},
+	{
+		"name": "Shish Kebab Brown",
+		"average": "178.21",
+		"count": 42,
+		"topWeapons": [
+			{
+				"name": "Planet Sniper",
+				"count": 18
+			},
+			{
+				"name": "[Conan] Soccer ball",
+				"count": 7
+			},
+			{
+				"name": "[SF] Ryu's Gloves",
+				"count": 5
+			},
+			{
+				"name": "[FA] Führer's Longsword",
+				"count": 4
+			},
+			{
+				"name": "Thunder Brown's Glove",
+				"count": 3
+			},
+			{
+				"name": "Guardian Bow",
+				"count": 1
+			},
+			{
 				"name": "Goddess Cony’s Wand",
+				"count": 1
+			},
+			{
+				"name": "[AA] Phoenix's Magatama",
+				"count": 1
+			},
+			{
+				"name": "Queen Sally's Magic Wand",
 				"count": 1
 			},
 			{
@@ -540,22 +679,14 @@
 		"topAcc": [
 			{
 				"name": "[FA] Xiao-Mei's Panda Doll",
-				"count": 17
-			},
-			{
-				"name": "Angel Wing Ring",
-				"count": 6
+				"count": 19
 			},
 			{
 				"name": "Invincible Belt",
-				"count": 4
+				"count": 8
 			},
 			{
-				"name": "[Conan] Detective Badge",
-				"count": 4
-			},
-			{
-				"name": "Dark Wing Purse",
+				"name": "Angel Wing Ring",
 				"count": 3
 			},
 			{
@@ -563,245 +694,118 @@
 				"count": 3
 			},
 			{
-				"name": "Glorious Tear Belt",
-				"count": 2
-			},
-			{
 				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 1
-			},
-			{
-				"name": "[SF] Ryu's Headband",
-				"count": 1
-			},
-			{
-				"name": "[FA] Philosopher's Stone",
-				"count": 1
-			}
-		],
-		"topArmor": [
-			{
-				"name": "[FA] Roy's Gloves",
-				"count": 24
-			},
-			{
-				"name": "Cloud Wing Shoes",
-				"count": 4
-			},
-			{
-				"name": "[SF] Ryu's Wear",
-				"count": 4
-			},
-			{
-				"name": "Queen Sally's Glove",
-				"count": 3
-			},
-			{
-				"name": "Guardian Shield",
 				"count": 2
-			},
-			{
-				"name": "[AA] Godot's Suit",
-				"count": 2
-			},
-			{
-				"name": "Goddess Cony's Bracelet",
-				"count": 1
-			},
-			{
-				"name": "[Ran] Karate wear",
-				"count": 1
-			},
-			{
-				"name": "Thunder Brown's Helmet",
-				"count": 1
-			}
-		]
-	},
-	{
-		"name": "Super Hero Moon",
-		"average": "163.50",
-		"count": 40,
-		"topWeapons": [
-			{
-				"name": "[FA] Führer's Longsword",
-				"count": 19
-			},
-			{
-				"name": "Guardian Bow",
-				"count": 9
-			},
-			{
-				"name": "Dark God Hammer",
-				"count": 3
-			},
-			{
-				"name": "[SF] Ryu's Gloves",
-				"count": 2
-			},
-			{
-				"name": "Planet Sniper",
-				"count": 2
-			},
-			{
-				"name": "Queen Sally's Magic Wand",
-				"count": 2
-			},
-			{
-				"name": "[Conan] Soccer ball",
-				"count": 1
-			},
-			{
-				"name": "Goddess Cony’s Wand",
-				"count": 1
-			},
-			{
-				"name": "[SP] Swift Sword",
-				"count": 1
-			}
-		],
-		"topAcc": [
-			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 7
-			},
-			{
-				"name": "Invincible Belt",
-				"count": 7
 			},
 			{
 				"name": "Dark Wing Purse",
-				"count": 5
-			},
-			{
-				"name": "[SF] Ryu's Headband",
-				"count": 5
-			},
-			{
-				"name": "Angel Wing Ring",
-				"count": 4
-			},
-			{
-				"name": "[FA] Philosopher's Stone",
-				"count": 4
-			},
-			{
-				"name": "[FA] Xiao-Mei's Panda Doll",
-				"count": 3
+				"count": 2
 			},
 			{
 				"name": "[Conan] Detective Badge",
-				"count": 3
+				"count": 2
 			},
 			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
+				"name": "[FA] Philosopher's Stone",
 				"count": 1
 			},
 			{
-				"name": "[MIKU] Snowman",
+				"name": "Glorious Tear Belt",
+				"count": 1
+			},
+			{
+				"name": "Queen Sally's Brooch",
 				"count": 1
 			}
 		],
 		"topArmor": [
 			{
+				"name": "[FA] Roy's Gloves",
+				"count": 25
+			},
+			{
 				"name": "Cloud Wing Shoes",
-				"count": 13
-			},
-			{
-				"name": "[SF] Ryu's Wear",
-				"count": 12
-			},
-			{
-				"name": "[SF] Chun-Li's China Dress",
 				"count": 4
 			},
 			{
-				"name": "Queen Sally's Glove",
+				"name": "[SF] Ryu's Wear",
+				"count": 4
+			},
+			{
+				"name": "Goddess Cony's Bracelet",
 				"count": 3
 			},
 			{
-				"name": "[FA] Roy's Gloves",
+				"name": "Queen Sally's Glove",
 				"count": 2
-			},
-			{
-				"name": "[SF] Chun-Li's China Dress",
-				"count": 1
-			},
-			{
-				"name": "[FA] Alphonse's Helmet",
-				"count": 1
-			},
-			{
-				"name": "Guardian Shield",
-				"count": 1
 			},
 			{
 				"name": "Cloud Wing Helmet",
 				"count": 1
 			},
 			{
-				"name": "[AA] Phoenix's Suit",
+				"name": "[AA] Godot's Suit",
 				"count": 1
 			},
 			{
-				"name": "[Kid] Silk hat",
+				"name": "Thunder Brown's Helmet",
+				"count": 1
+			},
+			{
+				"name": "Guardian Shield",
 				"count": 1
 			}
 		]
 	},
 	{
 		"name": "Mermaid Cony",
-		"average": "165.74",
-		"count": 34,
+		"average": "166.94",
+		"count": 31,
 		"topWeapons": [
 			{
 				"name": "Dark God Hammer",
-				"count": 24
+				"count": 22
 			},
 			{
 				"name": "[SF] Chun-Li's Bracelet",
-				"count": 5
-			},
-			{
-				"name": "Galaxy Broom",
-				"count": 2
-			},
-			{
-				"name": "[FA] Führer's Longsword",
-				"count": 1
-			},
-			{
-				"name": "Guardian Bow",
-				"count": 1
+				"count": 3
 			},
 			{
 				"name": "[FA] Edward's Spear",
+				"count": 3
+			},
+			{
+				"name": "[SF] Chun-Li's Bracelet",
+				"count": 2
+			},
+			{
+				"name": "Galaxy Broom",
 				"count": 1
 			}
 		],
 		"topAcc": [
 			{
 				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 11
+				"count": 13
 			},
 			{
 				"name": "Dark Wing Purse",
-				"count": 11
-			},
-			{
-				"name": "Invincible Belt",
-				"count": 4
-			},
-			{
-				"name": "[SF] Chun-Li's Hair Ribbons",
-				"count": 3
+				"count": 10
 			},
 			{
 				"name": "[SF] Ryu's Headband",
 				"count": 2
 			},
 			{
-				"name": "Angel Wing Ring",
+				"name": "[SF] Chun-Li's Hair Ribbons",
+				"count": 2
+			},
+			{
+				"name": "Invincible Belt",
+				"count": 1
+			},
+			{
+				"name": "[FA] Xiao-Mei's Panda Doll",
 				"count": 1
 			},
 			{
@@ -816,30 +820,22 @@
 		"topArmor": [
 			{
 				"name": "Cloud Wing Shoes",
-				"count": 18
+				"count": 19
 			},
 			{
 				"name": "[SF] Ryu's Wear",
-				"count": 7
+				"count": 6
 			},
 			{
 				"name": "[FA] Roy's Gloves",
-				"count": 2
-			},
-			{
-				"name": "[Pili] Wind Outfit",
-				"count": 2
-			},
-			{
-				"name": "[Kid] Silk hat",
-				"count": 2
+				"count": 3
 			},
 			{
 				"name": "[SF] Chun-Li's China Dress",
 				"count": 1
 			},
 			{
-				"name": "Guardian Shield",
+				"name": "[Kid] Silk hat",
 				"count": 1
 			},
 			{
@@ -850,110 +846,102 @@
 	},
 	{
 		"name": "Judo Team Captain Rachel",
-		"average": "219.33",
+		"average": "220.00",
 		"count": 15,
 		"topWeapons": [
 			{
 				"name": "Dark God Hammer",
-				"count": 8
+				"count": 11
 			},
 			{
 				"name": "[FA] Führer's Longsword",
-				"count": 3
-			},
-			{
-				"name": "[AA] Godot's Mug",
 				"count": 2
 			},
 			{
-				"name": "[AA] Phoenix's Magatama",
+				"name": "Goddess Cony’s Wand",
 				"count": 1
 			},
 			{
-				"name": "Goddess Cony’s Wand",
+				"name": "[AA] Godot's Mug",
 				"count": 1
 			}
 		],
 		"topAcc": [
 			{
 				"name": "Angel Wing Key",
-				"count": 8
+				"count": 9
 			},
 			{
 				"name": "[AA] Godot's Mask",
-				"count": 4
+				"count": 2
+			},
+			{
+				"name": "[SP] Sea Necklace",
+				"count": 2
 			},
 			{
 				"name": "Dark Wing Purse",
 				"count": 1
 			},
 			{
-				"name": "[FA] Philosopher's Stone",
-				"count": 1
-			},
-			{
-				"name": "[SP] Sea Necklace",
+				"name": "Glorious Tear Belt",
 				"count": 1
 			}
 		],
 		"topArmor": [
 			{
 				"name": "[FA] Roy's Gloves",
-				"count": 8
+				"count": 9
+			},
+			{
+				"name": "[Ran] Karate wear",
+				"count": 2
 			},
 			{
 				"name": "Cloud Wing Shoes",
-				"count": 2
+				"count": 1
 			},
 			{
 				"name": "Queen Sally's Glove",
 				"count": 1
 			},
 			{
-				"name": "[FA] Alphonse's Helmet",
+				"name": "Goddess Cony's Bracelet",
 				"count": 1
 			},
 			{
-				"name": "[AA] Phoenix's Suit",
-				"count": 1
-			},
-			{
-				"name": "[Ran] Karate wear",
-				"count": 1
-			},
-			{
-				"name": "[AA] Godot's Suit",
+				"name": "[Conan] Kick-boost shoes",
 				"count": 1
 			}
 		]
 	},
 	{
 		"name": "Goddess Jessica",
-		"average": "170.00",
-		"count": 11,
+		"average": "175.00",
+		"count": 14,
 		"topWeapons": [
 			{
 				"name": "Dark God Hammer",
-				"count": 5
+				"count": 7
+			},
+			{
+				"name": "Queen Sally's Magic Wand",
+				"count": 2
 			},
 			{
 				"name": "Galaxy Broom",
 				"count": 2
 			},
 			{
+				"name": "[SF] Ryu's Gloves",
+				"count": 1
+			},
+			{
 				"name": "[FA] Führer's Longsword",
 				"count": 1
 			},
 			{
-				"name": "[SF] Chun-Li's Bracelet",
-				"count": 1
-			},
-			{
-				"name": "Queen Sally's Magic Wand",
-				"count": 1
-			},
-			{
-				"name": "Clover Boomerang",
+				"name": "Goddess Cony’s Wand",
 				"count": 1
 			}
 		],
@@ -963,16 +951,16 @@
 				"count": 7
 			},
 			{
-				"name": "Angel Wing Key",
-				"count": 1
+				"name": "[AA] Godot's Mask",
+				"count": 2
 			},
 			{
-				"name": "Glorious Tear Belt",
-				"count": 1
+				"name": "Angel Wing Key",
+				"count": 2
 			},
 			{
 				"name": "[SP] Sea Necklace",
-				"count": 1
+				"count": 2
 			},
 			{
 				"name": "Destiny Watch",
@@ -982,30 +970,22 @@
 		"topArmor": [
 			{
 				"name": "Cloud Wing Shoes",
-				"count": 8
+				"count": 13
 			},
 			{
 				"name": "[SF] Ryu's Wear",
-				"count": 1
-			},
-			{
-				"name": "Queen Sally's Glove",
-				"count": 1
-			},
-			{
-				"name": "Sacred Armor",
 				"count": 1
 			}
 		]
 	},
 	{
 		"name": "Paladin Moon",
-		"average": "152.22",
+		"average": "155.00",
 		"count": 9,
 		"topWeapons": [
 			{
 				"name": "Dark God Hammer",
-				"count": 6
+				"count": 5
 			},
 			{
 				"name": "[FA] Führer's Longsword",
@@ -1013,17 +993,17 @@
 			},
 			{
 				"name": "Goddess Cony’s Wand",
-				"count": 1
+				"count": 2
 			}
 		],
 		"topAcc": [
 			{
 				"name": "Angel Wing Key",
-				"count": 6
+				"count": 4
 			},
 			{
-				"name": "Dark Wing Purse",
-				"count": 1
+				"name": "Glorious Tear Belt",
+				"count": 2
 			},
 			{
 				"name": "[SF] Ryu's Headband",
@@ -1031,6 +1011,10 @@
 			},
 			{
 				"name": "[SP] Sea Necklace",
+				"count": 1
+			},
+			{
+				"name": "Goddess Cony's Tiara",
 				"count": 1
 			}
 		],
@@ -1040,11 +1024,7 @@
 				"count": 3
 			},
 			{
-				"name": "[SF] Ryu's Wear",
-				"count": 1
-			},
-			{
-				"name": "[FA] Alphonse's Helmet",
+				"name": "Cloud Wing Shoes",
 				"count": 1
 			},
 			{
@@ -1052,7 +1032,7 @@
 				"count": 1
 			},
 			{
-				"name": "Guardian Shield",
+				"name": "[FA] Alphonse's Helmet",
 				"count": 1
 			},
 			{
@@ -1062,28 +1042,24 @@
 			{
 				"name": "[AA] Edgeworth's Suit",
 				"count": 1
+			},
+			{
+				"name": "Guardian Shield",
+				"count": 1
 			}
 		]
 	},
 	{
 		"name": "Poseidon Brown",
-		"average": "175.00",
-		"count": 2,
+		"average": "170.00",
+		"count": 1,
 		"topWeapons": [
-			{
-				"name": "[FA] Führer's Longsword",
-				"count": 1
-			},
 			{
 				"name": "[AA] Godot's Mug",
 				"count": 1
 			}
 		],
 		"topAcc": [
-			{
-				"name": "Angel Wing Key",
-				"count": 1
-			},
 			{
 				"name": "[AA] Godot's Mask",
 				"count": 1
@@ -1092,10 +1068,6 @@
 		"topArmor": [
 			{
 				"name": "[SF] Ryu's Wear",
-				"count": 1
-			},
-			{
-				"name": "[Pili] Wind Outfit",
 				"count": 1
 			}
 		]
