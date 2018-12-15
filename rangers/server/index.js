@@ -86,17 +86,26 @@ app.get('/data', (req, res) => {
     });
 });
 
+var inprogress = false;
 app.post('/pull', (req, res) => {
+    if(inprogress){
+        res.json({ status: 'in progress'});
+        return;
+    }
+    inprogress = true;
     //TODO: should not kill cache if within will-not-write window
     //TODO: should (conditionally) kill cache in persist stats module
     //SEE: writePvp for willWrite logic
     killCache();
-//    res.json({});
+    // res.json({});
+
     pullAndSave((err, d) => {
         // if(err){
         //     return res.json({ err, d });
         // }
         const r = recordToRangers(d);
+        inprogress = false;
+
         if(err){
             res.status(400);
         }
