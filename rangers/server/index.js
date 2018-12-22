@@ -1,3 +1,13 @@
+/*
+
+! [GR]*️MiMi
+aHR0cHM6Ly9wcm9maWxlLmxpbmUtc2Nkbi5uZXQvMGg1cWR5aERabmFsNVpBRUFvRkFVVkNXVkZaRE11TG13V0lXVjNQUzVRWTI0a015MEtaREl0T244R01qcHhZQ1VMTVdGMVBYVlROVDE5L2xhcmdl
+
+*/
+
+
+
+
 const {
     readPvp, pullAndSave, killCache
 } = require('../persist_stats');
@@ -89,7 +99,7 @@ app.get('/data', (req, res) => {
 var inprogress = false;
 app.post('/pull', (req, res) => {
     if(inprogress){
-        res.json({ status: 'in progress'});
+        res.json({ err: 'pull already in progress'});
         return;
     }
     inprogress = true;

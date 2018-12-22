@@ -94,7 +94,7 @@
             fetch('./data')
                 .then(x => x.json())
                 .then(function (data) {
-                    window.data = data.r;
+                    window.data = data.r;;
                     showChart({ data: data.r })
                 });
         }
