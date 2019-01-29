@@ -5,6 +5,10 @@ body {
     background: #77706b;
 }
 
+.row, .notes {
+    max-width: 700px;
+}
+
 .row {
     display: flex;
     flex-direction: row;
