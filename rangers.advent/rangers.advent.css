@@ -1,0 +1,116 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    background: #77706b;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: auto;
+    align-items: center;
+    width: 80%;
+    padding: 5px;
+    background-color: #382923;
+    padding-bottom: 17px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.notes {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto;
+    margin-top: 20px;
+    width: 80%;
+    background-color: #ccc;
+    padding: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 1px;
+    box-sizing: border-box;
+}
+
+.cell {
+    height: 70px;
+    background: #e6e6e6;
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 7px;
+    text-transform: uppercase;
+    padding: 5px;
+    box-shadow: inset 0px 0px 9px 3px #80808070, 0 4px 4px #0000004a;
+    position: relative;
+}
+
+.cell:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+}
+
+.green {
+    background-image: linear-gradient(#00d47f, #007b2c);
+    color: #67dd8b;
+    border-color: #08560b;
+    box-shadow: 0 9px 0px #013e01, 0 11px 0px #001f01;
+}
+.green:after {
+    border-color: #04d49ebf;
+}
+
+
+.yellow {
+    background-image: linear-gradient(#FFEB3B, #bb6800);
+    color: #ffcc07;
+    border-color: #7b5509;
+    box-shadow: 0 9px 0px #614300, 0 11px 0px #1f1d00;
+}
+.yellow:after {
+    border-color: #d0c02f;
+}
+
+.orange {
+    background-image: linear-gradient(#ffcc00, #bb3400);
+    color: #ffee07;
+    border-color: #7d5504;
+    box-shadow: 0 9px 0px #612000, 0 11px 0px #1f0b00;
+}
+.orange:after {
+    border-color: #d4ab04bf;
+}
+
+.cell svg {
+    display: block;
+    width: 100%;
+    height: 50%;
+    stroke-width: 15px;
+}
+
+.cell span {
+    width: 80%;
+    min-height: 19px;
+    line-height: 13px;
+}
+
+pre, code {
+    white-space: pre-line;
+}
+
+

@@ -1,0 +1,130 @@
+<html>
+<link rel="stylesheet" href="rangers.advent.css">
+<script src="rangers.advent.js"></script>
+
+<svg style="display: none;">
+    <symbol id="icon-hex-green" viewBox="0 0 300 300">
+        <g
+            transform="rotate(90 150 150) translate(50, 50) scale(0.75)"
+        >
+            <polygon
+                class="outer"
+                fill="" stroke="#225600"
+                points="300,150 225,280 75,280 0,150 75,20 225,20"
+            >
+            </polygon>
+            <polygon
+                class="inner" fill="#047e2f" stroke="#67cc8a"
+                transform="translate(15, 15) scale(.90)"
+                points="300,150 225,280 75,280 0,150 75,20 225,20">
+            </polygon>
+        </g>
+    </symbol>
+
+    <symbol id="icon-hex-yellow" viewBox="0 0 300 300">
+        <g
+            transform="rotate(90 150 150) translate(50, 50) scale(0.75)"
+        >
+            <polygon
+                class="outer"
+                fill="" stroke="#614300"
+                points="300,150 225,280 75,280 0,150 75,20 225,20"
+            >
+            </polygon>
+            <polygon
+                class="inner" fill="#c27605" stroke="#ffcc07"
+                transform="translate(15, 15) scale(.90)"
+                points="300,150 225,280 75,280 0,150 75,20 225,20">
+            </polygon>
+        </g>
+    </symbol>
+
+    <symbol id="icon-hex-orange" viewBox="0 0 300 300">
+        <g
+            transform="rotate(90 150 150) translate(50, 50) scale(0.75)"
+        >
+            <polygon
+                class="outer"
+                fill="" stroke="#200000"
+                points="300,150 225,280 75,280 0,150 75,20 225,20"
+            >
+            </polygon>
+            <polygon
+                class="inner" fill="#bb3400" stroke="#f35a01"
+                transform="translate(15, 15) scale(.90)"
+                points="300,150 225,280 75,280 0,150 75,20 225,20">
+            </polygon>
+        </g>
+    </symbol>
+
+</svg>
+
+<body>
+    <div class="row">
+        <div class="green cell">
+            <svg>
+                <use xlink:href="#icon-hex-green"></use>
+            </svg>
+            <span>Very Easy</span>
+        </div>
+        <div class="green cell">
+            <svg>
+                <use xlink:href="#icon-hex-green"></use>
+            </svg>
+            <span>Easy</span>
+        </div>
+        <div class="yellow cell">
+            <svg>
+                <use xlink:href="#icon-hex-yellow"></use>
+            </svg>
+            <span>Normal</span>
+        </div>
+        <div class="orange cell">
+            <svg>
+                <use xlink:href="#icon-hex-orange"></use>
+            </svg>
+            <span>Hard</span>
+        </div>
+        <div class="orange cell">
+            <svg>
+                <use xlink:href="#icon-hex-orange"></use>
+            </svg>
+            <span>Very Hard</span>
+        </div>
+    </div>
+    <div class="notes">
+        <p>
+            P0 Team - 1 chance at 1 chance out of Difficulty Chance
+        </p>
+        <p>
+            P500 Team - 2 chances at 1 chance out of Difficulty Chance
+        </p>
+        <p>
+            P1000 Team - 3 chances at 1 chance out of Difficulty Chance
+        </p>
+        <p>
+            P1000 Team at Easy will have less chance than P500 Team at Normal
+        </p>
+        <p>
+            P1000 Team takes 42 feathers or less for 4 advent rangers at Hard or greater = 2.4 tries
+        </p>
+        <p>
+            Cost:
+            <ul>
+                <li>Very Easy = 5 feathers</li>
+                <li>Easy = 10 feathers</li>
+                <li>Normal = 14 feathers</li>
+                <li>Hard = 17 feathers</li>
+                <li>Very Hard = 20 feathers</li>
+            </ul>
+        </p>
+        <pre>
+            Sources:
+            <a href="https://www.reddit.com/r/LineRangers/comments/aegcdo/advent_rangers/">
+                https://www.reddit.com/r/LineRangers/comments/aegcdo/advent_rangers/
+            </a>
+        </pre>
+    </div>
+</body>
+
+</html>
