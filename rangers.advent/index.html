@@ -63,38 +63,28 @@
 
 </svg>
 
-<body>
+<body onload="setupPage()">
     <div class="row">
-        <div class="green cell">
-            <svg>
-                <use xlink:href="#icon-hex-green"></use>
-            </svg>
-            <span>Very Easy</span>
-        </div>
-        <div class="green cell">
-            <svg>
-                <use xlink:href="#icon-hex-green"></use>
-            </svg>
-            <span>Easy</span>
-        </div>
-        <div class="yellow cell">
-            <svg>
-                <use xlink:href="#icon-hex-yellow"></use>
-            </svg>
-            <span>Normal</span>
-        </div>
-        <div class="orange cell">
-            <svg>
-                <use xlink:href="#icon-hex-orange"></use>
-            </svg>
-            <span>Hard</span>
-        </div>
-        <div class="orange cell">
-            <svg>
-                <use xlink:href="#icon-hex-orange"></use>
-            </svg>
-            <span>Very Hard</span>
-        </div>
+        <Level
+            type="Very Easy"
+            chance="0.01"
+        ></Level>
+        <Level
+            type="Easy"
+            chance="0.02"
+        ></Level>
+        <Level
+            type="Normal"
+            chance="0.03"
+        ></Level>
+        <Level
+            type="Hard"
+            chance="0.04"
+        ></Level>
+        <Level
+            type="Very Hard"
+            chance="0.05"
+        ></Level>
     </div>
     <div class="notes">
         <p>

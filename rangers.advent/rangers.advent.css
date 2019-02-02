@@ -120,4 +120,52 @@ pre, code {
     white-space: pre-line;
 }
 
+level {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+fieldsContainer {
+    margin: 3px;
+    margin-top: 15px;
+    border: 1px solid #947e4c;
+    border-radius: 5px;
+    padding-bottom: 6px;
+    background: hsla(36, 31%, 29%, 1);
+}
+
+.field {
+    margin-top: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.field input {
+    width: 90%;
+    background: #675235;
+    border: 0;
+    color: #bba327;
+    padding: 1px 2px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: monospace;
+    font-size: large;
+    border-radius: 3px;
+    text-shadow: 0px 2px #46312a;
+    box-shadow: inset 0px 2px 0px #a08d715c, inset 0px 0 11px 6px #4a3b26;
+}
+
+.field label {
+    color: #9a834d;
+    font-variant: all-petite-caps;
+    text-align: center;
+    display: inline-block;
+    user-select: none;
+    line-height: 12px;
+    font-family: monospace;
+    font-size: 16px;
+}
 
