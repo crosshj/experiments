@@ -15,7 +15,6 @@ body {
     justify-content: space-between;
     margin: auto;
     align-items: center;
-    width: 80%;
     padding: 5px;
     background-color: #382923;
     padding-bottom: 17px;
@@ -25,13 +24,17 @@ body {
     box-sizing: border-box;
 }
 
+.notes, .row {
+    width: 80%;
+    min-width: 395px;
+}
+
 .notes {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     margin: auto;
     margin-top: 20px;
-    width: 80%;
     background-color: #ccc;
     padding: 15px;
     padding-left: 20px;
@@ -41,9 +44,9 @@ body {
 }
 
 .cell {
-    height: 70px;
+    height: 6em;
     background: #e6e6e6;
-    width: 70px;
+    width: 6em;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
