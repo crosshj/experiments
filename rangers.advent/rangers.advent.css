@@ -262,7 +262,7 @@ li.checked.disabled {
 /*
 
 star background
-
+https://codepen.io/saransh/pen/BKJun
 
 */
   #fancy-background {
@@ -301,7 +301,7 @@ star background
     to {
       /* transform: translateY(-2000px); */
       /* transform: translateY(-1000px); */
-      transform: translateY(-500px);
+      /* transform: translateY(-500px); */
     }
   }
 

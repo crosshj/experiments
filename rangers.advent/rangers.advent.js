@@ -57,7 +57,7 @@ function render(){
                 <div class="seperator"></div>
                 <div class="field">
                     <input disabled tabindex=${0} value="${props.feathers}"></input>
-                    <label>Feathers</label>
+                    <label>Try Cost</label>
                 </div>
             </fieldsContainer>
         `;
