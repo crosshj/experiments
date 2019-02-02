@@ -27,7 +27,7 @@ function getProps(node){
     }, {});
 }
 
-function transformLevelElements(){
+function render(){
     var levelNodes = document.querySelectorAll('Level');
     var levelList = Array.apply([], levelNodes);
     levelList.forEach((node, index) => {
@@ -43,8 +43,16 @@ function transformLevelElements(){
             </div>
             <fieldsContainer>
                 <div class="field">
-                    <input tabindex=${101} min="0.01" max="1.0" step="0.01" value="${props.chance}"></input>
+                    <input tabindex=${101} min="0.01" max="1.00" step="0.01" value="${props.chance}"></input>
                     <label>Chance</label>
+                </div>
+                <div class="field">
+                    <input disabled tabindex=${0} value="${(2 * props.chance).toFixed(2)}"></input>
+                    <label>P500 Chance</label>
+                </div>
+                <div class="field">
+                    <input disabled tabindex=${0} value="${(3 * props.chance).toFixed(2)}"></input>
+                    <label>P1000 Chance</label>
                 </div>
             </fieldsContainer>
         `;
@@ -52,5 +60,5 @@ function transformLevelElements(){
 }
 
 function setupPage(){
-    transformLevelElements();
+    render();
 }

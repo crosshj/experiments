@@ -1,12 +1,35 @@
+/* Define the "system" font family */
+@font-face {
+    font-family: system;
+    font-style: normal;
+    font-weight: 300;
+    src: local(".SFNSText-Light"), local(".HelveticaNeueDeskInterface-Light"), local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light"), local("Roboto-Light"), local("DroidSans"), local("Tahoma");
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 12px;
     background: #77706b;
+    font-family: "system";
+    color: #e4dada;
+    box-sizing: border-box;
+    margin: 0;
+    margin-top: 20px;
+}
+
+h1 {
+    text-align: center;
+    text-shadow: 1px 1px 12px black;
 }
 
 .row, .notes {
     max-width: 700px;
+    border-radius: 6px;
+    width: 80%;
+    min-width: 350px;
+    box-sizing: border-box;
+    background-color: #382923;
+    color: #c9cca2;
 }
 
 .row {
@@ -15,18 +38,7 @@ body {
     justify-content: space-between;
     margin: auto;
     align-items: center;
-    padding: 5px;
-    background-color: #382923;
-    padding-bottom: 17px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-.notes, .row {
-    width: 80%;
-    min-width: 395px;
+    padding: 9px;
 }
 
 .notes {
@@ -35,18 +47,16 @@ body {
     justify-content: space-between;
     margin: auto;
     margin-top: 20px;
-    background-color: #ccc;
     padding: 15px;
     padding-left: 20px;
     padding-right: 20px;
-    border-radius: 1px;
-    box-sizing: border-box;
+    min-height: 50%;
 }
 
 .cell {
-    height: 6em;
+    height: 4.5em;
     background: #e6e6e6;
-    width: 6em;
+    width: 4.5em;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -58,6 +68,7 @@ body {
     padding: 5px;
     box-shadow: inset 0px 0px 9px 3px #80808070, 0 4px 4px #0000004a;
     position: relative;
+    margin-bottom: 10px;
 }
 
 .cell:after {
@@ -129,6 +140,7 @@ level {
 fieldsContainer {
     margin: 3px;
     margin-top: 15px;
+    max-width: 120px;
     border: 1px solid #947e4c;
     border-radius: 5px;
     padding-bottom: 6px;
@@ -141,6 +153,7 @@ fieldsContainer {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    color: #9a834d;
 }
 
 .field input {
@@ -149,7 +162,6 @@ fieldsContainer {
     border: 0;
     color: #bba327;
     padding: 1px 2px;
-    box-sizing: border-box;
     text-align: center;
     font-family: monospace;
     font-size: large;
@@ -158,8 +170,19 @@ fieldsContainer {
     box-shadow: inset 0px 2px 0px #a08d715c, inset 0px 0 11px 6px #4a3b26;
 }
 
+.field input:disabled {
+    background: transparent;
+    box-shadow: none;
+    line-height: unset;
+    padding: 0px;
+    margin: 0px;
+    height: 13px;
+    margin-top: 5px;
+    font-size: 15px;
+    color: inherit;
+}
+
 .field label {
-    color: #9a834d;
     font-variant: all-petite-caps;
     text-align: center;
     display: inline-block;
