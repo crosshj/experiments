@@ -6,15 +6,22 @@
     src: local(".SFNSText-Light"), local(".HelveticaNeueDeskInterface-Light"), local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light"), local("Roboto-Light"), local("DroidSans"), local("Tahoma");
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-weight: 500;
     font-size: 12px;
     background: #77706b;
     font-family: "system";
     color: #e4dada;
-    box-sizing: border-box;
     margin: 0;
     margin-top: 20px;
+}
+
+a {
+    color: inherit;
 }
 
 h1 {
@@ -27,7 +34,6 @@ h1 {
     border-radius: 6px;
     width: 80%;
     min-width: 350px;
-    box-sizing: border-box;
     background-color: #382923;
     color: #c9cca2;
 }
@@ -50,13 +56,13 @@ h1 {
     padding: 15px;
     padding-left: 20px;
     padding-right: 20px;
-    min-height: 50%;
+    min-height: 47%;
 }
 
 .cell {
-    height: 4.5em;
+    height: 5.5em;
     background: #e6e6e6;
-    width: 4.5em;
+    width: 5.5em;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -121,10 +127,13 @@ h1 {
     stroke-width: 15px;
 }
 
-.cell span {
+.cell span.limited {
     width: 80%;
-    min-height: 19px;
-    line-height: 13px;
+}
+.cell span {
+    min-height: 14px;
+    line-height: 10px;
+    font-size: 9px;
 }
 
 pre, code {

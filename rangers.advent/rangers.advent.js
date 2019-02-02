@@ -39,10 +39,10 @@ function render(){
                 <svg>
                     <use xlink:href="#icon-hex-${attrs.color}"></use>
                 </svg>
-                <span>${levelType}</span>
+                <span class="${levelType.length > 6 ? 'limited' : '' }">${levelType}</span>
             </div>
             <fieldsContainer>
-                <div class="field">
+                <div class="field chance">
                     <input tabindex=${101} min="0.01" max="1.00" step="0.01" value="${props.chance}"></input>
                     <label>Chance</label>
                 </div>
@@ -54,8 +54,16 @@ function render(){
                     <input disabled tabindex=${0} value="${(3 * props.chance).toFixed(2)}"></input>
                     <label>P1000 Chance</label>
                 </div>
+                <div class="field">
+                    <input disabled tabindex=${0} value="${props.feathers}"></input>
+                    <label>Feathers</label>
+                </div>
             </fieldsContainer>
         `;
+        node.querySelector('fieldsContainer .chance input').oninput = (e) => {
+            node.setAttribute('chance', e.target.value);
+            render();
+        };
     });
 }
 

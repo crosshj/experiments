@@ -83,41 +83,40 @@ Very Hard = 20 feathers
         ></Level>
         <Level
             type="Easy"
-            chance="0.02"
+            chance="0.018"
             feathers="10"
         ></Level>
         <Level
             type="Normal"
-            chance="0.04"
+            chance="0.028"
             feathers="14"
         ></Level>
         <Level
             type="Hard"
-            chance="0.08"
+            chance="0.043"
             feathers="17"
         ></Level>
         <Level
             type="Very Hard"
-            chance="0.16"
+            chance="0.068"
             feathers="20"
         ></Level>
     </div>
     <div class="notes">
-        <p>
-            P0 Team - 1 chance at 1 chance out of Difficulty Chance
-        </p>
-        <p>
-            P500 Team - 2 chances at 1 chance out of Difficulty Chance
-        </p>
-        <p>
-            P1000 Team - 3 chances at 1 chance out of Difficulty Chance
-        </p>
-        <p>
-            P1000 Team at Easy will have less chance than P500 Team at Normal
-        </p>
-        <p>
-            P1000 Team takes 42 feathers or less for 4 advent rangers at Hard or greater = 2.4 tries
-        </p>
+        <ul id="assumptions">
+            <li class="checked disabled">
+                Equal chances given to Leonard Bonus Rewards
+            </li>
+            <li class="disabled">
+                P500 Team at lower level has less chance than P1 Team at higher level
+            </li>
+            <li class="checked disabled">
+                P1000 Team at lower level has less chance than P500 Team at higher level
+            </li>
+            <li class="disabled">
+                P1000 Team, &lt; 42 feathers, Hard+, reward = 4 rangers (2.4 tries)
+            </li>
+        </ul>
         <pre>
             Sources:
             <a href="https://www.reddit.com/r/LineRangers/comments/aegcdo/advent_rangers/">
