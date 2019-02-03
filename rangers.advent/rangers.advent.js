@@ -48,6 +48,7 @@ function render(target){
             return;
         }
 
+        // TODO: probably better to just replace fields that will change!!
         node.innerHTML = `
             <div class="${attrs.color} cell">
                 <svg>
@@ -69,7 +70,7 @@ function render(target){
             chanceField.className = 'field chance';
             chanceField.innerHTML = `
                 <label>Chance</label>
-                <input tabindex=${101} min="0.01" max="1.00" step="0.01" value="${props.chance}"></input>
+                <input tabindex=${101} type="number" min="0.010" max="3.000" step="0.001" value="${props.chance}"></input>
             `;
         }
         chanceField.oninput = (e) => {
@@ -104,7 +105,6 @@ function render(target){
         fieldsContainer.appendChild(chanceField);
         if(target && targetType === props.type){
             target.focus();
-            debugger;
         }
         fieldsContainer.appendChild(chance500Field);
         fieldsContainer.appendChild(chance1000Field);
