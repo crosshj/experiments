@@ -27,13 +27,27 @@ function getProps(node){
     }, {});
 }
 
-function render(){
+function render(target){
     var levelNodes = document.querySelectorAll('Level');
     var levelList = Array.apply([], levelNodes);
+
+    var backupParent;
+    var targetType;
+    if(target){
+        var nearestLevel = target.closest('level');
+        targetType = nearestLevel.getAttribute('type')
+        backupParent = document.createElement('div');
+        backupParent.appendChild(target.parentNode);
+    }
+
     levelList.forEach((node, index) => {
         var props = getProps(node);
         var levelType = props.type;
         var attrs = attrsFromLevelType(levelType);
+        if(target && targetType !== props.type){
+            return;
+        }
+
         node.innerHTML = `
             <div class="${attrs.color} cell">
                 <svg>
@@ -41,30 +55,61 @@ function render(){
                 </svg>
                 <span class="${levelType.length > 6 ? 'limited' : '' }">${levelType}</span>
             </div>
-            <fieldsContainer>
-                <div class="field chance">
-                    <label>Chance</label>
-                    <input tabindex=${101} min="0.01" max="1.00" step="0.01" value="${props.chance}"></input>
-                </div>
-                <div class="field">
-                    <input disabled tabindex=${0} value="${(2 * props.chance).toFixed(3)}"></input>
-                    <label>P500</label>
-                </div>
-                <div class="field">
-                    <input disabled tabindex=${0} value="${(3 * props.chance).toFixed(3)}"></input>
-                    <label>P1000</label>
-                </div>
-                <div class="seperator"></div>
-                <div class="field">
-                    <input disabled tabindex=${0} value="${props.feathers}"></input>
-                    <label>Try Cost</label>
-                </div>
-            </fieldsContainer>
+            <fieldsContainer></fieldsContainer>
         `;
-        node.querySelector('fieldsContainer .chance input').oninput = (e) => {
+
+        var fieldsContainer = node.querySelector('fieldsContainer');
+
+        var chanceField;
+        if(targetType === props.type){
+            chanceField = target.parentNode;
+        }
+        if(!chanceField){
+            chanceField = document.createElement('div');
+            chanceField.className = 'field chance';
+            chanceField.innerHTML = `
+                <label>Chance</label>
+                <input tabindex=${101} min="0.01" max="1.00" step="0.01" value="${props.chance}"></input>
+            `;
+        }
+        chanceField.oninput = (e) => {
             node.setAttribute('chance', e.target.value);
-            render();
+            render(e.target);
         };
+
+        var chance500Field = document.createElement('div');
+        chance500Field.className = 'field';
+        chance500Field.innerHTML = `
+            <input disabled tabindex=${0} value="${(2 * props.chance).toFixed(3)}"></input>
+            <label>P500</label>
+        `;
+
+        var chance1000Field = document.createElement('div');
+        chance1000Field.className = 'field';
+        chance1000Field.innerHTML = `
+            <input disabled tabindex=${0} value="${(3 * props.chance).toFixed(3)}"></input>
+            <label>P1000</label>
+        `;
+
+        var seperator = document.createElement('div');
+        seperator.className = 'seperator';
+
+        var feathersField = document.createElement('div');
+        feathersField.className = 'field';
+        feathersField.innerHTML = `
+            <input disabled tabindex=${0} value="${props.feathers}"></input>
+            <label>Try Cost</label>
+        `;
+
+        fieldsContainer.appendChild(chanceField);
+        if(target && targetType === props.type){
+            target.focus();
+            debugger;
+        }
+        fieldsContainer.appendChild(chance500Field);
+        fieldsContainer.appendChild(chance1000Field);
+        fieldsContainer.appendChild(seperator);
+        fieldsContainer.appendChild(feathersField);
     });
 }
 
