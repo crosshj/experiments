@@ -6,6 +6,29 @@
     src: local(".SFNSText-Light"), local(".HelveticaNeueDeskInterface-Light"), local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light"), local("Roboto-Light"), local("DroidSans"), local("Tahoma");
 }
 
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+/* html {
+    scrollbar-face-color: #646464;
+    scrollbar-base-color: #646464;
+    scrollbar-3dlight-color: #646464;
+    scrollbar-highlight-color: #646464;
+    scrollbar-track-color: #000;
+    scrollbar-arrow-color: #000;
+    scrollbar-shadow-color: #646464;
+    scrollbar-dark-shadow-color: #646464;
+}
+
+::-webkit-scrollbar { width: 10px;}
+::-webkit-scrollbar-button {  background-color: #000; }
+::-webkit-scrollbar-track {  background-color: #000;}
+::-webkit-scrollbar-track-piece { background-color: #666;}
+::-webkit-scrollbar-thumb { background-color: #000;}
+::-webkit-scrollbar-corner { background-color: #000;}}
+::-webkit-resizer { background-color: #666;} */
+
 * {
     box-sizing: border-box;
 }
@@ -21,8 +44,8 @@ body {
 }
 
 div#content {
-    height: 100%;
-    overflow: auto;
+    /* height: 100%; */
+    /* overflow: auto; */
 }
 
 a {
@@ -61,7 +84,8 @@ h1 {
     padding: 15px;
     padding-left: 20px;
     padding-right: 20px;
-    min-height: 47%;
+    min-height: 45%;
+    margin-bottom: 40px;
 }
 
 .cell {
@@ -266,13 +290,22 @@ https://codepen.io/saransh/pen/BKJun
 
 */
   #fancy-background {
-    position: absolute;
-  }
-  body {
+    position: fixed;
     height: 100%;
-    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-    overflow: hidden;
   }
+  html {
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    /* background: red; */
+    /* overflow: hidden; */
+  }
+
+  /* @media (max-aspect-ratio: 16/20) {
+    body {
+        height: 200%;
+        background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        overflow-y: hidden;
+    }
+  } */
 
     /* #title {
     position: absolute;
