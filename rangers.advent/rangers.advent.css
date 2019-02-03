@@ -55,6 +55,7 @@ a {
 h1 {
     text-align: center;
     text-shadow: 1px 1px 12px black;
+    margin-top: 10px;
 }
 
 .row, .notes {

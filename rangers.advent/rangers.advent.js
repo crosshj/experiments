@@ -27,10 +27,11 @@ function getProps(node){
     }, {});
 }
 
-function render(target){
+function renderLevels(target){
     var levelNodes = document.querySelectorAll('Level');
     var levelList = Array.apply([], levelNodes);
 
+    var feathersToSpend = document.querySelector('Situation .field input').value;
     var backupParent;
     var targetType;
     if(target){
@@ -75,7 +76,7 @@ function render(target){
         }
         chanceField.oninput = (e) => {
             node.setAttribute('chance', e.target.value);
-            render(e.target);
+            renderLevels(e.target);
         };
 
         var chance500Field = document.createElement('div');
@@ -94,12 +95,36 @@ function render(target){
 
         var seperator = document.createElement('div');
         seperator.className = 'seperator';
-
+        var tries = Math.floor(feathersToSpend / props.feathers);
         var feathersField = document.createElement('div');
         feathersField.className = 'field';
         feathersField.innerHTML = `
-            <input disabled tabindex=${0} value="${props.feathers}"></input>
-            <label>Try Cost</label>
+            <input disabled tabindex=${0} value="${tries}"></input>
+            <label>Tries ${props.feathers}F</label>
+        `;
+
+        var resultsField = document.createElement('div');
+        resultsField.className = 'field';
+        var results = Math.floor((1 * props.chance).toFixed(3) * tries);
+        resultsField.innerHTML = `
+            <input disabled tabindex=${0} value="${results}"></input>
+            <label>P1 Results</label>
+        `;
+
+        var results500Field = document.createElement('div');
+        results500Field.className = 'field';
+        var results500 = Math.floor((2 * props.chance).toFixed(3) * tries);
+        results500Field.innerHTML = `
+            <input disabled tabindex=${0} value="${results500}"></input>
+            <label>P500 Results</label>
+        `;
+
+        var results1000Field = document.createElement('div');
+        results1000Field.className = 'field';
+        var results1000 = Math.floor((3 * props.chance).toFixed(3) * tries);
+        results1000Field.innerHTML = `
+            <input disabled tabindex=${0} value="${results1000}"></input>
+            <label>P1000 Results</label>
         `;
 
         fieldsContainer.appendChild(chanceField);
@@ -110,9 +135,30 @@ function render(target){
         fieldsContainer.appendChild(chance1000Field);
         fieldsContainer.appendChild(seperator);
         fieldsContainer.appendChild(feathersField);
+        fieldsContainer.appendChild(seperator.cloneNode());
+        fieldsContainer.appendChild(resultsField);
+        fieldsContainer.appendChild(results500Field);
+        fieldsContainer.appendChild(results1000Field);
+
     });
 }
 
+function renderSituation(){
+    var situationNode = document.querySelector('Situation');
+
+    situationNode.innerHTML = `
+        <h4>Situation</h4>
+        <div class="field">
+            <input type"number" value="${situationNode.getAttribute('feathers')}" min=1 max=9999 step=1></input>
+            <label>Feathers To Spend</label>
+        </div>
+    `;
+    situationNode.querySelector('.field input').oninput = (e) => {
+        renderLevels();
+    };
+}
+
 function setupPage(){
-    render();
+    renderSituation();
+    renderLevels();
 }
