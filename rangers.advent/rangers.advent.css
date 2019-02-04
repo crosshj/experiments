@@ -36,7 +36,6 @@
 body {
     font-weight: 500;
     font-size: 12px;
-    background: #1d1411;;
     font-family: "system";
     color: #e4dada;
     margin: 0;
@@ -46,6 +45,7 @@ body {
 div#content {
     /* height: 100%; */
     /* overflow: auto; */
+    padding-bottom: 20px;
 }
 
 a {
