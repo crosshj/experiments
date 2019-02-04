@@ -100,10 +100,9 @@ function renderLevels(target){
         feathersField.className = 'field';
         feathersField.innerHTML = `
             <input disabled tabindex=${0} value="${tries}"></input>
-            <label>
-                <div>Attempts</div>
-                <div>[${props.feathers} Feathers]</div>
-            </label>
+            <label>Attempts</label>
+            <input disabled tabindex=${0} value="${props.feathers}"></input>
+            <label>Cost</label>
         `;
 
         var resultsField = document.createElement('div');
