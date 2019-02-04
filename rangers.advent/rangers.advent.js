@@ -100,15 +100,19 @@ function renderLevels(target){
         feathersField.className = 'field';
         feathersField.innerHTML = `
             <input disabled tabindex=${0} value="${tries}"></input>
-            <label>Tries ${props.feathers}F</label>
+            <label>
+                <div>Attempts</div>
+                <div>[${props.feathers} Feathers]</div>
+            </label>
         `;
 
         var resultsField = document.createElement('div');
         resultsField.className = 'field';
         var results = Math.floor((1 * props.chance).toFixed(3) * tries);
         resultsField.innerHTML = `
+            <label>Results</label>
             <input disabled tabindex=${0} value="${results}"></input>
-            <label>P1 Results</label>
+            <label>P1</label>
         `;
 
         var results500Field = document.createElement('div');
@@ -116,7 +120,7 @@ function renderLevels(target){
         var results500 = Math.floor((2 * props.chance).toFixed(3) * tries);
         results500Field.innerHTML = `
             <input disabled tabindex=${0} value="${results500}"></input>
-            <label>P500 Results</label>
+            <label>P500</label>
         `;
 
         var results1000Field = document.createElement('div');
@@ -124,7 +128,7 @@ function renderLevels(target){
         var results1000 = Math.floor((3 * props.chance).toFixed(3) * tries);
         results1000Field.innerHTML = `
             <input disabled tabindex=${0} value="${results1000}"></input>
-            <label>P1000 Results</label>
+            <label>P1000</label>
         `;
 
         fieldsContainer.appendChild(chanceField);
