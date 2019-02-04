@@ -54,8 +54,9 @@ a {
 
 h1 {
     text-align: center;
-    text-shadow: 1px 1px 12px black;
+    text-shadow: 1px 1px 12px black, 1px -3px 18px #ff00b1;
     margin-top: 10px;
+    color: hsla(297, 100%, 88%, 1);
 }
 
 .row, .notes {
@@ -300,7 +301,7 @@ https://codepen.io/saransh/pen/BKJun
     height: 100%;
   }
   html {
-    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    background: radial-gradient(ellipse at bottom, #20344b 0%, #090a0f 100%)
     /* background: red; */
     /* overflow: hidden; */
   }
