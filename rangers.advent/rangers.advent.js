@@ -70,7 +70,7 @@ function renderLevels(target){
             chanceField = document.createElement('div');
             chanceField.className = 'field chance';
             chanceField.innerHTML = `
-                <label>Chance</label>
+                <label class="highlight">Chance</label>
                 <input tabindex=${101} type="number" min="0.010" max="3.000" step="0.001" value="${props.chance}"></input>
             `;
         }
@@ -99,7 +99,7 @@ function renderLevels(target){
         var feathersField = document.createElement('div');
         feathersField.className = 'field';
         feathersField.innerHTML = `
-            <input disabled tabindex=${0} value="${tries}"></input>
+            <input disabled tabindex=${0} value="${tries}" class="highlight"></input>
             <label>Attempts</label>
             <input disabled tabindex=${0} value="${props.feathers}"></input>
             <label>Cost</label>
@@ -109,7 +109,7 @@ function renderLevels(target){
         resultsField.className = 'field';
         var results = Math.floor((1 * props.chance).toFixed(3) * tries);
         resultsField.innerHTML = `
-            <label>Results</label>
+            <label class="highlight">Results</label>
             <input disabled tabindex=${0} value="${results}"></input>
             <label>P1</label>
         `;

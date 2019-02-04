@@ -195,6 +195,11 @@ fieldsContainer {
     color: #9a834d;
 }
 
+.field .highlight {
+    color: #c79c19 !important;
+    margin-bottom: 3px;
+}
+
 .field input {
     width: 90%;
     background: #675235;
