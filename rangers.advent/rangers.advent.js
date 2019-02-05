@@ -45,6 +45,12 @@ function renderLevels(target){
         var props = getProps(node);
         var levelType = props.type;
         var attrs = attrsFromLevelType(levelType);
+        node.addEventListener('updateModel',
+            function (e) { /* ... */
+                console.log(`--- update ${levelType} level node: ${e.data}`);
+            },
+        false);
+
         if(target && targetType !== props.type){
             return;
         }
@@ -82,14 +88,14 @@ function renderLevels(target){
         var chance500Field = document.createElement('div');
         chance500Field.className = 'field';
         chance500Field.innerHTML = `
-            <input disabled tabindex=${0} value="${(2 * props.chance).toFixed(3)}"></input>
+            <input disabled tabindex=${0} value="${(2 * props.chance).toFixed(4)}"></input>
             <label>P500</label>
         `;
 
         var chance1000Field = document.createElement('div');
         chance1000Field.className = 'field';
         chance1000Field.innerHTML = `
-            <input disabled tabindex=${0} value="${(3 * props.chance).toFixed(3)}"></input>
+            <input disabled tabindex=${0} value="${(3 * props.chance).toFixed(4)}"></input>
             <label>P1000</label>
         `;
 
@@ -107,7 +113,7 @@ function renderLevels(target){
 
         var resultsField = document.createElement('div');
         resultsField.className = 'field';
-        var results = Math.floor((1 * props.chance).toFixed(3) * tries);
+        var results = Math.floor(props.chance * tries);
         resultsField.innerHTML = `
             <label class="highlight">Results</label>
             <input disabled tabindex=${0} value="${results}"></input>
@@ -116,7 +122,7 @@ function renderLevels(target){
 
         var results500Field = document.createElement('div');
         results500Field.className = 'field';
-        var results500 = Math.floor((2 * props.chance).toFixed(3) * tries);
+        var results500 = Math.floor(2 * props.chance * tries);
         results500Field.innerHTML = `
             <input disabled tabindex=${0} value="${results500}"></input>
             <label>P500</label>
@@ -124,7 +130,7 @@ function renderLevels(target){
 
         var results1000Field = document.createElement('div');
         results1000Field.className = 'field';
-        var results1000 = Math.floor((3 * props.chance).toFixed(3) * tries);
+        var results1000 = Math.floor(3 * props.chance * tries);
         results1000Field.innerHTML = `
             <input disabled tabindex=${0} value="${results1000}"></input>
             <label>P1000</label>
@@ -146,22 +152,77 @@ function renderLevels(target){
     });
 }
 
+function reseed(it, tries){
+    var r = new Array(Number(it)).fill();
+    r = r.map(x =>
+        new Array(tries).fill()
+            .map(y => [Math.random, Math.random,Math.random])
+    );
+    //console.log(r[0])
+    return r;
+}
+
 function renderSituation(){
     var situationNode = document.querySelector('Situation');
+    var props = getProps(situationNode);
+
+    var veryEasyCost = getProps(
+        document.querySelector('Level[type="Very Easy"]')
+    ).feathers;
+    var maxTries = Math.floor(props.feathers / veryEasyCost);
+    reseed(props.iterations, maxTries);
 
     situationNode.innerHTML = `
         <h4>Situation</h4>
         <div class="field">
-            <input type"number" value="${situationNode.getAttribute('feathers')}" min=1 max=9999 step=1></input>
+            <input type"number" value="${props.feathers}" step=1></input>
             <label>Feathers To Spend</label>
+            <button>Reseed</button>
         </div>
     `;
-    situationNode.querySelector('.field input').oninput = (e) => {
-        renderLevels();
-    };
+
+    situationNode.querySelector('.field input').oninput =
+        // (e) => updatePage(e);
+        (e) => {
+            reseed(0, 0);
+            //should store seed in localStorage
+            renderLevels();
+        };
+    situationNode.querySelector('.field button').onclick =
+        // (e) => updatePage(e);
+        (e) => {
+            reseed(0, 0);
+            //should store seed in localStorage
+            renderLevels();
+        };
+    situationNode.addEventListener('updateModel',
+        function (e) { /* ... */
+            console.log('--- update situation node: ', e.data);
+        },
+    false);
+}
+
+function updatePageModel(){
+    var pageModel;
+    // change page model based on (except) event.target
+    return pageModel;
+}
+
+function applyPageModel(model, event){
+    // set all values of page elements(except event.target) based on model
+    var event = new Event('updateModel');
+    event.data = 'foo';
+    var situationNode = document.querySelector('Situation');
+    situationNode.dispatchEvent(event);
+}
+
+function updatePage(event){
+    var model = updatePageModel(event);
+    applyPageModel(model, event)
 }
 
 function setupPage(){
     renderSituation();
     renderLevels();
+    applyPageModel();
 }

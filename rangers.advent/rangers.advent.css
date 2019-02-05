@@ -42,6 +42,13 @@ body {
     margin-top: 0px;
 }
 
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
 div#content {
     /* height: 100%; */
     /* overflow: auto; */
@@ -235,6 +242,18 @@ fieldsContainer {
     line-height: 15px;
     font-family: monospace;
     font-size: 16px;
+}
+
+.field button {
+    margin: 7px;
+    width: 90%;
+    text-transform: uppercase;
+    color: #000000;
+    background: #604f32;
+    border: 1px solid black;
+    padding: 6px;
+    border-radius: 5px;
+    box-shadow: inset 0px -2px 0px;
 }
 
 fieldsContainer div.seperator {
