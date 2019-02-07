@@ -76,7 +76,7 @@ function renderLevels(target){
             chanceField = document.createElement('div');
             chanceField.className = 'field chance';
             chanceField.innerHTML = `
-                <label class="highlight">Chance</label>
+                <label class="highlight label">Chance</label>
                 <input tabindex=${101} type="number" min="0.010" max="3.000" step="0.001" value="${props.chance}"></input>
             `;
         }
@@ -162,6 +162,63 @@ function reseed(it, tries){
     return r;
 }
 
+function domToObject(fromNode){
+    var idOrClass = fromNode.id
+        ? fromNode.id
+        : fromNode.classList && fromNode.classList.value;
+
+    var name = idOrClass
+        ? idOrClass
+        : fromNode.nodeName.toLowerCase();
+
+    var obj = { name };
+    if(typeof fromNode.value !== 'undefined'){
+        obj.value = fromNode.value;
+    }
+
+    if(name === '#text'){
+        obj.value = (fromNode.nodeValue||'').trim();
+        if(!obj.value){
+            return;
+        }
+    }
+    if([
+        'h1', 'h2', 'h3', 'h4', 'h5', 'highlight label', 'label', 'span'
+    ].includes(name)){
+        obj.value = fromNode.innerText;
+        return obj;
+    }
+
+    if(fromNode.childNodes.length){
+        var children = Array.from(fromNode.childNodes).map(domToObject);
+
+        (children || []).forEach(x => {
+            if(!x || typeof x === 'undefined' || !x.name){
+                return;
+            }
+            var name = x.name;
+            delete x.name;
+
+            if(x.value){
+                obj[name] = x.value;
+                return
+            }
+
+            if(!obj[name]) {
+                obj[name] = x;
+                return;
+            }
+            if(Array.isArray(obj[name])){
+                obj[name].push(x);
+                return;
+            }
+            obj[name] = [ obj[name], x ];
+        });
+    }
+
+    return obj;
+}
+
 function renderSituation(){
     var situationNode = document.querySelector('Situation');
     var props = getProps(situationNode);
@@ -170,7 +227,7 @@ function renderSituation(){
         document.querySelector('Level[type="Very Easy"]')
     ).feathers;
     var maxTries = Math.floor(props.feathers / veryEasyCost);
-    reseed(props.iterations, maxTries);
+    //reseed(props.iterations, maxTries);
 
     situationNode.innerHTML = `
         <h4>Situation</h4>
@@ -202,8 +259,60 @@ function renderSituation(){
     false);
 }
 
-function updatePageModel(){
-    var pageModel;
+function clone(o){
+    return JSON.parse(JSON.stringify(o));
+}
+
+function updatePageModel(event){
+    var pageModel = clone({
+        initialized: false,
+        LevelList: {
+            model: {
+                attempts: 0,
+                cost: 0,
+                results: {
+                    'P1': {
+                        low: 0,
+                        high: 0
+                    },
+                    'P500': {
+                        low: 0,
+                        high: 0
+                    },
+                    'P1000': {
+                        low: 0,
+                        high: 0
+                    },
+                }
+            },
+            types: [
+                'Very Easy', 'Easy', 'Normal', 'Hard', 'Very Hard'
+            ]
+        },
+        Situation: {
+            feathers: 0,
+            iterations: 0
+        },
+        meta: {
+            maxTries: 0,
+            lowestCost: 0,
+            highestCost: 0,
+        },
+        randomSeed: {
+            opts: {},
+            values: []
+        }
+    });
+
+    pageModel.LevelList = pageModel.LevelList.types.reduce(list, type => {
+        var level = clone(pageModel.LevelList.model);
+        level.type = type;
+        list[type] = level;
+        return list;
+    }, {});
+
+    // TODO: get values for model from page
+
     // change page model based on (except) event.target
     return pageModel;
 }
