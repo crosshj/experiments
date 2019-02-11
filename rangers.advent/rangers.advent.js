@@ -129,7 +129,7 @@ function renderLevels(target, model){
         ['P1', 'P500', 'P1000'].forEach(p => {
             var resultsField = document.createElement('div');
             resultsField.className = 'field';
-            var results = model.levels[levIndex].results[p].low + ' \u2192 ' + model.levels[levIndex].results[p].high;
+            var results = model.levels[levIndex].results[p].low + '\u2192' + model.levels[levIndex].results[p].high;
             var average = `\u03bc ${model.levels[levIndex].results[p].average.toFixed(1)}`;
             var stdDev = `\u03c3 ${model.levels[levIndex].results.P1.stdDev.toFixed(2)}`;
 
