@@ -4,23 +4,26 @@
         margin: 0;
         background: #8a8a8a;
     }
-
     .box {
         filter: url(#outline);
         fill: rgb(216, 216, 216);
     }
-
     .node {
         fill: #aaa;
     }
-
     .node:hover {
         fill: red;
     }
-
     .heavy {
         font: bold 12px sans-serif;
         color: red;
+    }
+    .link path {
+        stroke: #eee;
+        opacity: 1;
+        stroke-width: 2;
+        cursor: crosshair;
+        fill: none;
     }
 </style>
 
@@ -46,6 +49,10 @@
         <circle class="node" cx="10" cy="11" r="5"></circle>
         <circle class="node" cx="10" cy="66" r="5"></circle>
         <text x="25" y="-8" class="heavy">inputs</text>
+    </g>
+
+    <g class="link">
+        <path d="M 112 105 q 40 40 92 60"></path>
     </g>
 
 </svg>
