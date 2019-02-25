@@ -1,0 +1,122 @@
+<style>
+    body {
+        overflow: hidden;
+        margin: 0;
+        background: #8a8a8a;
+    }
+
+    .box {
+        filter: url(#outline);
+        fill: rgb(216, 216, 216);
+    }
+
+    .node {
+        fill: #aaa;
+    }
+
+    .node:hover {
+        fill: red;
+    }
+
+    .heavy {
+        font: bold 12px sans-serif;
+        color: red;
+    }
+</style>
+
+
+<script>
+    function makeDraggable(evt) {
+        var svg = evt.target;
+
+        svg.addEventListener('mousedown', startDrag);
+        svg.addEventListener('mousemove', drag);
+        svg.addEventListener('mouseup', endDrag);
+        svg.addEventListener('mouseleave', endDrag);
+        svg.addEventListener('touchstart', startDrag);
+        svg.addEventListener('touchmove', drag);
+        svg.addEventListener('touchend', endDrag);
+        svg.addEventListener('touchleave', endDrag);
+        svg.addEventListener('touchcancel', endDrag);
+
+        function getMousePosition(evt) {
+            var CTM = svg.getScreenCTM();
+            if (evt.touches) { evt = evt.touches[0]; }
+            return {
+                x: (evt.clientX - CTM.e) / CTM.a,
+                y: (evt.clientY - CTM.f) / CTM.d
+            };
+        }
+
+        var selectedElement, offset, transform;
+
+        function initialiseDragging(evt) {
+            offset = getMousePosition(evt);
+
+            // Make sure the first transform on the element is a translate transform
+            var transforms = selectedElement.transform.baseVal;
+
+            if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                // Create an transform that translates by (0, 0)
+                var translate = svg.createSVGTransform();
+                translate.setTranslate(0, 0);
+                selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+            }
+
+            // Get initial translation
+            transform = transforms.getItem(0);
+            offset.x -= transform.matrix.e;
+            offset.y -= transform.matrix.f;
+        }
+
+        function startDrag(evt) {
+            if (evt.target.classList.contains('draggable')) {
+                selectedElement = evt.target;
+                initialiseDragging(evt);
+            } else if (evt.target.parentNode.classList.contains('draggable-group')) {
+                selectedElement = evt.target.parentNode;
+                initialiseDragging(evt);
+            }
+        }
+
+        function drag(evt) {
+            if (selectedElement) {
+                evt.preventDefault();
+                var coord = getMousePosition(evt);
+                transform.setTranslate(coord.x - offset.x, coord.y - offset.y);
+            }
+        }
+
+        function endDrag(evt) {
+            selectedElement = false;
+        }
+    }
+</script>
+
+
+<svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
+    onload="makeDraggable(evt)"
+>
+    <defs>
+        <filter id="outline">
+            <feMorphology operator="dilate" in="SourceAlpha" radius="1" />
+            <feComposite in="SourceGraphic" />
+        </filter>
+    </defs>
+
+
+    <g class="box draggable-group" transform="translate(30,40)">
+        <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
+        <circle class="node" cx="76" cy="11" r="5"></circle>
+        <circle class="node" cx="76" cy="66" r="5"></circle>
+        <text x="15" y="-8" class="heavy">outputs</text>
+    </g>
+
+    <g class="box draggable-group" transform="translate(200,100)">
+        <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
+        <circle class="node" cx="10" cy="11" r="5"></circle>
+        <circle class="node" cx="10" cy="66" r="5"></circle>
+        <text x="25" y="-8" class="heavy">inputs</text>
+    </g>
+
+</svg>
