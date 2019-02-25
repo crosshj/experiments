@@ -24,6 +24,31 @@
     }
 </style>
 
+<svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
+    onload="makeDraggable(evt)">
+    <defs>
+        <filter id="outline">
+            <feMorphology operator="dilate" in="SourceAlpha" radius="1" />
+            <feComposite in="SourceGraphic" />
+        </filter>
+    </defs>
+
+
+    <g class="box draggable-group" transform="translate(30,40)">
+        <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
+        <circle class="node" cx="76" cy="11" r="5"></circle>
+        <circle class="node" cx="76" cy="66" r="5"></circle>
+        <text x="15" y="-8" class="heavy">outputs</text>
+    </g>
+
+    <g class="box draggable-group" transform="translate(200,100)">
+        <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
+        <circle class="node" cx="10" cy="11" r="5"></circle>
+        <circle class="node" cx="10" cy="66" r="5"></circle>
+        <text x="25" y="-8" class="heavy">inputs</text>
+    </g>
+
+</svg>
 
 <script>
     function makeDraggable(evt) {
@@ -69,22 +94,43 @@
             offset.y -= transform.matrix.f;
         }
 
-        function startDrag(evt) {
-            if (evt.target.classList.contains('draggable')) {
-                selectedElement = evt.target;
-                initialiseDragging(evt);
-            } else if (evt.target.parentNode.classList.contains('draggable-group')) {
-                selectedElement = evt.target.parentNode;
-                initialiseDragging(evt);
-            }
+        function startDrag(evt){
+            const nodeDrag = {
+                test: () => evt.target.classList.contains('node'),
+                start: () => {
+                    console.log('wire drag start');
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                }
+            };
+            const groupDrag = {
+                test: () => evt.target.parentNode.classList.contains('draggable-group'),
+                start: () => {
+                    selectedElement = evt.target.parentNode;
+                    initialiseDragging(evt);
+                }
+            };
+
+            const result = [
+                nodeDrag, groupDrag
+            ].filter(x => {
+                try {
+                    return x.test();
+                } catch (e){
+                    return false;
+                }
+            })[0];
+
+            result && result.start();
         }
 
         function drag(evt) {
-            if (selectedElement) {
-                evt.preventDefault();
-                var coord = getMousePosition(evt);
-                transform.setTranslate(coord.x - offset.x, coord.y - offset.y);
+            if (!selectedElement) {
+                return;
             }
+            evt.preventDefault();
+            var coord = getMousePosition(evt);
+            transform.setTranslate(coord.x - offset.x, coord.y - offset.y);
         }
 
         function endDrag(evt) {
@@ -92,31 +138,3 @@
         }
     }
 </script>
-
-
-<svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
-    onload="makeDraggable(evt)"
->
-    <defs>
-        <filter id="outline">
-            <feMorphology operator="dilate" in="SourceAlpha" radius="1" />
-            <feComposite in="SourceGraphic" />
-        </filter>
-    </defs>
-
-
-    <g class="box draggable-group" transform="translate(30,40)">
-        <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
-        <circle class="node" cx="76" cy="11" r="5"></circle>
-        <circle class="node" cx="76" cy="66" r="5"></circle>
-        <text x="15" y="-8" class="heavy">outputs</text>
-    </g>
-
-    <g class="box draggable-group" transform="translate(200,100)">
-        <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
-        <circle class="node" cx="10" cy="11" r="5"></circle>
-        <circle class="node" cx="10" cy="66" r="5"></circle>
-        <text x="25" y="-8" class="heavy">inputs</text>
-    </g>
-
-</svg>
