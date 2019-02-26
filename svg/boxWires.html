@@ -4,6 +4,9 @@
         margin: 0;
         background: #8a8a8a;
     }
+    #canvas {
+        padding-left: 275px;
+    }
     .box {
         filter: url(#outline);
         fill: rgb(216, 216, 216);
@@ -37,7 +40,7 @@
     </defs>
 
 
-    <g class="box draggable-group" transform="translate(30,40)">
+    <g id="outputs" class="box draggable-group" transform="translate(30,40)">
         <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
         <circle class="node" cx="76" cy="11" r="5"></circle>
         <circle class="node" cx="76" cy="66" r="5"></circle>
@@ -52,10 +55,40 @@
     </g>
 
     <g class="link">
-        <path d="M 112 105 q 40 40 92 60"></path>
+        <path d="M 112 105 C
+            162 105
+            144 167
+            204 167"></path>
     </g>
 
 </svg>
+
+<script>
+    (function(){
+        if(!document.location+''.includes('localhost')){
+            return;
+        }
+        function getHash(str){
+            return str.split('').reduce((prevHash, currVal) =>
+                (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+        }
+        var hash;
+        function pageIsChanged(){
+            fetch(document.location).then(x => x.text()).then(x => {
+                const newHash = getHash(x);
+                hash = hash || newHash;
+
+                if(hash === newHash){
+                    return;
+                }
+                document.location.reload();
+            });
+        }
+
+        console.log('=== Simple Hot Reload ===');
+        var refreshInterval = setInterval(pageIsChanged, 1000);
+    })();
+</script>
 
 <script>
     function makeDraggable(evt) {
@@ -65,8 +98,8 @@
         svg.addEventListener('mousemove', drag);
         svg.addEventListener('mouseup', endDrag);
         svg.addEventListener('mouseleave', endDrag);
-        svg.addEventListener('touchstart', startDrag);
-        svg.addEventListener('touchmove', drag);
+        svg.addEventListener('touchstart', startDrag, {passive: true});
+        svg.addEventListener('touchmove', drag, {passive: true});
         svg.addEventListener('touchend', endDrag);
         svg.addEventListener('touchleave', endDrag);
         svg.addEventListener('touchcancel', endDrag);
@@ -81,6 +114,15 @@
         }
 
         var selectedElement, offset, transform;
+
+        var links = [{
+            start: '#outputs circle:nth-child(3)',
+            end: '#outputs circle:nth-child(3)'
+        }];
+
+        function updateConnectedLinks(){
+
+        }
 
         function initialiseDragging(evt) {
             offset = getMousePosition(evt);
@@ -99,6 +141,8 @@
             transform = transforms.getItem(0);
             offset.x -= transform.matrix.e;
             offset.y -= transform.matrix.f;
+
+            updateConnectedLinks(evt);
         }
 
         function startDrag(evt){
