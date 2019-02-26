@@ -1,3 +1,22 @@
+<!--
+
+    NOTES:
+    - move towards greater objective-orientation in code
+
+    ISSUES:
+    - move start then move end, start doesn't stay in right place
+
+    TODO:
+    - wires: CRUD
+    - boxes: CRUD
+    - boxes: indicator on node that it is linked (small dot)
+    - wires: animation and indicators (arrows)
+    - boxes: collision detection
+    - page: zoom/pan with memory
+
+-->
+
+
 <style>
     body {
         overflow: hidden;
@@ -5,7 +24,7 @@
         background: #8a8a8a;
     }
     #canvas {
-        padding-left: 275px;
+        /* padding-left: 275px; */
     }
     .box {
         filter: url(#outline);
@@ -22,9 +41,9 @@
         color: red;
     }
     .link path {
-        stroke: #eee;
+        stroke: #222;
         opacity: 1;
-        stroke-width: 2;
+        stroke-width: 1px;
         cursor: crosshair;
         fill: none;
     }
@@ -39,6 +58,14 @@
         </filter>
     </defs>
 
+    <g id="exampleLink" class="link">
+        <path d="
+            M 107 106
+            C 158 106
+              158 167
+              209 167">
+        </path>
+    </g>
 
     <g id="outputs" class="box draggable-group" transform="translate(30,40)">
         <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
@@ -47,48 +74,14 @@
         <text x="15" y="-8" class="heavy">outputs</text>
     </g>
 
-    <g class="box draggable-group" transform="translate(200,100)">
+    <g id="inputs" class="box draggable-group" transform="translate(200,100)">
         <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
         <circle class="node" cx="10" cy="11" r="5"></circle>
         <circle class="node" cx="10" cy="66" r="5"></circle>
         <text x="25" y="-8" class="heavy">inputs</text>
     </g>
 
-    <g class="link">
-        <path d="M 112 105 C
-            162 105
-            144 167
-            204 167"></path>
-    </g>
-
 </svg>
-
-<script>
-    (function(){
-        if(!document.location+''.includes('localhost')){
-            return;
-        }
-        function getHash(str){
-            return str.split('').reduce((prevHash, currVal) =>
-                (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
-        }
-        var hash;
-        function pageIsChanged(){
-            fetch(document.location).then(x => x.text()).then(x => {
-                const newHash = getHash(x);
-                hash = hash || newHash;
-
-                if(hash === newHash){
-                    return;
-                }
-                document.location.reload();
-            });
-        }
-
-        console.log('=== Simple Hot Reload ===');
-        var refreshInterval = setInterval(pageIsChanged, 1000);
-    })();
-</script>
 
 <script>
     function makeDraggable(evt) {
@@ -116,12 +109,94 @@
         var selectedElement, offset, transform;
 
         var links = [{
-            start: '#outputs circle:nth-child(3)',
-            end: '#outputs circle:nth-child(3)'
+            element: document.getElementById('exampleLink'),
+            start: document.querySelector('#outputs circle:nth-child(3)'),
+            end: document.querySelector('#inputs circle:nth-child(3)'),
         }];
 
-        function updateConnectedLinks(){
+        links.forEach(link => {
+            link.originalPathD = link.element.querySelector('path')
+                        .getAttribute('d')
+                        .replace(/\n/g, ' ')
+                        .replace(/ +(?= )/g,'');
+            link.startOriginalOffsetX = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
+            link.startOriginalOffsetY = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
+            link.endOriginalOffsetX = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
+            link.endOriginalOffsetY = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
 
+            const pathD = link.originalPathD;
+            const pathObj = pathDToObj(pathD);
+            pathObj.c1.x = (pathObj.c3.x - pathObj.m.x)*.5 + Number(pathObj.m.x);
+            pathObj.c1.y = pathObj.m.y;
+            pathObj.c2.x = (pathObj.c3.x - pathObj.m.x)*.5 + Number(pathObj.m.x);
+            pathObj.c2.y = pathObj.c3.y;
+            const newPathString = objToPathD(pathObj);
+            link.element.querySelector('path').setAttribute('d', newPathString)
+        });
+
+        function pathDToObj(pathD){
+            const matches = pathD.match(/[0-9]+/g);
+            return {
+                m: {
+                    x: matches[0],
+                    y: matches[1]
+                },
+                c1: {
+                    x: matches[2],
+                    y: matches[3]
+                },
+                c2: {
+                    x: matches[4],
+                    y: matches[5]
+                },
+                c3: {
+                    x: matches[6],
+                    y: matches[7]
+                }
+            };
+        }
+
+        function objToPathD(o){
+            return `M ${o.m.x} ${o.m.y} C ${o.c1.x} ${o.c1.y} ${o.c2.x} ${o.c2.y} ${o.c3.x} ${o.c3.y}`;
+        }
+
+        function updateConnectedLinks(event, x, y){
+            //console.log('updateConnectedLinks');
+            const target = event.target.parentNode;
+            links.forEach(link => {
+                const containsStart = target.contains(link.start);
+                const containsEnd = target.contains(link.end);
+                const pathD = link.originalPathD;
+                const pathObj = pathDToObj(pathD);
+
+                if(containsStart){
+                    console.log('start of link is connected');
+                    const moveX = link.startOriginalOffsetX - x;
+                    const moveY = link.startOriginalOffsetY - y;
+                    pathObj.m.x -= moveX;
+                    pathObj.m.y -= moveY;
+                    pathObj.c1.x = (pathObj.c3.x - pathObj.m.x)/2 + Number(pathObj.m.x);
+                    pathObj.c1.y = pathObj.m.y;
+                    pathObj.c2.x = (pathObj.c3.x - pathObj.m.x)/2 + Number(pathObj.m.x);
+                    pathObj.c2.y = pathObj.c3.y;
+                    const newPathString = objToPathD(pathObj);
+                    link.element.querySelector('path').setAttribute('d', newPathString);
+                    //console.log({ pathD, x, y });
+                }
+                if(containsEnd){
+                    console.log('end of link is connected');
+                    const moveX = link.endOriginalOffsetX - x;
+                    const moveY = link.endOriginalOffsetY - y;
+                    pathObj.c3.x -= moveX;
+                    pathObj.c3.y -= moveY;
+                    pathObj.c1.x = (pathObj.c3.x - pathObj.m.x)/2 + Number(pathObj.m.x);
+                    pathObj.c1.y = pathObj.m.y;
+                    pathObj.c2.x = (pathObj.c3.x - pathObj.m.x)/2 + Number(pathObj.m.x);
+                    pathObj.c2.y = pathObj.c3.y;
+                    const newPathString = objToPathD(pathObj);
+                    link.element.querySelector('path').setAttribute('d', newPathString);
+                }
+            });
         }
 
         function initialiseDragging(evt) {
@@ -141,8 +216,6 @@
             transform = transforms.getItem(0);
             offset.x -= transform.matrix.e;
             offset.y -= transform.matrix.f;
-
-            updateConnectedLinks(evt);
         }
 
         function startDrag(evt){
@@ -182,6 +255,7 @@
             evt.preventDefault();
             var coord = getMousePosition(evt);
             transform.setTranslate(coord.x - offset.x, coord.y - offset.y);
+            updateConnectedLinks(evt, coord.x - offset.x, coord.y - offset.y);
         }
 
         function endDrag(evt) {
@@ -189,3 +263,30 @@
         }
     }
 </script>
+
+<script>
+        (function(){
+            if(!document.location+''.includes('localhost')){
+                return;
+            }
+            function getHash(str){
+                return str.split('').reduce((prevHash, currVal) =>
+                    (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+            }
+            var hash;
+            function pageIsChanged(){
+                fetch(document.location).then(x => x.text()).then(x => {
+                    const newHash = getHash(x);
+                    hash = hash || newHash;
+
+                    if(hash === newHash){
+                        return;
+                    }
+                    document.location.reload();
+                });
+            }
+
+            console.log('=== Simple Hot Reload ===');
+            var refreshInterval = setInterval(pageIsChanged, 1000);
+        })();
+    </script>
