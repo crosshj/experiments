@@ -4,7 +4,6 @@
     - move towards greater objective-orientation in code
 
     ISSUES:
-    - move start then move end, start doesn't stay in right place
 
     TODO:
     - wires: CRUD
@@ -16,39 +15,54 @@
 
 -->
 
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boxes and Wires Playground</title>
+</head>
+
 <style>
   body {
     overflow: hidden;
     margin: 0;
     /* background: #8a8a8a; */
     /* background: transparent; */
+    background-color: #8179af;
     background: url(terrain1.svg);
+    background-size: 1400px 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
   }
 
   #canvas {
     /* padding-left: 275px; */
+    width: 550px;
+    border: 1px solid #06c300;
+    background: #00c5514d;
+    margin-top: 20px;
   }
 
   .box {
     filter: url(#outline);
-    fill: rgb(216, 216, 216);
+    fill: #55636d;
   }
 
   .node {
-    fill: #aaa;
+    fill: #607b6a;
   }
 
   .node:hover {
-    fill: red;
+    fill: greenyellow;
   }
 
   .heavy {
-    font: bold 12px sans-serif;
-    color: red;
+    font: bold 12px monospace;
+    fill: #07e407;
   }
 
   .link path {
-    stroke: #222;
+    stroke: #046d14;
     opacity: 1;
     stroke-width: 1px;
     cursor: crosshair;
@@ -60,8 +74,14 @@
   onload="makeDraggable(evt)">
   <defs>
     <filter id="outline">
-      <feMorphology operator="dilate" in="SourceAlpha" radius="1" />
-      <feComposite in="SourceGraphic" />
+      <feMorphology operator="dilate" in="SourceGraphic" result="DILATED" radius="1" />
+      <feFlood flood-color="#06c300" flood-opacity="1" result="COLORED"></feFlood>
+      <feComposite in="COLORED" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
+
+      <feMerge>
+          <feMergeNode in="OUTLINE" />
+          <feMergeNode in="SourceGraphic" />
+      </feMerge>
     </filter>
   </defs>
 
@@ -73,19 +93,27 @@
             209 167">
     </path>
   </g>
+  <g id="exampleLink2" class="link">
+    <path d="
+          M 107 51
+          C 158 51
+            158 111
+            209 111">
+    </path>
+  </g>
 
   <g id="outputs" class="box draggable-group" transform="translate(30,40)">
     <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
     <circle class="node" cx="76" cy="11" r="5"></circle>
     <circle class="node" cx="76" cy="66" r="5"></circle>
-    <text x="15" y="-8" class="heavy">outputs</text>
+    <text x="15" y="15" class="heavy">outputs</text>
   </g>
 
   <g id="inputs" class="box draggable-group" transform="translate(200,100)">
     <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
     <circle class="node" cx="10" cy="11" r="5"></circle>
     <circle class="node" cx="10" cy="66" r="5"></circle>
-    <text x="25" y="-8" class="heavy">inputs</text>
+    <text x="25" y="15" class="heavy">inputs</text>
   </g>
 
 </svg>
@@ -119,6 +147,10 @@
       element: document.getElementById('exampleLink'),
       start: document.querySelector('#outputs circle:nth-child(3)'),
       end: document.querySelector('#inputs circle:nth-child(3)'),
+    }, {
+      element: document.getElementById('exampleLink2'),
+      start: document.querySelector('#outputs circle:nth-child(2)'),
+      end: document.querySelector('#inputs circle:nth-child(2)'),
     }];
 
     links.forEach(link => {
@@ -131,18 +163,23 @@
       link.endOriginalOffsetX = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
       link.endOriginalOffsetY = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
 
+      link.startOffsetX = Number(link.startOriginalOffsetX);
+      link.startOffsetY = Number(link.startOriginalOffsetY)
+      link.endOffsetX = Number(link.endOriginalOffsetX);
+      link.endOffsetY = Number(link.endOriginalOffsetY);
+
       const pathD = link.originalPathD;
       const pathObj = pathDToObj(pathD);
-      pathObj.c1.x = (pathObj.c3.x - pathObj.m.x) * .5 + Number(pathObj.m.x);
+      pathObj.c1.x = (pathObj.c3.x - pathObj.m.x) * .5 + pathObj.m.x;
       pathObj.c1.y = pathObj.m.y;
-      pathObj.c2.x = (pathObj.c3.x - pathObj.m.x) * .5 + Number(pathObj.m.x);
+      pathObj.c2.x = (pathObj.c3.x - pathObj.m.x) * .5 + pathObj.m.x;
       pathObj.c2.y = pathObj.c3.y;
-      const newPathString = objToPathD(pathObj);
-      link.element.querySelector('path').setAttribute('d', newPathString)
+      link.originalPathD = objToPathD(pathObj);
+      link.element.querySelector('path').setAttribute('d', link.originalPathD)
     });
 
     function pathDToObj(pathD) {
-      const matches = pathD.match(/[0-9]+/g);
+      const matches = pathD.match(/[0-9]+/g).map(Number);
       return {
         m: {
           x: matches[0],
@@ -171,38 +208,36 @@
       //console.log('updateConnectedLinks');
       const target = event.target.parentNode;
       links.forEach(link => {
-        const containsStart = target.contains(link.start);
-        const containsEnd = target.contains(link.end);
+        const containsStart = target.classList.contains('box') && target.contains(link.start);
+        const containsEnd = target.classList.contains('box') && target.contains(link.end);
+        if(!containsStart && !containsEnd){
+          return;
+        }
+
         const pathD = link.originalPathD;
         const pathObj = pathDToObj(pathD);
 
         if (containsStart) {
-          console.log('start of link is connected');
-          const moveX = link.startOriginalOffsetX - x;
-          const moveY = link.startOriginalOffsetY - y;
-          pathObj.m.x -= moveX;
-          pathObj.m.y -= moveY;
-          pathObj.c1.x = (pathObj.c3.x - pathObj.m.x) / 2 + Number(pathObj.m.x);
-          pathObj.c1.y = pathObj.m.y;
-          pathObj.c2.x = (pathObj.c3.x - pathObj.m.x) / 2 + Number(pathObj.m.x);
-          pathObj.c2.y = pathObj.c3.y;
-          const newPathString = objToPathD(pathObj);
-          link.element.querySelector('path').setAttribute('d', newPathString);
-          //console.log({ pathD, x, y });
+          link.startOffsetX = x;
+          link.startOffsetY = y;
         }
         if (containsEnd) {
-          console.log('end of link is connected');
-          const moveX = link.endOriginalOffsetX - x;
-          const moveY = link.endOriginalOffsetY - y;
-          pathObj.c3.x -= moveX;
-          pathObj.c3.y -= moveY;
-          pathObj.c1.x = (pathObj.c3.x - pathObj.m.x) / 2 + Number(pathObj.m.x);
-          pathObj.c1.y = pathObj.m.y;
-          pathObj.c2.x = (pathObj.c3.x - pathObj.m.x) / 2 + Number(pathObj.m.x);
-          pathObj.c2.y = pathObj.c3.y;
-          const newPathString = objToPathD(pathObj);
-          link.element.querySelector('path').setAttribute('d', newPathString);
+          link.endOffsetX = x;
+          link.endOffsetY = y;
         }
+
+        pathObj.m.x += (link.startOffsetX - link.startOriginalOffsetX);
+        pathObj.m.y += (link.startOffsetY - link.startOriginalOffsetY);
+        pathObj.c3.x += (link.endOffsetX - link.endOriginalOffsetX);
+        pathObj.c3.y += (link.endOffsetY - link.endOriginalOffsetY);
+
+        pathObj.c1.x = (pathObj.c3.x - pathObj.m.x) / 2 + pathObj.m.x;
+        pathObj.c1.y = pathObj.m.y;
+        pathObj.c2.x = (pathObj.c3.x - pathObj.m.x) / 2 + pathObj.m.x;
+        pathObj.c2.y = pathObj.c3.y;
+        const newPathString = objToPathD(pathObj);
+        link.element.querySelector('path').setAttribute('d', newPathString);
+        //console.log(newPathString);
       });
     }
 
