@@ -273,7 +273,7 @@
 
 <script>
   (function () {
-    if (!document.location + ''.includes('localhost')) {
+    if (!(document.location + '').includes('localhost')) {
       return;
     }
     function getHash(str) {
