@@ -1,49 +1,7 @@
-<style>
-    body {
-        margin: 0;
-    }
-
-    #terrain {
-        width: 100%;
-        height: 100%;
-    }
-
-    #sky {
-        fill: url(#sky-gradient);
-    }
-
-    #sky-gradient {
-        --color-stop-1: rgb(193, 177, 255);
-        --color-stop-2: rgb(76, 76, 109);
-    }
-
-    #far-mountains {
-        mix-blend-mode: luminosity;
-        fill: #0000002b;
-        filter: url(#noise-blur-lite);
-    }
-
-    #right-cloud {
-        filter: url(#noise-blur);
-        opacity: .8;
-        fill: url(#gradient-8);
-        paint-order: stroke;
-        mix-blend-mode: luminosity;
-    }
-
-    #left-cloud {
-        filter: url(#noise-blur);
-        opacity: .4;
-        paint-order: stroke;
-        fill: url(#gradient-1);
-        mix-blend-mode: luminosity;
-    }
-</style>
-
-<!--
-    created at https://boxy-svg.com/app
--->
 <svg id="terrain" preserveAspectRatio="none" viewBox="19.026 65.449 445.205 370.624" xmlns="http://www.w3.org/2000/svg">
+    <!--
+        started from a drawing at https://boxy-svg.com/app
+    -->
     <defs>
         <pattern id="pattern-0" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse" viewBox="0 0 100 100">
             <rect x="0" y="0" width="50" height="100" style="fill: black;"></rect>
@@ -105,4 +63,44 @@
         d="M 8.461 386.368 C 57.284 381.882 65.283 387.63 98.506 387.753 C 139.603 387.907 190.609 381.033 230.895 385.277 C 267.715 389.157 280.684 377.15 319.239 381.376 C 345.567 384.261 399.223 388.207 399.223 388.207 L 470.464 386.893 L 472.125 452.055 L 9.355 451.267 C 9.355 451.267 7.12 386.492 8.461 386.368 Z">
     </path>
 
+    <style>
+        /* <![CDATA[ */
+
+        #terrain {
+            width: 100%;
+            height: 100%;
+        }
+
+        #sky {
+            fill: url(#sky-gradient);
+        }
+
+        #sky-gradient {
+            --color-stop-1: rgb(193, 177, 255);
+            --color-stop-2: rgb(76, 76, 109);
+        }
+
+        #far-mountains {
+            mix-blend-mode: luminosity;
+            fill: #0000002b;
+            filter: url(#noise-blur-lite);
+        }
+
+        #right-cloud {
+            filter: url(#noise-blur);
+            opacity: .8;
+            fill: url(#gradient-8);
+            paint-order: stroke;
+            mix-blend-mode: luminosity;
+        }
+
+        #left-cloud {
+            filter: url(#noise-blur);
+            opacity: .4;
+            paint-order: stroke;
+            fill: url(#gradient-1);
+            mix-blend-mode: luminosity;
+        }
+        /* ]]> */
+    </style>
 </svg>
