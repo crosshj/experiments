@@ -15,6 +15,7 @@
 
     RESOURCES:
     - path tool - https://codepen.io/thebabydino/full/EKLNvZ
+    - path info - https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
 
 -->
 
@@ -82,8 +83,8 @@
       <feComposite in="COLORED" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
 
       <feMerge>
-          <feMergeNode in="OUTLINE" />
-          <feMergeNode in="SourceGraphic" />
+        <feMergeNode in="OUTLINE" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
   </defs>
@@ -129,8 +130,8 @@
     svg.addEventListener('mousemove', drag);
     svg.addEventListener('mouseup', endDrag);
     svg.addEventListener('mouseleave', endDrag);
-    svg.addEventListener('touchstart', startDrag, { passive: true });
-    svg.addEventListener('touchmove', drag, { passive: true });
+    svg.addEventListener('touchstart', startDrag, { passive: false });
+    svg.addEventListener('touchmove', drag, { passive: false });
     svg.addEventListener('touchend', endDrag);
     svg.addEventListener('touchleave', endDrag);
     svg.addEventListener('touchcancel', endDrag);
@@ -156,6 +157,38 @@
       end: document.querySelector('#inputs circle:nth-child(2)'),
     }];
 
+    function calculateControls(p) {
+      const xDifference = p.c3.x - p.m.x;
+      const yDifference = p.c3.y - p.m.y;
+
+      const xMult = 0.5;
+      const yMult = 0;
+      // const xMult = xDifference < 0
+      //   ? - Math.abs(xDifference / 5 )
+      //   : 0 //1 - Math.abs(xDifference) / Math.abs(yDifference);
+      // const yMult = yDifference < 0
+      //   ? - Math.abs(yDifference / 5 )
+      //   : 0 //1 - Math.abs(yDifference) / Math.abs(xDifference);
+
+      const controls = {
+        c1: {
+          x: p.m.x + (xDifference * xMult),
+          y: p.m.y + (yDifference * yMult)
+        },
+        c2: {
+          x: p.c3.x - (xDifference * xMult),
+          y: p.c3.y - (yDifference * yMult)
+        }
+      };
+
+
+      // console.log({
+      //   xDifference, yDifference
+      // });
+
+      return controls;
+    }
+
     links.forEach(link => {
       link.originalPathD = link.element.querySelector('path')
         .getAttribute('d')
@@ -173,10 +206,11 @@
 
       const pathD = link.originalPathD;
       const pathObj = pathDToObj(pathD);
-      pathObj.c1.x = (pathObj.c3.x - pathObj.m.x) * .5 + pathObj.m.x;
-      pathObj.c1.y = pathObj.m.y;
-      pathObj.c2.x = (pathObj.c3.x - pathObj.m.x) * .5 + pathObj.m.x;
-      pathObj.c2.y = pathObj.c3.y;
+
+      const controlPoints = calculateControls(pathObj);
+      pathObj.c1 = controlPoints.c1;
+      pathObj.c2 = controlPoints.c2;
+
       link.originalPathD = objToPathD(pathObj);
       link.element.querySelector('path').setAttribute('d', link.originalPathD)
     });
@@ -213,7 +247,7 @@
       links.forEach(link => {
         const containsStart = target.classList.contains('box') && target.contains(link.start);
         const containsEnd = target.classList.contains('box') && target.contains(link.end);
-        if(!containsStart && !containsEnd){
+        if (!containsStart && !containsEnd) {
           return;
         }
 
@@ -234,10 +268,10 @@
         pathObj.c3.x += (link.endOffsetX - link.endOriginalOffsetX);
         pathObj.c3.y += (link.endOffsetY - link.endOriginalOffsetY);
 
-        pathObj.c1.x = (pathObj.c3.x - pathObj.m.x) / 2 + pathObj.m.x;
-        pathObj.c1.y = pathObj.m.y;
-        pathObj.c2.x = (pathObj.c3.x - pathObj.m.x) / 2 + pathObj.m.x;
-        pathObj.c2.y = pathObj.c3.y;
+        const controlPoints = calculateControls(pathObj);
+        pathObj.c1 = controlPoints.c1;
+        pathObj.c2 = controlPoints.c2;
+
         const newPathString = objToPathD(pathObj);
         link.element.querySelector('path').setAttribute('d', newPathString);
         //console.log(newPathString);
