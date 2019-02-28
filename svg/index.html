@@ -12,6 +12,7 @@
     - wires: animation and indicators (arrows)
     - boxes: collision detection
     - page: zoom/pan with memory
+    - creation of scene from json
 
     RESOURCES:
     - path tool - https://codepen.io/thebabydino/full/EKLNvZ
@@ -49,7 +50,7 @@
 
   .box {
     filter: url(#outline);
-    fill: #55636d;
+    fill: #17670057;
   }
 
   .node {
@@ -61,8 +62,8 @@
   }
 
   .heavy {
-    font: bold 12px monospace;
-    fill: #07e407;
+    font: bold 13px monospace;
+    fill: #000;
   }
 
   .link path {
@@ -161,8 +162,18 @@
       const xDifference = p.c3.x - p.m.x;
       const yDifference = p.c3.y - p.m.y;
 
-      const xMult = 0.5;
+      const xMult = xDifference < 0
+        ? -2
+        : 0.5;
       const yMult = 0;
+
+      const yCurve = Math.abs(xDifference) < 30
+        ? 150 * (Math.abs(xDifference)/30)
+        : 150;
+      const yOffset = xDifference < 30
+        ? yDifference < 0 ? -yCurve : yCurve
+        : 0
+
       // const xMult = xDifference < 0
       //   ? - Math.abs(xDifference / 5 )
       //   : 0 //1 - Math.abs(xDifference) / Math.abs(yDifference);
@@ -173,11 +184,11 @@
       const controls = {
         c1: {
           x: p.m.x + (xDifference * xMult),
-          y: p.m.y + (yDifference * yMult)
+          y: p.m.y + (yDifference * yMult) + yOffset
         },
         c2: {
           x: p.c3.x - (xDifference * xMult),
-          y: p.c3.y - (yDifference * yMult)
+          y: p.c3.y - (yDifference * yMult) - yOffset
         }
       };
 
