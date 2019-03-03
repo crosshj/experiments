@@ -43,22 +43,23 @@
   #canvas {
     /* padding-left: 275px; */
     width: 550px;
-    border: 1px solid #06c300;
-    background: #00c5514d;
+    /* border: 1px solid #06c300; */
+    background: #33ccdd22;
     margin-top: 20px;
   }
 
   .box {
     filter: url(#outline);
     fill: #17670057;
+    cursor: default;
   }
 
   .node {
-    fill: #607b6a;
+    /* fill: purple; */
   }
 
   .node:hover {
-    fill: greenyellow;
+    fill: purple;
   }
 
   .heavy {
@@ -67,10 +68,9 @@
   }
 
   .link path {
-    stroke: #046d14;
+    stroke: #aa00aa;
     opacity: 1;
     stroke-width: 1px;
-    cursor: crosshair;
     fill: none;
   }
 </style>
@@ -80,7 +80,7 @@
   <defs>
     <filter id="outline">
       <feMorphology operator="dilate" in="SourceGraphic" result="DILATED" radius="1" />
-      <feFlood flood-color="#06c300" flood-opacity="1" result="COLORED"></feFlood>
+      <feFlood flood-color="#aa00aa" flood-opacity="1" result="COLORED"></feFlood>
       <feComposite in="COLORED" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
 
       <feMerge>
@@ -90,35 +90,31 @@
     </filter>
   </defs>
 
-  <g id="exampleLink" class="link">
-    <path d="
-          M 107 106
-          C 158 106
-            158 167
-            209 167">
-    </path>
-  </g>
-  <g id="exampleLink2" class="link">
-    <path d="
-          M 107 51
-          C 158 51
-            158 111
-            209 111">
-    </path>
+  <g id="links">
+    <!-- LINKS ARE CREATED DYNAMICALLY -->
   </g>
 
-  <g id="outputs" class="box draggable-group" transform="translate(30,40)">
+  <g id="outputs" class="box draggable-group" transform="translate(210,50)">
     <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
     <circle class="node" cx="76" cy="11" r="5"></circle>
     <circle class="node" cx="76" cy="66" r="5"></circle>
-    <text x="15" y="15" class="heavy">outputs</text>
+    <text x="10" y="40" class="heavy">shadrach</text>
   </g>
 
-  <g id="inputs" class="box draggable-group" transform="translate(200,100)">
+  <g id="inputs" class="box draggable-group" transform="translate(200,200)">
     <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
     <circle class="node" cx="10" cy="11" r="5"></circle>
     <circle class="node" cx="10" cy="66" r="5"></circle>
-    <text x="25" y="15" class="heavy">inputs</text>
+    <circle class="node" cx="86" cy="11" r="5"></circle>
+    <circle class="node" cx="86" cy="66" r="5"></circle>
+    <text x="20" y="40" class="heavy">meshach</text>
+  </g>
+
+  <g id="other" class="box draggable-group" transform="translate(200,350)">
+    <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
+    <circle class="node" cx="10" cy="11" r="5"></circle>
+    <circle class="node" cx="86" cy="11" r="5"></circle>
+    <text x="20" y="40" class="heavy">abednego</text>
   </g>
 
 </svg>
@@ -149,13 +145,14 @@
     var selectedElement, offset, transform;
 
     var links = [{
-      element: document.getElementById('exampleLink'),
       start: document.querySelector('#outputs circle:nth-child(3)'),
       end: document.querySelector('#inputs circle:nth-child(3)'),
     }, {
-      element: document.getElementById('exampleLink2'),
       start: document.querySelector('#outputs circle:nth-child(2)'),
       end: document.querySelector('#inputs circle:nth-child(2)'),
+    }, {
+      start: document.querySelector('#inputs circle:nth-child(4)'),
+      end: document.querySelector('#other circle:nth-child(2)'),
     }];
 
     function calculateControls(p) {
@@ -200,8 +197,47 @@
       return controls;
     }
 
+    function createLinkElement(link){
+        const namespaceURI = document.getElementById('canvas').namespaceURI;
+        const linkElement = document.createElementNS(namespaceURI, "g");
+        linkElement.classList.add('link');
+
+        const linkPath = document.createElementNS(namespaceURI, "path");
+
+        const startParentTransform = link.start.parentNode.getAttribute('transform');
+        const endParentTransform = link.end.parentNode.getAttribute('transform');
+        const startCoords = {
+          x: Number(startParentTransform.match(/[0-9]+/g)[0]) + Number(link.start.getAttribute('cx')),
+          y: Number(startParentTransform.match(/[0-9]+/g)[1]) + Number(link.start.getAttribute('cy'))
+        };
+        const endCoords = {
+          x: Number(endParentTransform.match(/[0-9]+/g)[0]) + Number(link.end.getAttribute('cx')),
+          y: Number(endParentTransform.match(/[0-9]+/g)[1]) + Number(link.end.getAttribute('cy'))
+        };
+        const pathObj = {
+          m: startCoords,
+          c3: endCoords
+        };
+        const controls = calculateControls(pathObj);
+        pathObj.c1 = controls.c1;
+        pathObj.c2 = controls.c2;
+        const originalPathD = objToPathD(pathObj);
+        linkPath.setAttribute('d', originalPathD)
+
+        linkElement.appendChild(linkPath);
+
+        const linksGroup = document.querySelector('#canvas #links');
+        linksGroup.appendChild(linkElement);
+
+        return linkElement;
+    }
+
     links.forEach(link => {
-      link.originalPathD = link.element.querySelector('path')
+      var linkElement = link.element;
+      if(!linkElement){
+        linkElement = link.element = createLinkElement(link);
+      }
+      link.originalPathD = link.originalPathD || linkElement.querySelector('path')
         .getAttribute('d')
         .replace(/\n/g, ' ')
         .replace(/ +(?= )/g, '');
