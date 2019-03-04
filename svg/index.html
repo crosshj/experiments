@@ -73,6 +73,14 @@
     stroke-width: 1px;
     fill: none;
   }
+
+  .link line.control {
+    stroke: #aa00aa66;
+    stroke-dasharray: 5;
+    fill: none;
+    stroke-width: 1;
+  }
+
 </style>
 
 <svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
@@ -225,6 +233,30 @@
         linkPath.setAttribute('d', originalPathD)
 
         linkElement.appendChild(linkPath);
+
+        const controlLine1 = document.createElementNS(namespaceURI, "line");
+        controlLine1.classList.add('control');
+        controlLine1.setAttribute('x1', pathObj.m.x);
+        controlLine1.setAttribute('y1', pathObj.m.y);
+        controlLine1.setAttribute('x2', pathObj.c1.x);
+        controlLine1.setAttribute('y2', pathObj.c1.y);
+        const controlLine2 = document.createElementNS(namespaceURI, "line");
+        controlLine2.classList.add('control');
+        controlLine2.setAttribute('x1', pathObj.c1.x);
+        controlLine2.setAttribute('y1', pathObj.c1.y);
+        controlLine2.setAttribute('x2', pathObj.c2.x);
+        controlLine2.setAttribute('y2', pathObj.c2.y);
+        const controlLine3 = document.createElementNS(namespaceURI, "line");
+        controlLine3.classList.add('control');
+        controlLine3.setAttribute('x1', pathObj.c2.x);
+        controlLine3.setAttribute('y1', pathObj.c2.y);
+        controlLine3.setAttribute('x2', pathObj.c3.x);
+        controlLine3.setAttribute('y2', pathObj.c3.y);
+
+
+        linkElement.appendChild(controlLine1);
+        linkElement.appendChild(controlLine2);
+        linkElement.appendChild(controlLine3);
 
         const linksGroup = document.querySelector('#canvas #links');
         linksGroup.appendChild(linkElement);
