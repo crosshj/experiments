@@ -205,6 +205,41 @@
       return controls;
     }
 
+    function drawControls({ namespaceURI, link, linkElement, pathObj }){
+        if(!link.controlLine1){
+          link.controlLine1 = document.createElementNS(namespaceURI, "line");
+          link.controlLine1.classList.add('control');
+          linkElement.appendChild(link.controlLine1);
+        }
+        if(!link.controlLine2){
+          link.controlLine2 = document.createElementNS(namespaceURI, "line");
+          link.controlLine2.classList.add('control');
+          linkElement.appendChild(link.controlLine2);
+        }
+        if(!link.controlLine3){
+          link.controlLine3 = document.createElementNS(namespaceURI, "line");
+          link.controlLine3.classList.add('control');
+          linkElement.appendChild(link.controlLine3);
+        }
+
+        link.controlLine1.setAttribute('x1', pathObj.m.x);
+        link.controlLine1.setAttribute('y1', pathObj.m.y);
+        link.controlLine1.setAttribute('x2', pathObj.c1.x);
+        link.controlLine1.setAttribute('y2', pathObj.c1.y);
+
+        link.controlLine2.classList.add('control');
+        link.controlLine2.setAttribute('x1', pathObj.c1.x);
+        link.controlLine2.setAttribute('y1', pathObj.c1.y);
+        link.controlLine2.setAttribute('x2', pathObj.c2.x);
+        link.controlLine2.setAttribute('y2', pathObj.c2.y);
+
+        link.controlLine3.classList.add('control');
+        link.controlLine3.setAttribute('x1', pathObj.c2.x);
+        link.controlLine3.setAttribute('y1', pathObj.c2.y);
+        link.controlLine3.setAttribute('x2', pathObj.c3.x);
+        link.controlLine3.setAttribute('y2', pathObj.c3.y);
+    }
+
     function createLinkElement(link){
         const namespaceURI = document.getElementById('canvas').namespaceURI;
         const linkElement = document.createElementNS(namespaceURI, "g");
@@ -234,29 +269,7 @@
 
         linkElement.appendChild(linkPath);
 
-        const controlLine1 = document.createElementNS(namespaceURI, "line");
-        controlLine1.classList.add('control');
-        controlLine1.setAttribute('x1', pathObj.m.x);
-        controlLine1.setAttribute('y1', pathObj.m.y);
-        controlLine1.setAttribute('x2', pathObj.c1.x);
-        controlLine1.setAttribute('y2', pathObj.c1.y);
-        const controlLine2 = document.createElementNS(namespaceURI, "line");
-        controlLine2.classList.add('control');
-        controlLine2.setAttribute('x1', pathObj.c1.x);
-        controlLine2.setAttribute('y1', pathObj.c1.y);
-        controlLine2.setAttribute('x2', pathObj.c2.x);
-        controlLine2.setAttribute('y2', pathObj.c2.y);
-        const controlLine3 = document.createElementNS(namespaceURI, "line");
-        controlLine3.classList.add('control');
-        controlLine3.setAttribute('x1', pathObj.c2.x);
-        controlLine3.setAttribute('y1', pathObj.c2.y);
-        controlLine3.setAttribute('x2', pathObj.c3.x);
-        controlLine3.setAttribute('y2', pathObj.c3.y);
-
-
-        linkElement.appendChild(controlLine1);
-        linkElement.appendChild(controlLine2);
-        linkElement.appendChild(controlLine3);
+        drawControls({ namespaceURI, link, linkElement, pathObj });
 
         const linksGroup = document.querySelector('#canvas #links');
         linksGroup.appendChild(linkElement);
@@ -350,6 +363,8 @@
         const controlPoints = calculateControls(pathObj);
         pathObj.c1 = controlPoints.c1;
         pathObj.c2 = controlPoints.c2;
+
+        drawControls({ link, linkElement: link.element, pathObj })
 
         const newPathString = objToPathD(pathObj);
         link.element.querySelector('path').setAttribute('d', newPathString);
