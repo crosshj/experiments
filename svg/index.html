@@ -81,6 +81,11 @@
     stroke-width: 1;
   }
 
+  .link .control-circle {
+    fill: none;
+    stroke: #aa00aa66;
+  }
+
 </style>
 
 <svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +123,7 @@
     <text x="20" y="40" class="heavy">meshach</text>
   </g>
 
-  <g id="other" class="box draggable-group" transform="translate(200,350)">
+  <g id="other" class="box draggable-group" transform="translate(300,350)">
     <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
     <circle class="node" cx="10" cy="11" r="5"></circle>
     <circle class="node" cx="86" cy="11" r="5"></circle>
@@ -172,10 +177,10 @@
         : 0.5;
       const yMult = 0;
 
-      const yCurve = Math.abs(xDifference) < 30
-        ? 150 * (Math.abs(xDifference)/30)
-        : 150;
-      const yOffset = xDifference < 30
+      const yCurve = Math.abs(xDifference) < 20
+        ? 150 * (Math.abs(xDifference)/20)
+        : 100;
+      const yOffset = xDifference < 0
         ? yDifference < 0 ? -yCurve : yCurve
         : 0
 
@@ -221,6 +226,24 @@
           link.controlLine3.classList.add('control');
           linkElement.appendChild(link.controlLine3);
         }
+        const controlCircleRadius = 3;
+        if(!link.controlCircle1){
+          link.controlCircle1 = document.createElementNS(namespaceURI, "circle");
+          link.controlCircle1.classList.add('control-circle');
+          link.controlCircle1.setAttribute('r', controlCircleRadius);
+          linkElement.appendChild(link.controlCircle1);
+        }
+        if(!link.controlCircle2){
+          link.controlCircle2 = document.createElementNS(namespaceURI, "circle");
+          link.controlCircle2.classList.add('control-circle');
+          link.controlCircle2.setAttribute('r', controlCircleRadius);
+          linkElement.appendChild(link.controlCircle2);
+        }
+
+        link.controlCircle1.setAttribute('cx', pathObj.c1.x);
+        link.controlCircle1.setAttribute('cy', pathObj.c1.y);
+        link.controlCircle2.setAttribute('cx', pathObj.c2.x);
+        link.controlCircle2.setAttribute('cy', pathObj.c2.y);
 
         link.controlLine1.setAttribute('x1', pathObj.m.x);
         link.controlLine1.setAttribute('y1', pathObj.m.y);
