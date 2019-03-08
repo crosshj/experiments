@@ -107,29 +107,6 @@
     <!-- LINKS ARE CREATED DYNAMICALLY -->
   </g>
 
-  <g id="outputs" class="box draggable-group" transform="translate(210,50)">
-    <rect x="0" y="1" width="76" height="76" rx="5" ry="5"></rect>
-    <circle class="node" cx="76" cy="11" r="5"></circle>
-    <circle class="node" cx="76" cy="66" r="5"></circle>
-    <text x="10" y="40" class="heavy">shadrach</text>
-  </g>
-
-  <g id="inputs" class="box draggable-group" transform="translate(200,200)">
-    <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
-    <circle class="node" cx="10" cy="11" r="5"></circle>
-    <circle class="node" cx="10" cy="66" r="5"></circle>
-    <circle class="node" cx="86" cy="11" r="5"></circle>
-    <circle class="node" cx="86" cy="66" r="5"></circle>
-    <text x="20" y="40" class="heavy">meshach</text>
-  </g>
-
-  <g id="other" class="box draggable-group" transform="translate(300,350)">
-    <rect x="10" y="1" width="76" height="76" rx="5" ry="5"></rect>
-    <circle class="node" cx="10" cy="11" r="5"></circle>
-    <circle class="node" cx="86" cy="11" r="5"></circle>
-    <text x="20" y="40" class="heavy">abednego</text>
-  </g>
-
 </svg>
 
 <script>
@@ -157,16 +134,129 @@
 
     var selectedElement, offset, transform;
 
-    var links = [{
-      start: document.querySelector('#outputs circle:nth-child(3)'),
-      end: document.querySelector('#inputs circle:nth-child(3)'),
+    var units = [{
+      label: 'shadrach',
+      x: 10,
+      y: 10,
+      width: 150,
+      height: 100,
+      nodes: [null, null, {
+        label: 'first'
+      }, {
+        label: 'second'
+      }]
+    },{
+      label: 'meshach',
+      x: 200,
+      y: 200,
+      nodes: [{
+        label: 'first'
+      }, {
+        label: 'second'
+      }, {
+        label: 'third'
+      }, {
+        label: 'fourth'
+      }]
     }, {
-      start: document.querySelector('#outputs circle:nth-child(2)'),
-      end: document.querySelector('#inputs circle:nth-child(2)'),
-    }, {
-      start: document.querySelector('#inputs circle:nth-child(4)'),
-      end: document.querySelector('#other circle:nth-child(2)'),
+      label: 'abednego',
+      x: 300,
+      y: 350,
+      nodes: [{
+        label: 'first'
+      }, null, {
+        label: 'second'
+      }, null]
     }];
+
+    units.forEach(drawUnit);
+    units.getNode = (label, nodeLabel) => {
+      const unitElement = (units.find(x => x.label === label) || {}).element;
+      if(!unitElement){
+        return;
+      }
+      return unitElement.querySelector(`circle[data-label="${nodeLabel}"]`);
+    };
+
+    var links = [{
+      start: units.getNode('shadrach', 'second'),
+      end: units.getNode('meshach', 'second')
+    }, {
+      start: units.getNode('shadrach', 'first'),
+      end: units.getNode('meshach', 'first'),
+    }, {
+      start: units.getNode('meshach', 'fourth'),
+      end: units.getNode('abednego', 'first')
+    }];
+
+    links.forEach(link => {
+      var linkElement = link.element;
+      if(!linkElement){
+        linkElement = link.element = createLinkElement(link);
+      }
+      link.originalPathD = link.originalPathD || linkElement.querySelector('path')
+        .getAttribute('d')
+        .replace(/\n/g, ' ')
+        .replace(/ +(?= )/g, '');
+      link.startOriginalOffsetX = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
+      link.startOriginalOffsetY = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
+      link.endOriginalOffsetX = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
+      link.endOriginalOffsetY = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
+
+      link.startOffsetX = Number(link.startOriginalOffsetX);
+      link.startOffsetY = Number(link.startOriginalOffsetY)
+      link.endOffsetX = Number(link.endOriginalOffsetX);
+      link.endOffsetY = Number(link.endOriginalOffsetY);
+
+      const pathD = link.originalPathD;
+      const pathObj = pathDToObj(pathD);
+
+      const controlPoints = calculateControls(pathObj);
+      pathObj.c1 = controlPoints.c1;
+      pathObj.c2 = controlPoints.c2;
+
+      link.originalPathD = objToPathD(pathObj);
+      link.element.querySelector('path').setAttribute('d', link.originalPathD)
+    });
+
+    function drawUnit(unit){
+      const width = unit.width || 76;
+      const height = unit.height || 76;
+
+      const namespaceURI = document.getElementById('canvas').namespaceURI;
+      const unitElement = document.createElementNS(namespaceURI, "g");
+      unitElement.setAttribute('class', 'box draggable-group');
+      unitElement.setAttribute('transform', `translate(${unit.x}, ${unit.y})`);
+      var unitElementHTML = `
+        <rect x="10" y="1" width="${width}" height="${height}" rx="5" ry="5"></rect>
+        <text x="20" y="40" class="heavy">${unit.label}</text>
+      `;
+
+      var positions = [{
+        x: 10, y: 10
+      },{
+        x: 10, y: height-10
+      },{
+        x: 10 + width, y: 10
+      }, {
+        x: 10 + width, y: height-10
+      }];
+      unit.nodes.forEach(n => {
+        if(!n){
+          positions.shift();
+          return;
+        }
+        const pos = positions.shift();
+        unitElementHTML += `
+          <circle data-label="${n.label}" class="node" cx="${pos.x}" cy="${pos.y}" r="5"></circle>
+        `;
+      });
+      unitElement.innerHTML = unitElementHTML;
+      const canvas = document.querySelector('#canvas');
+
+      unit.element = unitElement;
+      canvas.appendChild(unitElement);
+    }
 
     function calculateControls(p) {
       const xDifference = p.c3.x - p.m.x;
@@ -299,36 +389,6 @@
 
         return linkElement;
     }
-
-    links.forEach(link => {
-      var linkElement = link.element;
-      if(!linkElement){
-        linkElement = link.element = createLinkElement(link);
-      }
-      link.originalPathD = link.originalPathD || linkElement.querySelector('path')
-        .getAttribute('d')
-        .replace(/\n/g, ' ')
-        .replace(/ +(?= )/g, '');
-      link.startOriginalOffsetX = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
-      link.startOriginalOffsetY = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
-      link.endOriginalOffsetX = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
-      link.endOriginalOffsetY = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
-
-      link.startOffsetX = Number(link.startOriginalOffsetX);
-      link.startOffsetY = Number(link.startOriginalOffsetY)
-      link.endOffsetX = Number(link.endOriginalOffsetX);
-      link.endOffsetY = Number(link.endOriginalOffsetY);
-
-      const pathD = link.originalPathD;
-      const pathObj = pathDToObj(pathD);
-
-      const controlPoints = calculateControls(pathObj);
-      pathObj.c1 = controlPoints.c1;
-      pathObj.c2 = controlPoints.c2;
-
-      link.originalPathD = objToPathD(pathObj);
-      link.element.querySelector('path').setAttribute('d', link.originalPathD)
-    });
 
     function pathDToObj(pathD) {
       const matches = pathD.match(/[0-9]+/g).map(Number);
