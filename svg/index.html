@@ -141,9 +141,9 @@
       y: 10,
       width: 150,
       height: 100,
-      nodes: [null, null, {
+      nodes: [null, null, null, {
         label: 'first'
-      }, {
+      }, null, {
         label: 'second'
       }]
     },{
@@ -152,11 +152,11 @@
       y: 200,
       nodes: [{
         label: 'first'
-      }, {
+      }, null, {
         label: 'second'
       }, {
         label: 'third'
-      }, {
+      }, null, {
         label: 'fourth'
       }]
     }, {
@@ -190,7 +190,7 @@
       end: units.getNode('abednego', 'first')
     }];
 
-    links.forEach(link => {
+    function drawLink(link){
       var linkElement = link.element;
       if(!linkElement){
         linkElement = link.element = createLinkElement(link);
@@ -199,10 +199,14 @@
         .getAttribute('d')
         .replace(/\n/g, ' ')
         .replace(/ +(?= )/g, '');
-      link.startOriginalOffsetX = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
-      link.startOriginalOffsetY = link.start.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
-      link.endOriginalOffsetX = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[0];
-      link.endOriginalOffsetY = link.end.parentNode.getAttribute('transform').match(/[0-9]+/g)[1];
+      link.startOriginalOffsetX = link.start.parentNode
+        .getAttribute('transform').match(/[0-9]+/g)[0];
+      link.startOriginalOffsetY = link.start.parentNode
+        .getAttribute('transform').match(/[0-9]+/g)[1];
+      link.endOriginalOffsetX = link.end.parentNode
+        .getAttribute('transform').match(/[0-9]+/g)[0];
+      link.endOriginalOffsetY = link.end.parentNode
+        .getAttribute('transform').match(/[0-9]+/g)[1];
 
       link.startOffsetX = Number(link.startOriginalOffsetX);
       link.startOffsetY = Number(link.startOriginalOffsetY)
@@ -218,10 +222,12 @@
 
       link.originalPathD = objToPathD(pathObj);
       link.element.querySelector('path').setAttribute('d', link.originalPathD)
-    });
+    }
+
+    links.forEach(drawLink);
 
     function drawUnit(unit){
-      const width = unit.width || 76;
+      const width = Number(unit.width || 76);
       const height = unit.height || 76;
 
       const namespaceURI = document.getElementById('canvas').namespaceURI;
@@ -234,14 +240,23 @@
       `;
 
       var positions = [{
-        x: 10, y: 10
-      },{
-        x: 10, y: height-10
-      },{
-        x: 10 + width, y: 10
+        x: 10, y: 10 //top-left
       }, {
-        x: 10 + width, y: height-10
+        x: 10, y: height/2 //middle-left
+      }, {
+        x: 10, y: height-10 //bottom-left
+      }, {
+        x: 10 + width/2, y: height //bottom-middle
+      }, {
+        x: 10 + width, y: 10 //top-right
+      }, {
+        x: 10 + width, y: height/2 //middle-right
+      }, {
+        x: 10 + width, y: height-10 //bottom-right
+      }, {
+        x: 10 + width/2, y: 0 //top-middle
       }];
+
       unit.nodes.forEach(n => {
         if(!n){
           positions.shift();
