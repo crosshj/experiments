@@ -191,6 +191,14 @@
     }];
 
     function drawLink(link){
+      const linkStart = link.start.parentNode.getAttribute('data-label') + ':' +
+        link.start.getAttribute('data-label');
+      const linkEnd = link.end.parentNode.getAttribute('data-label') + ':' +
+        link.end.getAttribute('data-label');
+      console.log(
+        `start: ${linkStart}` + '\n' +
+        `end: ${linkEnd}`
+      );
       var linkElement = link.element;
       if(!linkElement){
         linkElement = link.element = createLinkElement(link);
@@ -232,6 +240,7 @@
 
       const namespaceURI = document.getElementById('canvas').namespaceURI;
       const unitElement = document.createElementNS(namespaceURI, "g");
+      unitElement.setAttribute('data-label', unit.label);
       unitElement.setAttribute('class', 'box draggable-group');
       unitElement.setAttribute('transform', `translate(${unit.x}, ${unit.y})`);
       var unitElementHTML = `
