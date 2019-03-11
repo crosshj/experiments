@@ -201,6 +201,22 @@
       end: units.getNode('abednego', 'first')
     }];
 
+    links.forEach(drawLink);
+
+    function getNodeDirection(node){
+      const el = node;
+      const cx = Number(el.getAttribute('cx'));
+      const cy = Number(el.getAttribute('cy'));
+      const rect = el.parentNode.querySelector('rect');
+      const width = Number(rect.getAttribute('width'));
+      const height = Number(rect.getAttribute('height'));
+
+      if(cx >= width){ return 'east'; }
+      if(cy + 5 >= height){ return 'south'; }
+      if(cx - 15 <= 0){ return 'west'; }
+      return 'north';
+    }
+
     function getLinkDirections(link){
       const dirs = {
         start: '',
@@ -208,23 +224,13 @@
       };
       Object.keys(dirs).forEach(cap => {
         const el = link[cap];
-        const cx = Number(el.getAttribute('cx'));
-        const cy = Number(el.getAttribute('cy'));
-        const rect = el.parentNode.querySelector('rect');
-        const width = Number(rect.getAttribute('width'));
-        const height = Number(rect.getAttribute('height'));
+        const direction = el.getAttribute('data-direction');
         if(cap === 'start'){
-          if(cx >= width){ dirs.start = 'east'; return; }
-          if(cy + 5 >= height){ dirs.start = 'south'; return; }
-          if(cx - 15 <= 0){ dirs.start = 'west'; return; }
-          dirs.start = 'north';
+          dirs.start = direction;
           return;
         }
 
-        if(cx >= width){ dirs.end = 'east'; return; }
-        if(cy + 5 >= height){ dirs.end = 'south'; return; }
-        if(cx - 15 <= 0){ dirs.end = 'west'; return; }
-        dirs.end = 'north';
+        dirs.end = direction;
       });
       return dirs;
     }
@@ -276,8 +282,6 @@
       link.element.querySelector('path').setAttribute('d', newPathD)
     }
 
-    links.forEach(drawLink);
-
     function drawUnit(unit){
       const width = Number(unit.width || 76);
       const height = unit.height || 76;
@@ -327,6 +331,17 @@
         `;
       });
       unitElement.innerHTML = unitElementHTML;
+
+      unit.nodes.forEach(n => {
+        if(!n){
+          return;
+        }
+        const el = unitElement.querySelector(`circle[data-label="${n.label}"]`);
+        el.setAttribute('data-direction', getNodeDirection(el));
+        //TODO: add a small, white path for overlap
+        //console.log({ direction: n.direction })
+      });
+
       const canvas = document.querySelector('#canvas');
       const linksGroup = document.querySelector('#canvas #links');
 
