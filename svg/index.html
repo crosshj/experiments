@@ -53,7 +53,7 @@
     /* fill: #17670057; */
     fill: grey;
     stroke: #333;
-    stroke-width: 1;
+    stroke-width: 0.75;
     cursor: default;
   }
 
@@ -69,13 +69,15 @@
 
   .heavy {
     font: bold 13px monospace;
-    fill: #000;
+    fill: #ccc;
     stroke-width: 0;
+    user-select: none;
     pointer-events: none;
   }
 
   .link path {
     stroke: white;
+    stroke-linecap: "round";
     opacity: 1;
     stroke-width: 2px;
     fill: none;
@@ -150,9 +152,9 @@
       y: 10,
       width: 150,
       height: 100,
-      nodes: [null, null, null, {
+      nodes: [null, null, {
         label: 'first'
-      }, null, {
+      }, null, null, null, null, {
         label: 'second'
       }]
     },{
@@ -199,6 +201,34 @@
       end: units.getNode('abednego', 'first')
     }];
 
+    function getLinkDirections(link){
+      const dirs = {
+        start: '',
+        end: ''
+      };
+      Object.keys(dirs).forEach(cap => {
+        const el = link[cap];
+        const cx = Number(el.getAttribute('cx'));
+        const cy = Number(el.getAttribute('cy'));
+        const rect = el.parentNode.querySelector('rect');
+        const width = Number(rect.getAttribute('width'));
+        const height = Number(rect.getAttribute('height'));
+        if(cap === 'start'){
+          if(cx >= width){ dirs.start = 'east'; return; }
+          if(cy + 5 >= height){ dirs.start = 'south'; return; }
+          if(cx - 15 <= 0){ dirs.start = 'west'; return; }
+          dirs.start = 'north';
+          return;
+        }
+
+        if(cx >= width){ dirs.end = 'east'; return; }
+        if(cy + 5 >= height){ dirs.end = 'south'; return; }
+        if(cx - 15 <= 0){ dirs.end = 'west'; return; }
+        dirs.end = 'north';
+      });
+      return dirs;
+    }
+
     function drawLink(link){
       const linkStart = link.start.parentNode.getAttribute('data-label') + ':' +
         link.start.getAttribute('data-label');
@@ -240,7 +270,10 @@
       pathObj.c2 = controlPoints.c2;
 
       link.originalPathD = objToPathD(pathObj);
-      link.element.querySelector('path').setAttribute('d', link.originalPathD)
+      const directions = getLinkDirections(link);
+      link.directions = directions;
+      const newPathD = objToPathD(pathObj, link.directions);
+      link.element.querySelector('path').setAttribute('d', newPathD)
     }
 
     links.forEach(drawLink);
@@ -298,8 +331,8 @@
       const linksGroup = document.querySelector('#canvas #links');
 
       unit.element = unitElement;
-      //canvas.appendChild(unitElement);
-      canvas.insertBefore(unitElement, linksGroup);
+      canvas.appendChild(unitElement);
+      //canvas.insertBefore(unitElement, linksGroup);
     }
 
     function calculateControls(p) {
@@ -459,8 +492,35 @@
       };
     }
 
-    function objToPathD(o) {
-      return `M ${o.m.x} ${o.m.y} C ${o.c1.x} ${o.c1.y} ${o.c2.x} ${o.c2.y} ${o.c3.x} ${o.c3.y}`;
+    function objToPathD(o, directions) {
+      var start = `M ${o.m.x} ${o.m.y}`;
+      var end = `${o.c3.x} ${o.c3.y}`;
+      if(!directions){
+        return `${start} C ${o.c1.x} ${o.c1.y} ${o.c2.x} ${o.c2.y} ${end}`;
+      }
+
+      const offset = 7;
+      const segmentsStart = {
+        'north': `L ${o.m.x} ${o.m.y - offset}`,
+        'east': `L ${o.m.x + offset} ${o.m.y}`,
+        'south': `L ${o.m.x} ${o.m.y + offset}`,
+        'west': `L ${o.m.x - offset} ${o.m.y}`
+      };
+      if(directions.start && segmentsStart[directions.start]){
+        start += ` ${segmentsStart[directions.start]}`;
+      }
+      const segmentsEnd = {
+        'north': `${o.c3.x} ${o.c3.y - offset} L ${o.c3.x} ${o.c3.y}`,
+        'east': `${o.c3.x + offset} ${o.c3.y} L ${o.c3.x} ${o.c3.y}`,
+        'south': `${o.c3.x} ${o.c3.y + offset} L ${o.c3.x} ${o.c3.y}`,
+        'west': `${o.c3.x - offset} ${o.c3.y} L ${o.c3.x} ${o.c3.y}`
+      };
+      if(directions.end && segmentsEnd[directions.end]){
+        end = segmentsEnd[directions.end];
+        //end = `${o.c3.x} ${o.c3.y}`;
+      }
+
+      return `${start} L ${end}`;
     }
 
     function updateConnectedLinks(event, x, y) {
@@ -496,8 +556,8 @@
 
         drawControls({ link, linkElement: link.element, pathObj })
 
-        const newPathString = objToPathD(pathObj);
-        link.element.querySelector('path').setAttribute('d', newPathString);
+        const newPathD = objToPathD(pathObj, link.directions);
+        link.element.querySelector('path').setAttribute('d', newPathD);
         //console.log(newPathString);
       });
     }
