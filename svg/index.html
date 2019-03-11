@@ -195,10 +195,12 @@
         link.start.getAttribute('data-label');
       const linkEnd = link.end.parentNode.getAttribute('data-label') + ':' +
         link.end.getAttribute('data-label');
-      console.log(
-        `start: ${linkStart}` + '\n' +
-        `end: ${linkEnd}`
-      );
+
+      // console.log(
+      //   `start: ${linkStart}` + '\n' +
+      //   `end: ${linkEnd}`
+      // );
+
       var linkElement = link.element;
       if(!linkElement){
         linkElement = link.element = createLinkElement(link);
@@ -416,7 +418,10 @@
     }
 
     function pathDToObj(pathD) {
-      const matches = pathD.match(/[0-9]+/g).map(Number);
+      const matches = pathD
+        .split(' ')
+        .map(Number)
+        .filter(x => !isNaN(x));
       return {
         m: {
           x: matches[0],
