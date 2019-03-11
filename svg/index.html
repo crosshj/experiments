@@ -49,13 +49,18 @@
   }
 
   .box {
-    filter: url(#outline);
-    fill: #17670057;
+    /* filter: url(#outline); */
+    /* fill: #17670057; */
+    fill: grey;
+    stroke: #333;
+    stroke-width: 1;
     cursor: default;
   }
 
   .node {
     /* fill: purple; */
+    fill: white;
+    stroke: black;
   }
 
   .node:hover {
@@ -65,13 +70,14 @@
   .heavy {
     font: bold 13px monospace;
     fill: #000;
+    stroke-width: 0;
     pointer-events: none;
   }
 
   .link path {
-    stroke: #aa00aa;
+    stroke: white;
     opacity: 1;
-    stroke-width: 1px;
+    stroke-width: 2px;
     fill: none;
   }
 
@@ -79,12 +85,15 @@
     stroke: #aa00aa66;
     stroke-dasharray: 5;
     fill: none;
-    stroke-width: 1;
+    /* stroke-width: 1; */
+    stroke-width: 0;
   }
 
   .link .control-circle {
     fill: none;
     stroke: #aa00aa66;
+    /* stroke-width: 1; */
+    stroke-width: 0;
   }
 
 </style>
@@ -245,27 +254,33 @@
       unitElement.setAttribute('data-label', unit.label);
       unitElement.setAttribute('class', 'box draggable-group');
       unitElement.setAttribute('transform', `translate(${unit.x}, ${unit.y})`);
+      //const rect = `<rect x="10" y="1" width="${width}" height="${height}" rx="5" ry="5"></rect>`;
+      const rect = `<rect x="10" y="1" width="${width}" height="${height}" rx="0" ry="0"></rect>`;
       var unitElementHTML = `
-        <rect x="10" y="1" width="${width}" height="${height}" rx="5" ry="5"></rect>
+        ${rect}
         <text x="20" y="40" class="heavy">${unit.label}</text>
       `;
+      const nodeRadius = 3;
+      const offSet = 10;
+      const insetNode = nodeRadius;
+      const insetNodeLeft = insetNode + offSet;
 
       var positions = [{
-        x: 10, y: 10 //top-left
+        x: insetNodeLeft, y: offSet //top-left
       }, {
-        x: 10, y: height/2 //middle-left
+        x: insetNodeLeft, y: height/2 //middle-left
       }, {
-        x: 10, y: height-10 //bottom-left
+        x: insetNodeLeft, y: height-offSet //bottom-left
       }, {
-        x: 10 + width/2, y: height //bottom-middle
+        x: offSet + width/2, y: height - insetNode +1 //bottom-middle
       }, {
-        x: 10 + width, y: 10 //top-right
+        x: width - insetNode + offSet, y: offSet //top-right
       }, {
-        x: 10 + width, y: height/2 //middle-right
+        x: width - insetNode + offSet, y: height/2 //middle-right
       }, {
-        x: 10 + width, y: height-10 //bottom-right
+        x: width - insetNode + offSet, y: height-offSet //bottom-right
       }, {
-        x: 10 + width/2, y: 0 //top-middle
+        x: offSet + width/2, y: 0 //top-middle
       }];
 
       unit.nodes.forEach(n => {
@@ -275,14 +290,16 @@
         }
         const pos = positions.shift();
         unitElementHTML += `
-          <circle data-label="${n.label}" class="node" cx="${pos.x}" cy="${pos.y}" r="5"></circle>
+          <circle data-label="${n.label}" class="node" cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}"></circle>
         `;
       });
       unitElement.innerHTML = unitElementHTML;
       const canvas = document.querySelector('#canvas');
+      const linksGroup = document.querySelector('#canvas #links');
 
       unit.element = unitElement;
-      canvas.appendChild(unitElement);
+      //canvas.appendChild(unitElement);
+      canvas.insertBefore(unitElement, linksGroup);
     }
 
     function calculateControls(p) {
