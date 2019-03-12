@@ -75,7 +75,7 @@
     pointer-events: none;
   }
 
-  .link path {
+  .link path, path.helper-segment {
     stroke: white;
     stroke-linecap: "round";
     opacity: 1;
@@ -150,7 +150,7 @@
       label: 'shadrach',
       x: 10,
       y: 10,
-      width: 150,
+      width: 100,
       height: 100,
       nodes: [null, null, {
         label: 'first'
@@ -159,8 +159,8 @@
       }]
     },{
       label: 'meshach',
-      x: 200,
-      y: 200,
+      x: 140,
+      y: 125,
       nodes: [{
         label: 'first'
       }, null, {
@@ -173,12 +173,58 @@
     }, {
       label: 'abednego',
       x: 300,
-      y: 350,
+      y: 50,
       nodes: [{
+        label: 'first'
+      }, null, null, {
+        label: 'second'
+      }, null]
+    }, {
+      label: 'yin',
+      x: 250,
+      y: 230,
+      nodes: [null, {
         label: 'first'
       }, null, {
         label: 'second'
+      }, {
+        label: 'third'
+      }, null, null, {
+        label: 'fourth'
       }, null]
+    }, {
+      label: 'yang',
+      x: 350,
+      y: 230,
+      nodes: [null, null, {
+        label: 'first'
+      }, {
+        label: 'second'
+      }, null, null, null, {
+        label: 'fourth'
+      }, null]
+    }, {
+      label: 'santa',
+      x: 300,
+      y: 400,
+      nodes: [null, {
+        label: 'first'
+      }, null, null, null, null, null, {
+        label: 'third'
+      }]
+    }, {
+      label: 'masamune',
+      x: 50,
+      y: 320,
+      height: 25,
+      width: 100,
+      nodes: [null, null, null, {
+        label: 'third'
+      }, null, {
+        label: 'first'
+      }, null, {
+        label: 'second'
+      }]
     }];
 
     units.forEach(drawUnit);
@@ -192,13 +238,37 @@
 
     var links = [{
       start: units.getNode('shadrach', 'second'),
-      end: units.getNode('meshach', 'second')
+      end: units.getNode('meshach', 'first')
     }, {
       start: units.getNode('shadrach', 'first'),
-      end: units.getNode('meshach', 'first'),
+      end: units.getNode('meshach', 'second'),
     }, {
       start: units.getNode('meshach', 'fourth'),
       end: units.getNode('abednego', 'first')
+    }, {
+      start: units.getNode('abednego', 'second'),
+      end: units.getNode('yin', 'fourth')
+    }, {
+      start: units.getNode('abednego', 'second'),
+      end: units.getNode('yang', 'fourth')
+    }, {
+      start: units.getNode('yin', 'third'),
+      end: units.getNode('yang', 'first')
+    }, {
+      start: units.getNode('yin', 'second'),
+      end: units.getNode('santa', 'third')
+    }, {
+      start: units.getNode('yang', 'second'),
+      end: units.getNode('santa', 'third')
+    }, {
+      start: units.getNode('santa', 'first'),
+      end: units.getNode('masamune', 'second')
+    }, {
+      start: units.getNode('masamune', 'first'),
+      end: units.getNode('meshach', 'third')
+    }, {
+      start: units.getNode('masamune', 'third'),
+      end: units.getNode('yin', 'first')
     }];
 
     links.forEach(drawLink);
@@ -295,7 +365,7 @@
       const rect = `<rect x="10" y="1" width="${width}" height="${height}" rx="0" ry="0"></rect>`;
       var unitElementHTML = `
         ${rect}
-        <text x="20" y="40" class="heavy">${unit.label}</text>
+        <text x="${width/2 - unit.label.length*2}" y="${height/2 + 4}" class="heavy">${unit.label}</text>
       `;
       const nodeRadius = 3;
       const offSet = 10;
@@ -317,7 +387,7 @@
       }, {
         x: width - insetNode + offSet, y: height-offSet //bottom-right
       }, {
-        x: offSet + width/2, y: 0 //top-middle
+        x: offSet + width/2, y: offSet/2 -1 //top-middle
       }];
 
       unit.nodes.forEach(n => {
@@ -330,17 +400,36 @@
           <circle data-label="${n.label}" class="node" cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}"></circle>
         `;
       });
+      unitElementHTML += '<g class="helpers"></g>'
       unitElement.innerHTML = unitElementHTML;
 
+      const helpers = unitElement.querySelector('.helpers');
+      var helpersHTML = '';
       unit.nodes.forEach(n => {
         if(!n){
           return;
         }
         const el = unitElement.querySelector(`circle[data-label="${n.label}"]`);
+        const direction = getNodeDirection(el);
         el.setAttribute('data-direction', getNodeDirection(el));
+        const cx = Number(el.getAttribute('cx'));
+        const cy = Number(el.getAttribute('cy'));
+        const offset = 4;
+        const segment = {
+          'north': `M ${cx} ${cy} L ${cx} ${cy-offset}`,
+          'east': `M ${cx} ${cy} L ${cx+offset} ${cy}`,
+          'south': `M ${cx} ${cy} L ${cx} ${cy+offset}`,
+          'west': `M ${cx} ${cy} L ${cx-offset} ${cy}`
+        };
+        helpersHTML += `
+          <path class="helper-segment" d="${segment[direction]}"></path>
+        `;
+
         //TODO: add a small, white path for overlap
         //console.log({ direction: n.direction })
       });
+
+      helpers.innerHTML = helpersHTML;
 
       const canvas = document.querySelector('#canvas');
       const linksGroup = document.querySelector('#canvas #links');
