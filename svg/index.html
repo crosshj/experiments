@@ -12,7 +12,8 @@
     - wires: animation and indicators (arrows)
     - boxes: collision detection
     - page: zoom/pan with memory
-    - creation of scene from json
+    X creation of scene from json
+    - highlighting links
 
     RESOURCES:
     - path tool - https://codepen.io/thebabydino/full/EKLNvZ
@@ -152,6 +153,7 @@
       y: 10,
       width: 100,
       height: 100,
+      color: '#0a0',
       nodes: [null, null, {
         label: 'first'
       }, null, null, null, null, {
@@ -161,6 +163,7 @@
       label: 'meshach',
       x: 140,
       y: 125,
+      color: '#060',
       nodes: [{
         label: 'first'
       }, null, {
@@ -174,6 +177,7 @@
       label: 'abednego',
       x: 300,
       y: 50,
+      color: '#e93',
       nodes: [{
         label: 'first'
       }, null, null, {
@@ -183,6 +187,7 @@
       label: 'yin',
       x: 250,
       y: 230,
+      color: '#000',
       nodes: [null, {
         label: 'first'
       }, null, {
@@ -196,6 +201,7 @@
       label: 'yang',
       x: 350,
       y: 230,
+      color: '#fff',
       nodes: [null, null, {
         label: 'first'
       }, {
@@ -207,6 +213,7 @@
       label: 'santa',
       x: 300,
       y: 400,
+      color: '#f33',
       nodes: [null, {
         label: 'first'
       }, null, null, null, null, null, {
@@ -218,6 +225,7 @@
       y: 320,
       height: 25,
       width: 100,
+      color: '#00f',
       nodes: [null, null, null, {
         label: 'third'
       }, null, {
@@ -352,6 +360,14 @@
       link.element.querySelector('path').setAttribute('d', newPathD)
     }
 
+    function overlayColor(color){
+      //if only first half of color is defined, repeat it
+      if(color.length < 5) {
+        color += color.slice(1);
+      }
+      return (color.replace('#','0x')) > (0xffffff/2) ? '#111' : '#eee';
+    }
+
     function drawUnit(unit){
       const width = Number(unit.width || 76);
       const height = unit.height || 76;
@@ -361,11 +377,13 @@
       unitElement.setAttribute('data-label', unit.label);
       unitElement.setAttribute('class', 'box draggable-group');
       unitElement.setAttribute('transform', `translate(${unit.x}, ${unit.y})`);
+      const style = unit.color ? `fill:${unit.color}` : '';
+      const overlayStyle = unit.color ? `fill:${overlayColor(unit.color)}` : '';
       //const rect = `<rect x="10" y="1" width="${width}" height="${height}" rx="5" ry="5"></rect>`;
-      const rect = `<rect x="10" y="1" width="${width}" height="${height}" rx="0" ry="0"></rect>`;
+      const rect = `<rect x="10" y="1" style="${style}" width="${width}" height="${height}" rx="0" ry="0"></rect>`;
       var unitElementHTML = `
         ${rect}
-        <text x="${width/2 - unit.label.length*2}" y="${height/2 + 4}" class="heavy">${unit.label}</text>
+        <text x="${width/2 - unit.label.length*2}" y="${height/2 + 4}" style="${overlayStyle}" class="heavy">${unit.label}</text>
       `;
       const nodeRadius = 3;
       const offSet = 10;
