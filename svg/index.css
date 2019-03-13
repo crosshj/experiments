@@ -1,0 +1,72 @@
+
+  body {
+    overflow: hidden;
+    margin: 0;
+    /* background: #8a8a8a; */
+    /* background: transparent; */
+    background-color: #8179af;
+    background: url(terrain1.svg);
+    background-size: 1400px 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+  }
+
+  #canvas {
+    /* padding-left: 275px; */
+    width: 550px;
+    /* border: 1px solid #06c300; */
+    background: #33ccdd22;
+    margin-top: 20px;
+  }
+
+  .box {
+    /* filter: url(#outline); */
+    /* fill: #17670057; */
+    fill: grey;
+    stroke: #333;
+    stroke-width: 0.75;
+    cursor: default;
+  }
+
+  .node {
+    /* fill: purple; */
+    fill: white;
+    stroke: black;
+  }
+
+  .node:hover {
+    fill: purple;
+  }
+
+  .heavy {
+    font: bold 13px monospace;
+    fill: #ccc;
+    stroke-width: 0;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .link path, path.helper-segment {
+    stroke: white;
+    stroke-linecap: "round";
+    opacity: 1;
+    stroke-width: 2px;
+    fill: none;
+  }
+
+  .link line.control {
+    stroke: #aa00aa66;
+    stroke-dasharray: 5;
+    fill: none;
+    /* stroke-width: 1; */
+    stroke-width: 0;
+  }
+
+  .link .control-circle {
+    fill: none;
+    stroke: #aa00aa66;
+    /* stroke-width: 1; */
+    stroke-width: 0;
+  }
