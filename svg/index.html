@@ -13,7 +13,7 @@
     - boxes: collision detection
     - page: zoom/pan with memory
     X creation of scene from json
-    - highlighting links
+    - highlighting/hovering links
 
     RESOURCES:
     - path tool - https://codepen.io/thebabydino/full/EKLNvZ
@@ -28,9 +28,6 @@
   <script src="wires.js"></script>
   <link rel="stylesheet" href="index.css">
 </head>
-
-<script>
-</script>
 
 <svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
   onload="makeDraggable(evt, boxes, wires)">
@@ -55,6 +52,11 @@
 
 <script>
   (function () {
+    /* only works with single file immplementation */
+    const oldWay = false;
+    if(!oldWay){
+      return;
+    }
     if (!(document.location + '').includes('localhost')) {
       return;
     }
@@ -77,5 +79,20 @@
 
     console.log('=== Simple Live Reload ===');
     var refreshInterval = setInterval(pageIsChanged, 1000);
+  })();
+</script>
+
+<script>
+  (function () {
+    if (!(document.location + '').includes('localhost')) {
+      return;
+    }
+
+    const src = 'https://crosshj.com/experiments/rangers/reload-client.js';
+    var po = document.createElement('script'); po.type = 'text/javascript';
+    po.async = true;
+    po.src = src;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(po, s);
   })();
 </script>

@@ -410,7 +410,6 @@ function updateConnectedLinks(links, units, event, x, y) {
 
 function makeDraggable(evt, units, links) {
     var svg = evt.target;
-    console.log({ units, links });
 
     svg.addEventListener('mousedown', startDrag);
     svg.addEventListener('mousemove', drag);
