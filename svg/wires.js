@@ -408,6 +408,7 @@ function updateConnectedLinks(links, units, event, x, y) {
     });
 }
 
+// --------------------------------------------------------------
 function getMousePosition(svg, evt) {
     var CTM = svg.getScreenCTM();
     if (evt.touches) { evt = evt.touches[0]; }
@@ -483,6 +484,7 @@ function endDrag(evt) {
     this.selectedElement = undefined;
 }
 
+
 function makeDraggable(evt, units, links) {
     var svg = evt.target;
     const state = {
@@ -492,17 +494,23 @@ function makeDraggable(evt, units, links) {
         transform: undefined
     };
 
-    svg.addEventListener('mousedown', startDrag.bind(state));
-    svg.addEventListener('mousemove', drag.bind(state));
-    svg.addEventListener('mouseup', endDrag.bind(state));
-    svg.addEventListener('mouseleave', endDrag.bind(state));
-    svg.addEventListener('touchstart', startDrag.bind(state), { passive: false });
-    svg.addEventListener('touchmove', drag.bind(state), { passive: false });
-    svg.addEventListener('touchend', endDrag.bind(state));
-    svg.addEventListener('touchleave', endDrag.bind(state));
-    svg.addEventListener('touchcancel', endDrag.bind(state));
+    const startDragHandler = startDrag.bind(state);
+    svg.addEventListener('mousedown', startDragHandler);
+    svg.addEventListener('touchstart', startDragHandler, { passive: false });
+
+    const dragHandler = drag.bind(state);
+    svg.addEventListener('touchmove', dragHandler, { passive: false });
+    svg.addEventListener('mousemove', dragHandler);
+
+    const endDragHandler = endDrag.bind(state);
+    svg.addEventListener('mouseup', endDragHandler);
+    svg.addEventListener('mouseleave', endDragHandler);
+    svg.addEventListener('touchend', endDragHandler);
+    svg.addEventListener('touchleave', endDragHandler);
+    svg.addEventListener('touchcancel', endDragHandler);
 }
 
+// --------------------------------------------------------------
 function initScene(evt, units, links){
     units.forEach(drawUnit);
     units.getNode = (label, nodeLabel) => {

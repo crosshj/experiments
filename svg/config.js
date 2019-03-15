@@ -114,9 +114,6 @@ var wires = [{
     start: (units) => units.getNode('santa', 'first'),
     end: (units) => units.getNode('masamune', 'second')
 }, {
-    start: (units) => units.getNode('masamune', 'first'),
-    end: (units) => units.getNode('meshach', 'third')
-}, {
     start: (units) => units.getNode('masamune', 'third'),
     end: (units) => units.getNode('yin', 'first')
 }];
