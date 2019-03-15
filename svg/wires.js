@@ -83,6 +83,7 @@ function drawLink(link, units) {
     link.element.querySelector('path').setAttribute('d', newPathD)
 }
 
+//https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
 function overlayColor(color) {
     //if only first half of color is defined, repeat it
     if (color.length < 5) {
@@ -407,31 +408,102 @@ function updateConnectedLinks(links, units, event, x, y) {
     });
 }
 
+function getMousePosition(svg, evt) {
+    var CTM = svg.getScreenCTM();
+    if (evt.touches) { evt = evt.touches[0]; }
+    return {
+        x: (evt.clientX - CTM.e) / CTM.a,
+        y: (evt.clientY - CTM.f) / CTM.d
+    };
+}
+
+function initialiseDragging(svg, selectedElement, evt) {
+    offset = getMousePosition(svg, evt);
+
+    // Make sure the first transform on the element is a translate transform
+    var transforms = selectedElement.transform.baseVal;
+
+    if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+        // Create an transform that translates by (0, 0)
+        var translate = svg.createSVGTransform();
+        translate.setTranslate(0, 0);
+        selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+    }
+
+    // Get initial translation
+    transform = transforms.getItem(0);
+    offset.x -= transform.matrix.e;
+    offset.y -= transform.matrix.f;
+    return { transform, offset };
+}
+
+function startDrag(evt) {
+    const nodeDrag = {
+        test: () => evt.target.classList.contains('node'),
+        start: () => {
+            console.log('wire drag start');
+            evt.stopPropagation();
+            evt.preventDefault();
+        }
+    };
+    const groupDrag = {
+        test: () => evt.target.parentNode.classList.contains('draggable-group'),
+        start: () => {
+            this.selectedElement = evt.target.parentNode;
+            const initD = initialiseDragging(this.svg, this.selectedElement, evt);
+            this.transform = initD.transform;
+            this.offset = initD.offset;
+        }
+    };
+
+    const result = [
+        nodeDrag, groupDrag
+    ].filter(x => {
+        try {
+            return x.test();
+        } catch (e) {
+            return false;
+        }
+    })[0];
+
+    result && result.start();
+}
+
+function drag(evt) {
+    if (!this.selectedElement) {
+        return;
+    }
+    evt.preventDefault();
+    var coord = getMousePosition(this.svg, evt);
+    this.transform.setTranslate(coord.x - this.offset.x, coord.y - this.offset.y);
+    updateConnectedLinks(this.links, this.units, evt, coord.x - this.offset.x, coord.y - this.offset.y);
+}
+
+function endDrag(evt) {
+    this.selectedElement = undefined;
+}
 
 function makeDraggable(evt, units, links) {
     var svg = evt.target;
+    const state = {
+        svg, units, links,
+        selectedElement: undefined,
+        offset: undefined,
+        transform: undefined
+    };
 
-    svg.addEventListener('mousedown', startDrag);
-    svg.addEventListener('mousemove', drag);
-    svg.addEventListener('mouseup', endDrag);
-    svg.addEventListener('mouseleave', endDrag);
-    svg.addEventListener('touchstart', startDrag, { passive: false });
-    svg.addEventListener('touchmove', drag, { passive: false });
-    svg.addEventListener('touchend', endDrag);
-    svg.addEventListener('touchleave', endDrag);
-    svg.addEventListener('touchcancel', endDrag);
+    svg.addEventListener('mousedown', startDrag.bind(state));
+    svg.addEventListener('mousemove', drag.bind(state));
+    svg.addEventListener('mouseup', endDrag.bind(state));
+    svg.addEventListener('mouseleave', endDrag.bind(state));
+    svg.addEventListener('touchstart', startDrag.bind(state), { passive: false });
+    svg.addEventListener('touchmove', drag.bind(state), { passive: false });
+    svg.addEventListener('touchend', endDrag.bind(state));
+    svg.addEventListener('touchleave', endDrag.bind(state));
+    svg.addEventListener('touchcancel', endDrag.bind(state));
+}
 
-    function getMousePosition(evt) {
-        var CTM = svg.getScreenCTM();
-        if (evt.touches) { evt = evt.touches[0]; }
-        return {
-            x: (evt.clientX - CTM.e) / CTM.a,
-            y: (evt.clientY - CTM.f) / CTM.d
-        };
-    }
-
-    var selectedElement, offset, transform;
-
+function initScene(evt, units, links){
     units.forEach(drawUnit);
     units.getNode = (label, nodeLabel) => {
         const unitElement = (units.find(x => x.label === label) || {}).element;
@@ -442,67 +514,5 @@ function makeDraggable(evt, units, links) {
     };
 
     links.forEach((link) => drawLink(link, units));
-
-    function initialiseDragging(evt) {
-        offset = getMousePosition(evt);
-
-        // Make sure the first transform on the element is a translate transform
-        var transforms = selectedElement.transform.baseVal;
-
-        if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-            // Create an transform that translates by (0, 0)
-            var translate = svg.createSVGTransform();
-            translate.setTranslate(0, 0);
-            selectedElement.transform.baseVal.insertItemBefore(translate, 0);
-        }
-
-        // Get initial translation
-        transform = transforms.getItem(0);
-        offset.x -= transform.matrix.e;
-        offset.y -= transform.matrix.f;
-    }
-
-    function startDrag(evt) {
-        const nodeDrag = {
-            test: () => evt.target.classList.contains('node'),
-            start: () => {
-                console.log('wire drag start');
-                evt.stopPropagation();
-                evt.preventDefault();
-            }
-        };
-        const groupDrag = {
-            test: () => evt.target.parentNode.classList.contains('draggable-group'),
-            start: () => {
-                selectedElement = evt.target.parentNode;
-                initialiseDragging(evt);
-            }
-        };
-
-        const result = [
-            nodeDrag, groupDrag
-        ].filter(x => {
-            try {
-                return x.test();
-            } catch (e) {
-                return false;
-            }
-        })[0];
-
-        result && result.start();
-    }
-
-    function drag(evt) {
-        if (!selectedElement) {
-            return;
-        }
-        evt.preventDefault();
-        var coord = getMousePosition(evt);
-        transform.setTranslate(coord.x - offset.x, coord.y - offset.y);
-        updateConnectedLinks(links, units, evt, coord.x - offset.x, coord.y - offset.y);
-    }
-
-    function endDrag(evt) {
-        selectedElement = false;
-    }
+    makeDraggable(evt, units, links);
 }
