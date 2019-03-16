@@ -4,7 +4,7 @@ var boxes = [{
     y: 10,
     width: 100,
     height: 100,
-    color: '#0a0',
+    color: '#50BFE6',
     nodes: [null, null, {
         label: 'first'
     }, null, null, null, null, {
@@ -14,7 +14,7 @@ var boxes = [{
     label: 'meshach',
     x: 140,
     y: 125,
-    color: '#060',
+    color: '#ACBF60',
     nodes: [{
         label: 'first'
     }, null, {
@@ -28,7 +28,7 @@ var boxes = [{
     label: 'abednego',
     x: 300,
     y: 50,
-    color: '#e93',
+    color: '#E6BC5C',
     nodes: [{
         label: 'first'
     }, null, null, {
@@ -38,7 +38,7 @@ var boxes = [{
     label: 'yin',
     x: 250,
     y: 230,
-    color: '#000',
+    color: '#253529',
     nodes: [null, {
         label: 'first'
     }, null, {
@@ -52,7 +52,7 @@ var boxes = [{
     label: 'yang',
     x: 350,
     y: 230,
-    color: '#fff',
+    color: '#FEBAAD',
     nodes: [null, null, {
         label: 'first'
     }, {
@@ -64,7 +64,7 @@ var boxes = [{
     label: 'santa',
     x: 300,
     y: 400,
-    color: '#f33',
+    color: '#FC5A8D',
     nodes: [null, {
         label: 'first'
     }, null, null, null, null, null, {
@@ -76,7 +76,7 @@ var boxes = [{
     y: 330,
     height: 25,
     width: 100,
-    color: '#00f',
+    color: '#732E6C',
     nodes: [null, null, null, {
         label: 'third'
     }, null, {

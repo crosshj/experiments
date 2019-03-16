@@ -1,11 +1,15 @@
+  :root {
+    --link-color: #bbb;
+    --link-hover-color: #FF355E;
+  }
 
   body {
     overflow: hidden;
     margin: 0;
     /* background: #8a8a8a; */
     /* background: transparent; */
-    background-color: #8179af;
-    background: url(terrain1.svg);
+    background-color: #222;
+    /* background: url(terrain1.svg); */
     background-size: 1400px 100%;
     display: flex;
     flex-direction: column;
@@ -17,7 +21,7 @@
     /* padding-left: 275px; */
     width: 550px;
     /* border: 1px solid #06c300; */
-    background: #33ccdd22;
+    background: #fff2;
     margin-top: 20px;
   }
 
@@ -31,17 +35,23 @@
   }
 
   .node {
-    /* fill: purple; */
-    fill: white;
+    fill: var(--link-color);
     stroke: black;
   }
 
-  .node:hover {
-    fill: purple;
+  .node:hover, .node.hovered {
+    fill: var(--link-hover-color);
+  }
+
+  .link path:hover,
+  path.helper-segment:hover,
+  .link.hovered path,
+  .helpers path.hovered {
+    stroke: var(--link-hover-color);
   }
 
   .heavy {
-    font: bold 13px monospace;
+    font: 14px monospace;
     fill: #ccc;
     stroke-width: 0;
     user-select: none;
@@ -49,7 +59,7 @@
   }
 
   .link path, path.helper-segment {
-    stroke: white;
+    stroke: var(--link-color);
     stroke-linecap: "round";
     opacity: 1;
     stroke-width: 2px;

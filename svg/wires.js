@@ -1,3 +1,25 @@
+/*
+    NOTES:
+    - move towards greater objective-orientation in code
+
+    ISSUES:
+
+    TODO:
+    - wires: CRUD
+    - boxes: CRUD
+    - group: CRUD
+    - wires: animation and indicators (arrows)
+    - boxes: collision detection
+    - page: zoom/pan with memory
+    X creation of scene from json
+    X highlighting/hovering links
+
+    RESOURCES:
+    - path tool - https://codepen.io/thebabydino/full/EKLNvZ
+    - path info - https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+
+*/
+
 function getNodeDirection(node) {
     const el = node;
     const cx = Number(el.getAttribute('cx'));
@@ -80,6 +102,9 @@ function drawLink(link, units) {
     });
     link.directions = directions;
     const newPathD = objToPathD(pathObj, link.directions);
+    const label = Math.random().toString(26).replace('0.', '');
+    link.label = label;
+    link.element.setAttribute('data-label', label);
     link.element.querySelector('path').setAttribute('d', newPathD)
 }
 
@@ -484,7 +509,6 @@ function endDrag(evt) {
     this.selectedElement = undefined;
 }
 
-
 function makeDraggable(evt, units, links) {
     var svg = evt.target;
     const state = {
@@ -510,6 +534,51 @@ function makeDraggable(evt, units, links) {
     svg.addEventListener('touchcancel', endDragHandler);
 }
 
+function bringToTop(targetElement){
+    // put the element at the bottom of its parent
+    let parent = targetElement.parentNode;
+    parent.appendChild(targetElement);
+}
+
+function hoverStart(event){
+    if(event.target.tagName === 'path' && !event.target.classList.contains('helper-segment')){
+        //TODO: cache hovered or make elements easier to use when building link?
+        const linkLabel = event.target.parentNode.getAttribute('data-label');
+        const link = (this.links.filter(x => x.label === linkLabel) || [])[0];
+        const start = link.start(this.units);
+        const end = link.end(this.units);
+        const getNodeIndex = (el) => Array.from(el.parentNode.querySelectorAll('circle')).indexOf(el);
+        const getNodeHelpers = el => Array.from(el.parentNode.querySelectorAll('.helpers path'));
+        const getHelper = el => (getNodeHelpers(el)||[])[getNodeIndex(el)];
+        const startHelper = getHelper(start);
+        const endHelper = getHelper(end);
+        bringToTop(link.element);
+        this.hovered = [link.element, end, start, endHelper, startHelper];
+        this.hovered.forEach(el => el.classList.add('hovered'));
+    }
+}
+
+function hoverEnd(event){
+    if(this.hovered){
+        this.hovered.forEach(el => el.classList.remove('hovered'));
+        this.hovered = undefined;
+    }
+}
+
+function addLinkEffects(evt, units, links) {
+    var svg = evt.target;
+    const state = {
+        links, units,
+        hovered: undefined,
+        selectedLinks: []
+    };
+    const hoverStartHandler = hoverStart.bind(state);
+    const hoverEndHandler = hoverEnd.bind(state);
+    svg.addEventListener("mouseover", hoverStartHandler);
+    svg.addEventListener('mouseout', hoverEndHandler);
+    svg.addEventListener('mouseleave', hoverEndHandler);
+}
+
 // --------------------------------------------------------------
 function initScene(evt, units, links){
     units.forEach(drawUnit);
@@ -523,4 +592,5 @@ function initScene(evt, units, links){
 
     links.forEach((link) => drawLink(link, units));
     makeDraggable(evt, units, links);
+    addLinkEffects(evt, units, links);
 }
