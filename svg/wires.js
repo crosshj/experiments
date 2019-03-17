@@ -19,6 +19,9 @@
     - wire that does not attach should disappear
     - moving nodes and wires over other nodes and wires causes attachments to displace
     - dragging wire should have z-index higher than units
+    - hovering node should also highlight node helper (and vice versa)
+    - link create/drag should work when started at node helper
+
     RESOURCES:
     - path tool - https://codepen.io/thebabydino/full/EKLNvZ
     - path info - https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
