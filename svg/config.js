@@ -36,7 +36,7 @@ var boxes = [{
     }, null]
 }, {
     label: 'yin',
-    x: 180,
+    x: 170,
     y: 100,
     color: '#9e9e9e',
     nodes: [null, {
@@ -62,8 +62,8 @@ var boxes = [{
         }, null]
 }, {
     label: 'santa',
-    x: 270,
-    y: 200,
+    x: 220,
+    y: 190,
     color: '#FC5A8D',
     nodes: [null, {
         label: 'first'
@@ -72,8 +72,8 @@ var boxes = [{
         }]
 }, {
     label: 'masamune',
-    x: 10,
-    y: 120,
+    x: 60,
+    y: 125.5,
     height: 25,
     width: 100,
     color: '#732E6C',
@@ -112,8 +112,8 @@ var wires = [{
     end: (units) => units.getNode('santa', 'third')
 }, {
     start: (units) => units.getNode('santa', 'first'),
-    end: (units) => units.getNode('masamune', 'third')
+    end: (units) => units.getNode('masamune', 'first')
 }, {
-    start: (units) => units.getNode('masamune', 'first'),
+    start: (units) => units.getNode('masamune', 'second'),
     end: (units) => units.getNode('yin', 'first')
 }];

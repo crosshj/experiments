@@ -12,6 +12,8 @@
     - wires: animation and indicators (arrows)
     - boxes: collision detection
     - page: zoom/pan with memory
+    - auto-arrange scene
+    - snap to grid
     X creation of scene from json
     X highlighting/hovering links
 
