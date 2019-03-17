@@ -14,11 +14,33 @@
     X creation of scene from json
     X highlighting/hovering links
 
+    ISSUES:
+    - created wire does not attach to new node
+    - wire that does not attach should disappear
+    - moving nodes and wires over other nodes and wires causes attachments to displace
+    - dragging wire should have z-index higher than units
     RESOURCES:
     - path tool - https://codepen.io/thebabydino/full/EKLNvZ
     - path info - https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
 
 */
+
+const getTranslateX = node => {
+    const transform = node.getAttribute('transform');
+    const splitChar = transform.includes(',') ? ',' : ' ';
+    if(!transform.split(splitChar)[0]){
+        debugger;
+    }
+    return Number(transform.split(splitChar)[0].split('(')[1]);
+};
+const getTranslateY = node => {
+    const transform = node.getAttribute('transform');
+    const splitChar = transform.includes(',') ? ',' : ' ';
+    if(!transform.split(splitChar)[1]){
+        debugger;
+    }
+    return Number(transform.split(splitChar)[1].split(')')[0]);
+};
 
 function getNodeDirection(node) {
     const el = node;
@@ -74,14 +96,11 @@ function drawLink(link, units) {
         .getAttribute('d')
         .replace(/\n/g, ' ')
         .replace(/ +(?= )/g, '');
-    link.startOriginalOffsetX = link.start(units).parentNode
-        .getAttribute('transform').match(/[0-9]+/g)[0];
-    link.startOriginalOffsetY = link.start(units).parentNode
-        .getAttribute('transform').match(/[0-9]+/g)[1];
-    link.endOriginalOffsetX = link.end(units).parentNode
-        .getAttribute('transform').match(/[0-9]+/g)[0];
-    link.endOriginalOffsetY = link.end(units).parentNode
-        .getAttribute('transform').match(/[0-9]+/g)[1];
+
+    link.startOriginalOffsetX = getTranslateX(link.start(units).parentNode);
+    link.startOriginalOffsetY = getTranslateY(link.start(units).parentNode);
+    link.endOriginalOffsetX = getTranslateX(link.end(units).parentNode);
+    link.endOriginalOffsetY = getTranslateY(link.end(units).parentNode);
 
     link.startOffsetX = Number(link.startOriginalOffsetX);
     link.startOffsetY = Number(link.startOriginalOffsetY)
@@ -105,7 +124,10 @@ function drawLink(link, units) {
     const label = Math.random().toString(26).replace('0.', '');
     link.label = label;
     link.element.setAttribute('data-label', label);
-    link.element.querySelector('path').setAttribute('d', newPathD)
+    link.element.querySelector('path').setAttribute('d', newPathD);
+    // if(link.temporary){
+    //     debugger;
+    // }
 }
 
 //https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
@@ -125,19 +147,35 @@ function drawUnit(unit) {
     const unitElement = document.createElementNS(namespaceURI, "g");
     unitElement.setAttribute('data-label', unit.label);
     unitElement.setAttribute('class', 'box draggable-group');
-    unitElement.setAttribute('transform', `translate(${unit.x}, ${unit.y})`);
-    const style = unit.color ? `fill:${unit.color}` : '';
-    const overlayStyle = unit.color ? `fill:${overlayColor(unit.color)}` : '';
+    unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
+    const style = unit.color
+        ? `fill:${unit.color}`
+        : '';
+    const overlayStyle = unit.color
+        ? `fill:${overlayColor(unit.color)}`
+        : '';
     //const rect = `<rect x="10" y="1" width="${width}" height="${height}" rx="5" ry="5"></rect>`;
     const rect = `<rect x="10" y="1" style="${style}" width="${width}" height="${height}" rx="0" ry="0"></rect>`;
-    var unitElementHTML = `
-${rect}
-<text x="${width / 2 - unit.label.length * 2}" y="${height / 2 + 4}" style="${overlayStyle}" class="heavy">${unit.label}</text>
-`;
+    var unitElementHTML = unit.temporary
+        ? ''
+        : `
+            ${rect}
+            <text x="${width / 2 - unit.label.length * 2}" y="${height / 2 + 4}" style="${overlayStyle}" class="heavy">${unit.label}</text>
+        `;
     const nodeRadius = 3;
     const offSet = 10;
     const insetNode = nodeRadius;
     const insetNodeLeft = insetNode + offSet;
+    const canvas = document.querySelector('#canvas');
+    unit.element = unitElement;
+
+    if(unit.temporary){
+        unitElement.innerHTML = `
+            <circle class="node dragging" cx="0" cy="0" r="3"></circle>
+        `;
+        canvas.appendChild(unitElement);
+        return;
+    }
 
     var positions = [{
         x: insetNodeLeft, y: offSet //top-left
@@ -198,10 +236,8 @@ ${rect}
 
     helpers.innerHTML = helpersHTML;
 
-    const canvas = document.querySelector('#canvas');
-    const linksGroup = document.querySelector('#canvas #links');
+    //const linksGroup = document.querySelector('#canvas #links');
 
-    unit.element = unitElement;
     canvas.appendChild(unitElement);
     //canvas.insertBefore(unitElement, linksGroup);
 }
@@ -308,15 +344,15 @@ function createLinkElement(link) {
 
     const linkPath = document.createElementNS(namespaceURI, "path");
 
-    const startParentTransform = link.start.parentNode.getAttribute('transform');
-    const endParentTransform = link.end.parentNode.getAttribute('transform');
+    // const startParentTransform = link.start.parentNode.getAttribute('transform');
+    // const endParentTransform = link.end.parentNode.getAttribute('transform');
     const startCoords = {
-        x: Number(startParentTransform.match(/[0-9]+/g)[0]) + Number(link.start.getAttribute('cx')),
-        y: Number(startParentTransform.match(/[0-9]+/g)[1]) + Number(link.start.getAttribute('cy'))
+        x: getTranslateX(link.start.parentNode) + Number(link.start.getAttribute('cx')),
+        y: getTranslateY(link.start.parentNode) + Number(link.start.getAttribute('cy'))
     };
     const endCoords = {
-        x: Number(endParentTransform.match(/[0-9]+/g)[0]) + Number(link.end.getAttribute('cx')),
-        y: Number(endParentTransform.match(/[0-9]+/g)[1]) + Number(link.end.getAttribute('cy'))
+        x: getTranslateX(link.end.parentNode) + Number(link.end.getAttribute('cx')),
+        y: getTranslateY(link.end.parentNode) + Number(link.end.getAttribute('cy'))
     };
     const pathObj = {
         m: startCoords,
@@ -443,7 +479,7 @@ function getMousePosition(svg, evt) {
     };
 }
 
-function initialiseDragging(svg, selectedElement, evt) {
+function initialiseUnitDragging(svg, selectedElement, evt) {
     offset = getMousePosition(svg, evt);
 
     // Make sure the first transform on the element is a translate transform
@@ -463,20 +499,53 @@ function initialiseDragging(svg, selectedElement, evt) {
     return { transform, offset };
 }
 
+function initialiseWireDragging(evt){
+    console.log('wire drag start');
+    const mousePos = getMousePosition(this.svg, evt);
+    const label = Math.random().toString(26).replace('0.', '');
+    const tempUnit = {
+        x: mousePos.x,
+        y: mousePos.y,
+        label,
+        width: 1,
+        height: 1,
+        temporary: true,
+        nodes: [{
+            label: 'first'
+        }]
+    };
+    this.units.push(tempUnit);
+    drawUnit(tempUnit);
+    const tempEnd = tempUnit.element.querySelector('circle');
+    const tempLink = {
+        start: () => evt.target,
+        end: () => tempEnd
+    };
+
+    tempLink.temporary = true;
+    drawLink(tempLink, this.units);
+    this.links.push(tempLink);
+    this.selectedElement = tempUnit.element;
+    const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
+    this.transform = initD.transform;
+    this.offset = initD.offset;
+}
+
 function startDrag(evt) {
+    if(this.selectedElement){
+        return;
+    }
     const nodeDrag = {
         test: () => evt.target.classList.contains('node'),
         start: () => {
-            console.log('wire drag start');
-            evt.stopPropagation();
-            evt.preventDefault();
+            initialiseWireDragging.bind(this)(evt);
         }
     };
     const groupDrag = {
         test: () => evt.target.parentNode.classList.contains('draggable-group'),
         start: () => {
             this.selectedElement = evt.target.parentNode;
-            const initD = initialiseDragging(this.svg, this.selectedElement, evt);
+            const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
             this.transform = initD.transform;
             this.offset = initD.offset;
         }
@@ -493,6 +562,8 @@ function startDrag(evt) {
     })[0];
 
     result && result.start();
+    evt.stopPropagation();
+    evt.preventDefault();
 }
 
 function drag(evt) {
@@ -500,6 +571,7 @@ function drag(evt) {
         return;
     }
     evt.preventDefault();
+    evt.stopPropagation();
     var coord = getMousePosition(this.svg, evt);
     this.transform.setTranslate(coord.x - this.offset.x, coord.y - this.offset.y);
     updateConnectedLinks(this.links, this.units, evt, coord.x - this.offset.x, coord.y - this.offset.y);
@@ -509,14 +581,8 @@ function endDrag(evt) {
     this.selectedElement = undefined;
 }
 
-function makeDraggable(evt, units, links) {
-    var svg = evt.target;
-    const state = {
-        svg, units, links,
-        selectedElement: undefined,
-        offset: undefined,
-        transform: undefined
-    };
+function makeDraggable(state) {
+    var svg = state.svg;
 
     const startDragHandler = startDrag.bind(state);
     svg.addEventListener('mousedown', startDragHandler);
@@ -541,6 +607,9 @@ function bringToTop(targetElement){
 }
 
 function hoverStart(event){
+    if(this.selectedElement){
+        return;
+    }
     if(event.target.tagName === 'path' && !event.target.classList.contains('helper-segment')){
         //TODO: cache hovered or make elements easier to use when building link?
         const linkLabel = event.target.parentNode.getAttribute('data-label');
@@ -565,13 +634,8 @@ function hoverEnd(event){
     }
 }
 
-function addLinkEffects(evt, units, links) {
-    var svg = evt.target;
-    const state = {
-        links, units,
-        hovered: undefined,
-        selectedLinks: []
-    };
+function addLinkEffects(state) {
+    var svg = state.svg;
     const hoverStartHandler = hoverStart.bind(state);
     const hoverEndHandler = hoverEnd.bind(state);
     svg.addEventListener("mouseover", hoverStartHandler);
@@ -591,6 +655,16 @@ function initScene(evt, units, links){
     };
 
     links.forEach((link) => drawLink(link, units));
-    makeDraggable(evt, units, links);
-    addLinkEffects(evt, units, links);
+    const state = {
+        svg: event.target,
+        units, links,
+        hovered: undefined,
+        selectedLinks: [],
+        selectedElement: undefined,
+        offset: undefined,
+        transform: undefined
+    };
+
+    makeDraggable(state);
+    addLinkEffects(state);
 }

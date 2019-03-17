@@ -39,6 +39,16 @@
     stroke: black;
   }
 
+  .node.dragging {
+    stroke: none;
+    fill: var(--link-color);
+  }
+
+  .node.dragging:hover {
+    stroke: none;
+    fill: var(--link-color);
+  }
+
   .node:hover, .node.hovered {
     fill: var(--link-hover-color);
   }
@@ -51,7 +61,7 @@
   }
 
   .heavy {
-    font: 14px monospace;
+    font: 12px monospace;
     fill: #ccc;
     stroke-width: 0;
     user-select: none;

@@ -12,8 +12,8 @@ var boxes = [{
         }]
 }, {
     label: 'meshach',
-    x: 140,
-    y: 125,
+    x: 127,
+    y: 10,
     color: '#ACBF60',
     nodes: [{
         label: 'first'
@@ -26,8 +26,8 @@ var boxes = [{
     }]
 }, {
     label: 'abednego',
-    x: 300,
-    y: 50,
+    x: 220,
+    y: 10,
     color: '#E6BC5C',
     nodes: [{
         label: 'first'
@@ -36,9 +36,9 @@ var boxes = [{
     }, null]
 }, {
     label: 'yin',
-    x: 250,
-    y: 230,
-    color: '#253529',
+    x: 180,
+    y: 100,
+    color: '#9e9e9e',
     nodes: [null, {
         label: 'first'
     }, null, {
@@ -50,8 +50,8 @@ var boxes = [{
         }, null]
 }, {
     label: 'yang',
-    x: 350,
-    y: 230,
+    x: 270,
+    y: 100,
     color: '#FEBAAD',
     nodes: [null, null, {
         label: 'first'
@@ -62,8 +62,8 @@ var boxes = [{
         }, null]
 }, {
     label: 'santa',
-    x: 300,
-    y: 400,
+    x: 270,
+    y: 200,
     color: '#FC5A8D',
     nodes: [null, {
         label: 'first'
@@ -72,8 +72,8 @@ var boxes = [{
         }]
 }, {
     label: 'masamune',
-    x: 73,
-    y: 330,
+    x: 10,
+    y: 120,
     height: 25,
     width: 100,
     color: '#732E6C',
