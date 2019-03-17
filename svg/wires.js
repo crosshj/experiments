@@ -8,6 +8,7 @@
     - wires: CRUD
     - boxes: CRUD
     - group: CRUD
+    - game loop
     - wires: animation and indicators (arrows)
     - boxes: collision detection
     - page: zoom/pan with memory
@@ -15,8 +16,7 @@
     X highlighting/hovering links
 
     ISSUES:
-    - created wire does not attach to new node
-    - wire that does not attach should disappear
+    - second new link creation fails
     - moving nodes and wires over other nodes and wires causes attachments to displace
     - dragging wire should have z-index higher than units
     - hovering node should also highlight node helper (and vice versa)
@@ -148,6 +148,7 @@ function drawUnit(unit) {
 
     const namespaceURI = document.getElementById('canvas').namespaceURI;
     const unitElement = document.createElementNS(namespaceURI, "g");
+    unit.temporary && unitElement.setAttribute('data-temporary', true);
     unitElement.setAttribute('data-label', unit.label);
     unitElement.setAttribute('class', 'box draggable-group');
     unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
@@ -210,6 +211,16 @@ function drawUnit(unit) {
     });
     unitElementHTML += '<g class="helpers"></g>'
     unitElement.innerHTML = unitElementHTML;
+    unit.nodes.forEach(n => {
+        if (!n) {
+            return;
+        }
+        n.element = unitElement.querySelector(`circle[data-label="${n.label}"]`);
+        n.globalPosition = () => ({
+            x: Number(n.element.getAttribute('cx')) + getTranslateX(n.element.parentNode),
+            y: Number(n.element.getAttribute('cy')) + getTranslateY(n.element.parentNode),
+        });
+    });
 
     const helpers = unitElement.querySelector('.helpers');
     var helpersHTML = '';
@@ -230,10 +241,9 @@ function drawUnit(unit) {
             'west': `M ${cx} ${cy} L ${cx - offset} ${cy}`
         };
         helpersHTML += `
-    <path class="helper-segment" d="${segment[direction]}"></path>
-`;
+            <path class="helper-segment" d="${segment[direction]}"></path>
+        `;
 
-        //TODO: add a small, white path for overlap
         //console.log({ direction: n.direction })
     });
 
@@ -532,6 +542,9 @@ function initialiseWireDragging(evt){
     const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
     this.transform = initD.transform;
     this.offset = initD.offset;
+
+    this.draggedUnit = tempUnit;
+    this.draggedLink = tempLink;
 }
 
 function startDrag(evt) {
@@ -580,8 +593,62 @@ function drag(evt) {
     updateConnectedLinks(this.links, this.units, evt, coord.x - this.offset.x, coord.y - this.offset.y);
 }
 
+function distanceNodes(node1, node2){
+    var a = node1.x - node2.x;
+    var b = node1.y - node2.y;
+
+    var c = Math.sqrt( a*a + b*b );
+    return c;
+}
+
 function endDrag(evt) {
+    if(!this.selectedElement){
+        return;
+    }
+    const dragged = {
+        element: this.selectedElement,
+        link: this.draggedLink,
+        unit: this.draggedUnit,
+        temporary: this.selectedElement.dataset.temporary
+    };
+    if(dragged.temporary){
+        const mousePos = getMousePosition(this.svg, evt);
+        const allNodes = this.units
+            .filter(x => x.label !== this.draggedUnit.label)
+            .reduce((all, one) => { return all.concat(one.nodes)}, [])
+            .filter(x => !!x)
+            .map(n => ({
+                element: n.element,
+                x: n.globalPosition().x,
+                y: n.globalPosition().y,
+                distance: distanceNodes({
+                    x: mousePos.x,
+                    y: mousePos.y,
+                }, {
+                    x: n.globalPosition().x,
+                    y: n.globalPosition().y,
+                })
+            }))
+            .filter(n => n.distance < 10)
+            .sort((a, b) => a.distance - b.distance);
+        if(allNodes.length){
+            const parentLabel = allNodes[0].element.parentElement.dataset.label;
+            const nodeLabel = allNodes[0].element.dataset.label;
+            this.draggedLink.end = (units) => units.getNode(parentLabel, nodeLabel);
+            const newLink = {
+                start: this.draggedLink.start,
+                end: (units) => units.getNode(parentLabel, nodeLabel)
+            };
+            this.links.push(newLink);
+            drawLink(newLink, this.units);
+        }
+        this.links = this.links.filter(l => !l.temporary);
+        dragged.link.element.parentNode.removeChild(dragged.link.element)
+        dragged.element.parentNode.removeChild(dragged.element)
+    }
     this.selectedElement = undefined;
+    evt.preventDefault();
+    evt.stopPropagation();
 }
 
 function makeDraggable(state) {
@@ -662,6 +729,8 @@ function initScene(evt, units, links){
         svg: event.target,
         units, links,
         hovered: undefined,
+        draggedUnit: undefined,
+        draggedLink: undefined,
         selectedLinks: [],
         selectedElement: undefined,
         offset: undefined,
