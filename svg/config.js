@@ -65,11 +65,16 @@ var boxes = [{
     x: 220,
     y: 190,
     color: '#FC5A8D',
-    nodes: [null, {
-        label: 'first'
-    }, null, null, null, null, null, {
-            label: 'third'
-        }]
+    nodes: [
+        { label: 'first' },
+        { label: 'second' },
+        { label: 'third' },
+        { label: 'fourth' },
+        { label: 'fifth' },
+        { label: 'sixth' },
+        { label: 'seventh' },
+        { label: 'eighth' }
+    ]
 }, {
     label: 'masamune',
     x: 60,
@@ -85,13 +90,11 @@ var boxes = [{
             label: 'third'
         }]
 }];
+boxes.forEach(b => b.x += 70)
 
 var wires = [{
     start: (units) => units.getNode('shadrach', 'second'),
     end: (units) => units.getNode('meshach', 'first')
-}, {
-    start: (units) => units.getNode('shadrach', 'first'),
-    end: (units) => units.getNode('meshach', 'second'),
 }, {
     start: (units) => units.getNode('meshach', 'fourth'),
     end: (units) => units.getNode('abednego', 'first')
@@ -106,13 +109,10 @@ var wires = [{
     end: (units) => units.getNode('yang', 'first')
 }, {
     start: (units) => units.getNode('yin', 'second'),
-    end: (units) => units.getNode('santa', 'third')
+    end: (units) => units.getNode('santa', 'eighth')
 }, {
     start: (units) => units.getNode('yang', 'second'),
-    end: (units) => units.getNode('santa', 'third')
-}, {
-    start: (units) => units.getNode('santa', 'first'),
-    end: (units) => units.getNode('masamune', 'first')
+    end: (units) => units.getNode('santa', 'eighth')
 }, {
     start: (units) => units.getNode('masamune', 'second'),
     end: (units) => units.getNode('yin', 'first')

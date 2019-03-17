@@ -19,7 +19,8 @@
 
     ISSUES:
     - second new link creation fails
-    - moving nodes and wires over other nodes and wires causes attachments to displace
+    - moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
+        ^^^ probably should only update moving part of link
     - dragging wire should have z-index higher than units
     - hovering node should also highlight node helper (and vice versa)
     - link create/drag should work when started at node helper
@@ -29,6 +30,15 @@
     - path info - https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
 
 */
+
+//https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
+function overlayColor(color) {
+    //if only first half of color is defined, repeat it
+    if (color.length < 5) {
+        color += color.slice(1);
+    }
+    return (color.replace('#', '0x')) > (0xffffff / 2) ? '#111' : '#eee';
+}
 
 const getTranslateX = node => {
     const transform = node.getAttribute('transform');
@@ -77,6 +87,45 @@ function getLinkDirections(link) {
         dirs.end = direction;
     });
     return dirs;
+}
+
+// -----------------------------------------------------------------------------
+
+function createLinkElement(link) {
+    const namespaceURI = document.getElementById('canvas').namespaceURI;
+    const linkElement = document.createElementNS(namespaceURI, "g");
+    linkElement.classList.add('link');
+
+    const linkPath = document.createElementNS(namespaceURI, "path");
+
+    // const startParentTransform = link.start.parentNode.getAttribute('transform');
+    // const endParentTransform = link.end.parentNode.getAttribute('transform');
+    const startCoords = {
+        x: getTranslateX(link.start.parentNode) + Number(link.start.getAttribute('cx')),
+        y: getTranslateY(link.start.parentNode) + Number(link.start.getAttribute('cy'))
+    };
+    const endCoords = {
+        x: getTranslateX(link.end.parentNode) + Number(link.end.getAttribute('cx')),
+        y: getTranslateY(link.end.parentNode) + Number(link.end.getAttribute('cy'))
+    };
+    const pathObj = {
+        m: startCoords,
+        c3: endCoords
+    };
+    const controls = calculateControls(pathObj);
+    pathObj.c1 = controls.c1;
+    pathObj.c2 = controls.c2;
+    const originalPathD = objToPathD(pathObj);
+    linkPath.setAttribute('d', originalPathD)
+
+    linkElement.appendChild(linkPath);
+
+    drawControls({ namespaceURI, link, linkElement, pathObj });
+
+    const linksGroup = document.querySelector('#canvas #links');
+    linksGroup.appendChild(linkElement);
+
+    return linkElement;
 }
 
 function drawLink(link, units) {
@@ -135,13 +184,43 @@ function drawLink(link, units) {
     // }
 }
 
-//https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
-function overlayColor(color) {
-    //if only first half of color is defined, repeat it
-    if (color.length < 5) {
-        color += color.slice(1);
-    }
-    return (color.replace('#', '0x')) > (0xffffff / 2) ? '#111' : '#eee';
+function updateConnectedLinks(links, units, event, x, y) {
+    //console.log('updateConnectedLinks');
+    const target = event.target.parentNode;
+    links.forEach(link => {
+        const containsStart = target.classList.contains('box') && target.contains(link.start(units));
+        const containsEnd = target.classList.contains('box') && target.contains(link.end(units));
+        if (!containsStart && !containsEnd) {
+            return;
+        }
+
+        const pathD = link.originalPathD;
+        const pathObj = pathDToObj(pathD);
+
+        if (containsStart) {
+            link.startOffsetX = x;
+            link.startOffsetY = y;
+        }
+        if (containsEnd) {
+            link.endOffsetX = x;
+            link.endOffsetY = y;
+        }
+
+        pathObj.m.x += (link.startOffsetX - link.startOriginalOffsetX);
+        pathObj.m.y += (link.startOffsetY - link.startOriginalOffsetY);
+        pathObj.c3.x += (link.endOffsetX - link.endOriginalOffsetX);
+        pathObj.c3.y += (link.endOffsetY - link.endOriginalOffsetY);
+
+        const controlPoints = calculateControls(pathObj);
+        pathObj.c1 = controlPoints.c1;
+        pathObj.c2 = controlPoints.c2;
+
+        drawControls({ link, linkElement: link.element, pathObj })
+
+        const newPathD = objToPathD(pathObj, link.directions);
+        link.element.querySelector('path').setAttribute('d', newPathD);
+        //console.log(newPathString);
+    });
 }
 
 function drawUnit(unit) {
@@ -257,6 +336,8 @@ function drawUnit(unit) {
     //canvas.insertBefore(unitElement, linksGroup);
 }
 
+// -----------------------------------------------------------------------------
+
 function calculateControls(p) {
     const xDifference = p.c3.x - p.m.x;
     const yDifference = p.c3.y - p.m.y;
@@ -352,43 +433,6 @@ function drawControls({ namespaceURI, link, linkElement, pathObj }) {
     link.controlLine3.setAttribute('y2', pathObj.c3.y);
 }
 
-function createLinkElement(link) {
-    const namespaceURI = document.getElementById('canvas').namespaceURI;
-    const linkElement = document.createElementNS(namespaceURI, "g");
-    linkElement.classList.add('link');
-
-    const linkPath = document.createElementNS(namespaceURI, "path");
-
-    // const startParentTransform = link.start.parentNode.getAttribute('transform');
-    // const endParentTransform = link.end.parentNode.getAttribute('transform');
-    const startCoords = {
-        x: getTranslateX(link.start.parentNode) + Number(link.start.getAttribute('cx')),
-        y: getTranslateY(link.start.parentNode) + Number(link.start.getAttribute('cy'))
-    };
-    const endCoords = {
-        x: getTranslateX(link.end.parentNode) + Number(link.end.getAttribute('cx')),
-        y: getTranslateY(link.end.parentNode) + Number(link.end.getAttribute('cy'))
-    };
-    const pathObj = {
-        m: startCoords,
-        c3: endCoords
-    };
-    const controls = calculateControls(pathObj);
-    pathObj.c1 = controls.c1;
-    pathObj.c2 = controls.c2;
-    const originalPathD = objToPathD(pathObj);
-    linkPath.setAttribute('d', originalPathD)
-
-    linkElement.appendChild(linkPath);
-
-    drawControls({ namespaceURI, link, linkElement, pathObj });
-
-    const linksGroup = document.querySelector('#canvas #links');
-    linksGroup.appendChild(linkElement);
-
-    return linkElement;
-}
-
 function pathDToObj(pathD) {
     const matches = pathD
         .split(' ')
@@ -445,45 +489,6 @@ function objToPathD(o, directions) {
     return `${start} L ${end}`;
 }
 
-function updateConnectedLinks(links, units, event, x, y) {
-    //console.log('updateConnectedLinks');
-    const target = event.target.parentNode;
-    links.forEach(link => {
-        const containsStart = target.classList.contains('box') && target.contains(link.start(units));
-        const containsEnd = target.classList.contains('box') && target.contains(link.end(units));
-        if (!containsStart && !containsEnd) {
-            return;
-        }
-
-        const pathD = link.originalPathD;
-        const pathObj = pathDToObj(pathD);
-
-        if (containsStart) {
-            link.startOffsetX = x;
-            link.startOffsetY = y;
-        }
-        if (containsEnd) {
-            link.endOffsetX = x;
-            link.endOffsetY = y;
-        }
-
-        pathObj.m.x += (link.startOffsetX - link.startOriginalOffsetX);
-        pathObj.m.y += (link.startOffsetY - link.startOriginalOffsetY);
-        pathObj.c3.x += (link.endOffsetX - link.endOriginalOffsetX);
-        pathObj.c3.y += (link.endOffsetY - link.endOriginalOffsetY);
-
-        const controlPoints = calculateControls(pathObj);
-        pathObj.c1 = controlPoints.c1;
-        pathObj.c2 = controlPoints.c2;
-
-        drawControls({ link, linkElement: link.element, pathObj })
-
-        const newPathD = objToPathD(pathObj, link.directions);
-        link.element.querySelector('path').setAttribute('d', newPathD);
-        //console.log(newPathString);
-    });
-}
-
 // --------------------------------------------------------------
 function getMousePosition(svg, evt) {
     var CTM = svg.getScreenCTM();
@@ -515,7 +520,7 @@ function initialiseUnitDragging(svg, selectedElement, evt) {
 }
 
 function initialiseWireDragging(evt){
-    console.log('wire drag start');
+    //console.log('wire drag start');
     const mousePos = getMousePosition(this.svg, evt);
     const label = Math.random().toString(26).replace('0.', '');
     const tempUnit = {
@@ -591,8 +596,30 @@ function drag(evt) {
     evt.preventDefault();
     evt.stopPropagation();
     var coord = getMousePosition(this.svg, evt);
-    this.transform.setTranslate(coord.x - this.offset.x, coord.y - this.offset.y);
-    updateConnectedLinks(this.links, this.units, evt, coord.x - this.offset.x, coord.y - this.offset.y);
+
+    const linksToUpdate = this.links
+        .reduce((all, one) => {
+            const linkStartConnected = () => {
+                const startParent = one.start(this.units).parentElement.dataset.label;
+                return startParent === this.selectedElement.dataset.label;
+            };
+            const linkEndConnected = () => {
+                const endParent = one.end(this.units).parentElement.dataset.label;
+                return endParent === this.selectedElement.dataset.label;
+            };
+            if(linkStartConnected() || linkEndConnected()){
+                all.push(one)
+            }
+            return all;
+        }, []);
+    function updateDOM(){
+        this.transform.setTranslate(coord.x - this.offset.x, coord.y - this.offset.y);
+        updateConnectedLinks(
+            linksToUpdate, this.units, evt,
+            coord.x - this.offset.x, coord.y - this.offset.y
+        );
+    }
+    window.requestAnimationFrame(updateDOM.bind(this));
 }
 
 function distanceNodes(node1, node2){
