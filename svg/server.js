@@ -11,6 +11,7 @@ const port = 8888;
 const replace = {
     config: '<script src="config.js"></script>',
     wires: '<script src="wires.js"></script>',
+    state: '<script src="state.js"></script>',
     css: '<link rel="stylesheet" href="index.css">'
 };
 
@@ -20,6 +21,9 @@ const files = {
     '</script>',
     wires: '<script>' +
         fs.readFileSync(path.resolve(__dirname, 'wires.js'), 'utf8') +
+    '</script>',
+    state: '<script>' +
+        fs.readFileSync(path.resolve(__dirname, 'state.js'), 'utf8') +
     '</script>',
     css: '<style>' +
         fs.readFileSync(path.resolve(__dirname, 'index.css'), 'utf8') +

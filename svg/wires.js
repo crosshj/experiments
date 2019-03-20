@@ -744,6 +744,8 @@ function addLinkEffects(state) {
 
 // --------------------------------------------------------------
 function initScene(evt, units, links){
+    const _state = new State({ units, links });
+
     units.forEach(drawUnit);
     units.getNode = (label, nodeLabel) => {
         const unitElement = (units.find(x => x.label === label) || {}).element;
@@ -755,6 +757,7 @@ function initScene(evt, units, links){
 
     links.forEach((link) => drawLink(link, units));
     const state = {
+        _state,
         svg: event.target,
         units, links,
         hovered: undefined,
@@ -765,6 +768,8 @@ function initScene(evt, units, links){
         offset: undefined,
         transform: undefined
     };
+
+    window._state = _state;
 
     makeDraggable(state);
     addLinkEffects(state);
