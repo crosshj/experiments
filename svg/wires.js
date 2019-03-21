@@ -742,9 +742,64 @@ function addLinkEffects(state) {
     svg.addEventListener('mouseleave', hoverEndHandler);
 }
 
+function mapNodeToState(node, index){
+    if(!node){ return node; }
+    const unit = this.unit;
+    const width = Number(unit.width || 76);
+    const height = Number(unit.height || 76);
+
+    const directionMap = [
+        'west', 'west','west',
+        'south',
+        'east', 'east', 'east',
+        'north'
+    ];
+
+    const nodeRadius = 3;
+    const offSet = 10;
+    const insetNode = nodeRadius;
+    const insetNodeLeft = insetNode + offSet;
+
+    var positions = [{
+        x: insetNodeLeft, y: offSet //top-left
+    }, {
+        x: insetNodeLeft, y: height / 2 //middle-left
+    }, {
+        x: insetNodeLeft, y: height - offSet //bottom-left
+    }, {
+        x: offSet + width / 2, y: height - insetNode + 1 //bottom-middle
+    }, {
+        x: width - insetNode + offSet, y: offSet //top-right
+    }, {
+        x: width - insetNode + offSet, y: height / 2 //middle-right
+    }, {
+        x: width - insetNode + offSet, y: height - offSet //bottom-right
+    }, {
+        x: offSet + width / 2, y: offSet / 2 - 1 //top-middle
+    }];
+
+    return {
+        x: positions[index].x,
+        y: positions[index].y,
+        direction: directionMap[index]
+    };
+}
+
+function initState({ units, links }){
+    const u = units.map(unit => ({
+        x: unit.x,
+        y: unit.y,
+        width: unit.width,
+        height: unit.height,
+        nodes: unit.nodes.map(mapNodeToState.bind({ unit }))
+    }));
+    const l = links.map(link => link);
+    return { units: u, links: l };
+}
+
 // --------------------------------------------------------------
 function initScene(evt, units, links){
-    const _state = new State({ units, links });
+    const _state = new State(initState({ units, links }));
 
     units.forEach(drawUnit);
     units.getNode = (label, nodeLabel) => {
@@ -756,6 +811,7 @@ function initScene(evt, units, links){
     };
 
     links.forEach((link) => drawLink(link, units));
+
     const state = {
         _state,
         svg: event.target,
