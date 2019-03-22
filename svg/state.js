@@ -16,18 +16,31 @@
 
     */
     const State = (function(){
-        var _history = [];
-        function State(initObj){
-            this.create(initObj);
-        }
-        State.prototype.create = _create.bind(this);
-        State.prototype.read = _read.bind(this);
-        State.prototype.update = _update.bind(this);
-        State.prototype.delete = _delete.bind(this);
+        const context = {
+            history: [],
+            eventListeners: {}
+        };
 
-        State.prototype.history = (function(){ return this._history; }).bind(this);
-        State.prototype.toObject = _read.bind(this);
-        State.prototype.toString = () => JSON.stringify(_read.bind(this)());
+        function State(initObj){
+            this.create = initObj => _create.bind(this)(context, initObj);
+            this.read = count => _read.bind(this)(context, count);
+            this.update = update => _update.bind(this)(context, update);
+            this.delete = count => _delete.bind(this)(context, count);
+
+            this.on = (key, callback) => _on(context, key, callback);
+            this.emit = (key) => _emit.bind(this)(context, key)
+            this.listeners = () => context.eventListeners;
+            //removeListener?
+
+            this.history = () => clone(context.history);
+            this.toObject = () => this.read(context);
+            this.toString = () => JSON.stringify(this.read(context));
+
+            if(initObj){
+                this.create(initObj);
+            }
+        }
+
         return State;
     })();
 
@@ -35,45 +48,65 @@
         return JSON.parse(JSON.stringify(obj));
     }
 
-    // can be initialized with initial state or initial history
-    function _create(initObj){
-        if(typeof initObj === 'array'){
-            this._history = initObj;
+    function _on(context, key, callback){
+        if (context.eventListeners[key] === undefined) {
+            context.eventListeners[key] = [];
+        }
+        context.eventListeners[key].push(callback);
+    }
+
+    function _emit(context, key){
+        if (!context.eventListeners[key]){
             return;
         }
-        this._history = [initObj];
+        context.eventListeners[key].forEach(listener => {
+            listener(this.read());
+        });
+        return;
+    }
+
+    // can be initialized with initial state or initial history
+    function _create(context, initObj){
+        if(typeof initObj === 'array'){
+            context.history = initObj;
+            return;
+        }
+        this.emit('create');
+        context.history = [initObj];
     }
 
     // can rewind (return a state from history)
-    function _read(count){
-        const index = this._history.length - 1 - (count || 0);
-        if(index > this._history.length - 1){
+    function _read(context, count){
+        const index = context.history.length - 1 - (count || 0);
+        if(index > context.history.length - 1){
             return undefined;
         }
         if(index < 0){
             return undefined;
         }
-        return clone(this._history[index]);
+        this.emit('read');
+        return clone(context.history[index]);
     }
 
     // can be updated (not sure if object.assign is good enough for array items)
-    function _update(update){
-        const currentState = this._history[this._history.length - 1];
+    function _update(context, update){
+        const currentState = context.history[context.history.length - 1];
         const newState = Object.assign(clone(currentState), update);
-        this._history.push(newState);
+        context.history.push(newState);
+        this.emit('update');
     }
 
     // not sure if this is needed
-    function _delete(count){
-        const index = this._history.length - (count || 0);
-        if(index > this._history.length){
+    function _delete(context, count){
+        const index = context.history.length - (count || 0);
+        if(index > context.history.length){
             return undefined;
         }
         if(index < 0){
             return undefined;
         }
-        this._history = this._history.slice(0, index);
-        return clone(this._history[index]);
+        context.history = context.history.slice(0, index);
+        this.emit('delete');
     }
 
     window.State = State;

@@ -184,6 +184,63 @@ function drawLink(link, units) {
     // }
 }
 
+function createLinkStateElement(link) {
+    const namespaceURI = document.getElementById('canvas').namespaceURI;
+    const linkElement = document.createElementNS(namespaceURI, "g");
+    linkElement.classList.add('link');
+
+    const linkPath = document.createElementNS(namespaceURI, "path");
+
+    const startCoords = link.start;
+    const endCoords = link.end;
+    const pathObj = {
+        m: startCoords,
+        c3: endCoords
+    };
+    const controls = calculateControls(pathObj);
+    pathObj.c1 = controls.c1;
+    pathObj.c2 = controls.c2;
+    const originalPathD = objToPathD(pathObj);
+    linkPath.setAttribute('d', originalPathD)
+
+    linkElement.appendChild(linkPath);
+
+    //drawControls({ namespaceURI, link, linkElement, pathObj });
+
+    const linksGroup = document.querySelector('#canvas #links');
+    linksGroup.appendChild(linkElement);
+
+    return linkElement;
+}
+
+function drawStateLink(link){
+    var linkElement = document.querySelector(`g[data-label="${link.label}"]`);
+    if (!linkElement) {
+        linkElement = createLinkStateElement(link);
+    }
+    const pathObj = {
+        m: {
+            x: link.start.x,
+            y: link.start.y
+        },
+        c3: {
+            x: link.end.x,
+            y: link.end.y
+        }
+    };
+
+    const controlPoints = calculateControls(pathObj);
+    pathObj.c1 = controlPoints.c1;
+    pathObj.c2 = controlPoints.c2;
+    const directions = {
+        start: link.start.direction,
+        end: link.end.direction
+    };
+    const newPathD = objToPathD(pathObj, directions);
+    linkElement.setAttribute('data-label', link.label);
+    linkElement.querySelector('path').setAttribute('d', newPathD);
+}
+
 function updateConnectedLinks(links, units, event, x, y) {
     //console.log('updateConnectedLinks');
     const target = event.target.parentNode;
@@ -779,6 +836,7 @@ function mapNodeToState(node, index){
     }];
 
     return {
+        label: node.label,
         x: positions[index].x,
         y: positions[index].y,
         direction: directionMap[index]
@@ -787,30 +845,69 @@ function mapNodeToState(node, index){
 
 function initState({ units, links }){
     const u = units.map(unit => ({
+        label: unit.label,
+        color: unit.color,
         x: unit.x,
         y: unit.y,
         width: unit.width,
         height: unit.height,
         nodes: unit.nodes.map(mapNodeToState.bind({ unit }))
     }));
-    const l = links.map(link => link);
+    //console.log({ unit: units[0], u: u[0]})
+
+    const l = links.map(link => {
+        const stripParent = {
+            getNode: (block, node) => ({ block, node })
+        };
+
+        const _link = ['start', 'end'].reduce((all, name) => {
+            const parent = link[name](stripParent);
+            const unit = u.find(unit => unit && unit.label === parent.block);
+            const node = unit.nodes.find(node => node && node.label === parent.node);
+
+            all[name] = {
+                x: unit.x + node.x,
+                y: unit.y + node.y,
+                parent,
+                direction: node.direction
+            };
+            return all;
+        }, {});
+        _link.label = link.label || Math.random().toString(26).replace('0.', '');
+
+        return _link;
+    });
+    //console.log({ link: links[0], l: l[0]})
     return { units: u, links: l };
+}
+
+function clone(obj){
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function render(_state){
+    const state = _state.read();
+    clone(state.units).forEach(drawUnit);
+    clone(state.links).forEach(drawStateLink);
 }
 
 // --------------------------------------------------------------
 function initScene(evt, units, links){
     const _state = new State(initState({ units, links }));
+    _state.on('update', (s) => { console.log({ state: s}); });
 
-    units.forEach(drawUnit);
-    units.getNode = (label, nodeLabel) => {
-        const unitElement = (units.find(x => x.label === label) || {}).element;
-        if (!unitElement) {
-            return;
-        }
-        return unitElement.querySelector(`circle[data-label="${nodeLabel}"]`);
-    };
+    // units.forEach(drawUnit);
+    // units.getNode = (label, nodeLabel) => {
+    //     const unitElement = (units.find(x => x.label === label) || {}).element;
+    //     if (!unitElement) {
+    //         return;
+    //     }
+    //     return unitElement.querySelector(`circle[data-label="${nodeLabel}"]`);
+    // };
 
-    links.forEach((link) => drawLink(link, units));
+    // links.forEach((link) => drawLink(link, units));
+
+    render(_state);
 
     const state = {
         _state,
@@ -825,8 +922,8 @@ function initScene(evt, units, links){
         transform: undefined
     };
 
-    window._state = _state;
+    window.state = _state;
 
     makeDraggable(state);
-    addLinkEffects(state);
+    //addLinkEffects(state);
 }
