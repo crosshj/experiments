@@ -69,10 +69,11 @@
     function _create(context, initObj){
         if(typeof initObj === 'array'){
             context.history = initObj;
+            this.emit('create');
             return;
         }
-        this.emit('create');
         context.history = [initObj];
+        this.emit('create');
     }
 
     // can rewind (return a state from history)
@@ -89,6 +90,7 @@
     }
 
     // can be updated (not sure if object.assign is good enough for array items)
+    // TODO: update using an id which gets added to every node in tree
     function _update(context, update){
         const currentState = context.history[context.history.length - 1];
         const newState = Object.assign(clone(currentState), update);

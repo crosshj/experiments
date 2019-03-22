@@ -14,10 +14,12 @@
     - page: zoom/pan with memory
     - auto-arrange scene
     - snap to grid
+    - integrate state with redux dev tools
     X creation of scene from json
     X highlighting/hovering links
 
     ISSUES:
+    - new state pattern breaks dragging / hovering
     - second new link creation fails
     - moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
         ^^^ probably should only update moving part of link
@@ -885,16 +887,59 @@ function clone(obj){
     return JSON.parse(JSON.stringify(obj));
 }
 
+function cleanScene(state){
+    const domLinks = Array.from(document.querySelectorAll('.link'));
+        //.map(x => x.dataset.label);
+    const domUnits = Array.from(document.querySelectorAll('.box'));
+        //.map(x => x.dataset.label);
+    const stateUnitLabels = state.units.map(x => x.label);
+    const stateLinkLabels = state.links.map(x => x.label);
+
+    domUnits.forEach(unit => {
+        const label = unit.dataset.label;
+        if(!stateUnitLabels.includes(label)){
+            unit.parentNode.removeChild(unit);
+        }
+    });
+
+    domLinks.forEach(link => {
+        const label = link.dataset.label;
+        if(!stateLinkLabels.includes(label)){
+            link.parentNode.removeChild(link);
+        }
+    });
+
+    //TODO: remove links that are missing one or both units
+
+    //TODO: remove nodes that are missing from each unit
+}
+
 function render(_state){
-    const state = _state.read();
+    const state = typeof _state.read === 'function'
+        ? _state.read()
+        : _state;
+    console.log('--render function called');
+
+    cleanScene(state);
+
+    //FIX: drawUnit creates element even when not needed
     clone(state.units).forEach(drawUnit);
     clone(state.links).forEach(drawStateLink);
+
+    //^^^ drawing should create/update when an create/update is needed, but nothing otherwise
 }
 
 // --------------------------------------------------------------
 function initScene(evt, units, links){
-    const _state = new State(initState({ units, links }));
-    _state.on('update', (s) => { console.log({ state: s}); });
+    const _state = new State();
+
+    _state.on('create', render);
+    _state.on('update', render);
+    _state.on('delete', render);
+
+    _state.create(initState({ units, links }));
+
+    //TODO: deprecate this commented code
 
     // units.forEach(drawUnit);
     // units.getNode = (label, nodeLabel) => {
@@ -906,8 +951,6 @@ function initScene(evt, units, links){
     // };
 
     // links.forEach((link) => drawLink(link, units));
-
-    render(_state);
 
     const state = {
         _state,
@@ -925,5 +968,5 @@ function initScene(evt, units, links){
     window.state = _state;
 
     makeDraggable(state);
-    //addLinkEffects(state);
+    addLinkEffects(state);
 }
