@@ -14,12 +14,18 @@
     - page: zoom/pan with memory
     - auto-arrange scene
     - snap to grid
+    - history slider
     - integrate state with redux dev tools
     X creation of scene from json
     X highlighting/hovering links
 
     ISSUES:
     - new state pattern breaks dragging / hovering
+      - dragging new link fails
+      - hovering fails
+      X many functions fail
+      X functionality fails
+      X updating units causes duplicate
     - second new link creation fails
     - moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
         ^^^ probably should only update moving part of link
@@ -217,8 +223,29 @@ function createLinkStateElement(link) {
 
 function drawStateLink(link){
     var linkElement = document.querySelector(`g[data-label="${link.label}"]`);
+    const linkStartParent = document.querySelector(
+      `.box[data-label="${link.start.parent.block}"]
+       .node[data-label="${link.start.parent.node}"]`
+    );
+    const linkEndParent = document.querySelector(
+      `.box[data-label="${link.end.parent.block}"]
+       .node[data-label="${link.end.parent.node}"]`
+    );
+
+    //console.log({ linkElement, linkEndParent, linkStartParent })
+
+    // don't draw (or remove) link if it doesn't have 2 connections
+    if(!linkStartParent || !linkEndParent){
+      if(!linkElement){
+        return;
+      }
+      linkElement.parentNode.removeChild(linkElement);
+      return;
+    }
+
     if (!linkElement) {
         linkElement = createLinkStateElement(link);
+        linkElement.setAttribute('data-label', link.label);
     }
     const pathObj = {
         m: {
@@ -239,7 +266,6 @@ function drawStateLink(link){
         end: link.end.direction
     };
     const newPathD = objToPathD(pathObj, directions);
-    linkElement.setAttribute('data-label', link.label);
     linkElement.querySelector('path').setAttribute('d', newPathD);
 }
 
@@ -282,9 +308,21 @@ function updateConnectedLinks(links, units, event, x, y) {
     });
 }
 
+function drawOrUpdateUnit(unit){
+  const unitElement = document.querySelector(`.box[data-label="${unit.label}"]`);
+
+  if(!unitElement){
+    drawUnit(unit);
+    return;
+  }
+
+  unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
+  //console.log({ TODO: `updateUnit ${unit.label}`})
+}
+
 function drawUnit(unit) {
     const width = Number(unit.width || 76);
-    const height = unit.height || 76;
+    const height = Number(unit.height) || 76;
 
     const namespaceURI = document.getElementById('canvas').namespaceURI;
     const unitElement = document.createElementNS(namespaceURI, "g");
@@ -613,6 +651,16 @@ function initialiseWireDragging(evt){
     this.draggedLink = tempLink;
 }
 
+function distanceNodes(node1, node2){
+  var a = node1.x - node2.x;
+  var b = node1.y - node2.y;
+
+  var c = Math.sqrt( a*a + b*b );
+  return c;
+}
+
+// ---------------------------------------------------------------
+
 function startDrag(evt) {
     if(this.selectedElement){
         return;
@@ -681,14 +729,6 @@ function drag(evt) {
     window.requestAnimationFrame(updateDOM.bind(this));
 }
 
-function distanceNodes(node1, node2){
-    var a = node1.x - node2.x;
-    var b = node1.y - node2.y;
-
-    var c = Math.sqrt( a*a + b*b );
-    return c;
-}
-
 function endDrag(evt) {
     if(!this.selectedElement){
         return;
@@ -740,23 +780,175 @@ function endDrag(evt) {
 }
 
 function makeDraggable(state) {
-    var svg = state.svg;
+  var svg = state.svg;
 
-    const startDragHandler = startDrag.bind(state);
-    svg.addEventListener('mousedown', startDragHandler);
-    svg.addEventListener('touchstart', startDragHandler, { passive: false });
+  const startDragHandler = startDrag.bind(state);
+  svg.addEventListener('mousedown', startDragHandler);
+  svg.addEventListener('touchstart', startDragHandler, { passive: false });
 
-    const dragHandler = drag.bind(state);
-    svg.addEventListener('touchmove', dragHandler, { passive: false });
-    svg.addEventListener('mousemove', dragHandler);
+  const dragHandler = drag.bind(state);
+  svg.addEventListener('touchmove', dragHandler, { passive: false });
+  svg.addEventListener('mousemove', dragHandler);
 
-    const endDragHandler = endDrag.bind(state);
-    svg.addEventListener('mouseup', endDragHandler);
-    svg.addEventListener('mouseleave', endDragHandler);
-    svg.addEventListener('touchend', endDragHandler);
-    svg.addEventListener('touchleave', endDragHandler);
-    svg.addEventListener('touchcancel', endDragHandler);
+  const endDragHandler = endDrag.bind(state);
+  svg.addEventListener('mouseup', endDragHandler);
+  svg.addEventListener('mouseleave', endDragHandler);
+  svg.addEventListener('touchend', endDragHandler);
+  svg.addEventListener('touchleave', endDragHandler);
+  svg.addEventListener('touchcancel', endDragHandler);
 }
+
+// ---------------------------------------------------------------
+
+function startDragState(evt) {
+  if(this.selectedElement){
+      return;
+  }
+  const nodeDrag = {
+      test: () => evt.target.classList.contains('node'),
+      start: () => {
+          initialiseWireDragging.bind(this)(evt);
+      }
+  };
+  const groupDrag = {
+      test: () => evt.target.parentNode.classList.contains('draggable-group'),
+      start: () => {
+          this.selectedElement = evt.target.parentNode;
+          const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
+          this.transform = initD.transform;
+          this.offset = initD.offset;
+      }
+  };
+
+  const result = [
+      nodeDrag, groupDrag
+  ].filter(x => {
+      try {
+          return x.test();
+      } catch (e) {
+          return false;
+      }
+  })[0];
+
+  result && result.start();
+  evt.stopPropagation();
+  evt.preventDefault();
+}
+
+function dragState(evt) {
+  if (!this.selectedElement) {
+      return;
+  }
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  var coord = getMousePosition(this.svg, evt);
+  state.update((state) => {
+    const selectedUnitState = state.units.find(u => u.label === this.selectedElement.dataset.label);
+    selectedUnitState.x = coord.x - this.offset.x;
+    selectedUnitState.y = coord.y - this.offset.y;
+
+    //update connected links
+    state.links.forEach(link => {
+      ['start', 'end'].forEach(connect => {
+        const connection = link[connect];
+        if(connection.parent.block !== selectedUnitState.label){
+          return;
+        }
+        const connectedNode = selectedUnitState.nodes
+          .find(n => n && n.label === connection.parent.node);
+        connection.x = selectedUnitState.x + connectedNode.x;
+        connection.y = selectedUnitState.y + connectedNode.y;
+      });
+    });
+    return state;
+  });
+  //console.log(`el: ${this.selectedElement.dataset.label}, x: ${coord.x - this.offset.x}, y: ${coord.y - this.offset.y}`);
+}
+
+function endDragState(evt) {
+  if(!this.selectedElement){
+      return;
+  }
+  const dragged = {
+      element: this.selectedElement,
+      link: this.draggedLink,
+      unit: this.draggedUnit,
+      temporary: this.selectedElement.dataset.temporary
+  };
+  if(dragged.temporary){
+      const mousePos = getMousePosition(this.svg, evt);
+      const allNodes = this.units
+          .filter(x => x.label !== this.draggedUnit.label)
+          .reduce((all, one) => { return all.concat(one.nodes)}, [])
+          .filter(x => !!x)
+          .map(n => ({
+              element: n.element,
+              x: n.globalPosition().x,
+              y: n.globalPosition().y,
+              distance: distanceNodes({
+                  x: mousePos.x,
+                  y: mousePos.y,
+              }, {
+                  x: n.globalPosition().x,
+                  y: n.globalPosition().y,
+              })
+          }))
+          .filter(n => n.distance < 10)
+          .sort((a, b) => a.distance - b.distance);
+      if(allNodes.length){
+          const parentLabel = allNodes[0].element.parentElement.dataset.label;
+          const nodeLabel = allNodes[0].element.dataset.label;
+          this.draggedLink.end = (units) => units.getNode(parentLabel, nodeLabel);
+          const newLink = {
+              start: this.draggedLink.start,
+              end: (units) => units.getNode(parentLabel, nodeLabel)
+          };
+          this.links.push(newLink);
+          drawLink(newLink, this.units);
+      }
+      this.links = this.links.filter(l => !l.temporary);
+      dragged.link.element.parentNode.removeChild(dragged.link.element)
+      dragged.element.parentNode.removeChild(dragged.element)
+  }
+  this.selectedElement = undefined;
+  evt.preventDefault();
+  evt.stopPropagation();
+}
+
+function makeDraggableState(_state) {
+  const state = {
+      read: _state.read,
+      update: _state.update,
+      svg: _state.svg,
+      hovered: undefined,
+      draggedUnit: undefined,
+      draggedLink: undefined,
+      selectedLinks: [],
+      selectedElement: undefined,
+      offset: undefined,
+      transform: undefined
+  };
+
+  var svg = _state.svg;
+
+  const startDragHandler = startDragState.bind(state);
+  svg.addEventListener('mousedown', startDragHandler);
+  svg.addEventListener('touchstart', startDragHandler, { passive: false });
+
+  const dragHandler = dragState.bind(state);
+  svg.addEventListener('touchmove', dragHandler, { passive: false });
+  svg.addEventListener('mousemove', dragHandler);
+
+  const endDragHandler = endDragState.bind(state);
+  svg.addEventListener('mouseup', endDragHandler);
+  svg.addEventListener('mouseleave', endDragHandler);
+  svg.addEventListener('touchend', endDragHandler);
+  svg.addEventListener('touchleave', endDragHandler);
+  svg.addEventListener('touchcancel', endDragHandler);
+}
+
+// ----------------------------------------------------------------
 
 function bringToTop(targetElement){
     // put the element at the bottom of its parent
@@ -915,18 +1107,56 @@ function cleanScene(state){
 }
 
 function render(_state){
-    const state = typeof _state.read === 'function'
-        ? _state.read()
+    const state = typeof _state.read === 'function'        ? _state.read()
         : _state;
-    console.log('--render function called');
+    //console.log('--render function called');
 
     cleanScene(state);
 
-    //FIX: drawUnit creates element even when not needed
-    clone(state.units).forEach(drawUnit);
-    clone(state.links).forEach(drawStateLink);
+    const domUnits = Array.from(document.querySelectorAll('.box'))
+      .map(element => ({
+        element,
+        label: element.dataset.label,
+        position: {
+          x: getTranslateX(element),
+          y: getTranslateY(element)
+        }
+      }));
 
-    //^^^ drawing should create/update when an create/update is needed, but nothing otherwise
+    const unitsToUpdate = state.units.filter(unit => {
+      const domMatch = domUnits.find(d => d.label === unit.label);
+      if(!domMatch){
+        return true;
+      }
+
+      const hasMoved = domMatch.position.x !== unit.x
+        || domMatch.position.y !== unit.y;
+      return hasMoved;
+    });
+
+    const withAnimFrame = (fn) => (arg) => window.requestAnimationFrame(() => fn(arg));
+
+    clone(unitsToUpdate).forEach(withAnimFrame(drawOrUpdateUnit));
+
+    const linksToUpdate = state.links
+        .reduce((all, one) => {
+            const unitsToUpdateLabels = unitsToUpdate.map(u => u.label);
+            const linkStartConnected = () => {
+                const startParent = one.start.parent.block;
+                return unitsToUpdateLabels.includes(startParent);
+            };
+            const linkEndConnected = () => {
+                const endParent = one.end.parent.block;
+                return unitsToUpdateLabels.includes(endParent);
+            };
+            if(linkStartConnected() || linkEndConnected()){
+                all.push(one)
+            }
+            return all;
+        }, []);
+    //console.log({ linksToUpdate });
+
+    clone(linksToUpdate).forEach(withAnimFrame(drawStateLink));
 }
 
 // --------------------------------------------------------------
@@ -937,36 +1167,21 @@ function initScene(evt, units, links){
     _state.on('update', render);
     _state.on('delete', render);
 
+    _state.on('history', (data) => {
+      const historyStatsEl = document.getElementById('state-memory-size');
+      if(historyStatsEl){
+        historyStatsEl.innerHTML = JSON.stringify(data)
+          .replace(/[\{\}\"]/g, '')
+          .replace(/\,/g, ', ');
+      }
+    });
+
     _state.create(initState({ units, links }));
 
-    //TODO: deprecate this commented code
-
-    // units.forEach(drawUnit);
-    // units.getNode = (label, nodeLabel) => {
-    //     const unitElement = (units.find(x => x.label === label) || {}).element;
-    //     if (!unitElement) {
-    //         return;
-    //     }
-    //     return unitElement.querySelector(`circle[data-label="${nodeLabel}"]`);
-    // };
-
-    // links.forEach((link) => drawLink(link, units));
-
-    const state = {
-        _state,
-        svg: event.target,
-        units, links,
-        hovered: undefined,
-        draggedUnit: undefined,
-        draggedLink: undefined,
-        selectedLinks: [],
-        selectedElement: undefined,
-        offset: undefined,
-        transform: undefined
-    };
+    _state.svg = event.target;
 
     window.state = _state;
 
-    makeDraggable(state);
-    addLinkEffects(state);
+    makeDraggableState(_state);
+    //addLinkEffects(state);
 }

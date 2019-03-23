@@ -17,6 +17,16 @@
     align-items: center;
   }
 
+  div#state-memory-size {
+    position: relative;
+    top: 11px;
+    color: grey;
+    font-family: monospace;
+  }
+  div#state-memory-size:before {
+    content: 'HISTORY: '
+  }
+
   #canvas {
     /* padding-left: 275px; */
     width: 550px;
