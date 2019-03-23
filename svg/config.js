@@ -90,7 +90,7 @@ var boxes = [{
             label: 'third'
         }]
 }];
-boxes.forEach(b => b.x += 70)
+boxes.forEach(b => b.x += 70);
 
 var wires = [{
     start: (units) => units.getNode('shadrach', 'second'),

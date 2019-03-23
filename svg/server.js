@@ -40,6 +40,11 @@ Object.keys(replace).forEach(key => {
 
 const render = dot.template(templateFromHTML);
 
+app.use(function(req, res, next) {
+    res.setHeader("Content-Security-Policy", "script-src 'unsafe-inline' https://crosshj.com" );
+    return next();
+});
+
 app.get('/', (req, res) => {
     const rendered = render(files);
   res.send(rendered);
