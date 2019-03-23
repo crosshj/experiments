@@ -4,7 +4,7 @@ var boxes = [{
     y: 10,
     width: 100,
     height: 100,
-    color: '#50BFE6',
+    color: '#487974',
     nodes: [null, null, {
         label: 'first'
     }, null, null, null, null, {
@@ -35,10 +35,10 @@ var boxes = [{
         label: 'second'
     }, null]
 }, {
-    label: 'yin',
+    label: 'romulus',
     x: 170,
     y: 100,
-    color: '#9e9e9e',
+    color: '#978311',
     nodes: [null, {
         label: 'first'
     }, null, {
@@ -49,10 +49,10 @@ var boxes = [{
             label: 'fourth'
         }, null]
 }, {
-    label: 'yang',
+    label: 'remus',
     x: 270,
     y: 100,
-    color: '#FEBAAD',
+    color: '#754780',
     nodes: [null, null, {
         label: 'first'
     }, {
@@ -61,10 +61,10 @@ var boxes = [{
             label: 'fourth'
         }, null]
 }, {
-    label: 'santa',
+    label: 'morozko',
     x: 220,
     y: 190,
-    color: '#FC5A8D',
+    color: '#215d7d',
     nodes: [
         { label: 'first' },
         { label: 'second' },
@@ -81,7 +81,7 @@ var boxes = [{
     y: 125.5,
     height: 25,
     width: 100,
-    color: '#732E6C',
+    color: '#604063',
     nodes: [null, null, null, {
         label: 'first'
     }, null, {
@@ -100,20 +100,20 @@ var wires = [{
     end: (units) => units.getNode('abednego', 'first')
 }, {
     start: (units) => units.getNode('abednego', 'second'),
-    end: (units) => units.getNode('yin', 'fourth')
+    end: (units) => units.getNode('romulus', 'fourth')
 }, {
     start: (units) => units.getNode('abednego', 'second'),
-    end: (units) => units.getNode('yang', 'fourth')
+    end: (units) => units.getNode('remus', 'fourth')
 }, {
-    start: (units) => units.getNode('yin', 'third'),
-    end: (units) => units.getNode('yang', 'first')
+    start: (units) => units.getNode('romulus', 'third'),
+    end: (units) => units.getNode('remus', 'first')
 }, {
-    start: (units) => units.getNode('yin', 'second'),
-    end: (units) => units.getNode('santa', 'eighth')
+    start: (units) => units.getNode('romulus', 'second'),
+    end: (units) => units.getNode('morozko', 'eighth')
 }, {
-    start: (units) => units.getNode('yang', 'second'),
-    end: (units) => units.getNode('santa', 'eighth')
+    start: (units) => units.getNode('remus', 'second'),
+    end: (units) => units.getNode('morozko', 'eighth')
 }, {
     start: (units) => units.getNode('masamune', 'second'),
-    end: (units) => units.getNode('yin', 'first')
+    end: (units) => units.getNode('romulus', 'first')
 }];
