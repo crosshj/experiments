@@ -9,26 +9,28 @@
   <link rel="stylesheet" href="index.css">
 </head>
 
-<svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
-  onload="initScene(evt, boxes, wires)">
-  <defs>
-    <filter id="outline">
-      <feMorphology operator="dilate" in="SourceGraphic" result="DILATED" radius="1" />
-      <feFlood flood-color="#aa00aa" flood-opacity="1" result="COLORED"></feFlood>
-      <feComposite in="COLORED" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
+<body>
+  <div id="state-memory-size">do stuff, history grows</div>
+  <svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
+    onload="initScene(evt, boxes, wires)">
+    <defs>
+      <filter id="outline">
+        <feMorphology operator="dilate" in="SourceGraphic" result="DILATED" radius="1" />
+        <feFlood flood-color="#aa00aa" flood-opacity="1" result="COLORED"></feFlood>
+        <feComposite in="COLORED" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
 
-      <feMerge>
-        <feMergeNode in="OUTLINE" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
+        <feMerge>
+          <feMergeNode in="OUTLINE" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
 
-  <g id="links">
-    <!-- LINKS ARE CREATED DYNAMICALLY -->
-  </g>
-
-</svg>
+    <g id="links">
+      <!-- LINKS ARE CREATED DYNAMICALLY -->
+    </g>
+  </svg>
+</body>
 
 <script>
   (function () {
