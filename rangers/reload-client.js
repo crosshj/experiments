@@ -1,5 +1,5 @@
 (function refresh () {
-    var verboseLogging = window.reloadVerbose || true;
+    var verboseLogging = window.reloadVerbose;
     var socketUrl = 'ws://localhost:9090'
 
     //var socketUrl = window.location.origin
