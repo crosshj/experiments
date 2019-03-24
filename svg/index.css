@@ -8,7 +8,8 @@
     margin: 0;
     /* background: #8a8a8a; */
     /* background: transparent; */
-    background-color: #222;
+    /* background-color: #222; */
+    background: #2a2a27;
     /* background: url(terrain1.svg); */
     background-size: 1400px 100%;
     display: flex;
@@ -31,7 +32,7 @@
     /* padding-left: 275px; */
     width: 650px;
     /* border: 1px solid #06c300; */
-    background: #fff2;
+    background: #fff1;
     margin-top: 20px;
   }
 
