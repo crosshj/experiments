@@ -60,6 +60,10 @@
     if (!context.eventListeners[key]) {
       return;
     }
+    /*
+    TODO: this is where resolution would be tweaked
+    for example, we would not emit a render if another render is close by in time
+    */
     context.eventListeners[key].forEach(listener => {
       listener(data || this.read());
     });

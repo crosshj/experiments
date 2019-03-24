@@ -68,7 +68,7 @@
   path.helper-segment:hover,
   .link.hovered path,
   .helpers path.hovered {
-    stroke: var(--link-hover-color);
+    stroke: var(--link-hover-color) !important;
   }
 
   .heavy {

@@ -77,8 +77,8 @@ var boxes = [{
     ]
 }, {
     label: 'masamune',
-    x: 60,
-    y: 125.5,
+    x: 10,
+    y: 155.5,
     height: 25,
     width: 100,
     color: '#604063',
@@ -114,6 +114,6 @@ var wires = [{
     start: (units) => units.getNode('remus', 'second'),
     end: (units) => units.getNode('morozko', 'eighth')
 }, {
-    start: (units) => units.getNode('masamune', 'second'),
-    end: (units) => units.getNode('romulus', 'first')
+    start: (units) => units.getNode('romulus', 'first'),
+    end: (units) => units.getNode('masamune', 'second')
 }];

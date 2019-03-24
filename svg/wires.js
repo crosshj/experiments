@@ -2,20 +2,38 @@
     NOTES:
     - move towards greater object-orientation in code (message-passing-type OO)
 
-    ISSUES:
+    ROADMAP:
+    - ANIMATION
+        Show what's happening in the system by indicating activity.
+    - ORGANIZATION / MECHANICS
+        Enable greater complexity of models by grouping and allowing creation of more items.
+    - STATE
+        Show changes to system by animating/manipulating state of system over time.  This could go at least two directions: create UI elements which affect state or integrate with Redux Dev Tools.
+    - CONNECTION
+        Model should be attached to something specific: functions, network calls.  This is the life and breath of a visual model like this.
 
-    TODO:
+    TODO/TASKS:
     - wires: CRUD
+        - wire create on mobile is awkward / broken
+        - update/delete needs wire selection
     - boxes: CRUD
+        - update/delete needs box/unit selection
     - group: CRUD
+        - needs box/units selection
     - game loop
-    - wires: animation and indicators (arrows)
+        - difference between event-driven and game loop?
+            https://hero.handmade.network/forums/code-discussion/t/1113-event_driven_vs_game_loop
+            https://stackoverflow.com/questions/2565677/why-is-a-main-game-loop-necessary-for-developing-a-game
+    - wires:  indicators (arrows)
     - boxes: collision detection
     - page: zoom/pan with memory
     - auto-arrange scene
     - snap to grid
     - history slider
     - integrate state with redux dev tools
+    - nodes: animate node and helper in sync with wire animation
+    X wires: animation
+        https://css-tricks.com/svg-line-animation-works/
     X creation of scene from json
     X highlighting/hovering links
 
@@ -64,6 +82,13 @@ const setStyle = (id, rules) => {
         css.styleSheet.cssText = rules;
     } else {
         css.appendChild(document.createTextNode(rules));
+    }
+};
+
+const removeStyle = (id) => {
+    var sSheet = document.getElementById(id);
+    if(sSheet){
+      sSheet.parentNode.removeChild(sSheet);
     }
 };
 
@@ -127,6 +152,49 @@ function getLinkDirections(link) {
 
 // -----------------------------------------------------------------------------
 
+function animateLink(link){
+    const linkQuery = `.link[data-label="${link.label}"]`;
+    const linkElement = document.querySelector(linkQuery);
+    const linkPath = document.querySelector(`${linkQuery} path`);
+
+    const namespaceURI = document.getElementById('canvas').namespaceURI;
+    const animatedPath = document.createElementNS(namespaceURI, 'path');
+    animatedPath.classList.add('animated');
+    animatedPath.setAttribute('d', linkPath.getAttribute('d'));
+    linkElement.appendChild(animatedPath);
+
+    const linkLength = linkPath.getTotalLength();
+    const style = `
+        ${linkQuery} path.animated {
+            stroke: #fff9;
+            stroke-width: 4px;
+            stroke-dasharray: ${linkLength/5};
+            animation-name: dash;
+            animation-duration: 2.5s; /* or: Xms */
+            animation-iteration-count: infinite;
+            animation-direction: reverse; /* or: normal */
+            animation-timing-function: linear; /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
+            animation-fill-mode: both; /* or: backwards, both, none */
+            animation-delay: 0s; /* or: Xms */
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: ${linkLength*2};
+            }
+        }
+    `;
+    setStyle('linkAnimation', style)
+}
+
+function removeAnimation(){
+    Array.from(document.querySelectorAll('path.animated')).forEach(path => {
+        path.parentNode.removeChild(path);
+    });
+    removeStyle('linkAnimation');
+}
+
+// -----------------------------------------------------------------------------
 function createLinkElement(link) {
     const namespaceURI = document.getElementById('canvas').namespaceURI;
     const linkElement = document.createElementNS(namespaceURI, "g");
@@ -210,6 +278,10 @@ function drawLink(link, callback){
     //     console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
     // }
     linkElement.querySelector('path').setAttribute('d', newPathD);
+    const animated = linkElement.querySelector('path.animated');
+    if(animated){
+        animated.setAttribute('d', newPathD);
+    }
     if(callback){
         callback(linkElement);
     }
@@ -646,7 +718,14 @@ function startDrag(evt) {
   })[0];
 
   if(dragMode){
-    setStyle('clearBox', '.box {opacity: .7; }');
+    setStyle('clearBox', `
+        .box {
+            opacity: 0.7;
+        }
+        path.animated {
+            opacity: 0.5 !important;
+        }
+    `);
     dragMode.start();
   }
 
@@ -689,10 +768,8 @@ function endDrag(evt) {
   if(!this.selectedElement){
       return;
   }
-  var sSheet = document.getElementById('clearBox');
-  if(sSheet){
-    sSheet.parentNode.removeChild(sSheet);
-  }
+  removeStyle('clearBox');
+
   const dragged = {
       element: this.selectedElement,
       link: this.draggedLink,
@@ -1080,4 +1157,28 @@ function initScene(evt, units, links){
 
     makeDraggable(state);
     addLinkEffects(state);
+
+    //WIP: testing animation
+    var index = 0;
+    const sequence = [
+        [0],
+        [1],
+        [2, 3],
+        [4],
+        [5,6],
+        [7]
+    ];
+    setInterval(function(){
+        removeAnimation();
+        var links = document.querySelectorAll(`.link`);
+        if(index > 5){
+            index = 0;
+        }
+        sequence[index++].forEach(i => {
+            var link = links[i]
+            var label = link.dataset.label;
+            animateLink({ label });
+        });
+    }, 3000);
+
 }
