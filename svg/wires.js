@@ -21,23 +21,32 @@
 
     ISSUES:
     - new state pattern breaks dragging / hovering
-      - dragging new link fails
       - hovering fails
+      X dragging new link fails
       X many functions fail
       X functionality fails
       X updating units causes duplicate
-    - second new link creation fails
-    - moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
-        ^^^ probably should only update moving part of link
     - dragging wire should have z-index higher than units
     - hovering node should also highlight node helper (and vice versa)
     - link create/drag should work when started at node helper
+    X second new link creation fails
+    X moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
+        ^^^ probably should only update moving part of link
 
     RESOURCES:
     - path tool - https://codepen.io/thebabydino/full/EKLNvZ
     - path info - https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
 
 */
+
+const withAnimFrame = (fn) => (arg) => window.requestAnimationFrame(() => fn(arg));
+
+const oppositeDirection = {
+    north: 'south',
+    south: 'north',
+    east: 'west',
+    west: 'east'
+};
 
 //https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
 function overlayColor(color) {
@@ -208,7 +217,11 @@ function createLinkStateElement(link) {
     const controls = calculateControls(pathObj);
     pathObj.c1 = controls.c1;
     pathObj.c2 = controls.c2;
-    const originalPathD = objToPathD(pathObj);
+    const directions = {
+        start: link.start.direction,
+        end: link.end.direction
+    };
+    const originalPathD = objToPathD(pathObj, directions);
     linkPath.setAttribute('d', originalPathD)
 
     linkElement.appendChild(linkPath);
@@ -221,7 +234,7 @@ function createLinkStateElement(link) {
     return linkElement;
 }
 
-function drawStateLink(link){
+function drawStateLink(link, callback){
     var linkElement = document.querySelector(`g[data-label="${link.label}"]`);
     const linkStartParent = document.querySelector(
       `.box[data-label="${link.start.parent.block}"]
@@ -232,8 +245,9 @@ function drawStateLink(link){
        .node[data-label="${link.end.parent.node}"]`
     );
 
-    //console.log({ linkElement, linkEndParent, linkStartParent })
-
+    if(callback){
+        console.log({ linkElement, linkEndParent, linkStartParent });
+    }
     // don't draw (or remove) link if it doesn't have 2 connections
     if(!linkStartParent || !linkEndParent){
       if(!linkElement){
@@ -266,7 +280,13 @@ function drawStateLink(link){
         end: link.end.direction
     };
     const newPathD = objToPathD(pathObj, directions);
+    if(callback){
+        console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
+    }
     linkElement.querySelector('path').setAttribute('d', newPathD);
+    if(callback){
+        callback(linkElement);
+    }
 }
 
 function updateConnectedLinks(links, units, event, x, y) {
@@ -308,11 +328,11 @@ function updateConnectedLinks(links, units, event, x, y) {
     });
 }
 
-function drawOrUpdateUnit(unit){
+function drawOrUpdateUnit(unit, callback){
   const unitElement = document.querySelector(`.box[data-label="${unit.label}"]`);
 
   if(!unitElement){
-    drawUnit(unit);
+    drawUnit(unit, callback);
     return;
   }
 
@@ -320,7 +340,7 @@ function drawOrUpdateUnit(unit){
   //console.log({ TODO: `updateUnit ${unit.label}`})
 }
 
-function drawUnit(unit) {
+function drawUnit(unit, callback) {
     const width = Number(unit.width || 76);
     const height = Number(unit.height) || 76;
 
@@ -353,9 +373,12 @@ function drawUnit(unit) {
 
     if(unit.temporary){
         unitElement.innerHTML = `
-            <circle class="node dragging" cx="0" cy="0" r="3"></circle>
+            <circle class="node dragging" data-label=${unit.nodes[0].label} cx="0" cy="0" r="3"></circle>
         `;
         canvas.appendChild(unitElement);
+        if(callback){
+            callback(unitElement);
+        }
         return;
     }
 
@@ -421,7 +444,6 @@ function drawUnit(unit) {
         helpersHTML += `
             <path class="helper-segment" d="${segment[direction]}"></path>
         `;
-
         //console.log({ direction: n.direction })
     });
 
@@ -431,6 +453,9 @@ function drawUnit(unit) {
 
     canvas.appendChild(unitElement);
     //canvas.insertBefore(unitElement, linksGroup);
+    if(callback){
+        callback(unitElement);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -620,35 +645,76 @@ function initialiseWireDragging(evt){
     //console.log('wire drag start');
     const mousePos = getMousePosition(this.svg, evt);
     const label = Math.random().toString(26).replace('0.', '');
+
+    const startDirection = evt.target.dataset.direction;
+    const endDirection = oppositeDirection[startDirection];
+
     const tempUnit = {
         x: mousePos.x,
         y: mousePos.y,
         label,
-        width: 1,
-        height: 1,
+        width: 10,
+        height: 10,
         temporary: true,
         nodes: [{
+            x: 0,
+            y: 0,
+            direction: endDirection,
             label: 'first'
         }]
     };
-    this.units.push(tempUnit);
-    drawUnit(tempUnit);
-    const tempEnd = tempUnit.element.querySelector('circle');
+
+    const linkLabel = Math.random().toString(26).replace('0.', '');
     const tempLink = {
-        start: () => evt.target,
-        end: () => tempEnd
+        temporary: true,
+        label: linkLabel,
+        start: {
+            direction: startDirection,
+            parent: {
+                block: evt.target.parentNode.dataset.label,
+                node: evt.target.dataset.label
+            },
+            x: getTranslateX(evt.target.parentNode) + Number(evt.target.getAttribute('cx')),
+            y: getTranslateY(evt.target.parentNode) + Number(evt.target.getAttribute('cy'))
+        },
+        end: {
+            direction: endDirection,
+            parent: {
+                block: tempUnit.label,
+                node: tempUnit.nodes[0].label
+            },
+            x: mousePos.x,
+            y: mousePos.y
+        }
     };
-
     tempLink.temporary = true;
-    drawLink(tempLink, this.units);
-    this.links.push(tempLink);
-    this.selectedElement = tempUnit.element;
-    const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
-    this.transform = initD.transform;
-    this.offset = initD.offset;
 
-    this.draggedUnit = tempUnit;
-    this.draggedLink = tempLink;
+    const setDraggingState = (unitElement, linkElement) => {
+        //const unitElement = document.querySelector(`.box[data-label="${tempUnit.label}"]`);
+        if(!unitElement || !linkElement){
+            debugger;
+        }
+        this.selectedElement = unitElement;
+        const initD = initialiseUnitDragging(this.svg, unitElement, evt);
+        this.transform = initD.transform;
+        this.offset = initD.offset;
+        this.draggedUnit = unitElement;
+        this.draggedLink = linkElement;
+        this.update((state) => {
+            const newUnits = state.units.concat([tempUnit]);
+            const newLinks = state.links.concat([tempLink]);
+            return { units: newUnits, links: newLinks };
+        });
+    }
+
+    const initWireDragTasks = () => {
+        drawOrUpdateUnit(tempUnit, (unitElement) => {
+            drawStateLink(tempLink, (linkElement) => {
+                setDraggingState(unitElement, linkElement);
+            });
+        });
+    };
+    withAnimFrame(initWireDragTasks)();
 }
 
 function distanceNodes(node1, node2){
@@ -741,6 +807,7 @@ function endDrag(evt) {
     };
     if(dragged.temporary){
         const mousePos = getMousePosition(this.svg, evt);
+        debugger;
         const allNodes = this.units
             .filter(x => x.label !== this.draggedUnit.label)
             .reduce((all, one) => { return all.concat(one.nodes)}, [])
@@ -878,14 +945,34 @@ function endDragState(evt) {
   };
   if(dragged.temporary){
       const mousePos = getMousePosition(this.svg, evt);
-      const allNodes = this.units
-          .filter(x => x.label !== this.draggedUnit.label)
-          .reduce((all, one) => { return all.concat(one.nodes)}, [])
+      const currentState = this.read();
+      const allNodes = currentState.units
+          .filter(x => x.label !== dragged.unit.dataset.label)
+          .reduce((all, one) => {
+                const nodes = one.nodes.map(x => {
+                    if(!x){
+                        return x;
+                    }
+                    const globalPosition = () => {
+                        return {
+                            x: one.x + x.x,
+                            y: one.y + x.y
+                        };
+                    };
+                    const parentLabel = one.label;
+                    return Object.assign({}, x, { globalPosition, parentLabel });
+                });
+                return all.concat(nodes)
+            }, [])
           .filter(x => !!x)
           .map(n => ({
-              element: n.element,
-              x: n.globalPosition().x,
-              y: n.globalPosition().y,
+              label: n.label,
+              parentLabel: n.parentLabel,
+              direction: n.direction,
+              x: n.x,
+              y: n.y,
+              globalX: n.globalPosition().x,
+              globalY: n.globalPosition().y,
               distance: distanceNodes({
                   x: mousePos.x,
                   y: mousePos.y,
@@ -896,20 +983,30 @@ function endDragState(evt) {
           }))
           .filter(n => n.distance < 10)
           .sort((a, b) => a.distance - b.distance);
-      if(allNodes.length){
-          const parentLabel = allNodes[0].element.parentElement.dataset.label;
-          const nodeLabel = allNodes[0].element.dataset.label;
-          this.draggedLink.end = (units) => units.getNode(parentLabel, nodeLabel);
-          const newLink = {
-              start: this.draggedLink.start,
-              end: (units) => units.getNode(parentLabel, nodeLabel)
-          };
-          this.links.push(newLink);
-          drawLink(newLink, this.units);
+      if(!allNodes.length){
+        const units = currentState.units.filter(u => !u.temporary);
+        const links = currentState.links.filter(l => !l.temporary);
+
+        this.update(() => {
+            return { units, links };
+        });
+        return;
       }
-      this.links = this.links.filter(l => !l.temporary);
-      dragged.link.element.parentNode.removeChild(dragged.link.element)
-      dragged.element.parentNode.removeChild(dragged.element)
+      const units = currentState.units.filter(u => !u.temporary);
+      const links = currentState.links;
+      const draggingLink = links.find(l => l.temporary);
+      const newEnd = allNodes[0];
+      delete draggingLink.temporary;
+      draggingLink.end.parent.block = newEnd.parentLabel;
+      draggingLink.end.parent.node = newEnd.label;
+      draggingLink.end.parent.direction = oppositeDirection[newEnd.direction];
+
+      console.log({ draggingLink, newEnd, allNodes })
+      //TODO: update end
+      this.update(() => {
+          return { units, links };
+      })
+
   }
   this.selectedElement = undefined;
   evt.preventDefault();
@@ -1133,8 +1230,6 @@ function render(_state){
         || domMatch.position.y !== unit.y;
       return hasMoved;
     });
-
-    const withAnimFrame = (fn) => (arg) => window.requestAnimationFrame(() => fn(arg));
 
     clone(unitsToUpdate).forEach(withAnimFrame(drawOrUpdateUnit));
 
