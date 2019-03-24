@@ -26,9 +26,12 @@
       X many functions fail
       X functionality fails
       X updating units causes duplicate
+    - link terminal should change direction when close to node
+        ^^^ direction should be rendered on the fly, not part of state
     - dragging wire should have z-index higher than units
     - hovering node should also highlight node helper (and vice versa)
     - link create/drag should work when started at node helper
+    X dragging unit (and its links?) should be on top (and transparent)
     X second new link creation fails
     X moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
         ^^^ probably should only update moving part of link
@@ -46,6 +49,21 @@ const oppositeDirection = {
     south: 'north',
     east: 'west',
     west: 'east'
+};
+
+const setStyle = (id, rules) => {
+    var css = document.getElementById(id);
+    if(!css){
+        css = document.createElement('style');
+        css.type = 'text/css';
+        css.id = id;
+        document.getElementsByTagName("head")[0].appendChild(css);
+    }
+    if (css.styleSheet) {
+        css.styleSheet.cssText = rules;
+    } else {
+        css.appendChild(document.createTextNode(rules));
+    }
 };
 
 //https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
@@ -115,99 +133,6 @@ function createLinkElement(link) {
 
     const linkPath = document.createElementNS(namespaceURI, "path");
 
-    // const startParentTransform = link.start.parentNode.getAttribute('transform');
-    // const endParentTransform = link.end.parentNode.getAttribute('transform');
-    const startCoords = {
-        x: getTranslateX(link.start.parentNode) + Number(link.start.getAttribute('cx')),
-        y: getTranslateY(link.start.parentNode) + Number(link.start.getAttribute('cy'))
-    };
-    const endCoords = {
-        x: getTranslateX(link.end.parentNode) + Number(link.end.getAttribute('cx')),
-        y: getTranslateY(link.end.parentNode) + Number(link.end.getAttribute('cy'))
-    };
-    const pathObj = {
-        m: startCoords,
-        c3: endCoords
-    };
-    const controls = calculateControls(pathObj);
-    pathObj.c1 = controls.c1;
-    pathObj.c2 = controls.c2;
-    const originalPathD = objToPathD(pathObj);
-    linkPath.setAttribute('d', originalPathD)
-
-    linkElement.appendChild(linkPath);
-
-    drawControls({ namespaceURI, link, linkElement, pathObj });
-
-    const linksGroup = document.querySelector('#canvas #links');
-    linksGroup.appendChild(linkElement);
-
-    return linkElement;
-}
-
-function drawLink(link, units) {
-    // const linkStart = link.start(units).parentNode.getAttribute('data-label') + ':' +
-    //     link.start.getAttribute('data-label');
-    // const linkEnd = link.end(units).parentNode.getAttribute('data-label') + ':' +
-    //     link.end.getAttribute('data-label');
-
-    // console.log(
-    //   `start: ${linkStart}` + '\n' +
-    //   `end: ${linkEnd}`
-    // );
-
-    var linkElement = link.element;
-    if (!linkElement) {
-        linkElement = link.element = createLinkElement({
-            start: link.start(units),
-            end: link.end(units)
-        });
-    }
-    link.originalPathD = link.originalPathD || linkElement.querySelector('path')
-        .getAttribute('d')
-        .replace(/\n/g, ' ')
-        .replace(/ +(?= )/g, '');
-
-    link.startOriginalOffsetX = getTranslateX(link.start(units).parentNode);
-    link.startOriginalOffsetY = getTranslateY(link.start(units).parentNode);
-    link.endOriginalOffsetX = getTranslateX(link.end(units).parentNode);
-    link.endOriginalOffsetY = getTranslateY(link.end(units).parentNode);
-
-    link.startOffsetX = Number(link.startOriginalOffsetX);
-    link.startOffsetY = Number(link.startOriginalOffsetY)
-    link.endOffsetX = Number(link.endOriginalOffsetX);
-    link.endOffsetY = Number(link.endOriginalOffsetY);
-
-    const pathD = link.originalPathD;
-    const pathObj = pathDToObj(pathD);
-
-    const controlPoints = calculateControls(pathObj);
-    pathObj.c1 = controlPoints.c1;
-    pathObj.c2 = controlPoints.c2;
-
-    link.originalPathD = objToPathD(pathObj);
-    const directions = getLinkDirections({
-        start: link.start(units),
-        end: link.end(units)
-    });
-    link.directions = directions;
-    const newPathD = objToPathD(pathObj, link.directions);
-    const label = Math.random().toString(26).replace('0.', '');
-    link.label = label;
-    link.element.setAttribute('data-label', label);
-    link.element.querySelector('path').setAttribute('d', newPathD);
-    // if(link.temporary){
-    //     debugger;
-    // }
-}
-
-function createLinkStateElement(link) {
-    const namespaceURI = document.getElementById('canvas').namespaceURI;
-    const linkElement = document.createElementNS(namespaceURI, "g");
-    linkElement.classList.add('link');
-
-    const linkPath = document.createElementNS(namespaceURI, "path");
-
     const startCoords = link.start;
     const endCoords = link.end;
     const pathObj = {
@@ -234,7 +159,7 @@ function createLinkStateElement(link) {
     return linkElement;
 }
 
-function drawStateLink(link, callback){
+function drawLink(link, callback){
     var linkElement = document.querySelector(`g[data-label="${link.label}"]`);
     const linkStartParent = document.querySelector(
       `.box[data-label="${link.start.parent.block}"]
@@ -245,9 +170,9 @@ function drawStateLink(link, callback){
        .node[data-label="${link.end.parent.node}"]`
     );
 
-    if(callback){
-        console.log({ linkElement, linkEndParent, linkStartParent });
-    }
+    // if(callback){
+    //     console.log({ linkElement, linkEndParent, linkStartParent });
+    // }
     // don't draw (or remove) link if it doesn't have 2 connections
     if(!linkStartParent || !linkEndParent){
       if(!linkElement){
@@ -258,7 +183,7 @@ function drawStateLink(link, callback){
     }
 
     if (!linkElement) {
-        linkElement = createLinkStateElement(link);
+        linkElement = createLinkElement(link);
         linkElement.setAttribute('data-label', link.label);
     }
     const pathObj = {
@@ -280,52 +205,13 @@ function drawStateLink(link, callback){
         end: link.end.direction
     };
     const newPathD = objToPathD(pathObj, directions);
-    if(callback){
-        console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
-    }
+    // if(callback){
+    //     console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
+    // }
     linkElement.querySelector('path').setAttribute('d', newPathD);
     if(callback){
         callback(linkElement);
     }
-}
-
-function updateConnectedLinks(links, units, event, x, y) {
-    //console.log('updateConnectedLinks');
-    const target = event.target.parentNode;
-    links.forEach(link => {
-        const containsStart = target.classList.contains('box') && target.contains(link.start(units));
-        const containsEnd = target.classList.contains('box') && target.contains(link.end(units));
-        if (!containsStart && !containsEnd) {
-            return;
-        }
-
-        const pathD = link.originalPathD;
-        const pathObj = pathDToObj(pathD);
-
-        if (containsStart) {
-            link.startOffsetX = x;
-            link.startOffsetY = y;
-        }
-        if (containsEnd) {
-            link.endOffsetX = x;
-            link.endOffsetY = y;
-        }
-
-        pathObj.m.x += (link.startOffsetX - link.startOriginalOffsetX);
-        pathObj.m.y += (link.startOffsetY - link.startOriginalOffsetY);
-        pathObj.c3.x += (link.endOffsetX - link.endOriginalOffsetX);
-        pathObj.c3.y += (link.endOffsetY - link.endOriginalOffsetY);
-
-        const controlPoints = calculateControls(pathObj);
-        pathObj.c1 = controlPoints.c1;
-        pathObj.c2 = controlPoints.c2;
-
-        drawControls({ link, linkElement: link.element, pathObj })
-
-        const newPathD = objToPathD(pathObj, link.directions);
-        link.element.querySelector('path').setAttribute('d', newPathD);
-        //console.log(newPathString);
-    });
 }
 
 function drawOrUpdateUnit(unit, callback){
@@ -622,11 +508,10 @@ function getMousePosition(svg, evt) {
 }
 
 function initialiseUnitDragging(svg, selectedElement, evt) {
-    offset = getMousePosition(svg, evt);
+    const offset = getMousePosition(svg, evt);
 
     // Make sure the first transform on the element is a translate transform
     var transforms = selectedElement.transform.baseVal;
-
     if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
         // Create an transform that translates by (0, 0)
         var translate = svg.createSVGTransform();
@@ -709,7 +594,7 @@ function initialiseWireDragging(evt){
 
     const initWireDragTasks = () => {
         drawOrUpdateUnit(tempUnit, (unitElement) => {
-            drawStateLink(tempLink, (linkElement) => {
+            drawLink(tempLink, (linkElement) => {
                 setDraggingState(unitElement, linkElement);
             });
         });
@@ -728,149 +613,12 @@ function distanceNodes(node1, node2){
 // ---------------------------------------------------------------
 
 function startDrag(evt) {
-    if(this.selectedElement){
-        return;
-    }
-    const nodeDrag = {
-        test: () => evt.target.classList.contains('node'),
-        start: () => {
-            initialiseWireDragging.bind(this)(evt);
-        }
-    };
-    const groupDrag = {
-        test: () => evt.target.parentNode.classList.contains('draggable-group'),
-        start: () => {
-            this.selectedElement = evt.target.parentNode;
-            const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
-            this.transform = initD.transform;
-            this.offset = initD.offset;
-        }
-    };
-
-    const result = [
-        nodeDrag, groupDrag
-    ].filter(x => {
-        try {
-            return x.test();
-        } catch (e) {
-            return false;
-        }
-    })[0];
-
-    result && result.start();
-    evt.stopPropagation();
-    evt.preventDefault();
-}
-
-function drag(evt) {
-    if (!this.selectedElement) {
-        return;
-    }
-    evt.preventDefault();
-    evt.stopPropagation();
-    var coord = getMousePosition(this.svg, evt);
-
-    const linksToUpdate = this.links
-        .reduce((all, one) => {
-            const linkStartConnected = () => {
-                const startParent = one.start(this.units).parentElement.dataset.label;
-                return startParent === this.selectedElement.dataset.label;
-            };
-            const linkEndConnected = () => {
-                const endParent = one.end(this.units).parentElement.dataset.label;
-                return endParent === this.selectedElement.dataset.label;
-            };
-            if(linkStartConnected() || linkEndConnected()){
-                all.push(one)
-            }
-            return all;
-        }, []);
-    function updateDOM(){
-        this.transform.setTranslate(coord.x - this.offset.x, coord.y - this.offset.y);
-        updateConnectedLinks(
-            linksToUpdate, this.units, evt,
-            coord.x - this.offset.x, coord.y - this.offset.y
-        );
-    }
-    window.requestAnimationFrame(updateDOM.bind(this));
-}
-
-function endDrag(evt) {
-    if(!this.selectedElement){
-        return;
-    }
-    const dragged = {
-        element: this.selectedElement,
-        link: this.draggedLink,
-        unit: this.draggedUnit,
-        temporary: this.selectedElement.dataset.temporary
-    };
-    if(dragged.temporary){
-        const mousePos = getMousePosition(this.svg, evt);
-        debugger;
-        const allNodes = this.units
-            .filter(x => x.label !== this.draggedUnit.label)
-            .reduce((all, one) => { return all.concat(one.nodes)}, [])
-            .filter(x => !!x)
-            .map(n => ({
-                element: n.element,
-                x: n.globalPosition().x,
-                y: n.globalPosition().y,
-                distance: distanceNodes({
-                    x: mousePos.x,
-                    y: mousePos.y,
-                }, {
-                    x: n.globalPosition().x,
-                    y: n.globalPosition().y,
-                })
-            }))
-            .filter(n => n.distance < 10)
-            .sort((a, b) => a.distance - b.distance);
-        if(allNodes.length){
-            const parentLabel = allNodes[0].element.parentElement.dataset.label;
-            const nodeLabel = allNodes[0].element.dataset.label;
-            this.draggedLink.end = (units) => units.getNode(parentLabel, nodeLabel);
-            const newLink = {
-                start: this.draggedLink.start,
-                end: (units) => units.getNode(parentLabel, nodeLabel)
-            };
-            this.links.push(newLink);
-            drawLink(newLink, this.units);
-        }
-        this.links = this.links.filter(l => !l.temporary);
-        dragged.link.element.parentNode.removeChild(dragged.link.element)
-        dragged.element.parentNode.removeChild(dragged.element)
-    }
-    this.selectedElement = undefined;
-    evt.preventDefault();
-    evt.stopPropagation();
-}
-
-function makeDraggable(state) {
-  var svg = state.svg;
-
-  const startDragHandler = startDrag.bind(state);
-  svg.addEventListener('mousedown', startDragHandler);
-  svg.addEventListener('touchstart', startDragHandler, { passive: false });
-
-  const dragHandler = drag.bind(state);
-  svg.addEventListener('touchmove', dragHandler, { passive: false });
-  svg.addEventListener('mousemove', dragHandler);
-
-  const endDragHandler = endDrag.bind(state);
-  svg.addEventListener('mouseup', endDragHandler);
-  svg.addEventListener('mouseleave', endDragHandler);
-  svg.addEventListener('touchend', endDragHandler);
-  svg.addEventListener('touchleave', endDragHandler);
-  svg.addEventListener('touchcancel', endDragHandler);
-}
-
-// ---------------------------------------------------------------
-
-function startDragState(evt) {
   if(this.selectedElement){
       return;
   }
+
+  setStyle('clearBox', '.box {opacity: .7; }');
+
   const nodeDrag = {
       test: () => evt.target.classList.contains('node'),
       start: () => {
@@ -881,6 +629,7 @@ function startDragState(evt) {
       test: () => evt.target.parentNode.classList.contains('draggable-group'),
       start: () => {
           this.selectedElement = evt.target.parentNode;
+          bringToTop(this.selectedElement);
           const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
           this.transform = initD.transform;
           this.offset = initD.offset;
@@ -902,7 +651,7 @@ function startDragState(evt) {
   evt.preventDefault();
 }
 
-function dragState(evt) {
+function drag(evt) {
   if (!this.selectedElement) {
       return;
   }
@@ -933,9 +682,13 @@ function dragState(evt) {
   //console.log(`el: ${this.selectedElement.dataset.label}, x: ${coord.x - this.offset.x}, y: ${coord.y - this.offset.y}`);
 }
 
-function endDragState(evt) {
+function endDrag(evt) {
   if(!this.selectedElement){
       return;
+  }
+  var sSheet = document.getElementById('clearBox');
+  if(sSheet){
+    sSheet.parentNode.removeChild(sSheet);
   }
   const dragged = {
       element: this.selectedElement,
@@ -990,6 +743,9 @@ function endDragState(evt) {
         this.update(() => {
             return { units, links };
         });
+        this.selectedElement = undefined;
+        evt.preventDefault();
+        evt.stopPropagation();
         return;
       }
       const units = currentState.units.filter(u => !u.temporary);
@@ -1001,7 +757,7 @@ function endDragState(evt) {
       draggingLink.end.parent.node = newEnd.label;
       draggingLink.end.parent.direction = oppositeDirection[newEnd.direction];
 
-      console.log({ draggingLink, newEnd, allNodes })
+      //console.log({ draggingLink, newEnd, allNodes })
       //TODO: update end
       this.update(() => {
           return { units, links };
@@ -1013,7 +769,7 @@ function endDragState(evt) {
   evt.stopPropagation();
 }
 
-function makeDraggableState(_state) {
+function makeDraggable(_state) {
   const state = {
       read: _state.read,
       update: _state.update,
@@ -1029,15 +785,15 @@ function makeDraggableState(_state) {
 
   var svg = _state.svg;
 
-  const startDragHandler = startDragState.bind(state);
+  const startDragHandler = startDrag.bind(state);
   svg.addEventListener('mousedown', startDragHandler);
   svg.addEventListener('touchstart', startDragHandler, { passive: false });
 
-  const dragHandler = dragState.bind(state);
+  const dragHandler = drag.bind(state);
   svg.addEventListener('touchmove', dragHandler, { passive: false });
   svg.addEventListener('mousemove', dragHandler);
 
-  const endDragHandler = endDragState.bind(state);
+  const endDragHandler = endDrag.bind(state);
   svg.addEventListener('mouseup', endDragHandler);
   svg.addEventListener('mouseleave', endDragHandler);
   svg.addEventListener('touchend', endDragHandler);
@@ -1251,7 +1007,7 @@ function render(_state){
         }, []);
     //console.log({ linksToUpdate });
 
-    clone(linksToUpdate).forEach(withAnimFrame(drawStateLink));
+    clone(linksToUpdate).forEach(withAnimFrame(drawLink));
 }
 
 // --------------------------------------------------------------
@@ -1271,12 +1027,13 @@ function initScene(evt, units, links){
       }
     });
 
+    //TODO: would be nice if this went away > initState
     _state.create(initState({ units, links }));
 
     _state.svg = event.target;
 
     window.state = _state;
 
-    makeDraggableState(_state);
+    makeDraggable(_state);
     //addLinkEffects(state);
 }
