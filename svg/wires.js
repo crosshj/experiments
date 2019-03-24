@@ -1,6 +1,6 @@
 /*
     NOTES:
-    - move towards greater objective-orientation in code
+    - move towards greater object-orientation in code (message-passing-type OO)
 
     ISSUES:
 
@@ -20,17 +20,18 @@
     X highlighting/hovering links
 
     ISSUES:
-    - new state pattern breaks dragging / hovering
-      - hovering fails
+    - link terminal should change direction when close to node
+        ^^^ direction should be rendered on the fly, not part of state
+    - dragging wire should have z-index higher than units (fixed by transparent on drag feature?)
+    - link create/drag should work when started at node helper
+    X hovering node should also highlight node helper (and vice versa)
+    X only use transparent mode when node or group(unit) dragging
+    X new state pattern breaks dragging / hovering
+      X hovering fails
       X dragging new link fails
       X many functions fail
       X functionality fails
       X updating units causes duplicate
-    - link terminal should change direction when close to node
-        ^^^ direction should be rendered on the fly, not part of state
-    - dragging wire should have z-index higher than units
-    - hovering node should also highlight node helper (and vice versa)
-    - link create/drag should work when started at node helper
     X dragging unit (and its links?) should be on top (and transparent)
     X second new link creation fails
     X moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
@@ -617,8 +618,6 @@ function startDrag(evt) {
       return;
   }
 
-  setStyle('clearBox', '.box {opacity: .7; }');
-
   const nodeDrag = {
       test: () => evt.target.classList.contains('node'),
       start: () => {
@@ -636,7 +635,7 @@ function startDrag(evt) {
       }
   };
 
-  const result = [
+  const dragMode = [
       nodeDrag, groupDrag
   ].filter(x => {
       try {
@@ -646,7 +645,11 @@ function startDrag(evt) {
       }
   })[0];
 
-  result && result.start();
+  if(dragMode){
+    setStyle('clearBox', '.box {opacity: .7; }');
+    dragMode.start();
+  }
+
   evt.stopPropagation();
   evt.preventDefault();
 }
@@ -769,21 +772,8 @@ function endDrag(evt) {
   evt.stopPropagation();
 }
 
-function makeDraggable(_state) {
-  const state = {
-      read: _state.read,
-      update: _state.update,
-      svg: _state.svg,
-      hovered: undefined,
-      draggedUnit: undefined,
-      draggedLink: undefined,
-      selectedLinks: [],
-      selectedElement: undefined,
-      offset: undefined,
-      transform: undefined
-  };
-
-  var svg = _state.svg;
+function makeDraggable(state) {
+  var svg = state.svg;
 
   const startDragHandler = startDrag.bind(state);
   svg.addEventListener('mousedown', startDragHandler);
@@ -813,19 +803,59 @@ function hoverStart(event){
     if(this.selectedElement){
         return;
     }
+    const currentState = this.read();
+    const units = currentState.units;
+    const links = currentState.links;
+
+    const getNodeIndex = (el) => Array.from(
+        el.parentNode.querySelectorAll('circle')
+    ).indexOf(el);
+    const getHelperIndex = (el) => Array.from(
+        el.parentNode.querySelectorAll('.helper-segment')
+    ).indexOf(el);
+
+    const getNodeHelpers = (el) => Array.from(
+        el.parentNode.querySelectorAll('.helpers path')
+    );
+    const getNodeForHelper = (el) => {
+        return el.parentNode.parentNode.querySelectorAll('circle')[getHelperIndex(el)];
+    };
+    const getHelper = (el) => (getNodeHelpers(el)||[])[getNodeIndex(el)];
+
     if(event.target.tagName === 'path' && !event.target.classList.contains('helper-segment')){
-        //TODO: cache hovered or make elements easier to use when building link?
         const linkLabel = event.target.parentNode.getAttribute('data-label');
-        const link = (this.links.filter(x => x.label === linkLabel) || [])[0];
-        const start = link.start(this.units);
-        const end = link.end(this.units);
-        const getNodeIndex = (el) => Array.from(el.parentNode.querySelectorAll('circle')).indexOf(el);
-        const getNodeHelpers = el => Array.from(el.parentNode.querySelectorAll('.helpers path'));
-        const getHelper = el => (getNodeHelpers(el)||[])[getNodeIndex(el)];
+        const linkElement = event.target.parentNode;
+        const link = (links.filter(x => x.label === linkLabel) || [])[0];
+        const start = document
+            .querySelector(`.box[data-label="${link.start.parent.block}"] circle[data-label="${link.start.parent.node}"]`);
+        const end = document
+            .querySelector(`.box[data-label="${link.end.parent.block}"] circle[data-label="${link.end.parent.node}"]`);
+        if(!start || !end){
+            debugger;
+        }
         const startHelper = getHelper(start);
         const endHelper = getHelper(end);
-        bringToTop(link.element);
-        this.hovered = [link.element, end, start, endHelper, startHelper];
+        bringToTop(linkElement);
+        this.hovered = [linkElement, end, start, endHelper, startHelper];
+        //console.log({ link, hovered: this.hovered})
+        this.hovered.forEach(el => el.classList.add('hovered'));
+    }
+    if(event.target.tagName === 'circle'){
+        const helper = getHelper(event.target);
+        const node = event.target;
+        this.hovered = [helper, node];
+        if(!helper || !node){
+            debugger
+        }
+        this.hovered.forEach(el => el.classList.add('hovered'));
+    }
+    if(event.target.classList.contains('helper-segment')){
+        const helper = event.target;
+        const node = getNodeForHelper(event.target);
+        if(!helper || !node){
+            debugger
+        }
+        this.hovered = [helper, node];
         this.hovered.forEach(el => el.classList.add('hovered'));
     }
 }
@@ -1034,6 +1064,20 @@ function initScene(evt, units, links){
 
     window.state = _state;
 
-    makeDraggable(_state);
-    //addLinkEffects(state);
+    //TODO: at some point this state has to be reconciled with app state?
+    const state = {
+        read: _state.read,
+        update: _state.update,
+        svg: _state.svg,
+        hovered: undefined,
+        draggedUnit: undefined,
+        draggedLink: undefined,
+        selectedLinks: [],
+        selectedElement: undefined,
+        offset: undefined,
+        transform: undefined
+    };
+
+    makeDraggable(state);
+    addLinkEffects(state);
 }
