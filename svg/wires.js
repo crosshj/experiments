@@ -30,6 +30,8 @@
     - page: zoom/pan with memory
     - auto-arrange scene
     - snap to grid
+    - HTML element (or canvas) overlayed on unit/box for better stylng?
+        https://stackoverflow.com/questions/5882716/html5-canvas-vs-svg-vs-div
     - history slider
     - integrate state with redux dev tools
     - nodes: animate node and helper in sync with wire animation
