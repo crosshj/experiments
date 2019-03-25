@@ -94,7 +94,8 @@ boxes.forEach(b => b.x += 70);
 
 var wires = [{
     start: (units) => units.getNode('shadrach', 'second'),
-    end: (units) => units.getNode('meshach', 'first')
+    end: (units) => units.getNode('meshach', 'first'),
+    selected: true
 }, {
     start: (units) => units.getNode('meshach', 'fourth'),
     end: (units) => units.getNode('abednego', 'first')

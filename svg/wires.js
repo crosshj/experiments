@@ -24,7 +24,7 @@
         - difference between event-driven and game loop?
             https://hero.handmade.network/forums/code-discussion/t/1113-event_driven_vs_game_loop
             https://stackoverflow.com/questions/2565677/why-is-a-main-game-loop-necessary-for-developing-a-game
-    - wires:  indicators (arrows)
+    - wires:  indicators (arrows) - svg marker kinda sucks, imho - may skip this
     - boxes: collision detection
     - page: zoom/pan with memory
     - auto-arrange scene
@@ -278,6 +278,9 @@ function drawLink(link, callback){
     //     console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
     // }
     linkElement.querySelector('path').setAttribute('d', newPathD);
+    if(link.selected){
+        linkElement.classList.add('selected');
+    }
     const animated = linkElement.querySelector('path.animated');
     if(animated){
         animated.setAttribute('d', newPathD);
@@ -389,6 +392,9 @@ function drawUnit(unit, callback) {
             return;
         }
         const el = unitElement.querySelector(`circle[data-label="${n.label}"]`);
+        if(n.selected){
+            el.classList.add('selected');
+        }
         const direction = getNodeDirection(el);
         el.setAttribute('data-direction', getNodeDirection(el));
         const cx = Number(el.getAttribute('cx'));
@@ -401,7 +407,7 @@ function drawUnit(unit, callback) {
             'west': `M ${cx} ${cy} L ${cx - offset} ${cy}`
         };
         helpersHTML += `
-            <path class="helper-segment" d="${segment[direction]}"></path>
+            <path class="helper-segment${n.selected ? ' selected' :''}" d="${segment[direction]}"></path>
         `;
         //console.log({ direction: n.direction })
     });
@@ -1018,7 +1024,9 @@ function initState({ units, links }){
             const parent = link[name](stripParent);
             const unit = u.find(unit => unit && unit.label === parent.block);
             const node = unit.nodes.find(node => node && node.label === parent.node);
-
+            if(link.selected){
+                node.selected = true;
+            }
             all[name] = {
                 x: unit.x + node.x,
                 y: unit.y + node.y,
@@ -1028,7 +1036,7 @@ function initState({ units, links }){
             return all;
         }, {});
         _link.label = link.label || Math.random().toString(26).replace('0.', '');
-
+        _link.selected = link.selected;
         return _link;
     });
     //console.log({ link: links[0], l: l[0]})

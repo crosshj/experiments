@@ -1,6 +1,7 @@
   :root {
     --link-color: #bbb;
     --link-hover-color: #FF355E;
+    --link-selected-color: #ffcc20;
   }
 
   body {
@@ -61,7 +62,7 @@
   }
 
   .node:hover, .node.hovered {
-    fill: var(--link-hover-color);
+    fill: var(--link-hover-color) !important;
   }
 
   .link path:hover,
@@ -69,6 +70,13 @@
   .link.hovered path,
   .helpers path.hovered {
     stroke: var(--link-hover-color) !important;
+  }
+
+  .node.selected {
+      fill: var(--link-selected-color);
+  }
+  .link.selected *, .helper-segment.selected {
+      stroke: var(--link-selected-color);
   }
 
   .heavy {
