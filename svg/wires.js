@@ -11,7 +11,8 @@
         Show changes to system by animating/manipulating state of system over time.  This could go at least two directions: create UI elements which affect state or integrate with Redux Dev Tools.
     - CONNECTION
         Model should be attached to something specific: functions, network calls.  This is the life and breath of a visual model like this.
-
+    - SHARE
+        Exporting an animated GIF would make this tool incredibly useful for one of its main goals: illustrating complex systems visually.  Also, sharing, saving, and manipulating configuration JSON directly woulld be of great use.
     TODO/TASKS:
     - wires: CRUD
         - wire create on mobile is awkward / broken
@@ -30,6 +31,9 @@
     - page: zoom/pan with memory
     - auto-arrange scene
     - snap to grid
+    - export animated GIF
+    - export/import source configuration
+    - sequence/history as part of configuration object
     - HTML element (or canvas) overlayed on unit/box for better stylng?
         https://stackoverflow.com/questions/5882716/html5-canvas-vs-svg-vs-div
     - history slider
