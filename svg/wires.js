@@ -155,7 +155,7 @@ function getLinkDirections(link) {
 
 // -----------------------------------------------------------------------------
 
-function animateLink(link){
+function animateLink(link, callback){
     //TODO: also animate node and helper
     //NOTE: would be nice if link wire, node, and helpers could be treated as one
     const linkQuery = `.link[data-label="${link.label}"]`;
@@ -169,27 +169,38 @@ function animateLink(link){
     linkElement.appendChild(animatedPath);
 
     const linkLength = linkPath.getTotalLength();
+    const dashLength = 1;
+    const duration = linkLength/100 * 2.5;
     const style = `
         ${linkQuery} path.animated {
             /* stroke: #fff9; */
             stroke-linecap: round;
-            stroke-width: 4px;
-            stroke-dasharray: ${linkLength/5};
-            animation-name: dash;
-            animation-duration: 2.5s; /* or: Xms */
-            animation-iteration-count: infinite;
-            animation-direction: reverse; /* or: normal */
+            stroke-width: 7px;
+            stroke-dasharray: ${dashLength} ${linkLength};
+            animation-name: dash-${link.label};
+            animation-duration: ${duration}s; /* or: Xms */
+            animation-iteration-count: 1;
+            animation-direction: normal; /* or: normal */
             animation-timing-function: linear; /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
             animation-fill-mode: both; /* or: backwards, both, none */
             animation-delay: 0s; /* or: Xms */
         }
 
-        @keyframes dash {
+        @keyframes dash-${link.label} {
+            from {
+                stroke-dashoffset: ${dashLength};
+            }
             to {
-                stroke-dashoffset: ${linkLength*2};
+                stroke-dashoffset: ${-linkLength};
             }
         }
     `;
+    //console.log({ linkLength, dashLength, duration});
+    //console.log(`-- START: ${link.label}`);
+    setTimeout(function(){
+        //console.log(`-- END  : ${link.label}`);
+        callback && callback();
+    }, duration*1000);
     setStyle('linkAnimation', style)
 }
 
@@ -1222,7 +1233,7 @@ function initScene(evt, units, links){
         [7]
     ];
     var linkElements;
-    setInterval(function(){
+    function animateLinks(){
         removeAnimation();
         linkElements = linkElements
             || Array.from(document.querySelectorAll(`.link`))
@@ -1230,10 +1241,18 @@ function initScene(evt, units, links){
         if(index > 5){
             index = 0;
         }
-        sequence[index++].forEach(i => {
+        var done = [];
+        sequence[index].forEach(i => {
             var label = linkElements[i]
-            animateLink({ label });
+            animateLink({ label }, () => {
+                done.push(true);
+                if(done.length === sequence[index].length){
+                    index++;
+                    animateLinks();
+                }
+            });
         });
-    }, 3000);
+    };
+    setTimeout(animateLinks, 2000);
 
 }

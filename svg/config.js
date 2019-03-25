@@ -62,8 +62,8 @@ var boxes = [{
         }, null]
 }, {
     label: 'morozko',
-    x: 220,
-    y: 190,
+    x: 170,
+    y: 210,
     color: '#215d7d',
     nodes: [
         { label: 'first' },
