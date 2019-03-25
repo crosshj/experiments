@@ -25,6 +25,7 @@
             https://hero.handmade.network/forums/code-discussion/t/1113-event_driven_vs_game_loop
             https://stackoverflow.com/questions/2565677/why-is-a-main-game-loop-necessary-for-developing-a-game
     - wires:  indicators (arrows) - svg marker kinda sucks, imho - may skip this
+        https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end
     - boxes: collision detection
     - page: zoom/pan with memory
     - auto-arrange scene
@@ -153,6 +154,8 @@ function getLinkDirections(link) {
 // -----------------------------------------------------------------------------
 
 function animateLink(link){
+    //TODO: also animate node and helper
+    //NOTE: would be nice if link wire, node, and helpers could be treated as one
     const linkQuery = `.link[data-label="${link.label}"]`;
     const linkElement = document.querySelector(linkQuery);
     const linkPath = document.querySelector(`${linkQuery} path`);
@@ -166,7 +169,8 @@ function animateLink(link){
     const linkLength = linkPath.getTotalLength();
     const style = `
         ${linkQuery} path.animated {
-            stroke: #fff9;
+            /* stroke: #fff9; */
+            stroke-linecap: round;
             stroke-width: 4px;
             stroke-dasharray: ${linkLength/5};
             animation-name: dash;
@@ -950,13 +954,41 @@ function hoverEnd(event){
     }
 }
 
+function linkClick(event){
+    const t = event.target;
+    var link;
+    if (t.tagName === 'path' && t.parentNode.classList.contains('link')){
+        link = t.parentNode;
+    }
+
+    if(t.classList.contains('link')){
+        link = t;
+    }
+    if(!link){
+        return;
+    }
+    console.log('clicked a link: ', link.dataset.label);
+    //const currentState = this.read();
+    this.update(({ units, links }) => {
+        const clickedStateLink = links.find(l => l.label === link.dataset.label);
+        clickedStateLink.selected = !clickedStateLink.selected;
+        if(!clickedStateLink.selected){
+            delete clickedStateLink.selected;
+        }
+        //TODO: also selected nodes
+        return { links };
+    });
+}
+
 function addLinkEffects(state) {
     var svg = state.svg;
     const hoverStartHandler = hoverStart.bind(state);
     const hoverEndHandler = hoverEnd.bind(state);
+    const clickHandler = linkClick.bind(state);
     svg.addEventListener("mouseover", hoverStartHandler);
     svg.addEventListener('mouseout', hoverEndHandler);
     svg.addEventListener('mouseleave', hoverEndHandler);
+    svg.addEventListener('click', clickHandler);
 }
 
 function mapNodeToState(node, index){
@@ -1115,7 +1147,18 @@ function render(_state){
                 const endParent = one.end.parent.block;
                 return unitsToUpdateLabels.includes(endParent);
             };
-            if(linkStartConnected() || linkEndConnected()){
+            const linkNewlySelected = () => {
+                const isSelected = one.selected;
+                const isInSelectedLinks = this.selectedLinks.includes(one.label);
+                if(isSelected && !isInSelectedLinks){
+                    this.selectedLinks.push(one.label);
+                }
+                if(!isSelected && isInSelectedLinks){
+                    this.selectedLinks = this.selectedLinks.filter(x => x === one.label);
+                }
+                return isSelected && !isInSelectedLinks;
+            };
+            if(linkStartConnected() || linkEndConnected() || linkNewlySelected()){
                 all.push(one)
             }
             return all;
@@ -1128,10 +1171,25 @@ function render(_state){
 // --------------------------------------------------------------
 function initScene(evt, units, links){
     const _state = new State();
+    //TODO: at some point this state has to be reconciled with app state?
+    _state.svg = event.target;
+    const state = {
+        read: _state.read,
+        update: _state.update,
+        svg: _state.svg,
+        hovered: undefined,
+        draggedUnit: undefined,
+        draggedLink: undefined,
+        selectedLinks: [],
+        selectedElement: undefined,
+        offset: undefined,
+        transform: undefined
+    };
+    const renderHandler = render.bind(state);
 
-    _state.on('create', render);
-    _state.on('update', render);
-    _state.on('delete', render);
+    _state.on('create', renderHandler);
+    _state.on('update', renderHandler);
+    _state.on('delete', renderHandler);
 
     _state.on('history', (data) => {
       const historyStatsEl = document.getElementById('state-memory-size');
@@ -1145,23 +1203,8 @@ function initScene(evt, units, links){
     //TODO: would be nice if this went away > initState
     _state.create(initState({ units, links }));
 
-    _state.svg = event.target;
 
     window.state = _state;
-
-    //TODO: at some point this state has to be reconciled with app state?
-    const state = {
-        read: _state.read,
-        update: _state.update,
-        svg: _state.svg,
-        hovered: undefined,
-        draggedUnit: undefined,
-        draggedLink: undefined,
-        selectedLinks: [],
-        selectedElement: undefined,
-        offset: undefined,
-        transform: undefined
-    };
 
     makeDraggable(state);
     addLinkEffects(state);
@@ -1176,15 +1219,17 @@ function initScene(evt, units, links){
         [5,6],
         [7]
     ];
+    var linkElements;
     setInterval(function(){
         removeAnimation();
-        var links = document.querySelectorAll(`.link`);
+        linkElements = linkElements
+            || Array.from(document.querySelectorAll(`.link`))
+                .map(x => x.dataset.label);
         if(index > 5){
             index = 0;
         }
         sequence[index++].forEach(i => {
-            var link = links[i]
-            var label = link.dataset.label;
+            var label = linkElements[i]
             animateLink({ label });
         });
     }, 3000);
