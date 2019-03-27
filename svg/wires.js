@@ -79,7 +79,7 @@ const oppositeDirection = {
 
 const setStyle = (id, rules) => {
     var css = document.getElementById(id);
-    if(!css){
+    if (!css) {
         css = document.createElement('style');
         css.type = 'text/css';
         css.id = id;
@@ -94,8 +94,16 @@ const setStyle = (id, rules) => {
 
 const removeStyle = (id) => {
     var sSheet = document.getElementById(id);
-    if(sSheet){
-      sSheet.parentNode.removeChild(sSheet);
+    if (sSheet) {
+        sSheet.parentNode.removeChild(sSheet);
+    }
+};
+
+const tryParse = text => {
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        return undefined;
     }
 };
 
@@ -111,7 +119,7 @@ function overlayColor(color) {
 const getTranslateX = node => {
     const transform = node.getAttribute('transform');
     const splitChar = transform.includes(',') ? ',' : ' ';
-    if(!transform.split(splitChar)[0]){
+    if (!transform.split(splitChar)[0]) {
         debugger;
     }
     return Number(transform.split(splitChar)[0].split('(')[1]);
@@ -119,7 +127,7 @@ const getTranslateX = node => {
 const getTranslateY = node => {
     const transform = node.getAttribute('transform');
     const splitChar = transform.includes(',') ? ',' : ' ';
-    if(!transform.split(splitChar)[1]){
+    if (!transform.split(splitChar)[1]) {
         debugger;
     }
     return Number(transform.split(splitChar)[1].split(')')[0]);
@@ -159,7 +167,7 @@ function getLinkDirections(link) {
 
 // -----------------------------------------------------------------------------
 
-function animateLink(link, callback){
+function animateLink(link, callback) {
     //TODO: also animate node and helper
     //NOTE: would be nice if link wire, node, and helpers could be treated as one
     const linkQuery = `.link[data-label="${link.label}"]`;
@@ -174,7 +182,7 @@ function animateLink(link, callback){
 
     const linkLength = linkPath.getTotalLength();
     const dashLength = 1;
-    const duration = linkLength/100 * 2.5;
+    const duration = linkLength / 100 * 2.5;
     const style = `
         ${linkQuery} path.animated {
             /* stroke: #fff9; */
@@ -201,14 +209,14 @@ function animateLink(link, callback){
     `;
     //console.log({ linkLength, dashLength, duration});
     //console.log(`-- START: ${link.label}`);
-    setTimeout(function(){
+    setTimeout(function () {
         //console.log(`-- END  : ${link.label}`);
         callback && callback();
-    }, duration*1000);
+    }, duration * 1000);
     setStyle('linkAnimation', style)
 }
 
-function removeAnimation(){
+function removeAnimation() {
     Array.from(document.querySelectorAll('path.animated')).forEach(path => {
         path.parentNode.removeChild(path);
     });
@@ -249,14 +257,14 @@ function createLinkElement(link) {
     return linkElement;
 }
 
-function drawLink(link, callback){
+function drawLink(link, callback) {
     var linkElement = document.querySelector(`g[data-label="${link.label}"]`);
     const linkStartParent = document.querySelector(
-      `.box[data-label="${link.start.parent.block}"]
+        `.box[data-label="${link.start.parent.block}"]
        .node[data-label="${link.start.parent.node}"]`
     );
     const linkEndParent = document.querySelector(
-      `.box[data-label="${link.end.parent.block}"]
+        `.box[data-label="${link.end.parent.block}"]
        .node[data-label="${link.end.parent.node}"]`
     );
 
@@ -264,12 +272,12 @@ function drawLink(link, callback){
     //     console.log({ linkElement, linkEndParent, linkStartParent });
     // }
     // don't draw (or remove) link if it doesn't have 2 connections
-    if(!linkStartParent || !linkEndParent){
-      if(!linkElement){
+    if (!linkStartParent || !linkEndParent) {
+        if (!linkElement) {
+            return;
+        }
+        linkElement.parentNode.removeChild(linkElement);
         return;
-      }
-      linkElement.parentNode.removeChild(linkElement);
-      return;
     }
 
     if (!linkElement) {
@@ -299,28 +307,28 @@ function drawLink(link, callback){
     //     console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
     // }
     linkElement.querySelector('path').setAttribute('d', newPathD);
-    if(link.selected){
+    if (link.selected) {
         linkElement.classList.add('selected');
     }
     const animated = linkElement.querySelector('path.animated');
-    if(animated){
+    if (animated) {
         animated.setAttribute('d', newPathD);
     }
-    if(callback){
+    if (callback) {
         callback(linkElement);
     }
 }
 
-function drawOrUpdateUnit(unit, callback){
-  const unitElement = document.querySelector(`.box[data-label="${unit.label}"]`);
+function drawOrUpdateUnit(unit, callback) {
+    const unitElement = document.querySelector(`.box[data-label="${unit.label}"]`);
 
-  if(!unitElement){
-    drawUnit(unit, callback);
-    return;
-  }
+    if (!unitElement) {
+        drawUnit(unit, callback);
+        return;
+    }
 
-  unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
-  //console.log({ TODO: `updateUnit ${unit.label}`})
+    unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
+    //console.log({ TODO: `updateUnit ${unit.label}`})
 }
 
 function drawUnit(unit, callback) {
@@ -354,12 +362,12 @@ function drawUnit(unit, callback) {
     const canvas = document.querySelector('#canvas');
     unit.element = unitElement;
 
-    if(unit.temporary){
+    if (unit.temporary) {
         unitElement.innerHTML = `
             <circle class="node dragging" data-label=${unit.nodes[0].label} cx="0" cy="0" r="3"></circle>
         `;
         canvas.appendChild(unitElement);
-        if(callback){
+        if (callback) {
             callback(unitElement);
         }
         return;
@@ -413,7 +421,7 @@ function drawUnit(unit, callback) {
             return;
         }
         const el = unitElement.querySelector(`circle[data-label="${n.label}"]`);
-        if(n.selected){
+        if (n.selected) {
             el.classList.add('selected');
         }
         const direction = getNodeDirection(el);
@@ -428,7 +436,7 @@ function drawUnit(unit, callback) {
             'west': `M ${cx} ${cy} L ${cx - offset} ${cy}`
         };
         helpersHTML += `
-            <path class="helper-segment${n.selected ? ' selected' :''}" d="${segment[direction]}"></path>
+            <path class="helper-segment${n.selected ? ' selected' : ''}" d="${segment[direction]}"></path>
         `;
         //console.log({ direction: n.direction })
     });
@@ -439,7 +447,7 @@ function drawUnit(unit, callback) {
 
     canvas.appendChild(unitElement);
     //canvas.insertBefore(unitElement, linksGroup);
-    if(callback){
+    if (callback) {
         callback(unitElement);
     }
 }
@@ -626,7 +634,7 @@ function initialiseUnitDragging(svg, selectedElement, evt) {
     return { transform, offset };
 }
 
-function initialiseWireDragging(evt){
+function initialiseWireDragging(evt) {
     //console.log('wire drag start');
     const mousePos = getMousePosition(this.svg, evt);
     const label = Math.random().toString(26).replace('0.', '');
@@ -676,7 +684,7 @@ function initialiseWireDragging(evt){
 
     const setDraggingState = (unitElement, linkElement) => {
         //const unitElement = document.querySelector(`.box[data-label="${tempUnit.label}"]`);
-        if(!unitElement || !linkElement){
+        if (!unitElement || !linkElement) {
             debugger;
         }
         this.selectedElement = unitElement;
@@ -702,50 +710,50 @@ function initialiseWireDragging(evt){
     withAnimFrame(initWireDragTasks)();
 }
 
-function distanceNodes(node1, node2){
-  var a = node1.x - node2.x;
-  var b = node1.y - node2.y;
+function distanceNodes(node1, node2) {
+    var a = node1.x - node2.x;
+    var b = node1.y - node2.y;
 
-  var c = Math.sqrt( a*a + b*b );
-  return c;
+    var c = Math.sqrt(a * a + b * b);
+    return c;
 }
 
 // ---------------------------------------------------------------
 
 function startDrag(evt) {
-  if(this.selectedElement){
-      return;
-  }
+    if (this.selectedElement) {
+        return;
+    }
 
-  const nodeDrag = {
-      test: () => evt.target.classList.contains('node'),
-      start: () => {
-          initialiseWireDragging.bind(this)(evt);
-      }
-  };
-  const groupDrag = {
-      test: () => evt.target.parentNode.classList.contains('draggable-group'),
-      start: () => {
-          this.selectedElement = evt.target.parentNode;
-          bringToTop(this.selectedElement);
-          const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
-          this.transform = initD.transform;
-          this.offset = initD.offset;
-      }
-  };
+    const nodeDrag = {
+        test: () => evt.target.classList.contains('node'),
+        start: () => {
+            initialiseWireDragging.bind(this)(evt);
+        }
+    };
+    const groupDrag = {
+        test: () => evt.target.parentNode.classList.contains('draggable-group'),
+        start: () => {
+            this.selectedElement = evt.target.parentNode;
+            bringToTop(this.selectedElement);
+            const initD = initialiseUnitDragging(this.svg, this.selectedElement, evt);
+            this.transform = initD.transform;
+            this.offset = initD.offset;
+        }
+    };
 
-  const dragMode = [
-      nodeDrag, groupDrag
-  ].filter(x => {
-      try {
-          return x.test();
-      } catch (e) {
-          return false;
-      }
-  })[0];
+    const dragMode = [
+        nodeDrag, groupDrag
+    ].filter(x => {
+        try {
+            return x.test();
+        } catch (e) {
+            return false;
+        }
+    })[0];
 
-  if(dragMode){
-    setStyle('clearBox', `
+    if (dragMode) {
+        setStyle('clearBox', `
         .box {
             opacity: 0.7;
         }
@@ -753,64 +761,64 @@ function startDrag(evt) {
             opacity: 0.5 !important;
         }
     `);
-    dragMode.start();
-  }
+        dragMode.start();
+    }
 
-  evt.stopPropagation();
-  evt.preventDefault();
+    evt.stopPropagation();
+    evt.preventDefault();
 }
 
 function drag(evt) {
-  if (!this.selectedElement) {
-      return;
-  }
-  evt.preventDefault();
-  evt.stopPropagation();
+    if (!this.selectedElement) {
+        return;
+    }
+    evt.preventDefault();
+    evt.stopPropagation();
 
-  var coord = getMousePosition(this.svg, evt);
-  state.update((state) => {
-    const selectedUnitState = state.units.find(u => u.label === this.selectedElement.dataset.label);
-    selectedUnitState.x = coord.x - this.offset.x;
-    selectedUnitState.y = coord.y - this.offset.y;
+    var coord = getMousePosition(this.svg, evt);
+    state.update((state) => {
+        const selectedUnitState = state.units.find(u => u.label === this.selectedElement.dataset.label);
+        selectedUnitState.x = coord.x - this.offset.x;
+        selectedUnitState.y = coord.y - this.offset.y;
 
-    //update connected links
-    state.links.forEach(link => {
-      ['start', 'end'].forEach(connect => {
-        const connection = link[connect];
-        if(connection.parent.block !== selectedUnitState.label){
-          return;
-        }
-        const connectedNode = selectedUnitState.nodes
-          .find(n => n && n.label === connection.parent.node);
-        connection.x = selectedUnitState.x + connectedNode.x;
-        connection.y = selectedUnitState.y + connectedNode.y;
-      });
+        //update connected links
+        state.links.forEach(link => {
+            ['start', 'end'].forEach(connect => {
+                const connection = link[connect];
+                if (connection.parent.block !== selectedUnitState.label) {
+                    return;
+                }
+                const connectedNode = selectedUnitState.nodes
+                    .find(n => n && n.label === connection.parent.node);
+                connection.x = selectedUnitState.x + connectedNode.x;
+                connection.y = selectedUnitState.y + connectedNode.y;
+            });
+        });
+        return state;
     });
-    return state;
-  });
-  //console.log(`el: ${this.selectedElement.dataset.label}, x: ${coord.x - this.offset.x}, y: ${coord.y - this.offset.y}`);
+    //console.log(`el: ${this.selectedElement.dataset.label}, x: ${coord.x - this.offset.x}, y: ${coord.y - this.offset.y}`);
 }
 
 function endDrag(evt) {
-  if(!this.selectedElement){
-      return;
-  }
-  removeStyle('clearBox');
+    if (!this.selectedElement) {
+        return;
+    }
+    removeStyle('clearBox');
 
-  const dragged = {
-      element: this.selectedElement,
-      link: this.draggedLink,
-      unit: this.draggedUnit,
-      temporary: this.selectedElement.dataset.temporary
-  };
-  if(dragged.temporary){
-      const mousePos = getMousePosition(this.svg, evt);
-      const currentState = this.read();
-      const allNodes = currentState.units
-          .filter(x => x.label !== dragged.unit.dataset.label)
-          .reduce((all, one) => {
+    const dragged = {
+        element: this.selectedElement,
+        link: this.draggedLink,
+        unit: this.draggedUnit,
+        temporary: this.selectedElement.dataset.temporary
+    };
+    if (dragged.temporary) {
+        const mousePos = getMousePosition(this.svg, evt);
+        const currentState = this.read();
+        const allNodes = currentState.units
+            .filter(x => x.label !== dragged.unit.dataset.label)
+            .reduce((all, one) => {
                 const nodes = one.nodes.map(x => {
-                    if(!x){
+                    if (!x) {
                         return x;
                     }
                     const globalPosition = () => {
@@ -824,87 +832,87 @@ function endDrag(evt) {
                 });
                 return all.concat(nodes)
             }, [])
-          .filter(x => !!x)
-          .map(n => ({
-              label: n.label,
-              parentLabel: n.parentLabel,
-              direction: n.direction,
-              x: n.x,
-              y: n.y,
-              globalX: n.globalPosition().x,
-              globalY: n.globalPosition().y,
-              distance: distanceNodes({
-                  x: mousePos.x,
-                  y: mousePos.y,
-              }, {
-                  x: n.globalPosition().x,
-                  y: n.globalPosition().y,
-              })
-          }))
-          .filter(n => n.distance < 10)
-          .sort((a, b) => a.distance - b.distance);
-      if(!allNodes.length){
-        const units = currentState.units.filter(u => !u.temporary);
-        const links = currentState.links.filter(l => !l.temporary);
+            .filter(x => !!x)
+            .map(n => ({
+                label: n.label,
+                parentLabel: n.parentLabel,
+                direction: n.direction,
+                x: n.x,
+                y: n.y,
+                globalX: n.globalPosition().x,
+                globalY: n.globalPosition().y,
+                distance: distanceNodes({
+                    x: mousePos.x,
+                    y: mousePos.y,
+                }, {
+                        x: n.globalPosition().x,
+                        y: n.globalPosition().y,
+                    })
+            }))
+            .filter(n => n.distance < 10)
+            .sort((a, b) => a.distance - b.distance);
+        if (!allNodes.length) {
+            const units = currentState.units.filter(u => !u.temporary);
+            const links = currentState.links.filter(l => !l.temporary);
 
+            this.update(() => {
+                return { units, links };
+            });
+            this.selectedElement = undefined;
+            evt.preventDefault();
+            evt.stopPropagation();
+            return;
+        }
+        const units = currentState.units.filter(u => !u.temporary);
+        const links = currentState.links;
+        const draggingLink = links.find(l => l.temporary);
+        const newEnd = allNodes[0];
+        delete draggingLink.temporary;
+        draggingLink.end.parent.block = newEnd.parentLabel;
+        draggingLink.end.parent.node = newEnd.label;
+        draggingLink.end.parent.direction = oppositeDirection[newEnd.direction];
+
+        //console.log({ draggingLink, newEnd, allNodes })
+        //TODO: update end
         this.update(() => {
             return { units, links };
-        });
-        this.selectedElement = undefined;
-        evt.preventDefault();
-        evt.stopPropagation();
-        return;
-      }
-      const units = currentState.units.filter(u => !u.temporary);
-      const links = currentState.links;
-      const draggingLink = links.find(l => l.temporary);
-      const newEnd = allNodes[0];
-      delete draggingLink.temporary;
-      draggingLink.end.parent.block = newEnd.parentLabel;
-      draggingLink.end.parent.node = newEnd.label;
-      draggingLink.end.parent.direction = oppositeDirection[newEnd.direction];
+        })
 
-      //console.log({ draggingLink, newEnd, allNodes })
-      //TODO: update end
-      this.update(() => {
-          return { units, links };
-      })
-
-  }
-  this.selectedElement = undefined;
-  evt.preventDefault();
-  evt.stopPropagation();
+    }
+    this.selectedElement = undefined;
+    evt.preventDefault();
+    evt.stopPropagation();
 }
 
 function makeDraggable(state) {
-  var svg = state.svg;
+    var svg = state.svg;
 
-  const startDragHandler = startDrag.bind(state);
-  svg.addEventListener('mousedown', startDragHandler);
-  svg.addEventListener('touchstart', startDragHandler, { passive: false });
+    const startDragHandler = startDrag.bind(state);
+    svg.addEventListener('mousedown', startDragHandler);
+    svg.addEventListener('touchstart', startDragHandler, { passive: false });
 
-  const dragHandler = drag.bind(state);
-  svg.addEventListener('touchmove', dragHandler, { passive: false });
-  svg.addEventListener('mousemove', dragHandler);
+    const dragHandler = drag.bind(state);
+    svg.addEventListener('touchmove', dragHandler, { passive: false });
+    svg.addEventListener('mousemove', dragHandler);
 
-  const endDragHandler = endDrag.bind(state);
-  svg.addEventListener('mouseup', endDragHandler);
-  svg.addEventListener('mouseleave', endDragHandler);
-  svg.addEventListener('touchend', endDragHandler);
-  svg.addEventListener('touchleave', endDragHandler);
-  svg.addEventListener('touchcancel', endDragHandler);
+    const endDragHandler = endDrag.bind(state);
+    svg.addEventListener('mouseup', endDragHandler);
+    svg.addEventListener('mouseleave', endDragHandler);
+    svg.addEventListener('touchend', endDragHandler);
+    svg.addEventListener('touchleave', endDragHandler);
+    svg.addEventListener('touchcancel', endDragHandler);
 }
 
 // ----------------------------------------------------------------
 
-function bringToTop(targetElement){
+function bringToTop(targetElement) {
     // put the element at the bottom of its parent
     let parent = targetElement.parentNode;
     parent.appendChild(targetElement);
 }
 
-function hoverStart(event){
-    if(this.selectedElement){
+function hoverStart(event) {
+    if (this.selectedElement) {
         return;
     }
     const currentState = this.read();
@@ -924,9 +932,9 @@ function hoverStart(event){
     const getNodeForHelper = (el) => {
         return el.parentNode.parentNode.querySelectorAll('circle')[getHelperIndex(el)];
     };
-    const getHelper = (el) => (getNodeHelpers(el)||[])[getNodeIndex(el)];
+    const getHelper = (el) => (getNodeHelpers(el) || [])[getNodeIndex(el)];
 
-    if(event.target.tagName === 'path' && !event.target.classList.contains('helper-segment')){
+    if (event.target.tagName === 'path' && !event.target.classList.contains('helper-segment')) {
         const linkLabel = event.target.parentNode.getAttribute('data-label');
         const linkElement = event.target.parentNode;
         const link = (links.filter(x => x.label === linkLabel) || [])[0];
@@ -934,7 +942,7 @@ function hoverStart(event){
             .querySelector(`.box[data-label="${link.start.parent.block}"] circle[data-label="${link.start.parent.node}"]`);
         const end = document
             .querySelector(`.box[data-label="${link.end.parent.block}"] circle[data-label="${link.end.parent.node}"]`);
-        if(!start || !end){
+        if (!start || !end) {
             debugger;
         }
         const startHelper = getHelper(start);
@@ -944,19 +952,19 @@ function hoverStart(event){
         //console.log({ link, hovered: this.hovered})
         this.hovered.forEach(el => el.classList.add('hovered'));
     }
-    if(event.target.tagName === 'circle'){
+    if (event.target.tagName === 'circle') {
         const helper = getHelper(event.target);
         const node = event.target;
         this.hovered = [helper, node];
-        if(!helper || !node){
+        if (!helper || !node) {
             debugger
         }
         this.hovered.forEach(el => el.classList.add('hovered'));
     }
-    if(event.target.classList.contains('helper-segment')){
+    if (event.target.classList.contains('helper-segment')) {
         const helper = event.target;
         const node = getNodeForHelper(event.target);
-        if(!helper || !node){
+        if (!helper || !node) {
             debugger
         }
         this.hovered = [helper, node];
@@ -964,24 +972,24 @@ function hoverStart(event){
     }
 }
 
-function hoverEnd(event){
-    if(this.hovered){
+function hoverEnd(event) {
+    if (this.hovered) {
         this.hovered.forEach(el => el.classList.remove('hovered'));
         this.hovered = undefined;
     }
 }
 
-function linkClick(event){
+function linkClick(event) {
     const t = event.target;
     var link;
-    if (t.tagName === 'path' && t.parentNode.classList.contains('link')){
+    if (t.tagName === 'path' && t.parentNode.classList.contains('link')) {
         link = t.parentNode;
     }
 
-    if(t.classList.contains('link')){
+    if (t.classList.contains('link')) {
         link = t;
     }
-    if(!link){
+    if (!link) {
         return;
     }
     console.log('clicked a link: ', link.dataset.label);
@@ -989,7 +997,7 @@ function linkClick(event){
     this.update(({ units, links }) => {
         const clickedStateLink = links.find(l => l.label === link.dataset.label);
         clickedStateLink.selected = !clickedStateLink.selected;
-        if(!clickedStateLink.selected){
+        if (!clickedStateLink.selected) {
             delete clickedStateLink.selected;
         }
         //TODO: also selected nodes
@@ -1008,14 +1016,14 @@ function addLinkEffects(state) {
     svg.addEventListener('click', clickHandler);
 }
 
-function mapNodeToState(node, index){
-    if(!node){ return node; }
+function mapNodeToState(node, index) {
+    if (!node) { return node; }
     const unit = this.unit;
     const width = Number(unit.width || 76);
     const height = Number(unit.height || 76);
 
     const directionMap = [
-        'west', 'west','west',
+        'west', 'west', 'west',
         'south',
         'east', 'east', 'east',
         'north'
@@ -1052,7 +1060,7 @@ function mapNodeToState(node, index){
     };
 }
 
-function initState({ units, links }){
+function initState({ units, links }) {
     const u = units.map(unit => ({
         label: unit.label,
         color: unit.color,
@@ -1073,7 +1081,7 @@ function initState({ units, links }){
             const parent = link[name](stripParent);
             const unit = u.find(unit => unit && unit.label === parent.block);
             const node = unit.nodes.find(node => node && node.label === parent.node);
-            if(link.selected){
+            if (link.selected) {
                 node.selected = true;
             }
             all[name] = {
@@ -1092,28 +1100,28 @@ function initState({ units, links }){
     return { units: u, links: l };
 }
 
-function clone(obj){
+function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
-function cleanScene(state){
+function cleanScene(state) {
     const domLinks = Array.from(document.querySelectorAll('.link'));
-        //.map(x => x.dataset.label);
+    //.map(x => x.dataset.label);
     const domUnits = Array.from(document.querySelectorAll('.box'));
-        //.map(x => x.dataset.label);
+    //.map(x => x.dataset.label);
     const stateUnitLabels = state.units.map(x => x.label);
     const stateLinkLabels = state.links.map(x => x.label);
 
     domUnits.forEach(unit => {
         const label = unit.dataset.label;
-        if(!stateUnitLabels.includes(label)){
+        if (!stateUnitLabels.includes(label)) {
             unit.parentNode.removeChild(unit);
         }
     });
 
     domLinks.forEach(link => {
         const label = link.dataset.label;
-        if(!stateLinkLabels.includes(label)){
+        if (!stateLinkLabels.includes(label)) {
             link.parentNode.removeChild(link);
         }
     });
@@ -1123,32 +1131,32 @@ function cleanScene(state){
     //TODO: remove nodes that are missing from each unit
 }
 
-function render(_state){
-    const state = typeof _state.read === 'function'        ? _state.read()
+function render(_state) {
+    const state = typeof _state.read === 'function' ? _state.read()
         : _state;
     //console.log('--render function called');
 
     cleanScene(state);
 
     const domUnits = Array.from(document.querySelectorAll('.box'))
-      .map(element => ({
-        element,
-        label: element.dataset.label,
-        position: {
-          x: getTranslateX(element),
-          y: getTranslateY(element)
-        }
-      }));
+        .map(element => ({
+            element,
+            label: element.dataset.label,
+            position: {
+                x: getTranslateX(element),
+                y: getTranslateY(element)
+            }
+        }));
 
     const unitsToUpdate = state.units.filter(unit => {
-      const domMatch = domUnits.find(d => d.label === unit.label);
-      if(!domMatch){
-        return true;
-      }
+        const domMatch = domUnits.find(d => d.label === unit.label);
+        if (!domMatch) {
+            return true;
+        }
 
-      const hasMoved = domMatch.position.x !== unit.x
-        || domMatch.position.y !== unit.y;
-      return hasMoved;
+        const hasMoved = domMatch.position.x !== unit.x
+            || domMatch.position.y !== unit.y;
+        return hasMoved;
     });
 
     clone(unitsToUpdate).forEach(withAnimFrame(drawOrUpdateUnit));
@@ -1167,15 +1175,15 @@ function render(_state){
             const linkNewlySelected = () => {
                 const isSelected = one.selected;
                 const isInSelectedLinks = this.selectedLinks.includes(one.label);
-                if(isSelected && !isInSelectedLinks){
+                if (isSelected && !isInSelectedLinks) {
                     this.selectedLinks.push(one.label);
                 }
-                if(!isSelected && isInSelectedLinks){
+                if (!isSelected && isInSelectedLinks) {
                     this.selectedLinks = this.selectedLinks.filter(x => x === one.label);
                 }
                 return isSelected && !isInSelectedLinks;
             };
-            if(linkStartConnected() || linkEndConnected() || linkNewlySelected()){
+            if (linkStartConnected() || linkEndConnected() || linkNewlySelected()) {
                 all.push(one)
             }
             return all;
@@ -1186,7 +1194,7 @@ function render(_state){
 }
 
 // --------------------------------------------------------------
-function initScene(evt, units, links){
+function initScene(evt, units, links) {
     const _state = new State();
     //TODO: at some point this state has to be reconciled with app state?
     _state.svg = event.target;
@@ -1209,12 +1217,12 @@ function initScene(evt, units, links){
     _state.on('delete', renderHandler);
 
     _state.on('history', (data) => {
-      const historyStatsEl = document.getElementById('state-memory-size');
-      if(historyStatsEl){
-        historyStatsEl.innerHTML = JSON.stringify(data)
-          .replace(/[\{\}\"]/g, '')
-          .replace(/\,/g, ', ');
-      }
+        const historyStatsEl = document.getElementById('state-memory-size');
+        if (historyStatsEl) {
+            historyStatsEl.innerHTML = JSON.stringify(data)
+                .replace(/[\{\}\"]/g, '')
+                .replace(/\,/g, ', ');
+        }
     });
 
     //TODO: would be nice if this went away > initState
@@ -1233,16 +1241,16 @@ function initScene(evt, units, links){
         [1],
         [2, 3],
         [4],
-        [5,6],
+        [5, 6],
         [7]
     ];
     var linkElements;
-    function animateLinks(){
+    function animateLinks() {
         removeAnimation();
         linkElements = linkElements
             || Array.from(document.querySelectorAll(`.link`))
                 .map(x => x.dataset.label);
-        if(index > 5){
+        if (index > 5) {
             index = 0;
         }
         var done = [];
@@ -1250,7 +1258,7 @@ function initScene(evt, units, links){
             var label = linkElements[i]
             animateLink({ label }, () => {
                 done.push(true);
-                if(done.length === sequence[index].length){
+                if (done.length === sequence[index].length) {
                     index++;
                     animateLinks();
                 }
@@ -1258,5 +1266,225 @@ function initScene(evt, units, links){
         });
     };
     setTimeout(animateLinks, 2000);
+
+    // make slow requests - http://slowwly.robertomurray.co.uk/
+    // eg. http://slowwly.robertomurray.co.uk/delay/3000/url/http://www.boredapi.com/api/activity/
+
+    //https://github.com/toddmotto/public-apis
+    const ghibli = 'https://ghibliapi.herokuapp.com/films/?limit=10';
+    const bored = 'http://www.boredapi.com/api/activity/';
+    const countRegister = 'https://api.countapi.xyz/hit/boxesandwires/visits';
+    const countGet = 'https://api.countapi.xyz/get/boxesandwires/visits';
+    // fetch(countRegister)
+    //     .then(response => response.text())
+    //     .then(body => {
+    //         const results = tryParse(body);
+    //         console.log({ results });
+    //     });
+
+
+    // https://github.com/joewalnes/filtrex
+
+    (function parserWIP() {
+        //TODO: later fetches might depend on previous steps
+        //NOTE: implicit and / && after each step
+        const api = 'bored';
+        const ex = `
+            fetch(${api}Url)
+            map(${api}Map, ${api}Url, "${api}Map")
+            send(${api}MapValue, 2)
+            send(${api}MapValue, 1)
+        `;
+        const exampleExpression = ex
+            .trim()
+            .split('\n')
+            .join(' and ')
+            .replace(/\s\s+/g, ' ');
+
+        console.log('EXPRESSION: ' + ex);
+
+
+        const DONE = true;
+        const WAITING = false;
+        const FAILED = false;
+
+        const promiseQueue = [];
+        function _fetch(url) {
+            var queued = promiseQueue.find(x => x.name === url);
+            if (queued && queued.error) {
+                //console.log(`queued error: ${!!queued.error}`);
+                return FAILED;
+            }
+            if (queued && queued.result) {
+                //console.log(`queued result: ${!!queued.result}`);
+                return DONE;
+            }
+
+            //console.log('queued, waiting');
+            queued = new function QueueItem() {
+                this.name = url;
+                this.result = undefined;
+                this.error = undefined;
+                this.promise = fetch(url)
+                    //TODO: reject status errors?
+                    .then(x => x.text())
+                    .then(t => {
+                        const result = tryParse(t) || { error: 'failed to parse' }
+                        if(result.error) {
+                            throw result.error;
+                        }
+                        this.result = result;
+                    })
+                    .catch(e => {
+                        this.error = e;
+                    });
+            };
+            promiseQueue.push(queued);
+            return WAITING;
+        }
+
+        const mappedItems = [];
+        function _map(mapper, input, output) {
+            var mapped = mappedItems.find(x => x.name === output);
+            if (mapped) {
+                return mapped.error
+                    ? FAILED
+                    : DONE;
+            }
+
+            //if input is url, get result from promiseQueue
+            //TODO: if not??
+            const queued = promiseQueue.find(x => x.name === input);
+            if (!queued) {
+                mappedItems.push({
+                    name: output,
+                    result: '',
+                    error: 'could not find input source for mapping'
+                });
+                return FAILED;
+            }
+            const inputValue = queued.result;
+
+            //output is a string to be used as name for variable
+            // ^^^ these variables will be bound to /called with later iterations
+            var mapping;
+            var mappingError;
+            try {
+                //TODO: what if mapper is not a function?
+                //TODO: mapper syntax (use sop?)
+                mapping = mapper(inputValue);
+            } catch (e) {
+                mappingError = e;
+            }
+            const mappedItem = {
+                name: output,
+                result: mapping,
+                error: mappingError
+            };
+            mappedItems.push(mappedItem);
+
+            // console.log({
+            //     mapper, input, output, inputValue
+            // });
+            return mappedItem.error
+                ? FAILED
+                : DONE;
+        }
+
+        function _send(value, nodes) {
+            //test if array, wrap in array if not
+            //TODO:
+            //console.log('send ran');
+            return DONE;
+        }
+
+        const customFunctions = {
+            fetch: _fetch,
+            map: _map,
+            send: _send
+        };
+
+        var compile = (exp, custFn, maxFails) => {
+            var fails = 0;
+            // return a function that will continuosly compile and run (as promises resolve) until true
+            // each custom function should be wrapped so that it will return true only if resolved
+            // as promises are resolved, compile/run is ran
+            function compiled(data, callback) {
+                var myFunc = compileExpression(
+                    exp,
+                    custFn
+                );
+
+                const result = myFunc(data);
+
+                const fetchingError = promiseQueue
+                    .map(x => x.error).find(x => x);
+                const mappingError = mappedItems
+                    .map(x => x.error).find(x => x);
+
+                const tooManyFails = fails > maxFails
+                    ? `Maximum failures exceeded: ${maxFails}`
+                    : undefined;
+
+                const finished = result
+                    || fetchingError
+                    || mappingError
+                    || tooManyFails;
+                //console.log({ result, fetchingError, mappingError })
+
+                if (finished) {
+                    const results = mappedItems.length > 0 || promiseQueue.length > 0
+                        ? {
+                            map: mappedItems,
+                            fetch: promiseQueue
+                        }
+                        : undefined;
+
+                    callback(
+                        fetchingError || mappingError || tooManyFails,
+                        results
+                    );
+                    return;
+                }
+
+                //RETRYING
+                const dataFromMap = {
+                    TODO: 'add mapped data'
+                };
+                const dataPlusMapped = Object.assign({}, data, dataFromMap);
+
+                const firstUnresolved = promiseQueue.find(x => !x.result);
+                if (!firstUnresolved) {
+                    //console.log('--- no unresolved promises, will call');
+                    fails++;
+                    compiled(dataPlusMapped, callback);
+                    return;
+                }
+                firstUnresolved.promise.then(x => {
+                    //console.log('--- unresolved promise found, attaching');
+                    compiled(dataPlusMapped, callback);
+                });
+            };
+
+            return compiled;
+        };
+
+        var maxFails = 50;
+        var myFunc = compile(exampleExpression, customFunctions, maxFails);
+
+        myFunc({
+            [`${api}Url`]: bored,
+            [`${api}Map`]: (data) => data.value || data.activity
+        }, (err, data) => {
+            console.log({ err, data, result: data.map[0].result });
+        });
+
+        // var myfilter = compileExpression(
+        //     'strlen(firstname) > 5',
+        //     { strlen: s => s.length }); // custom functions
+
+        // console.log(myfilter({ firstname: 'Joe' }));    // returns 0
+        // console.log(myfilter({ firstname: 'Joseph' })); // returns 1
+    })();
 
 }

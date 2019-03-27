@@ -1,18 +1,18 @@
 const { app, BrowserWindow } = require('electron');
 
-// window && (window.ELECTRON_DISABLE_SECURITY_WARNINGS = true)
-// window && (window.ELECTRON_ENABLE_SECURITY_WARNINGS = false)
-process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
-process.env.ELECTRON_ENABLE_SECURITY_WARNINGS = false;
-process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 let win;
+// does not work to = boolean false; interpretted as "false", so == true
+delete process.env.ELECTRON_ENABLE_SECURITY_WARNINGS;
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
+
 
 const createWindow = () => {
     win = new BrowserWindow({
       width: 800, height: 600,
       frame: false,
       webPreferences: {
-        nodeIntegration: false
+        nodeIntegration: false,
+        webSecurity: true
       }
     });
     win.loadURL('http://localhost:8888');

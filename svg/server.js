@@ -41,7 +41,10 @@ Object.keys(replace).forEach(key => {
 const render = dot.template(templateFromHTML);
 
 app.use(function(req, res, next) {
-    res.setHeader("Content-Security-Policy", "script-src 'unsafe-inline' https://crosshj.com" );
+    res.setHeader(
+        "Content-Security-Policy",
+        "script-src 'unsafe-inline' 'unsafe-eval' https://crosshj.com https://rawgit.com"
+    );
     return next();
 });
 
