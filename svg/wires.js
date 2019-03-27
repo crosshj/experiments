@@ -1270,7 +1270,11 @@ function initScene(evt, units, links) {
     // make slow requests - http://slowwly.robertomurray.co.uk/
     // eg. http://slowwly.robertomurray.co.uk/delay/3000/url/http://www.boredapi.com/api/activity/
 
-    //https://github.com/toddmotto/public-apis
+    // cheerlights
+    // http://api.thingspeak.com/channels/1417/field/1/last.json
+
+    //https://github.com/toddmotto/public-apis << COOL
+
     const ghibli = 'https://ghibliapi.herokuapp.com/films/?limit=10';
     const bored = 'http://www.boredapi.com/api/activity/';
     const countRegister = 'https://api.countapi.xyz/hit/boxesandwires/visits';
@@ -1284,8 +1288,20 @@ function initScene(evt, units, links) {
 
 
     // https://github.com/joewalnes/filtrex
-
     (function parserWIP() {
+        /*
+            other API ideas:
+            - delay, wait for net, wait for message
+            - different types of messages (on)
+            - switch
+            - affect unit color, dimensions, etc
+            - affect link color
+            - add node to unit, remove/disable link/node
+            - disable node, sleep node, set node state
+            - create connection
+            - cache / memory
+        */
+
         //TODO: later fetches might depend on previous steps
         //NOTE: implicit and / && after each step
         const api = 'bored';
