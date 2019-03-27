@@ -1492,7 +1492,10 @@ function initScene(evt, units, links) {
             [`${api}Url`]: bored,
             [`${api}Map`]: (data) => data.value || data.activity
         }, (err, data) => {
-            console.log({ err, data, result: data.map[0].result });
+            try {
+                document.getElementById('api-results').innerHTML = data.map[0].result;
+                console.log({ err, data, result: data.map[0].result });
+            } catch(e) {}
         });
 
         // var myfilter = compileExpression(

@@ -28,6 +28,15 @@
   div#state-memory-size:before {
     content: 'HISTORY: '
   }
+  div#api-results {
+    position: relative;
+    top: 11px;
+    color: grey;
+    font-family: monospace;
+  }
+  div#api-results:before {
+    content: 'API: '
+  }
 
   #canvas {
     /* padding-left: 275px; */
