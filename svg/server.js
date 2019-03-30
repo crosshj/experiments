@@ -6,29 +6,35 @@ const path = require('path');
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 9090 });
 
+const buildEngine = require('./engine-src/build');
+
 const port = 8888;
 
 const replace = {
     config: '<script src="config.js"></script>',
     wires: '<script src="wires.js"></script>',
     state: '<script src="state.js"></script>',
-    css: '<link rel="stylesheet" href="index.css">'
+    css: '<link rel="stylesheet" href="index.css">',
+    engine: '<script src="engine.js"></script>'
 };
 
-const files = {
-    config: '<script>' +
+const files = opts => ({
+    config: '\n<script>\n' +
         fs.readFileSync(path.resolve(__dirname, 'config.js'), 'utf8') +
-    '</script>',
-    wires: '<script>' +
+    '\n</script>\n',
+    wires: '\n<script>\n' +
         fs.readFileSync(path.resolve(__dirname, 'wires.js'), 'utf8') +
-    '</script>',
-    state: '<script>' +
+    '\n</script>\n',
+    state: '\n<script>\n' +
         fs.readFileSync(path.resolve(__dirname, 'state.js'), 'utf8') +
-    '</script>',
-    css: '<style>' +
+    '\n</script>\n',
+    css: '\n<style>\n' +
         fs.readFileSync(path.resolve(__dirname, 'index.css'), 'utf8') +
-    '</style>'
-};
+    '\n</style>\n',
+    engine: '\n<script>\n' +
+        (opts.engine || '//engine') +
+    '\n</script>\n'
+});
 
 var templateFromHTML = fs.readFileSync(
     path.resolve(__dirname, 'index.html'), 'utf8'
@@ -38,7 +44,26 @@ Object.keys(replace).forEach(key => {
     templateFromHTML = templateFromHTML.replace(replace[key], `{{=it.${key}}}`);
 });
 
-const render = dot.template(templateFromHTML);
+const render = (callback) => {
+    buildEngine((err, data) => {
+        if(err){
+            callback(JSON.stringify(err));
+        }
+        const engine = `/*! Expression Engine */\n${data['expressionEngine.js']}`;
+        const fs = require('fs');
+        fs.writeFile("./engine.js", engine, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The file was saved!");
+        });
+        const templateRender = dot.template(
+            templateFromHTML
+        )(files({ engine }));
+        callback(null, templateRender);
+    });
+};
 
 app.use(function(req, res, next) {
     res.setHeader(
@@ -49,8 +74,13 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', (req, res) => {
-    const rendered = render(files);
-  res.send(rendered);
+    render((err, rendered) => {
+        res.send(err || rendered);
+    });
+});
+
+app.get('/engine.js', (req, res) => {
+    res.send('Okay');
 });
 
 app.get('/:name', (req, res, next) => {

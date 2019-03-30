@@ -1267,6 +1267,8 @@ function initScene(evt, units, links) {
     };
     setTimeout(animateLinks, 2000);
 
+    // -----------------------------------------------------------------------
+
     // make slow requests - http://slowwly.robertomurray.co.uk/
     // eg. http://slowwly.robertomurray.co.uk/delay/3000/url/http://www.boredapi.com/api/activity/
 
@@ -1275,10 +1277,12 @@ function initScene(evt, units, links) {
 
     //https://github.com/toddmotto/public-apis << COOL
 
-    const ghibli = 'https://ghibliapi.herokuapp.com/films/?limit=10';
-    const bored = 'http://www.boredapi.com/api/activity/';
-    const countRegister = 'https://api.countapi.xyz/hit/boxesandwires/visits';
-    const countGet = 'https://api.countapi.xyz/get/boxesandwires/visits';
+    const apis = {
+        ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
+        bored: 'http://www.boredapi.com/api/activity/',
+        countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
+        countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
+    };
     // fetch(countRegister)
     //     .then(response => response.text())
     //     .then(body => {
@@ -1286,224 +1290,26 @@ function initScene(evt, units, links) {
     //         console.log({ results });
     //     });
 
+    // ------------------------------------------------------------------------
 
-    // https://github.com/joewalnes/filtrex
-    (function parserWIP() {
-        /*
-            other API ideas:
-            - delay, wait for net, wait for message
-            - different types of messages (on)
-            - switch
-            - affect unit color, dimensions, etc
-            - affect link color
-            - add node to unit, remove/disable link/node
-            - disable node, sleep node, set node state
-            - create connection
-            - cache / memory
-        */
-
-        //TODO: later fetches might depend on previous steps
-        //NOTE: implicit and / && after each step
-        const api = 'bored';
-        const ex = `
+    const compile = window.expressionEngine;
+    const api = 'countRegister';
+    const exampleExpression = `
             fetch(${api}Url)
             map(${api}Map, ${api}Url, "${api}Map")
             send(${api}MapValue, 2)
             send(${api}MapValue, 1)
         `;
-        const exampleExpression = ex
-            .trim()
-            .split('\n')
-            .join(' and ')
-            .replace(/\s\s+/g, ' ');
+    var myFunc = compile(exampleExpression, verbose=true);
 
-        console.log('EXPRESSION: ' + ex);
-
-
-        const DONE = true;
-        const WAITING = false;
-        const FAILED = false;
-
-        const promiseQueue = [];
-        function _fetch(url) {
-            var queued = promiseQueue.find(x => x.name === url);
-            if (queued && queued.error) {
-                //console.log(`queued error: ${!!queued.error}`);
-                return FAILED;
-            }
-            if (queued && queued.result) {
-                //console.log(`queued result: ${!!queued.result}`);
-                return DONE;
-            }
-
-            //console.log('queued, waiting');
-            queued = new function QueueItem() {
-                this.name = url;
-                this.result = undefined;
-                this.error = undefined;
-                this.promise = fetch(url)
-                    //TODO: reject status errors?
-                    .then(x => x.text())
-                    .then(t => {
-                        const result = tryParse(t) || { error: 'failed to parse' }
-                        if(result.error) {
-                            throw result.error;
-                        }
-                        this.result = result;
-                    })
-                    .catch(e => {
-                        this.error = e;
-                    });
-            };
-            promiseQueue.push(queued);
-            return WAITING;
-        }
-
-        const mappedItems = [];
-        function _map(mapper, input, output) {
-            var mapped = mappedItems.find(x => x.name === output);
-            if (mapped) {
-                return mapped.error
-                    ? FAILED
-                    : DONE;
-            }
-
-            //if input is url, get result from promiseQueue
-            //TODO: if not??
-            const queued = promiseQueue.find(x => x.name === input);
-            if (!queued) {
-                mappedItems.push({
-                    name: output,
-                    result: '',
-                    error: 'could not find input source for mapping'
-                });
-                return FAILED;
-            }
-            const inputValue = queued.result;
-
-            //output is a string to be used as name for variable
-            // ^^^ these variables will be bound to /called with later iterations
-            var mapping;
-            var mappingError;
-            try {
-                //TODO: what if mapper is not a function?
-                //TODO: mapper syntax (use sop?)
-                mapping = mapper(inputValue);
-            } catch (e) {
-                mappingError = e;
-            }
-            const mappedItem = {
-                name: output,
-                result: mapping,
-                error: mappingError
-            };
-            mappedItems.push(mappedItem);
-
-            // console.log({
-            //     mapper, input, output, inputValue
-            // });
-            return mappedItem.error
-                ? FAILED
-                : DONE;
-        }
-
-        function _send(value, nodes) {
-            //test if array, wrap in array if not
-            //TODO:
-            //console.log('send ran');
-            return DONE;
-        }
-
-        const customFunctions = {
-            fetch: _fetch,
-            map: _map,
-            send: _send
-        };
-
-        var compile = (exp, custFn, maxFails) => {
-            var fails = 0;
-            // return a function that will continuosly compile and run (as promises resolve) until true
-            // each custom function should be wrapped so that it will return true only if resolved
-            // as promises are resolved, compile/run is ran
-            function compiled(data, callback) {
-                var myFunc = compileExpression(
-                    exp,
-                    custFn
-                );
-
-                const result = myFunc(data);
-
-                const fetchingError = promiseQueue
-                    .map(x => x.error).find(x => x);
-                const mappingError = mappedItems
-                    .map(x => x.error).find(x => x);
-
-                const tooManyFails = fails > maxFails
-                    ? `Maximum failures exceeded: ${maxFails}`
-                    : undefined;
-
-                const finished = result
-                    || fetchingError
-                    || mappingError
-                    || tooManyFails;
-                //console.log({ result, fetchingError, mappingError })
-
-                if (finished) {
-                    const results = mappedItems.length > 0 || promiseQueue.length > 0
-                        ? {
-                            map: mappedItems,
-                            fetch: promiseQueue
-                        }
-                        : undefined;
-
-                    callback(
-                        fetchingError || mappingError || tooManyFails,
-                        results
-                    );
-                    return;
-                }
-
-                //RETRYING
-                const dataFromMap = {
-                    TODO: 'add mapped data'
-                };
-                const dataPlusMapped = Object.assign({}, data, dataFromMap);
-
-                const firstUnresolved = promiseQueue.find(x => !x.result);
-                if (!firstUnresolved) {
-                    //console.log('--- no unresolved promises, will call');
-                    fails++;
-                    compiled(dataPlusMapped, callback);
-                    return;
-                }
-                firstUnresolved.promise.then(x => {
-                    //console.log('--- unresolved promise found, attaching');
-                    compiled(dataPlusMapped, callback);
-                });
-            };
-
-            return compiled;
-        };
-
-        var maxFails = 50;
-        var myFunc = compile(exampleExpression, customFunctions, maxFails);
-
-        myFunc({
-            [`${api}Url`]: bored,
-            [`${api}Map`]: (data) => data.value || data.activity
-        }, (err, data) => {
-            try {
-                document.getElementById('api-results').innerHTML = data.map[0].result;
-                console.log({ err, data, result: data.map[0].result });
-            } catch(e) {}
-        });
-
-        // var myfilter = compileExpression(
-        //     'strlen(firstname) > 5',
-        //     { strlen: s => s.length }); // custom functions
-
-        // console.log(myfilter({ firstname: 'Joe' }));    // returns 0
-        // console.log(myfilter({ firstname: 'Joseph' })); // returns 1
-    })();
+    myFunc({
+        [`${api}Url`]: apis[api],
+        [`${api}Map`]: (data) => data.value || data.activity
+    }, (err, data) => {
+        try {
+            document.getElementById('api-results').innerHTML = data.map[0].result;
+            console.log({ err, data, result: data.map[0].result });
+        } catch (e) { }
+    });
 
 }

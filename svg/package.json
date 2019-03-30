@@ -10,14 +10,24 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": {},
+  "nodemonConfig": {
+    "ext": "js,json,html,css",
+    "ignore": [
+      "engine.js"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "babel-loader": "^8.0.5",
     "dot": "^1.1.2",
     "electron": "^4.1.1",
     "express": "^4.16.4",
+    "filtrex": "^1.0.0",
+    "memory-fs": "^0.4.1",
     "nodemon": "^1.18.10",
+    "webpack": "^4.29.6",
     "ws": "^6.2.0"
-  },
-  "nodemonConfig": {
-    "ext": "js,json,html,css"
   }
 }
