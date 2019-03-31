@@ -2,11 +2,15 @@ const webpack = require('webpack');
 const load = require('./webpack-to-memory');
 const { join } = require('path');
 const fs = require('fs');
+
+const engineSrcPath = join(__dirname, "./expressionEngine.js");
+const engineBldPath = join(__dirname, "../engine.js");
+
 const config = {
-    entry: join(__dirname, './index.js'),
+    entry: engineSrcPath,
     target: 'node',
     output: {
-        library: 'expressionEngine',
+        library: 'ExpressionEngine',
         libraryTarget: 'var',
         filename: 'expressionEngine.js',
     },
@@ -36,8 +40,6 @@ function cacheOrRun(fn, callback){
         callback(null, engineSrc);
         return;
     }
-    const engineSrcPath = join(__dirname, "./index.js");
-    const engineBldPath = join(__dirname, "../engine.js");
 
     var sourceStats;
     var buildStats;

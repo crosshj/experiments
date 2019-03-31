@@ -1293,7 +1293,7 @@ function initScene(evt, units, links) {
 
     // ------------------------------------------------------------------------
 
-    const compile = window.expressionEngine;
+    const { compile } = window.ExpressionEngine;
     const api = 'countRegister';
     const exampleExpression = `
             fetch(${api}Url)

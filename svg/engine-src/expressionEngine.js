@@ -12,7 +12,7 @@ const { compileExpression } = require('filtrex');
     - cache / memory
 */
 
-function expressionEngine() {
+function ExpressionEngine() {
     //TODO: maybe check if node versus browser better
     const fetch = typeof window !== 'undefined' && window.fetch
         ? window.fetch
@@ -238,4 +238,6 @@ function expressionEngine() {
     return expressionEngine;
 }
 
-module.exports = expressionEngine();
+//module.exports = expressionEngine();
+
+export const compile = ExpressionEngine();

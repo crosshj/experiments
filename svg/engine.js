@@ -1,5 +1,5 @@
 /*! Expression Engine */
-var expressionEngine =
+var ExpressionEngine =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1341,8 +1341,11 @@ exports.transform = EBNF.transform;
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compile", function() { return compile; });
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var _require = __webpack_require__(10),
@@ -1361,7 +1364,7 @@ var _require = __webpack_require__(10),
 */
 
 
-function expressionEngine() {
+function ExpressionEngine() {
   //TODO: maybe check if node versus browser better
   var fetch = typeof window !== 'undefined' && window.fetch ? window.fetch : function () {
     return new Promise(function (resolve, reject) {
@@ -1587,9 +1590,10 @@ function expressionEngine() {
   }
 
   return expressionEngine;
-}
+} //module.exports = expressionEngine();
 
-module.exports = expressionEngine();
+
+var compile = ExpressionEngine();
 
 /***/ }),
 /* 10 */
