@@ -51,59 +51,12 @@ Object.keys(replace).forEach(key => {
     templateFromHTML = templateFromHTML.replace(replace[key], `{{=it.${key}}}`);
 });
 
-var engineSrc;
 const render = (callback) => {
-    if(engineSrc){
-        const templateRender = dot.template(
-            templateFromHTML
-        )(files({ engine: engineSrc }));
-        callback(null, templateRender);
-        return;
-    }
-    const engineSrcPath = join(__dirname, "./engine-src/index.js");
-    const engineBldPath = join(__dirname, "./engine.js");
-
-
-    // TODO: this should be built into buildEngine (not here)
-    var sourceStats;
-    var buildStats;
-    try {
-        sourceStats = fs.statSync(engineSrcPath);
-        buildStats = fs.statSync(engineBldPath);
-    } catch(e){}
-
-    //TODO: if engine.js and engine-src are "same", use engine.js
-    if (buildStats && sourceStats && sourceStats.mtime.valueOf() === buildStats.mtime.valueOf()) {
-        engineSrc = fs.readFileSync(engineBldPath);
-        const templateRender = dot.template(
-            templateFromHTML
-        )(files({ engine: engineSrc }));
-        callback(null, templateRender);
-        return;
-    }
-    //console.log('--- new engine build');
-
-    buildEngine((err, data) => {
+    buildEngine((err, engine) => {
         if(err){
             callback(JSON.stringify(err));
+            return;
         }
-        engineSrc = `/*! Expression Engine */\n${data['expressionEngine.js']}`;
-        const engine = engineSrc;
-
-        fs.writeFile(engineBldPath, engine, function(err) {
-            if(err) {
-                return console.log(err);
-            }
-            const sourceStats = fs.statSync(engineSrcPath);
-            fs.utimesSync(
-                engineBldPath, sourceStats.atime, sourceStats.mtime
-            );
-            //const buildStats = fs.statSync(engineBldPath);
-            // console.log({
-            //     sourceStats, buildStats
-            // });
-            //console.log("engine.js built");
-        });
         const templateRender = dot.template(
             templateFromHTML
         )(files({ engine }));
