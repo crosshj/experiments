@@ -17,7 +17,8 @@ const replace = {
     wires: '<script src="wires.js"></script>',
     state: '<script src="state.js"></script>',
     css: '<link rel="stylesheet" href="index.css">',
-    engine: '<script src="engine.js"></script>'
+    engine: '<script src="engine.js"></script>',
+    reload: '<script id="local-live-reload"></script>'
 };
 
 const files = opts => ({
@@ -35,7 +36,11 @@ const files = opts => ({
     '\n</style>\n',
     engine: '\n<script>\n' +
         (opts.engine || '//engine') +
-    '\n</script>\n'
+    '\n</script>\n',
+    reload: '\n<script>\n' +
+        'window.reloadVerbose = false;\n' +
+        fs.readFileSync(path.resolve(__dirname, 'reload-client.js'), 'utf8') +
+    '\n</script>\n',
 });
 
 var templateFromHTML = fs.readFileSync(

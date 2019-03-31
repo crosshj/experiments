@@ -68,18 +68,4 @@
   })();
 </script>
 
-<script>
-  (function () {
-    if (!(document.location + '').includes('localhost')) {
-      return;
-    }
-
-    window.reloadVerbose = false;
-    const src = 'https://crosshj.com/experiments/rangers/reload-client.js';
-    var po = document.createElement('script'); po.type = 'text/javascript';
-    po.async = true;
-    po.src = src;
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(po, s);
-  })();
-</script>
+<script id="local-live-reload"></script>
