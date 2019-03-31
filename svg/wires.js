@@ -39,6 +39,7 @@
     - history slider
     - integrate state with redux dev tools
     - nodes: animate node and helper in sync with wire animation
+    - animation: should pause when dragging boxes/wires
     X wires: animation
         https://css-tricks.com/svg-line-animation-works/
     X creation of scene from json
