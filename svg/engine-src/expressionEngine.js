@@ -1,14 +1,19 @@
 const { compileExpression } = require('filtrex');
+
 /*
-    other API ideas:
+    TODO:
+    - make more OO
+    - pull out keywords from main object
+
+    other API/keyword ideas:
     - delay, wait for net, wait for message
-    - different types of messages (on)
+    - different types of messages (.on)
     - switch
     - affect unit color, dimensions, etc
     - affect link color
     - add node to unit, remove/disable link/node
     - disable node, sleep node, set node state
-    - create connection
+    - create connection, create unit
     - cache / memory
 */
 

@@ -1,3 +1,11 @@
+/*
+
+    IDEAS:
+    - dynamic module loader
+        https://stackoverflow.com/questions/42797313/webpack-dynamic-module-loader-by-require
+    -
+*/
+
 const webpack = require('webpack');
 const load = require('./webpack-to-memory');
 const { join } = require('path');

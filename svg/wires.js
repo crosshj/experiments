@@ -1296,11 +1296,11 @@ function initScene(evt, units, links) {
     const { compile } = window.ExpressionEngine;
     const api = 'countRegister';
     const exampleExpression = `
-            fetch(${api}Url)
-            map(${api}Map, ${api}Url, "${api}Map")
-            send(${api}MapValue, 2)
-            send(${api}MapValue, 1)
-        `;
+        fetch(${api}Url)
+        map(${api}Map, ${api}Url, "${api}Map")
+        send(${api}MapValue, 2)
+        send(${api}MapValue, 1)
+    `;
     var myFunc = compile(exampleExpression, verbose=true);
 
     myFunc({

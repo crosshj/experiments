@@ -3,7 +3,7 @@ var boxes = [{
     x: 10,
     y: 10,
     width: 100,
-    height: 100,
+    height: 80,
     color: '#487974',
     nodes: [null, null, {
         label: 'first'
@@ -23,7 +23,10 @@ var boxes = [{
         label: 'third'
     }, null, {
         label: 'fourth'
-    }]
+    }],
+    handle: `
+        ack()
+    `
 }, {
     label: 'abednego',
     x: 220,
@@ -43,7 +46,7 @@ var boxes = [{
     `
 }, {
     label: 'romulus',
-    x: 170,
+    x: 127,
     y: 100,
     color: '#978311',
     nodes: [null, {
@@ -62,7 +65,7 @@ var boxes = [{
     `
 }, {
     label: 'remus',
-    x: 270,
+    x: 220,
     y: 100,
     color: '#754780',
     nodes: [null, null, {
@@ -74,8 +77,9 @@ var boxes = [{
         }, null]
 }, {
     label: 'morozko',
-    x: 170,
-    y: 210,
+    x: 10,
+    y: 140,
+    height: 65,
     color: '#215d7d',
     nodes: [
         { label: 'first' },
@@ -90,7 +94,7 @@ var boxes = [{
 }, {
     label: 'masamune',
     x: 10,
-    y: 155.5,
+    y: 100,
     height: 25,
     width: 100,
     color: '#604063',
@@ -122,10 +126,10 @@ var wires = [{
     end: (units) => units.getNode('remus', 'first')
 }, {
     start: (units) => units.getNode('romulus', 'second'),
-    end: (units) => units.getNode('morozko', 'eighth')
+    end: (units) => units.getNode('morozko', 'sixth')
 }, {
     start: (units) => units.getNode('remus', 'second'),
-    end: (units) => units.getNode('morozko', 'eighth')
+    end: (units) => units.getNode('morozko', 'seventh')
 }, {
     start: (units) => units.getNode('romulus', 'first'),
     end: (units) => units.getNode('masamune', 'second')
