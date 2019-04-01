@@ -33,7 +33,14 @@ var boxes = [{
         label: 'first'
     }, null, null, {
         label: 'second'
-    }, null]
+    }, null],
+    start: `
+        send(null, *)
+    `,
+    handle: `
+        ack()
+        send(null, *)
+    `
 }, {
     label: 'romulus',
     x: 170,
@@ -47,7 +54,12 @@ var boxes = [{
             label: 'third'
         }, null, null, {
             label: 'fourth'
-        }, null]
+        }, null
+    ],
+    handle: `
+        ack()
+        send(null, *)
+    `
 }, {
     label: 'remus',
     x: 270,
