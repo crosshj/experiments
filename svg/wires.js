@@ -9,10 +9,11 @@
         Enable greater complexity of models by grouping and allowing creation of more items.
     - STATE
         Show changes to system by animating/manipulating state of system over time.  This could go at least two directions: create UI elements which affect state or integrate with Redux Dev Tools.
-    - CONNECTION
+    - CONNECTED
         Model should be attached to something specific: functions, network calls.  This is the life and breath of a visual model like this.
     - SHARE
         Exporting an animated GIF would make this tool incredibly useful for one of its main goals: illustrating complex systems visually.  Also, sharing, saving, and manipulating configuration JSON directly woulld be of great use.
+
     TODO/TASKS:
     - wires: CRUD
         - wire create on mobile is awkward / broken
@@ -46,6 +47,7 @@
     X highlighting/hovering links
 
     ISSUES:
+    - link click (selection) does not select node and helpers
     - link terminal should change direction when close to node
         ^^^ direction should be rendered on the fly, not part of state
     - dragging wire should have z-index higher than units (fixed by transparent on drag feature?)
@@ -993,15 +995,14 @@ function linkClick(event) {
     if (!link) {
         return;
     }
-    console.log('clicked a link: ', link.dataset.label);
-    //const currentState = this.read();
     this.update(({ units, links }) => {
+        console.log('clicked a link: ', link.dataset.label);
         const clickedStateLink = links.find(l => l.label === link.dataset.label);
         clickedStateLink.selected = !clickedStateLink.selected;
         if (!clickedStateLink.selected) {
             delete clickedStateLink.selected;
         }
-        //TODO: also selected nodes
+        console.log('TODO: also select nodes');
         return { links };
     });
 }
@@ -1234,6 +1235,9 @@ function initScene(evt, units, links) {
 
     makeDraggable(state);
     addLinkEffects(state);
+
+    // BELOW: create and handle activity in network
+    // --------------------------------------------------------------
 
     //WIP: testing animation
     var index = 0;
