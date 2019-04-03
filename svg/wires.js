@@ -212,11 +212,45 @@ function animateLink(link, callback) {
     `;
     //console.log({ linkLength, dashLength, duration});
     //console.log(`-- START: ${link.label}`);
-    setTimeout(function () {
+    var isPaused;
+    const timeoutDone = () => {
+        if(isPaused){
+            return;
+        }
         //console.log(`-- END  : ${link.label}`);
         callback && callback();
-    }, duration * 1000);
+    };
+    setTimeout(timeoutDone, duration * 1000);
     setStyle('linkAnimation', style)
+
+    function pause(){
+        if(isPaused){
+            return;
+        }
+        isPaused = true;
+        animatedPath.style.animationPlayState='paused';
+        animatedPath.style.webkitAnimationPlayState='paused';
+    }
+    function resume(){
+        if(!isPaused){
+            return;
+        }
+        isPaused = false;
+        setTimeout(timeoutDone, duration * 1000);
+        animatedPath.style.animationPlayState='running';
+        animatedPath.style.webkitAnimationPlayState='running';
+    }
+    function pauseHard(){
+        isPaused = true;
+        callback('reset');
+        removeAnimation();
+    }
+    function resumeHard(){
+        removeAnimation();
+        callback('reset');
+        setTimeout(() => animateLink(link, callback), 500);
+    }
+    return { pause, resume, pauseHard, resumeHard };
 }
 
 function removeAnimation() {
@@ -765,6 +799,7 @@ function startDrag(evt) {
         }
     `);
         dragMode.start();
+        window.pause();
     }
 
     evt.stopPropagation();
@@ -880,8 +915,8 @@ function endDrag(evt) {
         this.update(() => {
             return { units, links };
         })
-
     }
+    window.resume();
     this.selectedElement = undefined;
     evt.preventDefault();
     evt.stopPropagation();
@@ -1259,16 +1294,29 @@ function initScene(evt, units, links) {
             index = 0;
         }
         var done = [];
-        sequence[index].forEach(i => {
-            var label = linkElements[i]
-            animateLink({ label }, () => {
+        var animations = sequence[index].map(i => {
+            var label = linkElements[i];
+            const thisIndex = Number(index);
+            const animation = animateLink({ label }, (err) => {
+                if(err){
+                    done = [];
+                    return;
+                }
                 done.push(true);
                 if (done.length === sequence[index].length) {
                     index++;
                     animateLinks();
                 }
             });
+            return animation;
         });
+        window.pause = () => {
+            removeAnimation();
+            animations.forEach(a => a.pauseHard());
+        };
+        window.resume = () => {
+            animations.forEach(a => a.resumeHard());
+        };
     };
     setTimeout(animateLinks, 2000);
 
