@@ -1318,7 +1318,7 @@ function initScene(evt, units, links) {
             animations.forEach(a => a.resumeHard());
         };
     };
-    setTimeout(animateLinks, 2000);
+    //setTimeout(animateLinks, 2000);
 
     // -----------------------------------------------------------------------
 

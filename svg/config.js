@@ -1,4 +1,35 @@
-var boxes = [{
+const simple = {
+    boxes:  [{
+        label: 'omphale',
+        x: 50,
+        y: 10,
+        height: 40,
+        color: '#487974',
+        nodes: [null, null, null, null, null, {
+                label: 'fifth'
+            }]
+    }, {
+        label: 'mote',
+        x: 170,
+        y: 10,
+        height: 40,
+        color: '#ACBF60',
+        nodes: [null, {
+            label: 'second'
+        }],
+        handle: `
+            ack()
+        `
+    }],
+    wires: [{
+        start: (units) => units.getNode('omphale', 'fifth'),
+        end: (units) => units.getNode('mote', 'second'),
+        selected: true
+    }]
+};
+
+
+var boxes = simple.boxes || [{
     label: 'shadrach',
     x: 10,
     y: 10,
@@ -108,7 +139,7 @@ var boxes = [{
 }];
 boxes.forEach(b => b.x += 70);
 
-var wires = [{
+var wires = simple.wires || [{
     start: (units) => units.getNode('shadrach', 'second'),
     end: (units) => units.getNode('meshach', 'first'),
     selected: true
