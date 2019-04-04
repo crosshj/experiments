@@ -9,9 +9,10 @@ const simple = {
                 label: 'fifth'
             }]
     }, {
-        label: 'mote',
+        label: 'ichinose',
         x: 170,
         y: 10,
+        width: 100,
         height: 40,
         color: '#ACBF60',
         nodes: [null, {
@@ -23,7 +24,7 @@ const simple = {
     }],
     wires: [{
         start: (units) => units.getNode('omphale', 'fifth'),
-        end: (units) => units.getNode('mote', 'second'),
+        end: (units) => units.getNode('ichinose', 'second'),
         selected: true
     }]
 };
