@@ -9,7 +9,7 @@ const simple = {
                 label: 'fifth'
             }]
     }, {
-        label: 'ichinose',
+        label: 'जो है सो है',
         x: 170,
         y: 10,
         width: 100,
@@ -24,7 +24,7 @@ const simple = {
     }],
     wires: [{
         start: (units) => units.getNode('omphale', 'fifth'),
-        end: (units) => units.getNode('ichinose', 'second'),
+        end: (units) => units.getNode('जो है सो है', 'second'),
         selected: true
     }]
 };

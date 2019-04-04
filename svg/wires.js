@@ -799,7 +799,7 @@ function startDrag(evt) {
         }
     `);
         dragMode.start();
-        window.pause();
+        window.pause && window.pause();
     }
 
     evt.stopPropagation();
@@ -916,7 +916,7 @@ function endDrag(evt) {
             return { units, links };
         })
     }
-    window.resume();
+    window.resume && window.resume();
     this.selectedElement = undefined;
     evt.preventDefault();
     evt.stopPropagation();
