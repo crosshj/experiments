@@ -24,7 +24,7 @@ const simple = {
     }],
     wires: [{
         start: (units) => units.getNode('omphale', 'fifth'),
-        end: (units) => units.getNode('जो है सो है', 'second'),
+        end: (units) => units.getNode('जो है वही है', 'second'),
         selected: true
     }]
 };
