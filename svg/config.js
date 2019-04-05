@@ -1,11 +1,11 @@
 const simple = {
     boxes:  [{
-        label: 'ομφαλη',
+        label: 'ομφαλός',
         info: 'omphalos - navel',
         class: 'greek pulse',
-        x: 35,
+        x: 30,
         y: 60,
-        width: 100,
+        width: 110,
         height: 40,
         nodes: [null, null, null, null, { label: 'fourth'}, null, {
                 label: 'sixth'
@@ -40,11 +40,11 @@ const simple = {
         `
     }],
     wires: [{
-        start: (units) => units.getNode('ομφαλη', 'sixth'),
+        start: (units) => units.getNode('ομφαλός', 'sixth'),
         end: (units) => units.getNode('जो है वही है', 'second'),
         selected: true
     }, {
-        start: (units) => units.getNode('ομφαλη', 'fourth'),
+        start: (units) => units.getNode('ομφαλός', 'fourth'),
         end: (units) => units.getNode('גליטש', 'second'),
         selected: true
     }, {
