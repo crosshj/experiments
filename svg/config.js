@@ -1,8 +1,8 @@
 const simple = {
     boxes:  [{
         label: 'ομφαλη',
-        info: 'navel',
-        class: 'greek',
+        info: 'omphalos - navel',
+        class: 'greek pulse',
         x: 35,
         y: 60,
         width: 100,
@@ -12,7 +12,7 @@ const simple = {
             }]
     }, {
         label: 'जो है वही है',
-        info: 'jo hai vahee hai',
+        info: 'jo hai vahee hai - it is what it is',
         class: 'hindi',
         x: 205,
         y: 110,
@@ -20,7 +20,7 @@ const simple = {
         height: 40,
         nodes: [null, {
             label: 'second'
-        }],
+        },,,,,,{ label: 'seventh'}],
         handle: `
             ack()
         `
@@ -32,10 +32,9 @@ const simple = {
         y: 10,
         width: 100,
         height: 40,
-        color: '#864f5b',
-        nodes: [null, {
+        nodes: [,{
             label: 'second'
-        }],
+        },,{ label: 'fourth'}],
         handle: `
             ack()
         `
@@ -47,6 +46,10 @@ const simple = {
     }, {
         start: (units) => units.getNode('ομφαλη', 'fourth'),
         end: (units) => units.getNode('גליטש', 'second'),
+        selected: true
+    }, {
+        start: (units) => units.getNode('גליטש', 'fourth'),
+        end: (units) => units.getNode('जो है वही है', 'seventh'),
         selected: true
     }]
 };

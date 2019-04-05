@@ -91,8 +91,53 @@
   .yiddish text {
     font-size: 25px;
     font-weight: 100;
-    fill: #cbeaff !important;
+    /* fill: #cbeaff !important; */
     transform: translate(-13px, 3px);
+  }
+
+  .greek text {
+    font-size: 22px;
+    /* fill: #c76385 !important; */
+    transform: translate(-20px, 2px);
+  }
+
+  .hindi text {
+    font-size: 14px;
+    font-weight: 100;
+    /* fill: #ffea6c !important; */
+    transform: translate(-1px, 3px);
+  }
+
+  .hindi text, .greek text, .yiddish text {
+    fill: #99c1c1 !important;
+    text-shadow: 0px 0px 14px #17b52e;
+  }
+
+  .hindi rect, .greek rect, .yiddish rect {
+    fill: #5a6b6d !important;
+    stroke-width: 1px !important;
+    stroke: #77a57b !important;
+  }
+
+  g.pulse rect {
+    fill: #bd94c1 !important;
+    stroke: #e62cc9 !important;
+    stroke-width: .5px !important;
+  }
+
+  g.pulse {
+    filter: url(#f6);
+  }
+
+  g.pulse text {
+    fill: #dbf9ff !important;
+    text-shadow: 0px 0px 10px #ff00ff;
+    filter: url(#outline);
+  }
+
+  /* .greek rect {
+    fill: #5d1313 !important;
+    stroke: #af225255 !important;
   }
 
   .yiddish rect {
@@ -100,28 +145,10 @@
     stroke: #0d33e0 !important;
   }
 
-  .greek text {
-    font-size: 22px;
-    fill: #c76385 !important;
-    transform: translate(-20px, 2px);
-  }
-
-  .greek rect {
-    fill: #5d1313 !important;
-    stroke: #af225255 !important;
-  }
-
-  .hindi text {
-    font-size: 14px;
-    font-weight: 100;
-    fill: #ffea6c !important;
-    transform: translate(-3px, 3px);
-  }
-
   .hindi rect {
     fill: #8e3939 !important;
     stroke: #ffea6c33 !important;
-  }
+  } */
 
   .heavy {
     font: 13px monospace;
