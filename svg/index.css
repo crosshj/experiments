@@ -88,8 +88,43 @@
       stroke: var(--link-selected-color);
   }
 
+  .yiddish text {
+    font-size: 25px;
+    font-weight: 100;
+    fill: #cbeaff !important;
+    transform: translate(-13px, 3px);
+  }
+
+  .yiddish rect {
+    fill: #5d9bcc !important;
+    stroke: #0d33e0 !important;
+  }
+
+  .greek text {
+    font-size: 22px;
+    fill: #c76385 !important;
+    transform: translate(-20px, 2px);
+  }
+
+  .greek rect {
+    fill: #5d1313 !important;
+    stroke: #af225255 !important;
+  }
+
+  .hindi text {
+    font-size: 14px;
+    font-weight: 100;
+    fill: #ffea6c !important;
+    transform: translate(-3px, 3px);
+  }
+
+  .hindi rect {
+    fill: #8e3939 !important;
+    stroke: #ffea6c33 !important;
+  }
+
   .heavy {
-    font: 12px monospace;
+    font: 13px monospace;
     fill: #ccc;
     stroke-width: 0;
     user-select: none;

@@ -1,20 +1,38 @@
 const simple = {
     boxes:  [{
-        label: 'omphale',
-        x: 50,
-        y: 10,
+        label: 'ομφαλη',
+        info: 'navel',
+        class: 'greek',
+        x: 35,
+        y: 60,
+        width: 100,
         height: 40,
-        color: '#487974',
-        nodes: [null, null, null, null, null, {
-                label: 'fifth'
+        nodes: [null, null, null, null, { label: 'fourth'}, null, {
+                label: 'sixth'
             }]
     }, {
-        label: 'जो है सो है',
-        x: 170,
+        label: 'जो है वही है',
+        info: 'jo hai vahee hai',
+        class: 'hindi',
+        x: 205,
+        y: 110,
+        width: 100,
+        height: 40,
+        nodes: [null, {
+            label: 'second'
+        }],
+        handle: `
+            ack()
+        `
+    }, {
+        label: 'גליטש',
+        info: 'glitch',
+        class: 'yiddish',
+        x: 205,
         y: 10,
         width: 100,
         height: 40,
-        color: '#ACBF60',
+        color: '#864f5b',
         nodes: [null, {
             label: 'second'
         }],
@@ -23,8 +41,12 @@ const simple = {
         `
     }],
     wires: [{
-        start: (units) => units.getNode('omphale', 'fifth'),
-        end: (units) => units.getNode('जो है सो है', 'second'),
+        start: (units) => units.getNode('ομφαλη', 'sixth'),
+        end: (units) => units.getNode('जो है वही है', 'second'),
+        selected: true
+    }, {
+        start: (units) => units.getNode('ομφαλη', 'fourth'),
+        end: (units) => units.getNode('גליטש', 'second'),
         selected: true
     }]
 };

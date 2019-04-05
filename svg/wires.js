@@ -376,7 +376,7 @@ function drawUnit(unit, callback) {
     const unitElement = document.createElementNS(namespaceURI, "g");
     unit.temporary && unitElement.setAttribute('data-temporary', true);
     unitElement.setAttribute('data-label', unit.label);
-    unitElement.setAttribute('class', 'box draggable-group');
+    unitElement.setAttribute('class', 'box draggable-group' + (unit.class ? ` ${unit.class}` : ''));
     unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
     const style = unit.color
         ? `fill:${unit.color}`
@@ -1101,6 +1101,7 @@ function initState({ units, links }) {
     const u = units.map(unit => ({
         label: unit.label,
         color: unit.color,
+        class: unit.class,
         x: unit.x,
         y: unit.y,
         width: unit.width,
