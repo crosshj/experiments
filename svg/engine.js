@@ -1346,6 +1346,9 @@ exports.transform = EBNF.transform;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compile", function() { return compile; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "engine", function() { return engine; });
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var _require = __webpack_require__(10),
@@ -1597,7 +1600,161 @@ function ExpressionEngine() {
 } //module.exports = expressionEngine();
 
 
-var compile = ExpressionEngine();
+var compile = ExpressionEngine(); // -----------------------------------------------------------------------------
+// function WebWorker(fn) {
+//     const fnString = `(function(){
+//         onmessage = function(event) {
+//             const results = ${fn.name}(event.data);
+//             postMessage(results);
+//         }
+//         ${fn.toString()}
+//     })()`;
+//     const worker = new Worker(URL.createObjectURL(new Blob([fnString])));
+//     const wrapped = function(args, cb){
+//         worker.onmessage = function (e){
+//             cb(e.data);
+//         }
+//         worker.postMessage(args);
+//     };
+//     wrapped.close = worker.terminate;
+//     wrapped.worker = worker;
+//     return wrapped;
+// }
+//TODO: would be nice to leverage WebWorkers for this
+// ^^ bigger task than can be handled now
+// ^^ maybe load this entire file in worker -https://github.com/webpack-contrib/worker-loader
+// ^^ but would be really nice if each unit became a worker...
+
+/*
+
+purpose:
+
+A) run an environment
+B) notify about environment
+
+run an environment:
+- input a definition for an environment consisting of units and links.
+- compile all start functions, handler functions defined
+- on start, run all start functions
+- when a send or ack occurs, activate link it occurs on and run handler for unit on that link
+- on ack, resolve handler for sending link
+- if not ack within timeout period, consider handler failed
+
+notify about environment:
+    links activate, links deactivate (success/failure),
+    units activate, units deactivate (holding/success/failure)
+*/
+
+function Environment(_ref) {
+  var _ref$units = _ref.units,
+      units = _ref$units === void 0 ? [] : _ref$units;
+
+  var mapUnitToCompiled = function mapUnitToCompiled(n) {
+    var handle = n.handle,
+        start = n.start;
+    handle = compile(handle
+    /*, true*/
+    );
+    start = start && compile(start
+    /*, true*/
+    );
+    var fns = {
+      handle: handle,
+      start: start
+    };
+    Object.keys(fns).forEach(function (p) {
+      !fns[p] && delete fns[p];
+    });
+    return Object.assign(_objectSpread({}, fns), n);
+  };
+
+  var compiledUnits = units.map(mapUnitToCompiled);
+  /*
+      also considered using "bailiwick" and "umbgebung"
+      https://en.wikipedia.org/wiki/Umwelt
+      basically means something like "around world", but don't take my word for it
+      https://yourdailygerman.com/um-german-prefix-meaning/ + velt(world)
+      "umvelt" is easier to type than "environment" (v instead of w to aid mental pronounce)
+  */
+
+  var Umvelt = function () {
+    var context = {
+      units: compiledUnits,
+      eventListeners: {}
+    };
+
+    function Umvelt() {
+      var _this2 = this;
+
+      this.on = function (key, callback) {
+        return _on(context, key, callback);
+      };
+
+      this.emit = function (key, data) {
+        return _emit.bind(_this2)(context, key, data);
+      };
+
+      this.start = function () {
+        return _fakeRun.bind(_this2)(context);
+      };
+    }
+
+    return Umvelt;
+  }();
+
+  function _on(context, key, callback) {
+    if (context.eventListeners[key] === undefined) {
+      context.eventListeners[key] = [];
+    }
+
+    context.eventListeners[key].push(callback);
+  }
+
+  function _emit(context, key, data) {
+    if (!context.eventListeners[key]) {
+      return;
+    }
+
+    context.eventListeners[key].forEach(function (listener) {
+      listener(data);
+    });
+    return;
+  }
+
+  function _fakeRun(context) {
+    var _this3 = this;
+
+    var ticker = 0;
+    var timeActive = 3000;
+    var timeInActive = 1000;
+    setInterval(function () {
+      var action = !!(ticker % 2) ? 'deactivate' : 'activate';
+      var unitNumber = Math.floor(ticker / 2);
+      ticker++;
+
+      if (ticker === context.units.length * 2) {
+        ticker = 0;
+      }
+
+      if (action === 'deactivate') {
+        setTimeout(function () {
+          _this3.emit("units-".concat(action), [{
+            label: context.units[unitNumber].label
+          }]);
+        }, timeActive);
+        return;
+      }
+
+      _this3.emit("units-".concat(action), [{
+        label: context.units[unitNumber].label
+      }]);
+    }, timeActive + timeInActive);
+  }
+
+  return new Umvelt();
+}
+
+var engine = Environment;
 
 /***/ }),
 /* 10 */

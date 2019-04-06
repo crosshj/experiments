@@ -21,10 +21,10 @@ function ExpressionEngine() {
     //TODO: maybe check if node versus browser better
     const fetch = typeof window !== 'undefined' && window.fetch
         ? window.fetch
-        : () => new Promise(function(resolve, reject){
+        : () => new Promise(function (resolve, reject) {
             // maybe use request here so this works in node
             resolve();
-         });
+        });
 
     const DONE = true;
     const WAITING = false;
@@ -210,12 +210,12 @@ function ExpressionEngine() {
             .join(' and ')
             .replace(/\s\s+/g, ' ');
 
-        if(verbose) { console.log('EXPRESSION: ' + exampleExpression); }
+        if (verbose) { console.log('EXPRESSION: ' + exampleExpression); }
 
         return compile(ex, customFunctions, maxFails);
     };
 
-    if(typeof window === 'undefined'){
+    if (typeof window === 'undefined') {
         console.log('node version not implemented (much), but...\n');
         const api = 'fake';
         const fakeUrl = 'https://www.fake.com';
@@ -244,5 +244,137 @@ function ExpressionEngine() {
 }
 
 //module.exports = expressionEngine();
-
 export const compile = ExpressionEngine();
+
+// -----------------------------------------------------------------------------
+
+// function WebWorker(fn) {
+//     const fnString = `(function(){
+//         onmessage = function(event) {
+//             const results = ${fn.name}(event.data);
+//             postMessage(results);
+//         }
+//         ${fn.toString()}
+//     })()`;
+//     const worker = new Worker(URL.createObjectURL(new Blob([fnString])));
+
+//     const wrapped = function(args, cb){
+//         worker.onmessage = function (e){
+//             cb(e.data);
+//         }
+//         worker.postMessage(args);
+//     };
+//     wrapped.close = worker.terminate;
+//     wrapped.worker = worker;
+
+//     return wrapped;
+// }
+
+//TODO: would be nice to leverage WebWorkers for this
+// ^^ bigger task than can be handled now
+// ^^ maybe load this entire file in worker -https://github.com/webpack-contrib/worker-loader
+// ^^ but would be really nice if each unit became a worker...
+
+/*
+
+purpose:
+
+A) run an environment
+B) notify about environment
+
+run an environment:
+- input a definition for an environment consisting of units and links.
+- compile all start functions, handler functions defined
+- on start, run all start functions
+- when a send or ack occurs, activate link it occurs on and run handler for unit on that link
+- on ack, resolve handler for sending link
+- if not ack within timeout period, consider handler failed
+
+notify about environment:
+    links activate, links deactivate (success/failure),
+    units activate, units deactivate (holding/success/failure)
+*/
+function Environment({ units = [] }) {
+    const mapUnitToCompiled = n => {
+        var { handle, start } = n;
+        handle = compile(handle /*, true*/);
+        start = start && compile(start /*, true*/);
+        const fns = { handle, start };
+        Object.keys(fns).forEach(p => {
+            !fns[p] && delete fns[p];
+        });
+        return Object.assign({...fns}, n);
+    };
+    const compiledUnits = units.map(mapUnitToCompiled);
+
+    /*
+        also considered using "bailiwick" and "umbgebung"
+        https://en.wikipedia.org/wiki/Umwelt
+        basically means something like "around world", but don't take my word for it
+        https://yourdailygerman.com/um-german-prefix-meaning/ + velt(world)
+        "umvelt" is easier to type than "environment" (v instead of w to aid mental pronounce)
+    */
+    const Umvelt = (function () {
+        const context = {
+            units: compiledUnits,
+            eventListeners: {}
+        };
+
+        function Umvelt() {
+            this.on = (key, callback) => _on(context, key, callback);
+            this.emit = (key, data) => _emit.bind(this)(context, key, data);
+            this.start = () => _fakeRun.bind(this)(context);
+        }
+
+        return Umvelt;
+    })();
+
+    function _on(context, key, callback) {
+        if (context.eventListeners[key] === undefined) {
+            context.eventListeners[key] = [];
+        }
+        context.eventListeners[key].push(callback);
+    }
+
+    function _emit(context, key, data) {
+        if (!context.eventListeners[key]) {
+            return;
+        }
+        context.eventListeners[key].forEach(listener => {
+            listener(data);
+        });
+        return;
+    }
+
+    function _fakeRun(context){
+        var ticker = 0;
+        const timeActive = 3000;
+        const timeInActive = 1000;
+        setInterval(() => {
+            const action = !!(ticker % 2)
+                ? 'deactivate'
+                : 'activate';
+            const unitNumber = Math.floor(ticker/2);
+            ticker++;
+            if(ticker === (context.units.length * 2)){
+                ticker = 0;
+            }
+            if(action === 'deactivate'){
+                setTimeout(() => {
+                    this.emit(`units-${action}`, [{
+                        label: context.units[unitNumber].label
+                    }]);
+                }, timeActive);
+                return;
+            }
+            this.emit(`units-${action}`, [{
+                label: context.units[unitNumber].label
+            }]);
+        }, timeActive + timeInActive);
+
+    }
+
+    return new Umvelt();
+}
+
+export const engine = Environment;

@@ -364,6 +364,7 @@ function drawOrUpdateUnit(unit, callback) {
         return;
     }
 
+    unitElement.setAttribute('class', 'box draggable-group' + (unit.class ? ` ${unit.class}` : ''));
     unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
     //console.log({ TODO: `updateUnit ${unit.label}`})
 }
@@ -1172,7 +1173,6 @@ function cleanScene(state) {
 function render(_state) {
     const state = typeof _state.read === 'function' ? _state.read()
         : _state;
-    //console.log('--render function called');
 
     cleanScene(state);
 
@@ -1180,6 +1180,9 @@ function render(_state) {
         .map(element => ({
             element,
             label: element.dataset.label,
+            class: Array.from(element.classList)
+                .filter(c => !(c === 'box' || c === 'draggable-group'))
+                .join(' '),
             position: {
                 x: getTranslateX(element),
                 y: getTranslateY(element)
@@ -1194,7 +1197,9 @@ function render(_state) {
 
         const hasMoved = domMatch.position.x !== unit.x
             || domMatch.position.y !== unit.y;
-        return hasMoved;
+        const classChanged = domMatch.class !== unit.class;
+
+        return hasMoved || classChanged;
     });
 
     clone(unitsToUpdate).forEach(withAnimFrame(drawOrUpdateUnit));
@@ -1229,6 +1234,33 @@ function render(_state) {
     //console.log({ linksToUpdate });
 
     clone(linksToUpdate).forEach(withAnimFrame(drawLink));
+}
+
+//---------------------------------------------------------------
+function engineBindState(Engine, _state){
+    const unitsActivate = (data) => {
+        _state.update(({ units }) => {
+            data.forEach(u => {
+                const stateUnit = units.find(s => s.label === u.label);
+                stateUnit.class += " pulse";
+            })
+            return { units };
+        });
+    };
+
+    const unitsDeactivate = (data) => {
+        _state.update(({ units }) => {
+            data.forEach(u => {
+                const stateUnit = units.find(s => s.label === u.label);
+                //TODO: fail versus success?
+                stateUnit.class = stateUnit.class.replace(' pulse', '');
+            })
+            return { units };
+        });
+    };
+
+    Engine.on('units-activate', unitsActivate);
+    Engine.on('units-deactivate', unitsDeactivate);
 }
 
 // --------------------------------------------------------------
@@ -1271,6 +1303,15 @@ function initScene(evt, units, links) {
 
     makeDraggable(state);
     addLinkEffects(state);
+
+    const { engine } = window.ExpressionEngine;
+    const Engine = engine({ units, links });
+    engineBindState(Engine, _state);
+
+    setTimeout(() => {
+        Engine.start();
+    }, 1000);
+    return;
 
     // BELOW: create and handle activity in network
     // --------------------------------------------------------------

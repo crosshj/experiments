@@ -2,11 +2,18 @@ const simple = {
     boxes:  [{
         label: 'ομφαλός',
         info: 'omphalos - navel',
-        class: 'greek pulse',
+        class: 'greek',
         x: 30,
         y: 60,
         width: 110,
         height: 40,
+        start: `
+            send(null, 'fourth')
+        `,
+        handle: `
+            ack()
+            send(null, 'fourth')
+        `,
         nodes: [null, null, null, null, { label: 'fourth'}, null, {
                 label: 'sixth'
             }]
@@ -23,6 +30,7 @@ const simple = {
         },,,,,,{ label: 'seventh'}],
         handle: `
             ack()
+            send(null, 'second')
         `
     }, {
         label: 'גליטש',
@@ -37,6 +45,7 @@ const simple = {
         },,{ label: 'fourth'}],
         handle: `
             ack()
+            send(null, 'fourth')
         `
     }],
     wires: [{

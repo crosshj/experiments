@@ -110,19 +110,22 @@
 
   .hindi text, .greek text, .yiddish text {
     fill: #99c1c1 !important;
-    text-shadow: 0px 0px 14px #17b52e;
+    text-shadow: 0px 3px 15px #17b52e;
+    transition: all 0.4s  steps(12, end);
   }
 
   .hindi rect, .greek rect, .yiddish rect {
     fill: #5a6b6d !important;
     stroke-width: 1px !important;
     stroke: #77a57b !important;
+    transition: fill 0.4s  steps(12, end);
   }
 
   g.pulse rect {
     fill: #bd94c1 !important;
     stroke: #e62cc9 !important;
     stroke-width: .5px !important;
+    transition: all 1s  steps(24, end);
   }
 
   g.pulse {
@@ -131,8 +134,9 @@
 
   g.pulse text {
     fill: #dbf9ff !important;
-    text-shadow: 0px 0px 10px #ff00ff;
-    filter: url(#outline);
+    text-shadow: 0px 3px 15px #240024;
+    /* filter: url(#outline); */
+    transition: all 1s  steps(24, end);
   }
 
   /* .greek rect {
