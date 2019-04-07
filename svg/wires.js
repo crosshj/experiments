@@ -1358,7 +1358,7 @@ function engineBindState(Engine, _state){
 // --------------------------------------------------------------
 function initScene(evt, units, links) {
     if(window.innerWidth > 750){
-        //document.body.style.zoom = "150%";
+        document.body.style.zoom = "150%";
     }
 
     const _state = new State();
@@ -1414,54 +1414,6 @@ function initScene(evt, units, links) {
 
     // BELOW: create and handle activity in network
     // --------------------------------------------------------------
-
-    //WIP: testing animation
-    var index = 0;
-    const sequence = [
-        [0],
-        [1],
-        [2, 3],
-        [4],
-        [5, 6],
-        [7]
-    ];
-    var linkElements;
-    function animateLinks() {
-        removeAnimation();
-        linkElements = linkElements
-            || Array.from(document.querySelectorAll(`.link`))
-                .map(x => x.dataset.label);
-        if (index > 5) {
-            index = 0;
-        }
-        var done = [];
-        var animations = sequence[index].map(i => {
-            var label = linkElements[i];
-            const thisIndex = Number(index);
-            const animation = animateLink({ label }, (err) => {
-                if(err){
-                    done = [];
-                    return;
-                }
-                done.push(true);
-                if (done.length === sequence[index].length) {
-                    index++;
-                    animateLinks();
-                }
-            });
-            return animation;
-        });
-        window.pause = () => {
-            removeAnimation();
-            animations.forEach(a => a.pauseHard());
-        };
-        window.resume = () => {
-            animations.forEach(a => a.resumeHard());
-        };
-    };
-    //setTimeout(animateLinks, 2000);
-
-    // -----------------------------------------------------------------------
 
     // make slow requests - http://slowwly.robertomurray.co.uk/
     // eg. http://slowwly.robertomurray.co.uk/delay/3000/url/http://www.boredapi.com/api/activity/
