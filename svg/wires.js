@@ -344,10 +344,13 @@ function drawLink(link, callback) {
     //     console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
     // }
     linkElement.querySelector('path').setAttribute('d', newPathD);
+     //NOTE: filter on a thin, vertical element is buggy (so pulse is commented for now)
     if (link.selected) {
         linkElement.classList.add('selected');
+        //linkElement.classList.add('pulse');
     } else {
         linkElement.classList.remove('selected');
+        //linkElement.classList.remove('pulse');
     }
     //linkElement.setAttribute('class', 'link' + (link.class ? ` ${link.class}` : ''));
 
@@ -1336,6 +1339,10 @@ function engineBindState(Engine, _state){
 
 // --------------------------------------------------------------
 function initScene(evt, units, links) {
+    if(window.innerWidth > 750){
+        document.body.style.zoom = "150%";
+    }
+
     const _state = new State();
     //TODO: at some point this state has to be reconciled with app state?
     _state.svg = event.target;
@@ -1384,6 +1391,7 @@ function initScene(evt, units, links) {
         const currentState = _state.read(); //because stateDef does not have link labels
         Engine.start(currentState);
     }, 1000);
+
     return;
 
     // BELOW: create and handle activity in network

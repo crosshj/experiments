@@ -1645,7 +1645,7 @@ var compile = ExpressionEngine(); // -------------------------------------------
 
 purpose:
 
-A) run an environment
+A) run an environment (and PAUSE execution?)
 B) notify about environment
 
 run an environment:
@@ -1657,8 +1657,8 @@ run an environment:
 - if not ack within timeout period, consider handler failed
 
 notify about environment:
-    links activate, links deactivate (success/failure),
-    units activate, units deactivate (holding/success/failure)
+    links-change: send, receive, fail, success,
+    units-change: active (progress?), wait, success, fail
 */
 
 function Environment(_ref) {
@@ -1798,7 +1798,7 @@ function Environment(_ref) {
 
     function doAll() {
       promiseSeries(eventsPromises, function (all) {
-        console.log('--- iteration done');
+        console.log('--- fake engine: iteration done');
         doAll();
       });
     }
