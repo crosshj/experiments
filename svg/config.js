@@ -50,16 +50,13 @@ const simple = {
     }],
     wires: [{
         start: (units) => units.getNode('ομφαλός', 'sixth'),
-        end: (units) => units.getNode('जो है वही है', 'second'),
-        selected: true
+        end: (units) => units.getNode('जो है वही है', 'second')
     }, {
-        start: (units) => units.getNode('ομφαλός', 'fourth'),
-        end: (units) => units.getNode('גליטש', 'second'),
-        selected: true
+        start: (units) => units.getNode('जो है वही है', 'seventh'),
+        end: (units) => units.getNode('גליטש', 'fourth'),
     }, {
-        start: (units) => units.getNode('גליטש', 'fourth'),
-        end: (units) => units.getNode('जो है वही है', 'seventh'),
-        selected: true
+        start: (units) => units.getNode('גליטש', 'second'),
+        end: (units) => units.getNode('ομφαλός', 'fourth')
     }]
 };
 

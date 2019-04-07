@@ -294,7 +294,7 @@ notify about environment:
     links activate, links deactivate (success/failure),
     units activate, units deactivate (holding/success/failure)
 */
-function Environment({ units = [] }) {
+function Environment({ units = [], links = [] }) {
     const mapUnitToCompiled = n => {
         var { handle, start } = n;
         handle = compile(handle /*, true*/);
@@ -317,13 +317,14 @@ function Environment({ units = [] }) {
     const Umvelt = (function () {
         const context = {
             units: compiledUnits,
+            links,
             eventListeners: {}
         };
 
         function Umvelt() {
             this.on = (key, callback) => _on(context, key, callback);
             this.emit = (key, data) => _emit.bind(this)(context, key, data);
-            this.start = () => _fakeRun.bind(this)(context);
+            this.start = (state) => _fakeRun.bind(this)(state);
         }
 
         return Umvelt;
@@ -346,31 +347,59 @@ function Environment({ units = [] }) {
         return;
     }
 
-    function _fakeRun(context){
-        var ticker = 0;
-        const timeActive = 3000;
-        const timeInActive = 1000;
-        setInterval(() => {
-            const action = !!(ticker % 2)
-                ? 'deactivate'
-                : 'activate';
-            const unitNumber = Math.floor(ticker/2);
-            ticker++;
-            if(ticker === (context.units.length * 2)){
-                ticker = 0;
-            }
-            if(action === 'deactivate'){
-                setTimeout(() => {
-                    this.emit(`units-${action}`, [{
-                        label: context.units[unitNumber].label
+    function _fakeRun(state){
+        const events = (current, next, link) => [
+            `units-change|${state.units[current].label}|active|5000`, //process
+            `units-change|${state.units[current].label}|wait|0`, //send data
+            `links-change|${state.links[link].label}|send|2000`, // link start
+            `units-change|${state.units[next].label}|wait|0`, // receiver ack
+            `links-change|${state.links[link].label}|receive|2000`, // link wait
+            `units-change|${state.units[current].label}|success|0`, //send ack
+            `links-change|${state.links[link].label}|success|0`, // link drop
+            //`units-change|${state.units[next].label}|success|1000`, // receiver done
+        ];
+        const eventsAll = [
+            ...events(0, 1, 0),
+            ...events(1, 2, 1),
+            ...events(2, 0, 2)
+        ];
+
+        const eventsPromises = eventsAll.map(e => {
+            const [ action, label, state, time ] = e.split('|');
+            const getPromise = () => new Promise((resolve, reject) => {
+                const fn = () => {
+
+                    this.emit(action, [{
+                        label, state
                     }]);
-                }, timeActive);
-                return;
-            }
-            this.emit(`units-${action}`, [{
-                label: context.units[unitNumber].label
-            }]);
-        }, timeActive + timeInActive);
+                    setTimeout(() => {
+                        resolve({ action, label, state });
+                    }, Number(time));
+                };
+                fn();
+              });
+              return getPromise;
+        });
+
+
+        const promiseSeries = function(tasks, callback){
+            return tasks.reduce((promiseChain, currentTask) => {
+                return promiseChain.then(chainResults =>
+                    currentTask().then(currentResult =>
+                        [ ...chainResults, currentResult ]
+                    )
+                );
+            }, Promise.resolve([])).then(callback);
+        };
+
+        function doAll(){
+            promiseSeries(eventsPromises, (all)=>{
+                console.log('--- iteration done');
+                doAll();
+            });
+        }
+        doAll();
+
 
     }
 

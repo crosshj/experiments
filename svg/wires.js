@@ -170,7 +170,7 @@ function getLinkDirections(link) {
 
 // -----------------------------------------------------------------------------
 
-function animateLink(link, callback) {
+function animateLink(link, callback, reverse) {
     //TODO: also animate node and helper
     //NOTE: would be nice if link wire, node, and helpers could be treated as one
     const linkQuery = `.link[data-label="${link.label}"]`;
@@ -195,7 +195,7 @@ function animateLink(link, callback) {
             animation-name: dash-${link.label};
             animation-duration: ${duration}s; /* or: Xms */
             animation-iteration-count: 1;
-            animation-direction: normal; /* or: normal */
+            animation-direction: ${reverse ? 'reverse' : 'normal'}; /* or: normal */
             animation-timing-function: linear; /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
             animation-fill-mode: both; /* or: backwards, both, none */
             animation-delay: 0s; /* or: Xms */
@@ -346,7 +346,11 @@ function drawLink(link, callback) {
     linkElement.querySelector('path').setAttribute('d', newPathD);
     if (link.selected) {
         linkElement.classList.add('selected');
+    } else {
+        linkElement.classList.remove('selected');
     }
+    //linkElement.setAttribute('class', 'link' + (link.class ? ` ${link.class}` : ''));
+
     const animated = linkElement.querySelector('path.animated');
     if (animated) {
         animated.setAttribute('d', newPathD);
@@ -1204,6 +1208,7 @@ function render(_state) {
 
     clone(unitsToUpdate).forEach(withAnimFrame(drawOrUpdateUnit));
 
+    const domLinks = Array.from(document.querySelectorAll('g.link'));
     const linksToUpdate = state.links
         .reduce((all, one) => {
             const unitsToUpdateLabels = unitsToUpdate.map(u => u.label);
@@ -1226,7 +1231,15 @@ function render(_state) {
                 }
                 return isSelected && !isInSelectedLinks;
             };
-            if (linkStartConnected() || linkEndConnected() || linkNewlySelected()) {
+            const linkClassChanged = () => {
+                const domLink = domLinks.find(d => d.dataset.label === one.label);
+                if(!domLink){
+                    return;
+                }
+                const domClass = domLink.getAttribute('class');
+                return domClass === ('link ' + one.class);
+            };
+            if (linkClassChanged() || linkStartConnected() || linkEndConnected() || linkNewlySelected()) {
                 all.push(one)
             }
             return all;
@@ -1238,29 +1251,87 @@ function render(_state) {
 
 //---------------------------------------------------------------
 function engineBindState(Engine, _state){
-    const unitsActivate = (data) => {
+    const cleanClass = (stateClass) => {
+        return (stateClass || '')
+            .replace(' fail', '')
+            .replace(' wait', '')
+            .replace(' pulse', '');
+    };
+
+    const unitsChange = (data) => {
         _state.update(({ units }) => {
             data.forEach(u => {
                 const stateUnit = units.find(s => s.label === u.label);
-                stateUnit.class += " pulse";
+                if(u.state === 'success'){
+                    stateUnit.class = cleanClass(stateUnit.class);
+                    return;
+                }
+                if(u.state === 'active'){
+                    stateUnit.class = cleanClass(stateUnit.class) + " pulse";
+                    return;
+                }
+                if(u.state === 'fail'){
+                    stateUnit.class = cleanClass(stateUnit.class) + " fail";
+                    return;
+                }
+                if(u.state === 'wait'){
+                    stateUnit.class = cleanClass(stateUnit.class) + " wait";
+                    return;
+                }
             })
             return { units };
         });
     };
 
-    const unitsDeactivate = (data) => {
-        _state.update(({ units }) => {
+    const linksChange = (data) => {
+        //console.log({ linksChange: data[0].state })
+        _state.update(({ links }) => {
             data.forEach(u => {
-                const stateUnit = units.find(s => s.label === u.label);
-                //TODO: fail versus success?
-                stateUnit.class = stateUnit.class.replace(' pulse', '');
+                const stateLink = links.find(s => s.label === u.label);
+                if(u.state === 'receive'){
+                    stateLink.class = (cleanClass(stateLink.class) + " selected pulse").trim();
+                    removeAnimation();
+                    animateLink({ label: u.label }, null, 'reverse');
+                    stateLink.selected = true;
+                    return;
+                }
+                if(u.state === 'send'){
+                    stateLink.class = (cleanClass(stateLink.class) + " selected pulse").trim();
+                    removeAnimation();
+                    animateLink({ label: u.label });
+                    stateLink.selected = true;
+                    return;
+                }
+                if(u.state === 'fail'){
+                    removeAnimation();
+                    stateLink.class = (cleanClass(stateLink.class) + " fail").trim();
+                    stateLink.selected = false;
+                    return;
+                }
+                if(u.state === 'success'){
+                    removeAnimation();
+                    stateLink.class = cleanClass(stateLink.class);
+                    stateLink.selected = false;
+                    return;
+                }
             })
-            return { units };
+            return { links };
         });
     };
 
-    Engine.on('units-activate', unitsActivate);
-    Engine.on('units-deactivate', unitsDeactivate);
+    // const unitsDeactivate = (data) => {
+    //     _state.update(({ units }) => {
+    //         data.forEach(u => {
+    //             const stateUnit = units.find(s => s.label === u.label);
+    //             //TODO: fail versus success?
+    //             stateUnit.class = stateUnit.class.replace(' pulse', '');
+    //         })
+    //         return { units };
+    //     });
+    // };
+
+    Engine.on('units-change', unitsChange);
+    Engine.on('links-change', linksChange);
 }
 
 // --------------------------------------------------------------
@@ -1305,11 +1376,13 @@ function initScene(evt, units, links) {
     addLinkEffects(state);
 
     const { engine } = window.ExpressionEngine;
-    const Engine = engine({ units, links });
-    engineBindState(Engine, _state);
+    const stateDefintion = { units, links }; //because state won't carry function definitions
+    const Engine = engine(stateDefintion);
 
     setTimeout(() => {
-        Engine.start();
+        engineBindState(Engine, _state);
+        const currentState = _state.read(); //because stateDef does not have link labels
+        Engine.start(currentState);
     }, 1000);
     return;
 

@@ -1347,6 +1347,22 @@ exports.transform = EBNF.transform;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compile", function() { return compile; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "engine", function() { return engine; });
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -1647,7 +1663,9 @@ notify about environment:
 
 function Environment(_ref) {
   var _ref$units = _ref.units,
-      units = _ref$units === void 0 ? [] : _ref$units;
+      units = _ref$units === void 0 ? [] : _ref$units,
+      _ref$links = _ref.links,
+      links = _ref$links === void 0 ? [] : _ref$links;
 
   var mapUnitToCompiled = function mapUnitToCompiled(n) {
     var handle = n.handle,
@@ -1680,6 +1698,7 @@ function Environment(_ref) {
   var Umvelt = function () {
     var context = {
       units: compiledUnits,
+      links: links,
       eventListeners: {}
     };
 
@@ -1694,8 +1713,8 @@ function Environment(_ref) {
         return _emit.bind(_this2)(context, key, data);
       };
 
-      this.start = function () {
-        return _fakeRun.bind(_this2)(context);
+      this.start = function (state) {
+        return _fakeRun.bind(_this2)(state);
       };
     }
 
@@ -1721,34 +1740,70 @@ function Environment(_ref) {
     return;
   }
 
-  function _fakeRun(context) {
+  function _fakeRun(state) {
     var _this3 = this;
 
-    var ticker = 0;
-    var timeActive = 3000;
-    var timeInActive = 1000;
-    setInterval(function () {
-      var action = !!(ticker % 2) ? 'deactivate' : 'activate';
-      var unitNumber = Math.floor(ticker / 2);
-      ticker++;
+    var events = function events(current, next, link) {
+      return ["units-change|".concat(state.units[current].label, "|active|5000"), //process
+      "units-change|".concat(state.units[current].label, "|wait|0"), //send data
+      "links-change|".concat(state.links[link].label, "|send|2000"), // link start
+      "units-change|".concat(state.units[next].label, "|wait|0"), // receiver ack
+      "links-change|".concat(state.links[link].label, "|receive|2000"), // link wait
+      "units-change|".concat(state.units[current].label, "|success|0"), //send ack
+      "links-change|".concat(state.links[link].label, "|success|0")];
+    };
 
-      if (ticker === context.units.length * 2) {
-        ticker = 0;
-      }
+    var eventsAll = [].concat(_toConsumableArray(events(0, 1, 0)), _toConsumableArray(events(1, 2, 1)), _toConsumableArray(events(2, 0, 2)));
+    var eventsPromises = eventsAll.map(function (e) {
+      var _e$split = e.split('|'),
+          _e$split2 = _slicedToArray(_e$split, 4),
+          action = _e$split2[0],
+          label = _e$split2[1],
+          state = _e$split2[2],
+          time = _e$split2[3];
 
-      if (action === 'deactivate') {
-        setTimeout(function () {
-          _this3.emit("units-".concat(action), [{
-            label: context.units[unitNumber].label
-          }]);
-        }, timeActive);
-        return;
-      }
+      var getPromise = function getPromise() {
+        return new Promise(function (resolve, reject) {
+          var fn = function fn() {
+            _this3.emit(action, [{
+              label: label,
+              state: state
+            }]);
 
-      _this3.emit("units-".concat(action), [{
-        label: context.units[unitNumber].label
-      }]);
-    }, timeActive + timeInActive);
+            setTimeout(function () {
+              resolve({
+                action: action,
+                label: label,
+                state: state
+              });
+            }, Number(time));
+          };
+
+          fn();
+        });
+      };
+
+      return getPromise;
+    });
+
+    var promiseSeries = function promiseSeries(tasks, callback) {
+      return tasks.reduce(function (promiseChain, currentTask) {
+        return promiseChain.then(function (chainResults) {
+          return currentTask().then(function (currentResult) {
+            return [].concat(_toConsumableArray(chainResults), [currentResult]);
+          });
+        });
+      }, Promise.resolve([])).then(callback);
+    };
+
+    function doAll() {
+      promiseSeries(eventsPromises, function (all) {
+        console.log('--- iteration done');
+        doAll();
+      });
+    }
+
+    doAll();
   }
 
   return new Umvelt();

@@ -139,6 +139,20 @@
     transition: all 1s  steps(24, end);
   }
 
+  g.wait rect {
+    fill: #c1ae94 !important;
+    stroke: #e6772c !important;
+    stroke-width: .5px !important;
+    /* transition: all 1s  steps(24, end); */
+  }
+
+  g.wait text {
+    fill: #fffbf5 !important;
+    text-shadow: 0px 3px 15px #4e3800;
+    /* filter: url(#outline); */
+    /* transition: all 1s  steps(24, end); */
+  }
+
   /* .greek rect {
     fill: #5d1313 !important;
     stroke: #af225255 !important;
