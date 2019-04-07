@@ -349,14 +349,14 @@ function Environment({ units = [], links = [] }) {
 
     function _fakeRun(state){
         const events = (current, next, link) => [
-            `units-change|${state.units[current].label}|active|5000`, //process
+            `units-change|${state.units[current].label}|active|4000`, //process
             `units-change|${state.units[current].label}|wait|0`, //send data
             `links-change|${state.links[link].label}|send|2000`, // link start
-            `units-change|${state.units[next].label}|wait|0`, // receiver ack
+            `units-change|${state.units[next].label}|active|0`, // receiver ack
             `links-change|${state.links[link].label}|receive|2000`, // link wait
             `units-change|${state.units[current].label}|success|0`, //send ack
-            `links-change|${state.links[link].label}|success|0`, // link drop
-            //`units-change|${state.units[next].label}|success|1000`, // receiver done
+            //`units-change|${state.units[next].label}|success|0`, // receiver done
+            `links-change|${state.links[link].label}|success|1000`, // link drop
         ];
         const eventsAll = [
             ...events(0, 1, 0),

@@ -305,6 +305,16 @@ function drawLink(link, callback) {
        .node[data-label="${link.end.parent.node}"]`
     );
 
+    const linkStartParentHelper = document.querySelector(
+        `.box[data-label="${link.start.parent.block}"]
+       .helpers [data-label="${link.start.parent.node}"]`
+    );
+
+    const linkEndParentHelper = document.querySelector(
+        `.box[data-label="${link.end.parent.block}"]
+       .helpers [data-label="${link.end.parent.node}"]`
+    );
+
     // if(callback){
     //     console.log({ linkElement, linkEndParent, linkStartParent });
     // }
@@ -347,9 +357,17 @@ function drawLink(link, callback) {
      //NOTE: filter on a thin, vertical element is buggy (so pulse is commented for now)
     if (link.selected) {
         linkElement.classList.add('selected');
+        linkStartParent.classList.add('selected');
+        linkEndParent.classList.add('selected');
+        linkStartParentHelper.classList.add('selected');
+        linkEndParentHelper.classList.add('selected');
         //linkElement.classList.add('pulse');
     } else {
         linkElement.classList.remove('selected');
+        linkStartParent.classList.remove('selected');
+        linkEndParent.classList.remove('selected');
+        linkStartParentHelper.classList.remove('selected');
+        linkEndParentHelper.classList.remove('selected');
         //linkElement.classList.remove('pulse');
     }
     //linkElement.setAttribute('class', 'link' + (link.class ? ` ${link.class}` : ''));
@@ -473,7 +491,7 @@ function drawUnit(unit, callback) {
         el.setAttribute('data-direction', getNodeDirection(el));
         const cx = Number(el.getAttribute('cx'));
         const cy = Number(el.getAttribute('cy'));
-        const offset = 4;
+        const offset = 6; //length of helper
         const segment = {
             'north': `M ${cx} ${cy} L ${cx} ${cy - offset}`,
             'east': `M ${cx} ${cy} L ${cx + offset} ${cy}`,
@@ -481,7 +499,7 @@ function drawUnit(unit, callback) {
             'west': `M ${cx} ${cy} L ${cx - offset} ${cy}`
         };
         helpersHTML += `
-            <path class="helper-segment${n.selected ? ' selected' : ''}" d="${segment[direction]}"></path>
+            <path data-label="${n.label}" class="helper-segment${n.selected ? ' selected' : ''}" d="${segment[direction]}"></path>
         `;
         //console.log({ direction: n.direction })
     });
@@ -1340,7 +1358,7 @@ function engineBindState(Engine, _state){
 // --------------------------------------------------------------
 function initScene(evt, units, links) {
     if(window.innerWidth > 750){
-        document.body.style.zoom = "150%";
+        //document.body.style.zoom = "150%";
     }
 
     const _state = new State();

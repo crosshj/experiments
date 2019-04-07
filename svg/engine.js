@@ -1744,13 +1744,14 @@ function Environment(_ref) {
     var _this3 = this;
 
     var events = function events(current, next, link) {
-      return ["units-change|".concat(state.units[current].label, "|active|5000"), //process
+      return ["units-change|".concat(state.units[current].label, "|active|4000"), //process
       "units-change|".concat(state.units[current].label, "|wait|0"), //send data
       "links-change|".concat(state.links[link].label, "|send|2000"), // link start
-      "units-change|".concat(state.units[next].label, "|wait|0"), // receiver ack
+      "units-change|".concat(state.units[next].label, "|active|0"), // receiver ack
       "links-change|".concat(state.links[link].label, "|receive|2000"), // link wait
       "units-change|".concat(state.units[current].label, "|success|0"), //send ack
-      "links-change|".concat(state.links[link].label, "|success|0")];
+      //`units-change|${state.units[next].label}|success|0`, // receiver done
+      "links-change|".concat(state.links[link].label, "|success|1000")];
     };
 
     var eventsAll = [].concat(_toConsumableArray(events(0, 1, 0)), _toConsumableArray(events(1, 2, 1)), _toConsumableArray(events(2, 0, 2)));
