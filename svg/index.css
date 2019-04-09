@@ -129,9 +129,11 @@
     transition: all 1s  steps(24, end);
   }
 
+  /*
   g.pulse {
 
   }
+  */
 
   g.pulse text {
     fill: #dbf9ff !important;

@@ -1195,6 +1195,8 @@ function cleanScene(state) {
     //TODO: remove nodes that are missing from each unit
 }
 
+// TODO: maybe use an observer to keep dom model current
+// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 function getDom(){
     const dom = Array.from(document.querySelectorAll('.box'))
         .map(u => {
@@ -1421,7 +1423,7 @@ function initScene(evt, units, links) {
     setTimeout(() => {
         engineBindState(Engine, _state);
         const currentState = _state.read(); //because stateDef does not have link labels
-        //Engine.start(currentState);
+        Engine.start(currentState);
     }, 1000);
 
     return;

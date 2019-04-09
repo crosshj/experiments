@@ -347,16 +347,35 @@ function Environment({ units = [], links = [] }) {
         return;
     }
 
+    function strangeCase(){
+        const unitsPulsing = document.querySelectorAll('.box.pulse');
+
+        if(unitsPulsing.length !== 1){
+            return;
+        }
+
+        const unitsWaiting = document.querySelectorAll('.box.wait');
+        if(unitsWaiting.length !== 0){
+            return
+        }
+        const linksSelected = document.querySelectorAll('.link.selected').length;
+        if(linksSelected !== 1){
+            return;
+        }
+
+        debugger;
+    }
+
     function _fakeRun(state){
         const events = (current, next, link) => [
             `units-change|${state.units[current].label}|active|4000`, //process
-            `units-change|${state.units[current].label}|wait|0`, //send data
+            `units-change|${state.units[current].label}|wait|50`, //send data
             `links-change|${state.links[link].label}|send|2000`, // link start
-            `units-change|${state.units[next].label}|active|0`, // receiver ack
+            `units-change|${state.units[next].label}|active|50`, // receiver ack
             `links-change|${state.links[link].label}|receive|2000`, // link wait
-            `units-change|${state.units[current].label}|success|0`, //send ack
+            `links-change|${state.links[link].label}|success|50`, // link drop
+            `units-change|${state.units[current].label}|success|1000`, //send ack
             //`units-change|${state.units[next].label}|success|0`, // receiver done
-            `links-change|${state.links[link].label}|success|1000`, // link drop
         ];
         const eventsAll = [
             ...events(0, 1, 0),
@@ -368,7 +387,9 @@ function Environment({ units = [], links = [] }) {
             const [ action, label, state, time ] = e.split('|');
             const getPromise = () => new Promise((resolve, reject) => {
                 const fn = () => {
-
+                    if(strangeCase()){
+                        debugger;
+                    }
                     this.emit(action, [{
                         label, state
                     }]);

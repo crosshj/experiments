@@ -1740,18 +1740,39 @@ function Environment(_ref) {
     return;
   }
 
+  function strangeCase() {
+    var unitsPulsing = document.querySelectorAll('.box.pulse');
+
+    if (unitsPulsing.length !== 1) {
+      return;
+    }
+
+    var unitsWaiting = document.querySelectorAll('.box.wait');
+
+    if (unitsWaiting.length !== 0) {
+      return;
+    }
+
+    var linksSelected = document.querySelectorAll('.link.selected').length;
+
+    if (linksSelected !== 1) {
+      return;
+    }
+
+    debugger;
+  }
+
   function _fakeRun(state) {
     var _this3 = this;
 
     var events = function events(current, next, link) {
       return ["units-change|".concat(state.units[current].label, "|active|4000"), //process
-      "units-change|".concat(state.units[current].label, "|wait|0"), //send data
+      "units-change|".concat(state.units[current].label, "|wait|50"), //send data
       "links-change|".concat(state.links[link].label, "|send|2000"), // link start
-      "units-change|".concat(state.units[next].label, "|active|0"), // receiver ack
+      "units-change|".concat(state.units[next].label, "|active|50"), // receiver ack
       "links-change|".concat(state.links[link].label, "|receive|2000"), // link wait
-      "units-change|".concat(state.units[current].label, "|success|0"), //send ack
-      //`units-change|${state.units[next].label}|success|0`, // receiver done
-      "links-change|".concat(state.links[link].label, "|success|1000")];
+      "links-change|".concat(state.links[link].label, "|success|50"), // link drop
+      "units-change|".concat(state.units[current].label, "|success|1000")];
     };
 
     var eventsAll = [].concat(_toConsumableArray(events(0, 1, 0)), _toConsumableArray(events(1, 2, 1)), _toConsumableArray(events(2, 0, 2)));
@@ -1766,6 +1787,10 @@ function Environment(_ref) {
       var getPromise = function getPromise() {
         return new Promise(function (resolve, reject) {
           var fn = function fn() {
+            if (strangeCase()) {
+              debugger;
+            }
+
             _this3.emit(action, [{
               label: label,
               state: state
