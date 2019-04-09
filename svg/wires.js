@@ -1195,6 +1195,20 @@ function cleanScene(state) {
     //TODO: remove nodes that are missing from each unit
 }
 
+function getDom(){
+    const dom = Array.from(document.querySelectorAll('.box'))
+        .map(u => {
+            const { label } = u.dataset;
+            const el = u;
+            const children = Array.from(u.querySelectorAll('.node'));
+            const helpers = Array.from(u.querySelectorAll('.helper-segment'));
+            return {
+                label, children, helpers, el
+            };
+        });
+    return dom;
+};
+
 function render(_state) {
     const state = typeof _state.read === 'function' ? _state.read()
         : _state;
@@ -1407,7 +1421,7 @@ function initScene(evt, units, links) {
     setTimeout(() => {
         engineBindState(Engine, _state);
         const currentState = _state.read(); //because stateDef does not have link labels
-        Engine.start(currentState);
+        //Engine.start(currentState);
     }, 1000);
 
     return;
