@@ -413,9 +413,14 @@ function Environment({ units = [], links = [] }) {
             }, Promise.resolve([])).then(callback);
         };
 
+        var count = 0;
         function doAll(){
             promiseSeries(eventsPromises, (all)=>{
-                console.log('--- fake engine: iteration done');
+                console.log(`--- fake engine: iteration ${++count} done`);
+                if(count >= 10) {
+                    console.log('FAKE ITERATION MAX: DONE!');
+                    return;
+                }
                 doAll();
             });
         }
