@@ -1824,18 +1824,24 @@ function Environment(_ref) {
 
     var count = 0;
 
-    function doAll() {
+    var doAll = function doAll() {
       promiseSeries(eventsPromises, function (all) {
         console.log("--- fake engine: iteration ".concat(++count, " done"));
 
         if (count >= 10) {
           console.log('FAKE ITERATION MAX: DONE!');
+
+          _this3.emit('units-change', [{
+            label: state.units[0].label,
+            state: 'success'
+          }]);
+
           return;
         }
 
         doAll();
       });
-    }
+    };
 
     doAll();
   }

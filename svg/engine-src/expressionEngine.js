@@ -414,16 +414,20 @@ function Environment({ units = [], links = [] }) {
         };
 
         var count = 0;
-        function doAll(){
+        const doAll = () => {
             promiseSeries(eventsPromises, (all)=>{
                 console.log(`--- fake engine: iteration ${++count} done`);
                 if(count >= 10) {
                     console.log('FAKE ITERATION MAX: DONE!');
+                    this.emit('units-change', [{
+                        label: state.units[0].label,
+                        state: 'success'
+                    }]);
                     return;
                 }
                 doAll();
             });
-        }
+        };
         doAll();
 
 
