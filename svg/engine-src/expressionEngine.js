@@ -303,8 +303,9 @@ notify about environment:
     units-change: active (progress?), wait, success, fail
 */
 function Environment({ units = [], links = [] }) {
-    const mapUnitToCompiled = n => {
+    const mapUnitToCompiled = (n, umvelt) => {
         var { handle, start } = n;
+        // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
         handle = new ExpressionEngine()(handle, true);
         start = start && new ExpressionEngine()(start, true);
         const fns = { handle, start };
@@ -313,11 +314,8 @@ function Environment({ units = [], links = [] }) {
         });
         return Object.assign(n, {...fns});
     };
-    const compiledUnits = units.map(mapUnitToCompiled);
-    //console.log({ compiledUnits });
-    compiledUnits[0].handle({}, (error, data) => {
-        console.log({ error, data });
-    });
+    const compiledUnits = (umvelt) => units.map((u) => mapUnitToCompiled(u, umvelt));
+
     /*
         also considered using "bailiwick" and "umbgebung"
         https://en.wikipedia.org/wiki/Umwelt
@@ -327,12 +325,19 @@ function Environment({ units = [], links = [] }) {
     */
     const Umvelt = (function () {
         const context = {
-            units: compiledUnits,
+            units: undefined,
             links,
             eventListeners: {}
         };
 
         function Umvelt() {
+            context.units = compiledUnits(this);
+
+            //console.log({ compiledUnits });
+            context.units[0].handle({}, (error, data) => {
+                console.log({ error, data });
+            });
+
             this.on = (key, callback) => _on(context, key, callback);
             this.emit = (key, data) => _emit.bind(this)(context, key, data);
             this.start = (state) => _fakeRun.bind(this)(state);

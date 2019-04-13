@@ -1675,9 +1675,10 @@ function Environment(_ref) {
       _ref$links = _ref.links,
       links = _ref$links === void 0 ? [] : _ref$links;
 
-  var mapUnitToCompiled = function mapUnitToCompiled(n) {
+  var mapUnitToCompiled = function mapUnitToCompiled(n, umvelt) {
     var handle = n.handle,
-        start = n.start;
+        start = n.start; // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
+
     handle = new ExpressionEngine()(handle, true);
     start = start && new ExpressionEngine()(start, true);
     var fns = {
@@ -1690,14 +1691,11 @@ function Environment(_ref) {
     return Object.assign(n, _objectSpread({}, fns));
   };
 
-  var compiledUnits = units.map(mapUnitToCompiled); //console.log({ compiledUnits });
-
-  compiledUnits[0].handle({}, function (error, data) {
-    console.log({
-      error: error,
-      data: data
+  var compiledUnits = function compiledUnits(umvelt) {
+    return units.map(function (u) {
+      return mapUnitToCompiled(u, umvelt);
     });
-  });
+  };
   /*
       also considered using "bailiwick" and "umbgebung"
       https://en.wikipedia.org/wiki/Umwelt
@@ -1706,15 +1704,25 @@ function Environment(_ref) {
       "umvelt" is easier to type than "environment" (v instead of w to aid mental pronounce)
   */
 
+
   var Umvelt = function () {
     var context = {
-      units: compiledUnits,
+      units: undefined,
       links: links,
       eventListeners: {}
     };
 
     function Umvelt() {
       var _this2 = this;
+
+      context.units = compiledUnits(this); //console.log({ compiledUnits });
+
+      context.units[0].handle({}, function (error, data) {
+        console.log({
+          error: error,
+          data: data
+        });
+      });
 
       this.on = function (key, callback) {
         return _on(context, key, callback);
