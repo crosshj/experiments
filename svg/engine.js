@@ -1498,11 +1498,19 @@ function ExpressionEngine() {
   function _send(value, nodes) {
     //test if array, wrap in array if not
     //TODO:
-    //console.log('send ran');
+    console.log('custom function [send] ran');
+    return DONE;
+  }
+
+  function _ack(value, nodes) {
+    //test if array, wrap in array if not
+    //TODO:
+    console.log('custom function [ack] ran');
     return DONE;
   }
 
   var customFunctions = {
+    ack: _ack,
     fetch: _fetch,
     map: _map,
     send: _send
@@ -1534,7 +1542,7 @@ function ExpressionEngine() {
           map: mappedItems,
           fetch: promiseQueue
         } : undefined;
-        callback(fetchingError || mappingError || tooManyFails, results);
+        callback(fetchingError || mappingError || tooManyFails, results || result);
         return;
       } //RETRYING
 
@@ -1684,7 +1692,7 @@ function Environment(_ref) {
 
   var compiledUnits = units.map(mapUnitToCompiled); //console.log({ compiledUnits });
 
-  compiledUnits[0].start({}, function (error, data) {
+  compiledUnits[0].handle({}, function (error, data) {
     console.log({
       error: error,
       data: data

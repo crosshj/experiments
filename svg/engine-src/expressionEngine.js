@@ -116,11 +116,19 @@ function ExpressionEngine() {
     function _send(value, nodes) {
         //test if array, wrap in array if not
         //TODO:
-        //console.log('send ran');
+        console.log('custom function [send] ran');
+        return DONE;
+    }
+
+    function _ack(value, nodes) {
+        //test if array, wrap in array if not
+        //TODO:
+        console.log('custom function [ack] ran');
         return DONE;
     }
 
     const customFunctions = {
+        ack: _ack,
         fetch: _fetch,
         map: _map,
         send: _send
@@ -164,7 +172,7 @@ function ExpressionEngine() {
 
                 callback(
                     fetchingError || mappingError || tooManyFails,
-                    results
+                    results || result
                 );
                 return;
             }
@@ -307,7 +315,7 @@ function Environment({ units = [], links = [] }) {
     };
     const compiledUnits = units.map(mapUnitToCompiled);
     //console.log({ compiledUnits });
-    compiledUnits[0].start({}, (error, data) => {
+    compiledUnits[0].handle({}, (error, data) => {
         console.log({ error, data });
     });
     /*

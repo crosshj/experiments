@@ -1426,7 +1426,7 @@ function initScene(evt, units, links) {
         Engine.start(currentState);
     }, 1000);
 
-    //return;
+    return;
 
     // BELOW: create and handle activity in network
     // --------------------------------------------------------------
