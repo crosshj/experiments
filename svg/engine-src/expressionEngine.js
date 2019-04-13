@@ -297,16 +297,19 @@ notify about environment:
 function Environment({ units = [], links = [] }) {
     const mapUnitToCompiled = n => {
         var { handle, start } = n;
-        handle = compile(handle /*, true*/);
-        start = start && compile(start /*, true*/);
+        handle = new ExpressionEngine()(handle, true);
+        start = start && new ExpressionEngine()(start, true);
         const fns = { handle, start };
         Object.keys(fns).forEach(p => {
             !fns[p] && delete fns[p];
         });
-        return Object.assign({...fns}, n);
+        return Object.assign(n, {...fns});
     };
     const compiledUnits = units.map(mapUnitToCompiled);
-
+    //console.log({ compiledUnits });
+    compiledUnits[0].start({}, (error, data) => {
+        console.log({ error, data });
+    });
     /*
         also considered using "bailiwick" and "umbgebung"
         https://en.wikipedia.org/wiki/Umwelt
@@ -367,14 +370,16 @@ function Environment({ units = [], links = [] }) {
     }
 
     function _fakeRun(state){
+        const longDelay = 2000;
+        const shortDelay = 50;
         const events = (current, next, link) => [
-            `units-change|${state.units[current].label}|active|4000`, //process
-            `units-change|${state.units[current].label}|wait|50`, //send data
-            `links-change|${state.links[link].label}|send|2000`, // link start
-            `units-change|${state.units[next].label}|active|50`, // receiver ack
-            `links-change|${state.links[link].label}|receive|2000`, // link wait
-            `links-change|${state.links[link].label}|success|50`, // link drop
-            `units-change|${state.units[current].label}|success|1000`, //send ack
+            `units-change|${state.units[current].label}|active|${2*longDelay}`, //process
+            `units-change|${state.units[current].label}|wait|${shortDelay}`, //send data
+            `links-change|${state.links[link].label}|send|${longDelay}`, // link start
+            `units-change|${state.units[next].label}|active|${shortDelay}`, // receiver ack
+            `links-change|${state.links[link].label}|receive|${longDelay}`, // link wait
+            `links-change|${state.links[link].label}|success|${shortDelay}`, // link drop
+            `units-change|${state.units[current].label}|success|${0.5*longDelay}`, //send ack
             //`units-change|${state.units[next].label}|success|0`, // receiver done
         ];
         const eventsAll = [

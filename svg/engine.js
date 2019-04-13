@@ -1670,12 +1670,8 @@ function Environment(_ref) {
   var mapUnitToCompiled = function mapUnitToCompiled(n) {
     var handle = n.handle,
         start = n.start;
-    handle = compile(handle
-    /*, true*/
-    );
-    start = start && compile(start
-    /*, true*/
-    );
+    handle = new ExpressionEngine()(handle, true);
+    start = start && new ExpressionEngine()(start, true);
     var fns = {
       handle: handle,
       start: start
@@ -1683,10 +1679,17 @@ function Environment(_ref) {
     Object.keys(fns).forEach(function (p) {
       !fns[p] && delete fns[p];
     });
-    return Object.assign(_objectSpread({}, fns), n);
+    return Object.assign(n, _objectSpread({}, fns));
   };
 
-  var compiledUnits = units.map(mapUnitToCompiled);
+  var compiledUnits = units.map(mapUnitToCompiled); //console.log({ compiledUnits });
+
+  compiledUnits[0].start({}, function (error, data) {
+    console.log({
+      error: error,
+      data: data
+    });
+  });
   /*
       also considered using "bailiwick" and "umbgebung"
       https://en.wikipedia.org/wiki/Umwelt
@@ -1765,14 +1768,17 @@ function Environment(_ref) {
   function _fakeRun(state) {
     var _this3 = this;
 
+    var longDelay = 2000;
+    var shortDelay = 50;
+
     var events = function events(current, next, link) {
-      return ["units-change|".concat(state.units[current].label, "|active|4000"), //process
-      "units-change|".concat(state.units[current].label, "|wait|50"), //send data
-      "links-change|".concat(state.links[link].label, "|send|2000"), // link start
-      "units-change|".concat(state.units[next].label, "|active|50"), // receiver ack
-      "links-change|".concat(state.links[link].label, "|receive|2000"), // link wait
-      "links-change|".concat(state.links[link].label, "|success|50"), // link drop
-      "units-change|".concat(state.units[current].label, "|success|1000")];
+      return ["units-change|".concat(state.units[current].label, "|active|").concat(2 * longDelay), //process
+      "units-change|".concat(state.units[current].label, "|wait|").concat(shortDelay), //send data
+      "links-change|".concat(state.links[link].label, "|send|").concat(longDelay), // link start
+      "units-change|".concat(state.units[next].label, "|active|").concat(shortDelay), // receiver ack
+      "links-change|".concat(state.links[link].label, "|receive|").concat(longDelay), // link wait
+      "links-change|".concat(state.links[link].label, "|success|").concat(shortDelay), // link drop
+      "units-change|".concat(state.units[current].label, "|success|").concat(0.5 * longDelay)];
     };
 
     var eventsAll = [].concat(_toConsumableArray(events(0, 1, 0)), _toConsumableArray(events(1, 2, 1)), _toConsumableArray(events(2, 0, 2)));
