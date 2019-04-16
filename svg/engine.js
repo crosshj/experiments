@@ -1772,6 +1772,10 @@ function Environment(_ref2) {
   }();
 
   function _on(context, key, callback) {
+    //TODO: if send/ack from one compiled script then
+    //  - activate link (send message to UI for link)
+    //  - notify other compiled script (handler) (should have listeners for this?)
+    //  - ...
     if (context.eventListeners[key] === undefined) {
       context.eventListeners[key] = [];
     }
