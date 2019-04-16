@@ -17,7 +17,7 @@ const { compileExpression } = require('filtrex');
     - cache / memory
 */
 
-function ExpressionEngine() {
+function ExpressionEngine({ emitStep } = {}) {
     //TODO: maybe check if node versus browser better
     const fetch = typeof window !== 'undefined' && window.fetch
         ? window.fetch
@@ -116,7 +116,7 @@ function ExpressionEngine() {
     function _send(value, nodes) {
         //test if array, wrap in array if not
         //TODO:
-        console.log('custom function [send] ran');
+        //console.log('custom function [send] ran');
         return DONE;
     }
 
@@ -146,6 +146,8 @@ function ExpressionEngine() {
             );
 
             const result = myFunc(data);
+
+            emitStep && emitStep({ name: 'TODO', status: 'not sure about this yet'});
 
             const fetchingError = promiseQueue
                 .map(x => x.error).find(x => x);
@@ -303,11 +305,15 @@ notify about environment:
     units-change: active (progress?), wait, success, fail
 */
 function Environment({ units = [], links = [] }) {
-    const mapUnitToCompiled = (n, umvelt) => {
+    const mapUnitToCompiled = (n, { emit }) => {
         var { handle, start } = n;
         // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
-        handle = new ExpressionEngine()(handle, true);
-        start = start && new ExpressionEngine()(start, true);
+        const emitStep = (data) => {
+            emit('emit-step', data);
+        };
+
+        handle = new ExpressionEngine({ emitStep })(handle /*, true*/);
+        start = start && new ExpressionEngine({ emitStep })(start /*, true*/);
         const fns = { handle, start };
         Object.keys(fns).forEach(p => {
             !fns[p] && delete fns[p];
@@ -331,16 +337,33 @@ function Environment({ units = [], links = [] }) {
         };
 
         function Umvelt() {
-            context.units = compiledUnits(this);
-
-            //console.log({ compiledUnits });
-            context.units[0].handle({}, (error, data) => {
-                console.log({ error, data });
-            });
-
             this.on = (key, callback) => _on(context, key, callback);
             this.emit = (key, data) => _emit.bind(this)(context, key, data);
             this.start = (state) => _fakeRun.bind(this)(state);
+
+            context.units = compiledUnits(this);
+            //console.log({ compiledUnits });
+
+            const apis = {
+                ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
+                bored: 'http://www.boredapi.com/api/activity/',
+                countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
+                countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
+            };
+            const api = 'countRegister';
+
+            const dataForScript = {
+                [`${api}Url`]: apis[api],
+                [`${api}Map`]: (data) => data.value || data.activity
+            };
+
+            //testing handler of first unit
+            setTimeout(() => {
+                context.units[0].handle(dataForScript, (error, data) => {
+                    console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------');
+                    //console.log({ error, data });
+                });
+            }, 2000);
         }
 
         return Umvelt;
@@ -354,7 +377,11 @@ function Environment({ units = [], links = [] }) {
     }
 
     function _emit(context, key, data) {
+        //console.log({ key });
         if (!context.eventListeners[key]) {
+            debugger;
+            console.log(' listener not registered');
+            console.log({ listeners: context.eventListeners, key });
             return;
         }
         context.eventListeners[key].forEach(listener => {

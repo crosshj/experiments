@@ -1369,6 +1369,11 @@ function engineBindState(Engine, _state){
 
     Engine.on('units-change', unitsChange);
     Engine.on('links-change', linksChange);
+
+    Engine.on('emit-step', (data) => {
+        console.log('step emitted');
+        console.log({ data });
+    });
 }
 
 // --------------------------------------------------------------

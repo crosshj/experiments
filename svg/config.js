@@ -1,3 +1,19 @@
+const apis = {
+    ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
+    bored: 'http://www.boredapi.com/api/activity/',
+    countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
+    countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
+};
+const api = 'countRegister';
+const exampleExpression = `
+    fetch(${api}Url)
+    map(${api}Map, ${api}Url, "${api}Map")
+    send(${api}MapValue, 2)
+    send(${api}MapValue, 1)
+`;
+
+//TODO: ^^^ this will go away when engine is fully working
+
 const simple = {
     boxes:  [{
         label: 'ομφαλός',
@@ -10,7 +26,7 @@ const simple = {
         start: `
             send(null, 'fourth')
         `,
-        handle: `
+        handle: exampleExpression || `
             ack()
             send(null, 'fourth')
         `,

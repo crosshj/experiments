@@ -1388,6 +1388,9 @@ var _require = __webpack_require__(10),
 
 
 function ExpressionEngine() {
+  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      emitStep = _ref.emitStep;
+
   //TODO: maybe check if node versus browser better
   var fetch = typeof window !== 'undefined' && window.fetch ? window.fetch : function () {
     return new Promise(function (resolve, reject) {
@@ -1498,7 +1501,7 @@ function ExpressionEngine() {
   function _send(value, nodes) {
     //test if array, wrap in array if not
     //TODO:
-    console.log('custom function [send] ran');
+    //console.log('custom function [send] ran');
     return DONE;
   }
 
@@ -1524,6 +1527,10 @@ function ExpressionEngine() {
     function compiled(data, callback) {
       var myFunc = compileExpression(exp, custFn);
       var result = myFunc(data);
+      emitStep && emitStep({
+        name: 'TODO',
+        status: 'not sure about this yet'
+      });
       var fetchingError = promiseQueue.map(function (x) {
         return x.error;
       }).find(function (x) {
@@ -1669,18 +1676,31 @@ notify about environment:
     units-change: active (progress?), wait, success, fail
 */
 
-function Environment(_ref) {
-  var _ref$units = _ref.units,
-      units = _ref$units === void 0 ? [] : _ref$units,
-      _ref$links = _ref.links,
-      links = _ref$links === void 0 ? [] : _ref$links;
+function Environment(_ref2) {
+  var _ref2$units = _ref2.units,
+      units = _ref2$units === void 0 ? [] : _ref2$units,
+      _ref2$links = _ref2.links,
+      links = _ref2$links === void 0 ? [] : _ref2$links;
 
-  var mapUnitToCompiled = function mapUnitToCompiled(n, umvelt) {
+  var mapUnitToCompiled = function mapUnitToCompiled(n, _ref3) {
+    var emit = _ref3.emit;
     var handle = n.handle,
         start = n.start; // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
 
-    handle = new ExpressionEngine()(handle, true);
-    start = start && new ExpressionEngine()(start, true);
+    var emitStep = function emitStep(data) {
+      emit('emit-step', data);
+    };
+
+    handle = new ExpressionEngine({
+      emitStep: emitStep
+    })(handle
+    /*, true*/
+    );
+    start = start && new ExpressionEngine({
+      emitStep: emitStep
+    })(start
+    /*, true*/
+    );
     var fns = {
       handle: handle,
       start: start
@@ -1713,16 +1733,8 @@ function Environment(_ref) {
     };
 
     function Umvelt() {
-      var _this2 = this;
-
-      context.units = compiledUnits(this); //console.log({ compiledUnits });
-
-      context.units[0].handle({}, function (error, data) {
-        console.log({
-          error: error,
-          data: data
-        });
-      });
+      var _this2 = this,
+          _dataForScript;
 
       this.on = function (key, callback) {
         return _on(context, key, callback);
@@ -1735,6 +1747,25 @@ function Environment(_ref) {
       this.start = function (state) {
         return _fakeRun.bind(_this2)(state);
       };
+
+      context.units = compiledUnits(this); //console.log({ compiledUnits });
+
+      var apis = {
+        ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
+        bored: 'http://www.boredapi.com/api/activity/',
+        countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
+        countGet: 'https://api.countapi.xyz/get/boxesandwires/visits'
+      };
+      var api = 'countRegister';
+      var dataForScript = (_dataForScript = {}, _defineProperty(_dataForScript, "".concat(api, "Url"), apis[api]), _defineProperty(_dataForScript, "".concat(api, "Map"), function Map(data) {
+        return data.value || data.activity;
+      }), _dataForScript); //testing handler of first unit
+
+      setTimeout(function () {
+        context.units[0].handle(dataForScript, function (error, data) {
+          console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------'); //console.log({ error, data });
+        });
+      }, 2000);
     }
 
     return Umvelt;
@@ -1749,7 +1780,14 @@ function Environment(_ref) {
   }
 
   function _emit(context, key, data) {
+    //console.log({ key });
     if (!context.eventListeners[key]) {
+      debugger;
+      console.log(' listener not registered');
+      console.log({
+        listeners: context.eventListeners,
+        key: key
+      });
       return;
     }
 
