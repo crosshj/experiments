@@ -1524,6 +1524,14 @@ function ExpressionEngine() {
     // each custom function should be wrapped so that it will return true only if resolved
     // as promises are resolved, compile/run is ran
 
+    /*
+        each line of overall function should be split into its own function
+            ^^^ (with promise returned ?)
+        ideally, each custom function call should act this way (not just program lines)
+        ideally, adding a custom function should not involve also writing this kind of handler
+          currently, its reasonably difficult to add custom functions in this way
+    */
+
     function compiled(data, callback) {
       var myFunc = compileExpression(exp, custFn);
       var result = myFunc(data);
