@@ -30,43 +30,23 @@ function ExpressionEngine({ emitStep } = {}) {
     const WAITING = false;
     const FAILED = false;
 
-    const promiseQueue = [];
     function _fetch(url) {
-        var queued = promiseQueue.find(x => x.name === url);
-        if (queued && queued.error) {
-            //console.log(`queued error: ${!!queued.error}`);
-            return FAILED;
-        }
-        if (queued && queued.result) {
-            //console.log(`queued result: ${!!queued.result}`);
-            return DONE;
-        }
+        const fetchPromise = fetch(url)
+            .then(x => x.text())
+            .then(t => {
+                const result = tryParse(t);
+                if (!result) {
+                    throw new Error('failed to parse');
+                }
+                return result;
+            });
 
-        //console.log('queued, waiting');
-        queued = new function QueueItem() {
-            this.name = url;
-            this.result = undefined;
-            this.error = undefined;
-            this.promise = fetch(url)
-                //TODO: reject status errors?
-                .then(x => x.text())
-                .then(t => {
-                    const result = tryParse(t) || { error: 'failed to parse' }
-                    if (result.error) {
-                        throw result.error;
-                    }
-                    this.result = result;
-                })
-                .catch(e => {
-                    this.error = e;
-                });
-        };
-        promiseQueue.push(queued);
-        return WAITING;
+        return fetchPromise;
     }
 
     const mappedItems = [];
     function _map(mapper, input, output) {
+        //console.log('custom function [map] ran');
         var mapped = mappedItems.find(x => x.name === output);
         if (mapped) {
             return mapped.error
@@ -76,7 +56,8 @@ function ExpressionEngine({ emitStep } = {}) {
 
         //if input is url, get result from promiseQueue
         //TODO: if not??
-        const queued = promiseQueue.find(x => x.name === input);
+        //const queued = promiseQueue.find(x => x.name === input);
+        const queued = false;
         if (!queued) {
             mappedItems.push({
                 name: output,
@@ -114,16 +95,16 @@ function ExpressionEngine({ emitStep } = {}) {
     }
 
     function _send(value, nodes) {
+        //console.log('custom function [send] ran');
         //test if array, wrap in array if not
         //TODO:
-        //console.log('custom function [send] ran');
         return DONE;
     }
 
     function _ack(value, nodes) {
         //test if array, wrap in array if not
         //TODO:
-        console.log('custom function [ack] ran');
+        //console.log('custom function [ack] ran');
         return DONE;
     }
 
@@ -155,10 +136,9 @@ function ExpressionEngine({ emitStep } = {}) {
             );
 
             const result = myFunc(data);
+            //console.log({ promises: custFn.promises });
 
-            emitStep && emitStep({ name: 'TODO', status: 'not sure about this yet'});
-
-            const fetchingError = promiseQueue
+            const asyncError = custFn.promises
                 .map(x => x.error).find(x => x);
             const mappingError = mappedItems
                 .map(x => x.error).find(x => x);
@@ -168,21 +148,21 @@ function ExpressionEngine({ emitStep } = {}) {
                 : undefined;
 
             const finished = result
-                || fetchingError
+                || asyncError
                 || mappingError
                 || tooManyFails;
-            //console.log({ result, fetchingError, mappingError })
+            //console.log({ result, asyncError, mappingError })
 
             if (finished) {
-                const results = mappedItems.length > 0 || promiseQueue.length > 0
+                const results = mappedItems.length > 0 || custFn.promises.length > 0
                     ? {
                         map: mappedItems,
-                        fetch: promiseQueue
+                        fetch: custFn.promises
                     }
                     : undefined;
 
                 callback(
-                    fetchingError || mappingError || tooManyFails,
+                    asyncError || mappingError || tooManyFails,
                     results || result
                 );
                 return;
@@ -194,7 +174,7 @@ function ExpressionEngine({ emitStep } = {}) {
             };
             const dataPlusMapped = Object.assign({}, data, dataFromMap);
 
-            const firstUnresolved = promiseQueue.find(x => !x.result);
+            const firstUnresolved = custFn.promises.find(x => !x.result);
             if (!firstUnresolved) {
                 //console.log('--- no unresolved promises, will call');
                 fails++;
@@ -203,6 +183,7 @@ function ExpressionEngine({ emitStep } = {}) {
             }
             firstUnresolved.promise.then(x => {
                 //console.log('--- unresolved promise found, attaching');
+                //console.log({ x });
                 compiled(dataPlusMapped, callback);
             });
         };
@@ -219,9 +200,88 @@ function ExpressionEngine({ emitStep } = {}) {
     // console.log(myfilter({ firstname: 'Joe' }));    // returns 0
     // console.log(myfilter({ firstname: 'Joseph' })); // returns 1
 
+    // OMG - https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise
+    const isPromise = function (object) {
+        return object && typeof object.then === 'function';
+    };
+
+    /*
+        TODO:
+        Need to know what unit is acting
+        emit-step should maybe just be in compiled (line 131)
+        idea is for this functionality ^^^ to notify outside world of progress
+        need to be able to modify/keep global state so that functions can share data
+    */
+    const wrapCustomFunctions = (custFuncs) => {
+        // should probably just be called a queue or results and not promises
+        const promises = [];
+        var wrapped = Object.keys(custFuncs)
+            .reduce((all, key) => {
+                all[key] = (...args) => {
+                    const funcKey = `${key}:${args.join('-')}`;
+
+                    //console.log(`custom function [${key}] ran`);
+                    //console.log({ funcKey })
+
+                    var queued = promises.find(x => x.name === funcKey);
+                    if (queued && queued.error) {
+                        //console.log(`queued error: ${!!queued.error}`);
+                        return FAILED;
+                    }
+                    if (queued && queued.result) {
+                        //console.log(`queued result: ${!!queued.result}`);
+                        return DONE;
+                    }
+
+                    var result = custFuncs[key](...args);
+                    if (!isPromise(result)) {
+                        // emitStep && emitStep({
+                        //     name: key, result, status: 'success'
+                        // });
+                        // queued = new function QueueItem() {
+                        //     this.name = funcKey;
+                        //     this.result = result;
+                        //     this.error = undefined;
+                        //     this.promise = undefined;
+                        // };
+                        // promises.push(queued);
+                        // return result;
+                        result = new Promise((resolve) => resolve(result));
+                    }
+
+                    //console.log('queued, waiting');
+                    queued = new function QueueItem() {
+                        this.name = funcKey;
+                        this.result = undefined;
+                        this.error = undefined;
+                        this.promise = result
+                            //TODO: reject status errors?
+                            .then(res => {
+                                emitStep && emitStep({
+                                    name: key, result: res, status: 'success'
+                                });
+                                this.result = res;
+                                return res;
+                            })
+                            .catch(err => {
+                                emitStep && emitStep({
+                                    name: key, result: err, status: 'error'
+                                });
+                                this.error = err;
+                                //throw new Error('error in custom function promise');
+                            });
+                    };
+                    promises.push(queued);
+                    return WAITING;
+                };
+                return all;
+            }, {});
+        wrapped.promises = promises;
+        return wrapped;
+    };
 
     //TODO: expose customFunctions? and maxFails to browser
-    var maxFails = 50;
+    var maxFails = 20;
     const expressionEngine = (exampleExpression, verbose) => {
         const ex = exampleExpression
             .trim()
@@ -231,7 +291,7 @@ function ExpressionEngine({ emitStep } = {}) {
 
         if (verbose) { console.log('EXPRESSION: ' + exampleExpression); }
 
-        return compile(ex, customFunctions, maxFails);
+        return compile(ex, wrapCustomFunctions(customFunctions), maxFails);
     };
 
     if (typeof window === 'undefined') {
@@ -313,7 +373,7 @@ notify about environment:
     links-change: send, receive, fail, success,
     units-change: active (progress?), wait, success, fail
 */
-function Environment({ units = [], links = [] }) {
+function Environment({ units = [], links = [], verbose } = {}) {
     const mapUnitToCompiled = (n, { emit }) => {
         var { handle, start } = n;
         // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
@@ -321,13 +381,13 @@ function Environment({ units = [], links = [] }) {
             emit('emit-step', data);
         };
 
-        handle = new ExpressionEngine({ emitStep })(handle /*, true*/);
-        start = start && new ExpressionEngine({ emitStep })(start /*, true*/);
+        handle = handle && new ExpressionEngine({ emitStep })(handle, verbose);
+        start = start && new ExpressionEngine({ emitStep })(start, verbose);
         const fns = { handle, start };
         Object.keys(fns).forEach(p => {
             !fns[p] && delete fns[p];
         });
-        return Object.assign(n, {...fns});
+        return Object.assign(n, { ...fns });
     };
     const compiledUnits = (umvelt) => units.map((u) => mapUnitToCompiled(u, umvelt));
 
@@ -392,7 +452,7 @@ function Environment({ units = [], links = [] }) {
     function _emit(context, key, data) {
         //console.log({ key });
         if (!context.eventListeners[key]) {
-            debugger;
+            //debugger;
             console.log(' listener not registered');
             console.log({ listeners: context.eventListeners, key });
             return;
@@ -403,36 +463,36 @@ function Environment({ units = [], links = [] }) {
         return;
     }
 
-    function strangeCase(){
+    function strangeCase() {
         const unitsPulsing = document.querySelectorAll('.box.pulse');
 
-        if(unitsPulsing.length !== 1){
+        if (unitsPulsing.length !== 1) {
             return;
         }
 
         const unitsWaiting = document.querySelectorAll('.box.wait');
-        if(unitsWaiting.length !== 0){
+        if (unitsWaiting.length !== 0) {
             return
         }
         const linksSelected = document.querySelectorAll('.link.selected').length;
-        if(linksSelected !== 1){
+        if (linksSelected !== 1) {
             return;
         }
 
         debugger;
     }
 
-    function _fakeRun(state){
+    function _fakeRun(state) {
         const longDelay = 2000;
         const shortDelay = 50;
         const events = (current, next, link) => [
-            `units-change|${state.units[current].label}|active|${2*longDelay}`, //process
+            `units-change|${state.units[current].label}|active|${2 * longDelay}`, //process
             `units-change|${state.units[current].label}|wait|${shortDelay}`, //send data
             `links-change|${state.links[link].label}|send|${longDelay}`, // link start
             `units-change|${state.units[next].label}|active|${shortDelay}`, // receiver ack
             `links-change|${state.links[link].label}|receive|${longDelay}`, // link wait
             `links-change|${state.links[link].label}|success|${shortDelay}`, // link drop
-            `units-change|${state.units[current].label}|success|${0.5*longDelay}`, //send ack
+            `units-change|${state.units[current].label}|success|${0.5 * longDelay}`, //send ack
             //`units-change|${state.units[next].label}|success|0`, // receiver done
         ];
         const eventsAll = [
@@ -442,10 +502,10 @@ function Environment({ units = [], links = [] }) {
         ];
 
         const eventsPromises = eventsAll.map(e => {
-            const [ action, label, state, time ] = e.split('|');
+            const [action, label, state, time] = e.split('|');
             const getPromise = () => new Promise((resolve, reject) => {
                 const fn = () => {
-                    if(strangeCase()){
+                    if (strangeCase()) {
                         debugger;
                     }
                     this.emit(action, [{
@@ -456,16 +516,16 @@ function Environment({ units = [], links = [] }) {
                     }, Number(time));
                 };
                 fn();
-              });
-              return getPromise;
+            });
+            return getPromise;
         });
 
 
-        const promiseSeries = function(tasks, callback){
+        const promiseSeries = function (tasks, callback) {
             return tasks.reduce((promiseChain, currentTask) => {
                 return promiseChain.then(chainResults =>
                     currentTask().then(currentResult =>
-                        [ ...chainResults, currentResult ]
+                        [...chainResults, currentResult]
                     )
                 );
             }, Promise.resolve([])).then(callback);
@@ -473,9 +533,9 @@ function Environment({ units = [], links = [] }) {
 
         var count = 0;
         const doAll = () => {
-            promiseSeries(eventsPromises, (all)=>{
+            promiseSeries(eventsPromises, (all) => {
                 console.log(`--- fake engine: iteration ${++count} done`);
-                if(count >= 10) {
+                if (count >= 10) {
                     console.log('FAKE ITERATION MAX: DONE!');
                     this.emit('units-change', [{
                         label: state.units[0].label,

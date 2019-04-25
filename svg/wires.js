@@ -1371,12 +1371,31 @@ function engineBindState(Engine, _state){
     Engine.on('links-change', linksChange);
 
     Engine.on('emit-step', (data) => {
-        console.log('step emitted');
-        console.log({ data });
+        //console.log('step emitted');
+        console.log(`${data.name}: ${data.status}`);
     });
 }
 
 // --------------------------------------------------------------
+function testEngine(){
+    console.log('test engine');
+    const { engine } = window.ExpressionEngine;
+    const links = [];
+    const units = [{
+        handle: `
+            ack()
+            fetch(countRegisterUrl)
+            send(null, 'fourth')
+        `,
+    }];
+    const stateDefintion = { units, links, verbose: true }; //because state won't carry function definitions
+    const Engine = engine(stateDefintion);
+    Engine.on('emit-step', (data) => {
+        //console.log('step emitted');
+        console.log(`${data.name}: ${data.status}`);
+    });
+}
+
 function initScene(evt, units, links) {
     if(window.innerWidth > 750){
         document.body.style.zoom = "150%";
@@ -1421,11 +1440,12 @@ function initScene(evt, units, links) {
     makeDraggable(state);
     addLinkEffects(state);
 
-    const { engine } = window.ExpressionEngine;
-    const stateDefintion = { units, links }; //because state won't carry function definitions
-    const Engine = engine(stateDefintion);
-
     setTimeout(() => {
+        //return testEngine();
+        const { engine } = window.ExpressionEngine;
+        const stateDefintion = { units, links }; //because state won't carry function definitions
+        const Engine = engine(stateDefintion);
+
         engineBindState(Engine, _state);
         const currentState = _state.read(); //because stateDef does not have link labels
         Engine.start(currentState);

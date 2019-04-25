@@ -1401,54 +1401,26 @@ function ExpressionEngine() {
   var DONE = true;
   var WAITING = false;
   var FAILED = false;
-  var promiseQueue = [];
 
   function _fetch(url) {
-    var queued = promiseQueue.find(function (x) {
-      return x.name === url;
+    var fetchPromise = fetch(url).then(function (x) {
+      return x.text();
+    }).then(function (t) {
+      var result = tryParse(t);
+
+      if (!result) {
+        throw new Error('failed to parse');
+      }
+
+      return result;
     });
-
-    if (queued && queued.error) {
-      //console.log(`queued error: ${!!queued.error}`);
-      return FAILED;
-    }
-
-    if (queued && queued.result) {
-      //console.log(`queued result: ${!!queued.result}`);
-      return DONE;
-    } //console.log('queued, waiting');
-
-
-    queued = new function QueueItem() {
-      var _this = this;
-
-      this.name = url;
-      this.result = undefined;
-      this.error = undefined;
-      this.promise = fetch(url) //TODO: reject status errors?
-      .then(function (x) {
-        return x.text();
-      }).then(function (t) {
-        var result = tryParse(t) || {
-          error: 'failed to parse'
-        };
-
-        if (result.error) {
-          throw result.error;
-        }
-
-        _this.result = result;
-      }).catch(function (e) {
-        _this.error = e;
-      });
-    }();
-    promiseQueue.push(queued);
-    return WAITING;
+    return fetchPromise;
   }
 
   var mappedItems = [];
 
   function _map(mapper, input, output) {
+    //console.log('custom function [map] ran');
     var mapped = mappedItems.find(function (x) {
       return x.name === output;
     });
@@ -1457,11 +1429,10 @@ function ExpressionEngine() {
       return mapped.error ? FAILED : DONE;
     } //if input is url, get result from promiseQueue
     //TODO: if not??
+    //const queued = promiseQueue.find(x => x.name === input);
 
 
-    var queued = promiseQueue.find(function (x) {
-      return x.name === input;
-    });
+    var queued = false;
 
     if (!queued) {
       mappedItems.push({
@@ -1499,16 +1470,16 @@ function ExpressionEngine() {
   }
 
   function _send(value, nodes) {
+    //console.log('custom function [send] ran');
     //test if array, wrap in array if not
     //TODO:
-    //console.log('custom function [send] ran');
     return DONE;
   }
 
   function _ack(value, nodes) {
     //test if array, wrap in array if not
     //TODO:
-    console.log('custom function [ack] ran');
+    //console.log('custom function [ack] ran');
     return DONE;
   }
 
@@ -1534,12 +1505,9 @@ function ExpressionEngine() {
 
     function compiled(data, callback) {
       var myFunc = compileExpression(exp, custFn);
-      var result = myFunc(data);
-      emitStep && emitStep({
-        name: 'TODO',
-        status: 'not sure about this yet'
-      });
-      var fetchingError = promiseQueue.map(function (x) {
+      var result = myFunc(data); //console.log({ promises: custFn.promises });
+
+      var asyncError = custFn.promises.map(function (x) {
         return x.error;
       }).find(function (x) {
         return x;
@@ -1550,14 +1518,14 @@ function ExpressionEngine() {
         return x;
       });
       var tooManyFails = fails > maxFails ? "Maximum failures exceeded: ".concat(maxFails) : undefined;
-      var finished = result || fetchingError || mappingError || tooManyFails; //console.log({ result, fetchingError, mappingError })
+      var finished = result || asyncError || mappingError || tooManyFails; //console.log({ result, asyncError, mappingError })
 
       if (finished) {
-        var results = mappedItems.length > 0 || promiseQueue.length > 0 ? {
+        var results = mappedItems.length > 0 || custFn.promises.length > 0 ? {
           map: mappedItems,
-          fetch: promiseQueue
+          fetch: custFn.promises
         } : undefined;
-        callback(fetchingError || mappingError || tooManyFails, results || result);
+        callback(asyncError || mappingError || tooManyFails, results || result);
         return;
       } //RETRYING
 
@@ -1566,7 +1534,7 @@ function ExpressionEngine() {
         TODO: 'add mapped data'
       };
       var dataPlusMapped = Object.assign({}, data, dataFromMap);
-      var firstUnresolved = promiseQueue.find(function (x) {
+      var firstUnresolved = custFn.promises.find(function (x) {
         return !x.result;
       });
 
@@ -1579,6 +1547,7 @@ function ExpressionEngine() {
 
       firstUnresolved.promise.then(function (x) {
         //console.log('--- unresolved promise found, attaching');
+        //console.log({ x });
         compiled(dataPlusMapped, callback);
       });
     }
@@ -1591,10 +1560,103 @@ function ExpressionEngine() {
   //     { strlen: s => s.length }); // custom functions
   // console.log(myfilter({ firstname: 'Joe' }));    // returns 0
   // console.log(myfilter({ firstname: 'Joseph' })); // returns 1
-  //TODO: expose customFunctions? and maxFails to browser
+  // OMG - https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise
 
 
-  var maxFails = 50;
+  var isPromise = function isPromise(object) {
+    return object && typeof object.then === 'function';
+  };
+  /*
+      TODO:
+      Need to know what unit is acting
+      emit-step should maybe just be in compiled (line 131)
+      idea is for this functionality ^^^ to notify outside world of progress
+      need to be able to modify/keep global state so that functions can share data
+  */
+
+
+  var wrapCustomFunctions = function wrapCustomFunctions(custFuncs) {
+    // should probably just be called a queue or results and not promises
+    var promises = [];
+    var wrapped = Object.keys(custFuncs).reduce(function (all, key) {
+      all[key] = function () {
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        var funcKey = "".concat(key, ":").concat(args.join('-')); //console.log(`custom function [${key}] ran`);
+        //console.log({ funcKey })
+
+        var queued = promises.find(function (x) {
+          return x.name === funcKey;
+        });
+
+        if (queued && queued.error) {
+          //console.log(`queued error: ${!!queued.error}`);
+          return FAILED;
+        }
+
+        if (queued && queued.result) {
+          //console.log(`queued result: ${!!queued.result}`);
+          return DONE;
+        }
+
+        var result = custFuncs[key].apply(custFuncs, args);
+
+        if (!isPromise(result)) {
+          // emitStep && emitStep({
+          //     name: key, result, status: 'success'
+          // });
+          // queued = new function QueueItem() {
+          //     this.name = funcKey;
+          //     this.result = result;
+          //     this.error = undefined;
+          //     this.promise = undefined;
+          // };
+          // promises.push(queued);
+          // return result;
+          result = new Promise(function (resolve) {
+            return resolve(result);
+          });
+        } //console.log('queued, waiting');
+
+
+        queued = new function QueueItem() {
+          var _this = this;
+
+          this.name = funcKey;
+          this.result = undefined;
+          this.error = undefined;
+          this.promise = result //TODO: reject status errors?
+          .then(function (res) {
+            emitStep && emitStep({
+              name: key,
+              result: res,
+              status: 'success'
+            });
+            _this.result = res;
+            return res;
+          }).catch(function (err) {
+            emitStep && emitStep({
+              name: key,
+              result: err,
+              status: 'error'
+            });
+            _this.error = err; //throw new Error('error in custom function promise');
+          });
+        }();
+        promises.push(queued);
+        return WAITING;
+      };
+
+      return all;
+    }, {});
+    wrapped.promises = promises;
+    return wrapped;
+  }; //TODO: expose customFunctions? and maxFails to browser
+
+
+  var maxFails = 20;
 
   var expressionEngine = function expressionEngine(exampleExpression, verbose) {
     var ex = exampleExpression.trim().split('\n').join(' and ').replace(/\s\s+/g, ' ');
@@ -1603,7 +1665,7 @@ function ExpressionEngine() {
       console.log('EXPRESSION: ' + exampleExpression);
     }
 
-    return compile(ex, customFunctions, maxFails);
+    return compile(ex, wrapCustomFunctions(customFunctions), maxFails);
   };
 
   if (typeof window === 'undefined') {
@@ -1684,11 +1746,13 @@ notify about environment:
     units-change: active (progress?), wait, success, fail
 */
 
-function Environment(_ref2) {
-  var _ref2$units = _ref2.units,
+function Environment() {
+  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref2$units = _ref2.units,
       units = _ref2$units === void 0 ? [] : _ref2$units,
       _ref2$links = _ref2.links,
-      links = _ref2$links === void 0 ? [] : _ref2$links;
+      links = _ref2$links === void 0 ? [] : _ref2$links,
+      verbose = _ref2.verbose;
 
   var mapUnitToCompiled = function mapUnitToCompiled(n, _ref3) {
     var emit = _ref3.emit;
@@ -1699,16 +1763,12 @@ function Environment(_ref2) {
       emit('emit-step', data);
     };
 
-    handle = new ExpressionEngine({
+    handle = handle && new ExpressionEngine({
       emitStep: emitStep
-    })(handle
-    /*, true*/
-    );
+    })(handle, verbose);
     start = start && new ExpressionEngine({
       emitStep: emitStep
-    })(start
-    /*, true*/
-    );
+    })(start, verbose);
     var fns = {
       handle: handle,
       start: start
@@ -1794,7 +1854,7 @@ function Environment(_ref2) {
   function _emit(context, key, data) {
     //console.log({ key });
     if (!context.eventListeners[key]) {
-      debugger;
+      //debugger;
       console.log(' listener not registered');
       console.log({
         listeners: context.eventListeners,
