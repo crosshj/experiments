@@ -5,7 +5,7 @@ const apis = {
     countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
 };
 const api = 'countRegister';
-const exampleExpression = `
+const exampleExpression = false && `
     fetch(${api}Url)
     map(${api}Map, ${api}Url, "${api}Map")
     send(${api}MapValue, 2)
@@ -24,11 +24,12 @@ const simple = {
         width: 110,
         height: 40,
         start: `
-            send(null, 'fourth')
+            fetch("https://api.countapi.xyz/hit/boxesandwires/visits")
+            send(fetch.0.value, ('unit:जो है वही है', 'unit:hello'))
         `,
         handle: exampleExpression || `
             ack()
-            send(null, 'fourth')
+            send(null, 4)
         `,
         nodes: [null, null, null, null, { label: 'fourth'}, null, {
                 label: 'sixth'

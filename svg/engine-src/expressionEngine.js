@@ -1,5 +1,6 @@
-const { compileExpression } = require('filtrex');
-
+const filtrex = require('filtrex');
+window.filtrex = filtrex;
+const { compileExpression } = filtrex;
 /*
     TODO:
     - make more OO
@@ -95,6 +96,7 @@ function ExpressionEngine({ emitStep } = {}) {
     }
 
     function _send(value, nodes) {
+        console.log(arguments)
         //console.log('custom function [send] ran');
         //test if array, wrap in array if not
         //TODO:
@@ -129,10 +131,40 @@ function ExpressionEngine({ emitStep } = {}) {
 
             currently, its reasonably difficult to add custom functions in this way
         */
+
+        function propFunction(
+            propertyName, // name of the property being accessed
+            get, // safe getter that retrieves the property from obj
+            obj // the object passed to compiled expression
+        ){
+            if(propertyName === 'null'){
+                return null;
+            }
+            if(propertyName === 'undefined'){
+                return undefined;
+            }
+            if(propertyName.includes('unit:')){
+                console.log(propertyName);
+                return 'TODO: get unit?';
+            }
+            const [func, index, prop ]  = propertyName.split('.');
+            const supportedCommands = Object.keys(custFn);
+            //console.log({ func, index, path, supportedCommands })
+            if(supportedCommands.includes(func)){
+                //console.log({ func, index, prop })
+                var res = undefined;
+                try {
+                    res = custFn.promises.filter(x => x.func === func)[index].result[prop];
+                } catch(e){}
+                return res;
+                //console.log(custFn.promises.filter(x => x.func === func));
+            }
+        }
         function compiled(data, callback) {
             var myFunc = compileExpression(
                 exp,
-                custFn
+                custFn,
+                propFunction
             );
 
             const result = myFunc(data);
@@ -154,6 +186,9 @@ function ExpressionEngine({ emitStep } = {}) {
             //console.log({ result, asyncError, mappingError })
 
             if (finished) {
+                if (!callback) {
+                    return;
+                }
                 const results = mappedItems.length > 0 || custFn.promises.length > 0
                     ? {
                         map: mappedItems,
@@ -252,6 +287,7 @@ function ExpressionEngine({ emitStep } = {}) {
                     //console.log('queued, waiting');
                     queued = new function QueueItem() {
                         this.name = funcKey;
+                        this.func = key;
                         this.result = undefined;
                         this.error = undefined;
                         this.promise = result
@@ -283,6 +319,22 @@ function ExpressionEngine({ emitStep } = {}) {
     //TODO: expose customFunctions? and maxFails to browser
     var maxFails = 20;
     const expressionEngine = (exampleExpression, verbose) => {
+        // // rip data from original expression
+        // const ripped = {
+        //     data: {},
+        //     exp: ''
+        // }
+
+        // const extractFuncRegex = /\b[^()]+\((.*)\)$/;
+        // const extractArgsRegex = /([^,]+\(.+?\))|([^,]+)/;
+
+        // const expLines = exampleExpression.split('\n');
+        // expLines.forEach(line => {
+        //     const func = line.match(extractFuncRegex);
+        //     const args = line.match(extractArgsRegex);
+        //     (func && args) && console.log({ func, args })
+        // });
+
         const ex = exampleExpression
             .trim()
             .split('\n')
@@ -374,11 +426,13 @@ notify about environment:
     units-change: active (progress?), wait, success, fail
 */
 function Environment({ units = [], links = [], verbose } = {}) {
-    const mapUnitToCompiled = (n, { emit }) => {
+
+    const mapUnitToCompiled = (n, { emit, control }) => {
         var { handle, start } = n;
         // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
         const emitStep = (data) => {
-            emit('emit-step', data);
+            const dataWithUnitInfo = { src: n, ...data};
+            control('emit-step', dataWithUnitInfo);
         };
 
         handle = handle && new ExpressionEngine({ emitStep })(handle, verbose);
@@ -410,6 +464,9 @@ function Environment({ units = [], links = [], verbose } = {}) {
             this.emit = (key, data) => _emit.bind(this)(context, key, data);
             this.start = (state) => _fakeRun.bind(this)(state);
 
+            // this is for internal signals
+            this.control = (key, data) => _control.bind(this)(context, key, data);
+
             context.units = compiledUnits(this);
             //console.log({ compiledUnits });
 
@@ -426,17 +483,29 @@ function Environment({ units = [], links = [], verbose } = {}) {
                 [`${api}Map`]: (data) => data.value || data.activity
             };
 
-            //testing handler of first unit
+            const unitsWithStartHandlers = context.units.filter(x => x.start);
+            //console.log({ unitsWithStartHandlers });
+
             setTimeout(() => {
-                context.units[0].handle(dataForScript, (error, data) => {
-                    console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------');
-                    //console.log({ error, data });
-                });
+                unitsWithStartHandlers.forEach(x => x.start());
             }, 2000);
+
+            // //testing handler of first unit
+            // setTimeout(() => {
+            //     context.units[0].handle(dataForScript, (error, data) => {
+            //         console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------');
+            //         //console.log({ error, data });
+            //     });
+            // }, 2000);
         }
 
         return Umvelt;
     })();
+
+    function _control(context, key, data){
+        //console.log({ context, key, data, engine: this });
+        this.emit(key, data)
+    }
 
     function _on(context, key, callback) {
         //TODO: if send/ack from one compiled script then
@@ -483,6 +552,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     }
 
     function _fakeRun(state) {
+        return;
         const longDelay = 2000;
         const shortDelay = 50;
         const events = (current, next, link) => [

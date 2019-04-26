@@ -1372,7 +1372,8 @@ function engineBindState(Engine, _state){
 
     Engine.on('emit-step', (data) => {
         //console.log('step emitted');
-        console.log(`${data.name}: ${data.status}`);
+        console.log(`[${data.src.label}] ${data.name}: ${data.status}`);
+        //console.log({ data });
     });
 }
 
@@ -1443,7 +1444,7 @@ function initScene(evt, units, links) {
     setTimeout(() => {
         //return testEngine();
         const { engine } = window.ExpressionEngine;
-        const stateDefintion = { units, links }; //because state won't carry function definitions
+        const stateDefintion = { units, links, verbose: true }; //because state won't carry function definitions
         const Engine = engine(stateDefintion);
 
         engineBindState(Engine, _state);

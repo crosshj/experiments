@@ -1347,14 +1347,6 @@ exports.transform = EBNF.transform;
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compile", function() { return compile; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "engine", function() { return engine; });
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -1367,8 +1359,18 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var _require = __webpack_require__(10),
-    compileExpression = _require.compileExpression;
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var filtrex = __webpack_require__(10);
+
+window.filtrex = filtrex;
+var compileExpression = filtrex.compileExpression;
 /*
     TODO:
     - make more OO
@@ -1385,7 +1387,6 @@ var _require = __webpack_require__(10),
     - create connection, create unit
     - cache / memory
 */
-
 
 function ExpressionEngine() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -1470,9 +1471,10 @@ function ExpressionEngine() {
   }
 
   function _send(value, nodes) {
-    //console.log('custom function [send] ran');
+    console.log(arguments); //console.log('custom function [send] ran');
     //test if array, wrap in array if not
     //TODO:
+
     return DONE;
   }
 
@@ -1503,8 +1505,47 @@ function ExpressionEngine() {
           currently, its reasonably difficult to add custom functions in this way
     */
 
+    function propFunction(propertyName, // name of the property being accessed
+    get, // safe getter that retrieves the property from obj
+    obj // the object passed to compiled expression
+    ) {
+      if (propertyName === 'null') {
+        return null;
+      }
+
+      if (propertyName === 'undefined') {
+        return undefined;
+      }
+
+      if (propertyName.includes('unit:')) {
+        console.log(propertyName);
+        return 'TODO: get unit?';
+      }
+
+      var _propertyName$split = propertyName.split('.'),
+          _propertyName$split2 = _slicedToArray(_propertyName$split, 3),
+          func = _propertyName$split2[0],
+          index = _propertyName$split2[1],
+          prop = _propertyName$split2[2];
+
+      var supportedCommands = Object.keys(custFn); //console.log({ func, index, path, supportedCommands })
+
+      if (supportedCommands.includes(func)) {
+        //console.log({ func, index, prop })
+        var res = undefined;
+
+        try {
+          res = custFn.promises.filter(function (x) {
+            return x.func === func;
+          })[index].result[prop];
+        } catch (e) {}
+
+        return res; //console.log(custFn.promises.filter(x => x.func === func));
+      }
+    }
+
     function compiled(data, callback) {
-      var myFunc = compileExpression(exp, custFn);
+      var myFunc = compileExpression(exp, custFn, propFunction);
       var result = myFunc(data); //console.log({ promises: custFn.promises });
 
       var asyncError = custFn.promises.map(function (x) {
@@ -1521,6 +1562,10 @@ function ExpressionEngine() {
       var finished = result || asyncError || mappingError || tooManyFails; //console.log({ result, asyncError, mappingError })
 
       if (finished) {
+        if (!callback) {
+          return;
+        }
+
         var results = mappedItems.length > 0 || custFn.promises.length > 0 ? {
           map: mappedItems,
           fetch: custFn.promises
@@ -1625,6 +1670,7 @@ function ExpressionEngine() {
           var _this = this;
 
           this.name = funcKey;
+          this.func = key;
           this.result = undefined;
           this.error = undefined;
           this.promise = result //TODO: reject status errors?
@@ -1659,6 +1705,19 @@ function ExpressionEngine() {
   var maxFails = 20;
 
   var expressionEngine = function expressionEngine(exampleExpression, verbose) {
+    // // rip data from original expression
+    // const ripped = {
+    //     data: {},
+    //     exp: ''
+    // }
+    // const extractFuncRegex = /\b[^()]+\((.*)\)$/;
+    // const extractArgsRegex = /([^,]+\(.+?\))|([^,]+)/;
+    // const expLines = exampleExpression.split('\n');
+    // expLines.forEach(line => {
+    //     const func = line.match(extractFuncRegex);
+    //     const args = line.match(extractArgsRegex);
+    //     (func && args) && console.log({ func, args })
+    // });
     var ex = exampleExpression.trim().split('\n').join(' and ').replace(/\s\s+/g, ' ');
 
     if (verbose) {
@@ -1755,12 +1814,17 @@ function Environment() {
       verbose = _ref2.verbose;
 
   var mapUnitToCompiled = function mapUnitToCompiled(n, _ref3) {
-    var emit = _ref3.emit;
+    var emit = _ref3.emit,
+        control = _ref3.control;
     var handle = n.handle,
         start = n.start; // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
 
     var emitStep = function emitStep(data) {
-      emit('emit-step', data);
+      var dataWithUnitInfo = _objectSpread({
+        src: n
+      }, data);
+
+      control('emit-step', dataWithUnitInfo);
     };
 
     handle = handle && new ExpressionEngine({
@@ -1814,6 +1878,11 @@ function Environment() {
 
       this.start = function (state) {
         return _fakeRun.bind(_this2)(state);
+      }; // this is for internal signals
+
+
+      this.control = function (key, data) {
+        return _control.bind(_this2)(context, key, data);
       };
 
       context.units = compiledUnits(this); //console.log({ compiledUnits });
@@ -1827,17 +1896,31 @@ function Environment() {
       var api = 'countRegister';
       var dataForScript = (_dataForScript = {}, _defineProperty(_dataForScript, "".concat(api, "Url"), apis[api]), _defineProperty(_dataForScript, "".concat(api, "Map"), function Map(data) {
         return data.value || data.activity;
-      }), _dataForScript); //testing handler of first unit
+      }), _dataForScript);
+      var unitsWithStartHandlers = context.units.filter(function (x) {
+        return x.start;
+      }); //console.log({ unitsWithStartHandlers });
 
       setTimeout(function () {
-        context.units[0].handle(dataForScript, function (error, data) {
-          console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------'); //console.log({ error, data });
+        unitsWithStartHandlers.forEach(function (x) {
+          return x.start();
         });
-      }, 2000);
+      }, 2000); // //testing handler of first unit
+      // setTimeout(() => {
+      //     context.units[0].handle(dataForScript, (error, data) => {
+      //         console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------');
+      //         //console.log({ error, data });
+      //     });
+      // }, 2000);
     }
 
     return Umvelt;
   }();
+
+  function _control(context, key, data) {
+    //console.log({ context, key, data, engine: this });
+    this.emit(key, data);
+  }
 
   function _on(context, key, callback) {
     //TODO: if send/ack from one compiled script then
@@ -1894,6 +1977,7 @@ function Environment() {
   function _fakeRun(state) {
     var _this3 = this;
 
+    return;
     var longDelay = 2000;
     var shortDelay = 50;
 
