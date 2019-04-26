@@ -1388,6 +1388,16 @@ var compileExpression = filtrex.compileExpression;
     - cache / memory
 */
 
+function sleeper(ms) {
+  return function (x) {
+    return new Promise(function (resolve) {
+      return setTimeout(function () {
+        return resolve(x);
+      }, ms);
+    });
+  };
+}
+
 function ExpressionEngine() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       emitStep = _ref.emitStep;
@@ -1471,7 +1481,7 @@ function ExpressionEngine() {
   }
 
   function _send(message, nodes) {
-    var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2000;
+    var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10000;
 
     //console.log(arguments)
     //console.log('custom function [send] ran');
@@ -1749,6 +1759,7 @@ function ExpressionEngine() {
           this.result = undefined;
           this.error = undefined;
           this.promise = result //TODO: reject status errors?
+          //.then(sleeper(5000))
           .then(function (res) {
             emitStep && emitStep({
               name: key,
@@ -1958,7 +1969,7 @@ function Environment() {
       };
 
       this.start = function (state) {
-        return _fakeRun.bind(_this2)(state);
+        return _fakeRun.bind(_this2)(state, context);
       }; // this is for internal signals
 
 
@@ -1967,22 +1978,6 @@ function Environment() {
       };
 
       context.units = compiledUnits(this); //console.log({ compiledUnits });
-
-      var unitsWithStartHandlers = context.units.filter(function (x) {
-        return x.start;
-      }); //console.log({ unitsWithStartHandlers });
-
-      setTimeout(function () {
-        unitsWithStartHandlers.forEach(function (x) {
-          return x.start();
-        });
-      }, 2000); // //testing handler of first unit
-      // setTimeout(() => {
-      //     context.units[0].handle(dataForScript, (error, data) => {
-      //         console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------');
-      //         //console.log({ error, data });
-      //     });
-      // }, 2000);
     }
 
     return Umvelt;
@@ -1993,6 +1988,10 @@ function Environment() {
         targets = data.targets,
         message = data.message,
         listener = data.listener; //console.log({ context, key, data, engine: this });
+    //TODO: if send/ack from one compiled script then
+    //  - TODO: activate link (send message to UI for link)
+    //  - DONE: notify other compiled script
+    //  - ...
 
     this.emit(key, data);
 
@@ -2014,10 +2013,7 @@ function Environment() {
         });
         return;
       } //TODO: sending unit must have link to receiver unit, otherwise error
-      //TODO: this is just for testing right now
-      // listener({ data: { name: 'ack', src: { label: targets[0] }}});
-      // listener({ data: { name: 'ack', src: { label: targets[1] }}});
-      //TODO: attach listener
+      //TODO: add function to remove listener
 
 
       this.on('emit-step', function (data) {
@@ -2032,10 +2028,6 @@ function Environment() {
   }
 
   function _on(context, key, callback) {
-    //TODO: if send/ack from one compiled script then
-    //  - activate link (send message to UI for link)
-    //  - notify other compiled script (handler) (should have listeners for this?)
-    //  - ...
     if (context.eventListeners[key] === undefined) {
       context.eventListeners[key] = [];
     }
@@ -2083,9 +2075,18 @@ function Environment() {
     debugger;
   }
 
-  function _fakeRun(state) {
+  function _fakeRun(state, context) {
     var _this3 = this;
 
+    var unitsWithStartHandlers = context.units.filter(function (x) {
+      return x.start;
+    }); //console.log({ unitsWithStartHandlers });
+
+    setTimeout(function () {
+      unitsWithStartHandlers.forEach(function (x) {
+        return x.start();
+      });
+    }, 2000);
     return;
     var longDelay = 2000;
     var shortDelay = 50;

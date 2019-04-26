@@ -18,6 +18,12 @@ const { compileExpression } = filtrex;
     - cache / memory
 */
 
+function sleeper(ms) {
+    return function(x) {
+        return new Promise(resolve => setTimeout(() => resolve(x), ms));
+    };
+}
+
 function ExpressionEngine({ emitStep } = {}) {
     //TODO: maybe check if node versus browser better
     const fetch = typeof window !== 'undefined' && window.fetch
@@ -95,7 +101,7 @@ function ExpressionEngine({ emitStep } = {}) {
             : DONE;
     }
 
-    function _send(message, nodes, timeout = 2000) {
+    function _send(message, nodes, timeout = 10000) {
         //console.log(arguments)
         //console.log('custom function [send] ran');
         //test if array, wrap in array if not
@@ -269,11 +275,12 @@ function ExpressionEngine({ emitStep } = {}) {
                 compiled(dataPlusMapped, callback);
                 return;
             }
-            firstUnresolved.promise.then(x => {
-                //console.log('--- unresolved promise found, attaching');
-                //console.log({ x });
-                compiled(dataPlusMapped, callback);
-            });
+            firstUnresolved.promise
+                .then(x => {
+                    //console.log('--- unresolved promise found, attaching');
+                    //console.log({ x });
+                    compiled(dataPlusMapped, callback);
+                });
         };
 
         return compiled;
@@ -345,6 +352,7 @@ function ExpressionEngine({ emitStep } = {}) {
                         this.error = undefined;
                         this.promise = result
                             //TODO: reject status errors?
+                            //.then(sleeper(5000))
                             .then(res => {
                                 emitStep && emitStep({
                                     name: key, result: res, status: 'success'
@@ -524,28 +532,13 @@ function Environment({ units = [], links = [], verbose } = {}) {
         function Umvelt() {
             this.on = (key, callback) => _on(context, key, callback);
             this.emit = (key, data) => _emit.bind(this)(context, key, data);
-            this.start = (state) => _fakeRun.bind(this)(state);
+            this.start = (state) => _fakeRun.bind(this)(state, context);
 
             // this is for internal signals
             this.control = (key, data) => _control.bind(this)(context, key, data);
 
             context.units = compiledUnits(this);
             //console.log({ compiledUnits });
-
-            const unitsWithStartHandlers = context.units.filter(x => x.start);
-            //console.log({ unitsWithStartHandlers });
-
-            setTimeout(() => {
-                unitsWithStartHandlers.forEach(x => x.start());
-            }, 2000);
-
-            // //testing handler of first unit
-            // setTimeout(() => {
-            //     context.units[0].handle(dataForScript, (error, data) => {
-            //         console.log('---- SIMPLE TEST OF UNIT HANDLER: DONE ------');
-            //         //console.log({ error, data });
-            //     });
-            // }, 2000);
         }
 
         return Umvelt;
@@ -554,6 +547,11 @@ function Environment({ units = [], links = [], verbose } = {}) {
     function _control(context, key, data){
         const { name, targets, message, listener } = data;
         //console.log({ context, key, data, engine: this });
+
+        //TODO: if send/ack from one compiled script then
+        //  - TODO: activate link (send message to UI for link)
+        //  - DONE: notify other compiled script
+        //  - ...
 
         this.emit(key, data)
 
@@ -569,11 +567,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
 
             //TODO: sending unit must have link to receiver unit, otherwise error
 
-            //TODO: this is just for testing right now
-            // listener({ data: { name: 'ack', src: { label: targets[0] }}});
-            // listener({ data: { name: 'ack', src: { label: targets[1] }}});
-
-            //TODO: attach listener
+            //TODO: add function to remove listener
             this.on('emit-step', (data) => {
                 listener({ data });
             });
@@ -582,10 +576,6 @@ function Environment({ units = [], links = [], verbose } = {}) {
     }
 
     function _on(context, key, callback) {
-        //TODO: if send/ack from one compiled script then
-        //  - activate link (send message to UI for link)
-        //  - notify other compiled script (handler) (should have listeners for this?)
-        //  - ...
         if (context.eventListeners[key] === undefined) {
             context.eventListeners[key] = [];
         }
@@ -625,7 +615,15 @@ function Environment({ units = [], links = [], verbose } = {}) {
         debugger;
     }
 
-    function _fakeRun(state) {
+    function _fakeRun(state, context) {
+
+        const unitsWithStartHandlers = context.units.filter(x => x.start);
+        //console.log({ unitsWithStartHandlers });
+
+        setTimeout(() => {
+            unitsWithStartHandlers.forEach(x => x.start());
+        }, 2000);
+
         return;
         const longDelay = 2000;
         const shortDelay = 50;
