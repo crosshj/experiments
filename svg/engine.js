@@ -1470,12 +1470,88 @@ function ExpressionEngine() {
     return mappedItem.error ? FAILED : DONE;
   }
 
-  function _send(value, nodes) {
-    console.log(arguments); //console.log('custom function [send] ran');
+  function _send(message, nodes) {
+    var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2000;
+
+    //console.log(arguments)
+    //console.log('custom function [send] ran');
     //test if array, wrap in array if not
     //TODO:
+    function flatPromise() {
+      var resolve, reject;
+      var promise = new Promise(function (res, rej) {
+        resolve = res;
+        reject = rej;
+      });
+      return {
+        promise: promise,
+        resolve: resolve,
+        reject: reject
+      };
+    }
 
-    return DONE;
+    var _flatPromise = flatPromise(),
+        resolve = _flatPromise.resolve,
+        reject = _flatPromise.reject,
+        p = _flatPromise.promise;
+
+    var nodesArray = Array.isArray(nodes) ? nodes : [nodes];
+    var timer = undefined;
+    var nodesDone = nodesArray.map(function (label) {
+      return {
+        label: label,
+        done: false
+      };
+    });
+
+    var listener = function listener() {
+      var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref2$data = _ref2.data,
+          data = _ref2$data === void 0 ? {} : _ref2$data,
+          removeListener = _ref2.removeListener,
+          error = _ref2.error;
+
+      timer = timer || setTimeout(function () {
+        removeListener && removeListener();
+        reject('send not acknowledged within time limit');
+      }, timeout);
+
+      if (error) {
+        clearTimeout(timer);
+        removeListener && removeListener();
+        reject(error);
+        return;
+      } // only handle ack events
+
+
+      var isAck = data.name === 'ack';
+
+      if (!isAck) {
+        return;
+      } // mark a node as done
+
+
+      var foundNode = nodesDone.find(function (n) {
+        return n.label === data.src.label;
+      });
+      foundNode && (foundNode.done = true); // should listen for ack from all nodes
+
+      var unfinishedNodes = nodesDone.find(function (n) {
+        return !n.done;
+      });
+
+      if (!unfinishedNodes) {
+        clearTimeout(timer);
+        removeListener && removeListener();
+        resolve('all send\'s ack\'ed');
+      }
+    };
+
+    var sendPromise = p;
+    sendPromise.listener = listener;
+    sendPromise.targets = nodesArray;
+    sendPromise.message = message;
+    return sendPromise;
   }
 
   function _ack(value, nodes) {
@@ -1518,8 +1594,7 @@ function ExpressionEngine() {
       }
 
       if (propertyName.includes('unit:')) {
-        console.log(propertyName);
-        return 'TODO: get unit?';
+        return propertyName.replace('unit:', '');
       }
 
       var _propertyName$split = propertyName.split('.'),
@@ -1691,6 +1766,13 @@ function ExpressionEngine() {
             _this.error = err; //throw new Error('error in custom function promise');
           });
         }();
+        emitStep && emitStep({
+          name: key,
+          targets: result.targets,
+          message: result.message,
+          listener: result.listener,
+          status: 'start'
+        });
         promises.push(queued);
         return WAITING;
       };
@@ -1806,16 +1888,16 @@ notify about environment:
 */
 
 function Environment() {
-  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      _ref2$units = _ref2.units,
-      units = _ref2$units === void 0 ? [] : _ref2$units,
-      _ref2$links = _ref2.links,
-      links = _ref2$links === void 0 ? [] : _ref2$links,
-      verbose = _ref2.verbose;
+  var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref3$units = _ref3.units,
+      units = _ref3$units === void 0 ? [] : _ref3$units,
+      _ref3$links = _ref3.links,
+      links = _ref3$links === void 0 ? [] : _ref3$links,
+      verbose = _ref3.verbose;
 
-  var mapUnitToCompiled = function mapUnitToCompiled(n, _ref3) {
-    var emit = _ref3.emit,
-        control = _ref3.control;
+  var mapUnitToCompiled = function mapUnitToCompiled(n, _ref4) {
+    var emit = _ref4.emit,
+        control = _ref4.control;
     var handle = n.handle,
         start = n.start; // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
 
@@ -1865,8 +1947,7 @@ function Environment() {
     };
 
     function Umvelt() {
-      var _this2 = this,
-          _dataForScript;
+      var _this2 = this;
 
       this.on = function (key, callback) {
         return _on(context, key, callback);
@@ -1887,16 +1968,6 @@ function Environment() {
 
       context.units = compiledUnits(this); //console.log({ compiledUnits });
 
-      var apis = {
-        ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
-        bored: 'http://www.boredapi.com/api/activity/',
-        countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
-        countGet: 'https://api.countapi.xyz/get/boxesandwires/visits'
-      };
-      var api = 'countRegister';
-      var dataForScript = (_dataForScript = {}, _defineProperty(_dataForScript, "".concat(api, "Url"), apis[api]), _defineProperty(_dataForScript, "".concat(api, "Map"), function Map(data) {
-        return data.value || data.activity;
-      }), _dataForScript);
       var unitsWithStartHandlers = context.units.filter(function (x) {
         return x.start;
       }); //console.log({ unitsWithStartHandlers });
@@ -1918,8 +1989,46 @@ function Environment() {
   }();
 
   function _control(context, key, data) {
-    //console.log({ context, key, data, engine: this });
+    var name = data.name,
+        targets = data.targets,
+        message = data.message,
+        listener = data.listener; //console.log({ context, key, data, engine: this });
+
     this.emit(key, data);
+
+    if (name === 'send' && targets) {
+      var targetUnits = targets.map(function (label) {
+        return context.units.find(function (u) {
+          return u.label === label && u.handle;
+        });
+      }).filter(function (x) {
+        return !!x;
+      });
+
+      if (targetUnits.length !== targets.length) {
+        listener({
+          error: 'cannot find all nodes or handlers',
+          data: {
+            targetUnits: targetUnits
+          }
+        });
+        return;
+      } //TODO: sending unit must have link to receiver unit, otherwise error
+      //TODO: this is just for testing right now
+      // listener({ data: { name: 'ack', src: { label: targets[0] }}});
+      // listener({ data: { name: 'ack', src: { label: targets[1] }}});
+      //TODO: attach listener
+
+
+      this.on('emit-step', function (data) {
+        listener({
+          data: data
+        });
+      });
+      targetUnits.forEach(function (u) {
+        return u.handle();
+      });
+    }
   }
 
   function _on(context, key, callback) {

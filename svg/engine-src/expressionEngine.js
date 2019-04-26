@@ -95,12 +95,66 @@ function ExpressionEngine({ emitStep } = {}) {
             : DONE;
     }
 
-    function _send(value, nodes) {
-        console.log(arguments)
+    function _send(message, nodes, timeout = 2000) {
+        //console.log(arguments)
         //console.log('custom function [send] ran');
         //test if array, wrap in array if not
         //TODO:
-        return DONE;
+        function flatPromise() {
+            let resolve, reject;
+            const promise = new Promise((res, rej) => {
+              resolve = res;
+              reject = rej;
+            });
+            return { promise, resolve, reject };
+        }
+        const { resolve, reject, promise: p } = flatPromise();
+
+        var nodesArray = Array.isArray(nodes)
+            ? nodes
+            : [ nodes ];
+
+        var timer = undefined;
+        const nodesDone = nodesArray.map(label => ({ label, done: false}));
+        const listener = ({ data = {}, removeListener, error } = {}) => {
+
+            timer = timer || setTimeout(() => {
+                removeListener && removeListener();
+                reject('send not acknowledged within time limit');
+            }, timeout);
+
+            if(error){
+                clearTimeout(timer);
+                removeListener && removeListener();
+                reject(error);
+                return;
+            }
+
+            // only handle ack events
+            const isAck = data.name === 'ack';
+            if(!isAck){
+                return;
+            }
+
+            // mark a node as done
+            const foundNode = nodesDone.find(n => n.label === data.src.label);
+            foundNode && (foundNode.done = true);
+
+            // should listen for ack from all nodes
+            const unfinishedNodes = nodesDone.find(n => !n.done);
+            if(!unfinishedNodes){
+                clearTimeout(timer);
+                removeListener && removeListener();
+                resolve('all send\'s ack\'ed');
+            }
+        };
+
+        const sendPromise = p;
+        sendPromise.listener = listener;
+        sendPromise.targets = nodesArray;
+        sendPromise.message = message;
+
+        return sendPromise;
     }
 
     function _ack(value, nodes) {
@@ -144,8 +198,7 @@ function ExpressionEngine({ emitStep } = {}) {
                 return undefined;
             }
             if(propertyName.includes('unit:')){
-                console.log(propertyName);
-                return 'TODO: get unit?';
+                return propertyName.replace('unit:', '');
             }
             const [func, index, prop ]  = propertyName.split('.');
             const supportedCommands = Object.keys(custFn);
@@ -307,6 +360,15 @@ function ExpressionEngine({ emitStep } = {}) {
                                 //throw new Error('error in custom function promise');
                             });
                     };
+
+                    emitStep && emitStep({
+                        name: key,
+                        targets: result.targets,
+                        message: result.message,
+                        listener: result.listener,
+                        status: 'start'
+                    });
+
                     promises.push(queued);
                     return WAITING;
                 };
@@ -470,19 +532,6 @@ function Environment({ units = [], links = [], verbose } = {}) {
             context.units = compiledUnits(this);
             //console.log({ compiledUnits });
 
-            const apis = {
-                ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
-                bored: 'http://www.boredapi.com/api/activity/',
-                countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
-                countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
-            };
-            const api = 'countRegister';
-
-            const dataForScript = {
-                [`${api}Url`]: apis[api],
-                [`${api}Map`]: (data) => data.value || data.activity
-            };
-
             const unitsWithStartHandlers = context.units.filter(x => x.start);
             //console.log({ unitsWithStartHandlers });
 
@@ -503,8 +552,33 @@ function Environment({ units = [], links = [], verbose } = {}) {
     })();
 
     function _control(context, key, data){
+        const { name, targets, message, listener } = data;
         //console.log({ context, key, data, engine: this });
+
         this.emit(key, data)
+
+        if(name === 'send' && targets){
+            const targetUnits = targets.map(label => {
+                return context.units.find(u => u.label === label && u.handle);
+            }).filter(x => !!x);
+
+            if(targetUnits.length !== targets.length){
+                listener({ error: 'cannot find all nodes or handlers', data: { targetUnits } });
+                return;
+            }
+
+            //TODO: sending unit must have link to receiver unit, otherwise error
+
+            //TODO: this is just for testing right now
+            // listener({ data: { name: 'ack', src: { label: targets[0] }}});
+            // listener({ data: { name: 'ack', src: { label: targets[1] }}});
+
+            //TODO: attach listener
+            this.on('emit-step', (data) => {
+                listener({ data });
+            });
+            targetUnits.forEach(u => u.handle());
+        }
     }
 
     function _on(context, key, callback) {

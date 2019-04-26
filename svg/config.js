@@ -25,11 +25,10 @@ const simple = {
         height: 40,
         start: `
             fetch("https://api.countapi.xyz/hit/boxesandwires/visits")
-            send(fetch.0.value, ('unit:जो है वही है', 'unit:hello'))
+            send(fetch.0.value, ('unit:जो है वही है'))
         `,
         handle: exampleExpression || `
             ack()
-            send(null, 4)
         `,
         nodes: [null, null, null, null, { label: 'fourth'}, null, {
                 label: 'sixth'
@@ -47,7 +46,7 @@ const simple = {
         },,,,,,{ label: 'seventh'}],
         handle: `
             ack()
-            send(null, 'second')
+            send(null, ('unit:גליטש'))
         `
     }, {
         label: 'גליטש',
@@ -62,7 +61,7 @@ const simple = {
         },,{ label: 'fourth'}],
         handle: `
             ack()
-            send(null, 'fourth')
+            send(null, ('unit:ομφαλός'))
         `
     }],
     wires: [{
