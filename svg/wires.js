@@ -1370,9 +1370,13 @@ function engineBindState(Engine, _state){
     Engine.on('units-change', unitsChange);
     Engine.on('links-change', linksChange);
 
+    var t0 = performance.now();
     Engine.on('emit-step', (data) => {
+        var t1 = performance.now();
+        var tDiff = Math.floor(t1 - t0);
+        t0 = t1;
         //console.log('step emitted');
-        console.log(`[${data.src.label}] ${data.name}: ${data.status}`);
+        console.log(`[${data.src.label}] ${data.name}: ${data.status} - ${tDiff} ms`);
         //console.log({ data });
     });
 }

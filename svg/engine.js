@@ -1373,8 +1373,8 @@ window.filtrex = filtrex;
 var compileExpression = filtrex.compileExpression;
 /*
     TODO:
-    - make more OO
-    - pull out keywords from main object
+    - need a delay for links and compiled function
+    - need to verify links for send
 
     other API/keyword ideas:
     - delay, wait for net, wait for message
@@ -1387,6 +1387,9 @@ var compileExpression = filtrex.compileExpression;
     - create connection, create unit
     - cache / memory
 */
+
+var handleDelay = 5000;
+var funcDelay = 3000;
 
 function sleeper(ms) {
   return function (x) {
@@ -1647,6 +1650,10 @@ function ExpressionEngine() {
       var finished = result || asyncError || mappingError || tooManyFails; //console.log({ result, asyncError, mappingError })
 
       if (finished) {
+        emitStep && emitStep({
+          name: 'end'
+        });
+
         if (!callback) {
           return;
         }
@@ -1673,9 +1680,11 @@ function ExpressionEngine() {
         fails++;
         compiled(dataPlusMapped, callback);
         return;
-      }
+      } //console.log(firstUnresolved.func)
 
-      firstUnresolved.promise.then(function (x) {
+
+      firstUnresolved.promise //.then(sleeper(firstUnresolved.func === 'send' ? 3000 : 0))
+      .then(function (x) {
         //console.log('--- unresolved promise found, attaching');
         //console.log({ x });
         compiled(dataPlusMapped, callback);
@@ -1683,7 +1692,12 @@ function ExpressionEngine() {
     }
 
     ;
-    return compiled;
+    return function (data, callback) {
+      emitStep && emitStep({
+        name: 'start'
+      });
+      compiled(data, callback);
+    };
   }; // SIMPLE EXAMPLE
   // var myfilter = compileExpression(
   //     'strlen(firstname) > 5',
@@ -1734,17 +1748,6 @@ function ExpressionEngine() {
         var result = custFuncs[key].apply(custFuncs, args);
 
         if (!isPromise(result)) {
-          // emitStep && emitStep({
-          //     name: key, result, status: 'success'
-          // });
-          // queued = new function QueueItem() {
-          //     this.name = funcKey;
-          //     this.result = result;
-          //     this.error = undefined;
-          //     this.promise = undefined;
-          // };
-          // promises.push(queued);
-          // return result;
           result = new Promise(function (resolve) {
             return resolve(result);
           });
@@ -1759,8 +1762,7 @@ function ExpressionEngine() {
           this.result = undefined;
           this.error = undefined;
           this.promise = result //TODO: reject status errors?
-          //.then(sleeper(5000))
-          .then(function (res) {
+          .then(sleeper(key !== 'fetch' ? funcDelay : 3)).then(function (res) {
             emitStep && emitStep({
               name: key,
               result: res,
@@ -1987,11 +1989,23 @@ function Environment() {
     var name = data.name,
         targets = data.targets,
         message = data.message,
-        listener = data.listener; //console.log({ context, key, data, engine: this });
+        listener = data.listener,
+        status = data.status,
+        src = data.src; //console.log({ context, key, data, engine: this });
     //TODO: if send/ack from one compiled script then
     //  - TODO: activate link (send message to UI for link)
     //  - DONE: notify other compiled script
     //  - ...
+
+    if (name === 'start' && !status) {
+      console.log("----- START:".concat(src.label, " ----- (TODO)"));
+      return;
+    }
+
+    if (name === 'end' && !status) {
+      console.log("----- END:".concat(src.label, " ----- (TODO)"));
+      return;
+    }
 
     this.emit(key, data);
 
@@ -2022,7 +2036,9 @@ function Environment() {
         });
       });
       targetUnits.forEach(function (u) {
-        return u.handle();
+        return setTimeout(function () {
+          return u.handle();
+        }, handleDelay);
       });
     }
   }

@@ -3,8 +3,8 @@ window.filtrex = filtrex;
 const { compileExpression } = filtrex;
 /*
     TODO:
-    - make more OO
-    - pull out keywords from main object
+    - need a delay for links and compiled function
+    - need to verify links for send
 
     other API/keyword ideas:
     - delay, wait for net, wait for message
@@ -17,6 +17,9 @@ const { compileExpression } = filtrex;
     - create connection, create unit
     - cache / memory
 */
+
+const handleDelay = 5000;
+const funcDelay = 3000;
 
 function sleeper(ms) {
     return function(x) {
@@ -219,6 +222,7 @@ function ExpressionEngine({ emitStep } = {}) {
                 //console.log(custFn.promises.filter(x => x.func === func));
             }
         }
+
         function compiled(data, callback) {
             var myFunc = compileExpression(
                 exp,
@@ -245,6 +249,9 @@ function ExpressionEngine({ emitStep } = {}) {
             //console.log({ result, asyncError, mappingError })
 
             if (finished) {
+                emitStep && emitStep({
+                    name: 'end'
+                });
                 if (!callback) {
                     return;
                 }
@@ -275,7 +282,9 @@ function ExpressionEngine({ emitStep } = {}) {
                 compiled(dataPlusMapped, callback);
                 return;
             }
+            //console.log(firstUnresolved.func)
             firstUnresolved.promise
+                //.then(sleeper(firstUnresolved.func === 'send' ? 3000 : 0))
                 .then(x => {
                     //console.log('--- unresolved promise found, attaching');
                     //console.log({ x });
@@ -283,7 +292,12 @@ function ExpressionEngine({ emitStep } = {}) {
                 });
         };
 
-        return compiled;
+        return (data, callback) => {
+            emitStep && emitStep({
+                name: 'start'
+            });
+            compiled(data, callback);
+        };
     };
 
 
@@ -330,18 +344,7 @@ function ExpressionEngine({ emitStep } = {}) {
 
                     var result = custFuncs[key](...args);
                     if (!isPromise(result)) {
-                        // emitStep && emitStep({
-                        //     name: key, result, status: 'success'
-                        // });
-                        // queued = new function QueueItem() {
-                        //     this.name = funcKey;
-                        //     this.result = result;
-                        //     this.error = undefined;
-                        //     this.promise = undefined;
-                        // };
-                        // promises.push(queued);
-                        // return result;
-                        result = new Promise((resolve) => resolve(result));
+                        result = new Promise((resolve) => resolve(result))
                     }
 
                     //console.log('queued, waiting');
@@ -352,7 +355,7 @@ function ExpressionEngine({ emitStep } = {}) {
                         this.error = undefined;
                         this.promise = result
                             //TODO: reject status errors?
-                            //.then(sleeper(5000))
+                            .then(sleeper(key !== 'fetch' ? funcDelay : 3))
                             .then(res => {
                                 emitStep && emitStep({
                                     name: key, result: res, status: 'success'
@@ -545,13 +548,23 @@ function Environment({ units = [], links = [], verbose } = {}) {
     })();
 
     function _control(context, key, data){
-        const { name, targets, message, listener } = data;
+        const { name, targets, message, listener, status, src } = data;
         //console.log({ context, key, data, engine: this });
 
         //TODO: if send/ack from one compiled script then
         //  - TODO: activate link (send message to UI for link)
         //  - DONE: notify other compiled script
         //  - ...
+
+        if(name === 'start' && !status){
+            console.log(`----- START:${src.label} ----- (TODO)`);
+            return;
+        }
+
+        if(name === 'end' && !status){
+            console.log(`----- END:${src.label} ----- (TODO)`);
+            return;
+        }
 
         this.emit(key, data)
 
@@ -571,7 +584,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             this.on('emit-step', (data) => {
                 listener({ data });
             });
-            targetUnits.forEach(u => u.handle());
+            targetUnits.forEach(u => setTimeout(() => u.handle(), handleDelay));
         }
     }
 
