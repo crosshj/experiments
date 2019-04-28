@@ -1292,7 +1292,10 @@ function engineBindState(Engine, _state){
         return (stateClass || '')
             .replace(' fail', '')
             .replace(' wait', '')
-            .replace(' pulse', '');
+            .replace(' pulse', '')
+            .replace('fail', '')
+            .replace('wait', '')
+            .replace('pulse', '');;
     };
 
     const unitsChange = (data) => {
@@ -1332,14 +1335,14 @@ function engineBindState(Engine, _state){
             data.forEach(u => {
                 const stateLink = links.find(s => s.label === u.label);
                 if(u.state === 'receive'){
-                    stateLink.class = (cleanClass(stateLink.class) + " selected pulse").trim();
+                    stateLink.class = (cleanClass(stateLink.class) + " pulse").trim();
                     removeAnimation();
                     animateLink({ label: u.label }, null, 'reverse');
                     stateLink.selected = true;
                     return;
                 }
                 if(u.state === 'send'){
-                    stateLink.class = (cleanClass(stateLink.class) + " selected pulse").trim();
+                    stateLink.class = (cleanClass(stateLink.class) + " pulse").trim();
                     removeAnimation();
                     animateLink({ label: u.label });
                     stateLink.selected = true;
