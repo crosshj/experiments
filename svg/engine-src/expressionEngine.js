@@ -129,13 +129,19 @@ function ExpressionEngine({ emitStep } = {}) {
 
             timer = timer || setTimeout(() => {
                 removeListener && removeListener();
-                reject('send not acknowledged within time limit');
+                reject({
+                    message: 'send not acknowledged within time limit',
+                    nodesDone
+                });
             }, timeout);
 
             if(error){
                 clearTimeout(timer);
                 removeListener && removeListener();
-                reject(error);
+                reject({
+                    message: 'send error occured',
+                    error, nodesDone
+                });
                 return;
             }
 
@@ -154,7 +160,10 @@ function ExpressionEngine({ emitStep } = {}) {
             if(!unfinishedNodes){
                 clearTimeout(timer);
                 removeListener && removeListener();
-                resolve('all send\'s ack\'ed');
+                resolve({
+                    message: 'all send\'s ack\'ed',
+                    nodesDone
+                });
             }
         };
 
@@ -252,6 +261,12 @@ function ExpressionEngine({ emitStep } = {}) {
                 emitStep && emitStep({
                     name: 'end'
                 });
+                /*
+                    TODO: wish this worked
+                    the idea is that wrapped state should be reset when script has finished
+                    this seems to not be the case
+                */
+                //custFn.reset();
                 if (!callback) {
                     return;
                 }
@@ -323,8 +338,8 @@ function ExpressionEngine({ emitStep } = {}) {
     */
     const wrapCustomFunctions = (custFuncs) => {
         // should probably just be called a queue or results and not promises
-        const promises = [];
-        var wrapped = Object.keys(custFuncs)
+        let promises = [];
+        const wrapped = Object.keys(custFuncs)
             .reduce((all, key) => {
                 all[key] = (...args) => {
                     const funcKey = `${key}:${args.join('-')}`;
@@ -364,6 +379,8 @@ function ExpressionEngine({ emitStep } = {}) {
                                 return res;
                             })
                             .catch(err => {
+                                console.log({ wrapCustomFunctionsError: err});
+                                debugger
                                 emitStep && emitStep({
                                     name: key, result: err, status: 'error'
                                 });
@@ -386,6 +403,9 @@ function ExpressionEngine({ emitStep } = {}) {
                 return all;
             }, {});
         wrapped.promises = promises;
+        wrapped.reset = () => {
+            promises = [];
+        };
         return wrapped;
     };
 
@@ -548,7 +568,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     })();
 
     function _control(context, key, data){
-        const { name, targets, message, listener, status, src } = data;
+        const { name, targets, message, listener, status, src, result } = data;
         //console.log({ context, key, data, engine: this });
 
         //TODO: if send/ack from one compiled script then
@@ -556,17 +576,92 @@ function Environment({ units = [], links = [], verbose } = {}) {
         //  - DONE: notify other compiled script
         //  - ...
 
+
+        const emitUnitsUpdate = (updates) => {
+            // TODO: guard: updates is array, each item has label and state
+            const action = 'units-change'
+            this.emit(action, updates);
+        };
+        const emitLinksUpdate = (updates) => {
+            // TODO: guard: updates is array, each item has label and state
+            const action = 'links-change'
+            this.emit(action, updates);
+        };
+
+
         if(name === 'start' && !status){
-            console.log(`----- START:${src.label} ----- (TODO)`);
+            emitUnitsUpdate([{
+                label: src.label,
+                state: 'active'
+            }]);
             return;
         }
 
         if(name === 'end' && !status){
-            console.log(`----- END:${src.label} ----- (TODO)`);
+            emitUnitsUpdate([{
+                label: src.label,
+                state: 'success'
+            }]);
             return;
         }
 
         this.emit(key, data)
+
+        if(name === 'send'){
+            /*
+                TODO: also need to handle ack!
+            */
+            if(data.status === 'error'){
+                debugger;
+            }
+
+            if(data.status === 'start'){
+                emitUnitsUpdate([{
+                    label: src.label,
+                    state: 'wait'
+                }]);
+            }
+            var _targets = targets;
+            if(result && result.nodesDone){
+                _targets = result.nodesDone.map(x => x.label);
+            }
+            if(!_targets){
+                console.log('UNHANDLED: situation in engine handling send message')
+                debugger
+                return;
+            }
+            const linkUpdates = context.state.links
+                .map(x => {
+                    const update = {
+                        label: x.label,
+                        state: 'no_update'
+                    };
+
+                    if(x.start.parent.block === src.label){
+                        if(!_targets.includes(x.end.parent.block)){
+                            return update;
+                        }
+                        update.state = data.status === 'start'
+                            ? 'send'
+                            : data.status;
+                    } else if(x.end.parent.block === src.label){
+                        if(!_targets.includes(x.start.parent.block)){
+                            return update;
+                        }
+                        update.state = 'start'
+                            ? 'receive'
+                            : data.status;
+                    }
+                    if (update.state === 'error'){
+                        update.state = 'fail';
+                        update.data = data;
+                    }
+                    return update;
+                })
+                .filter(x => x.state !== 'no_update');
+            //console.log({ links: linkUpdates, src, targets })
+            emitLinksUpdate(linkUpdates);
+        }
 
         if(name === 'send' && targets){
             const targetUnits = targets.map(label => {
@@ -629,6 +724,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     }
 
     function _fakeRun(state, context) {
+        context.state = state;
 
         const unitsWithStartHandlers = context.units.filter(x => x.start);
         //console.log({ unitsWithStartHandlers });

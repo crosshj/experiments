@@ -29,6 +29,7 @@ const simple = {
         `,
         handle: exampleExpression || `
             ack()
+            send(null, ('unit:जो है वही है'))
         `,
         nodes: [null, null, null, null, { label: 'fourth'}, null, {
                 label: 'sixth'

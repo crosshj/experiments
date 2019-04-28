@@ -1526,13 +1526,20 @@ function ExpressionEngine() {
 
       timer = timer || setTimeout(function () {
         removeListener && removeListener();
-        reject('send not acknowledged within time limit');
+        reject({
+          message: 'send not acknowledged within time limit',
+          nodesDone: nodesDone
+        });
       }, timeout);
 
       if (error) {
         clearTimeout(timer);
         removeListener && removeListener();
-        reject(error);
+        reject({
+          message: 'send error occured',
+          error: error,
+          nodesDone: nodesDone
+        });
         return;
       } // only handle ack events
 
@@ -1556,7 +1563,10 @@ function ExpressionEngine() {
       if (!unfinishedNodes) {
         clearTimeout(timer);
         removeListener && removeListener();
-        resolve('all send\'s ack\'ed');
+        resolve({
+          message: 'all send\'s ack\'ed',
+          nodesDone: nodesDone
+        });
       }
     };
 
@@ -1653,6 +1663,12 @@ function ExpressionEngine() {
         emitStep && emitStep({
           name: 'end'
         });
+        /*
+            TODO: wish this worked
+            the idea is that wrapped state should be reset when script has finished
+            this seems to not be the case
+        */
+        //custFn.reset();
 
         if (!callback) {
           return;
@@ -1771,6 +1787,10 @@ function ExpressionEngine() {
             _this.result = res;
             return res;
           }).catch(function (err) {
+            console.log({
+              wrapCustomFunctionsError: err
+            });
+            debugger;
             emitStep && emitStep({
               name: key,
               result: err,
@@ -1793,6 +1813,11 @@ function ExpressionEngine() {
       return all;
     }, {});
     wrapped.promises = promises;
+
+    wrapped.reset = function () {
+      promises = [];
+    };
+
     return wrapped;
   }; //TODO: expose customFunctions? and maxFails to browser
 
@@ -1986,28 +2011,113 @@ function Environment() {
   }();
 
   function _control(context, key, data) {
+    var _this3 = this;
+
     var name = data.name,
         targets = data.targets,
         message = data.message,
         listener = data.listener,
         status = data.status,
-        src = data.src; //console.log({ context, key, data, engine: this });
+        src = data.src,
+        result = data.result; //console.log({ context, key, data, engine: this });
     //TODO: if send/ack from one compiled script then
     //  - TODO: activate link (send message to UI for link)
     //  - DONE: notify other compiled script
     //  - ...
 
+    var emitUnitsUpdate = function emitUnitsUpdate(updates) {
+      // TODO: guard: updates is array, each item has label and state
+      var action = 'units-change';
+
+      _this3.emit(action, updates);
+    };
+
+    var emitLinksUpdate = function emitLinksUpdate(updates) {
+      // TODO: guard: updates is array, each item has label and state
+      var action = 'links-change';
+
+      _this3.emit(action, updates);
+    };
+
     if (name === 'start' && !status) {
-      console.log("----- START:".concat(src.label, " ----- (TODO)"));
+      emitUnitsUpdate([{
+        label: src.label,
+        state: 'active'
+      }]);
       return;
     }
 
     if (name === 'end' && !status) {
-      console.log("----- END:".concat(src.label, " ----- (TODO)"));
+      emitUnitsUpdate([{
+        label: src.label,
+        state: 'success'
+      }]);
       return;
     }
 
     this.emit(key, data);
+
+    if (name === 'send') {
+      /*
+          TODO: also need to handle ack!
+      */
+      if (data.status === 'error') {
+        debugger;
+      }
+
+      if (data.status === 'start') {
+        emitUnitsUpdate([{
+          label: src.label,
+          state: 'wait'
+        }]);
+      }
+
+      var _targets = targets;
+
+      if (result && result.nodesDone) {
+        _targets = result.nodesDone.map(function (x) {
+          return x.label;
+        });
+      }
+
+      if (!_targets) {
+        console.log('UNHANDLED: situation in engine handling send message');
+        debugger;
+        return;
+      }
+
+      var linkUpdates = context.state.links.map(function (x) {
+        var update = {
+          label: x.label,
+          state: 'no_update'
+        };
+
+        if (x.start.parent.block === src.label) {
+          if (!_targets.includes(x.end.parent.block)) {
+            return update;
+          }
+
+          update.state = data.status === 'start' ? 'send' : data.status;
+        } else if (x.end.parent.block === src.label) {
+          if (!_targets.includes(x.start.parent.block)) {
+            return update;
+          }
+
+          update.state = 'start' ? 'receive' : undefined;
+        }
+
+        if (update.state === 'error') {
+          update.state = 'fail';
+          update.data = data;
+        }
+
+        return update;
+      }).filter(function (x) {
+        return x.state !== 'no_update';
+      }); //console.log({ links: linkUpdates, src, targets })
+
+      emitLinksUpdate(linkUpdates);
+    }
 
     if (name === 'send' && targets) {
       var targetUnits = targets.map(function (label) {
@@ -2092,8 +2202,9 @@ function Environment() {
   }
 
   function _fakeRun(state, context) {
-    var _this3 = this;
+    var _this4 = this;
 
+    context.state = state;
     var unitsWithStartHandlers = context.units.filter(function (x) {
       return x.start;
     }); //console.log({ unitsWithStartHandlers });
@@ -2133,7 +2244,7 @@ function Environment() {
               debugger;
             }
 
-            _this3.emit(action, [{
+            _this4.emit(action, [{
               label: label,
               state: state
             }]);
@@ -2173,7 +2284,7 @@ function Environment() {
         if (count >= 10) {
           console.log('FAKE ITERATION MAX: DONE!');
 
-          _this3.emit('units-change', [{
+          _this4.emit('units-change', [{
             label: state.units[0].label,
             state: 'success'
           }]);

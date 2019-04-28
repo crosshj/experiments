@@ -1321,7 +1321,13 @@ function engineBindState(Engine, _state){
     };
 
     const linksChange = (data) => {
-        //console.log({ linksChange: data[0].state })
+        /*
+            TODO: side effects come along with updating state here:
+                - animate link
+                - remove animation
+            this should be done in renderer, not here
+        */
+        console.log({ linksChange: JSON.stringify(data) })
         _state.update(({ links }) => {
             data.forEach(u => {
                 const stateLink = links.find(s => s.label === u.label);
@@ -1341,8 +1347,8 @@ function engineBindState(Engine, _state){
                 }
                 if(u.state === 'fail'){
                     removeAnimation();
-                    stateLink.class = (cleanClass(stateLink.class) + " fail").trim();
-                    stateLink.selected = false;
+                    stateLink.class = "fail";
+                    //stateLink.selected = false;
                     return;
                 }
                 if(u.state === 'success'){
@@ -1351,9 +1357,20 @@ function engineBindState(Engine, _state){
                     stateLink.selected = false;
                     return;
                 }
+                console.log({ unhandledLink: u });
             })
             return { links };
         });
+    };
+
+    const emitStep = (data) => {
+        return;
+        var t0 = t0 || performance.now();
+        var t1 = performance.now();
+        var tDiff = Math.floor(t1 - t0);
+        t0 = t1;
+        console.log(`[${data.src.label}] ${data.name}: ${data.status} - ${tDiff} ms`);
+        //console.log({ data });
     };
 
     // const unitsDeactivate = (data) => {
@@ -1369,37 +1386,28 @@ function engineBindState(Engine, _state){
 
     Engine.on('units-change', unitsChange);
     Engine.on('links-change', linksChange);
-
-    var t0 = performance.now();
-    Engine.on('emit-step', (data) => {
-        var t1 = performance.now();
-        var tDiff = Math.floor(t1 - t0);
-        t0 = t1;
-        //console.log('step emitted');
-        console.log(`[${data.src.label}] ${data.name}: ${data.status} - ${tDiff} ms`);
-        //console.log({ data });
-    });
+    Engine.on('emit-step', emitStep);
 }
 
 // --------------------------------------------------------------
-function testEngine(){
-    console.log('test engine');
-    const { engine } = window.ExpressionEngine;
-    const links = [];
-    const units = [{
-        handle: `
-            ack()
-            fetch(countRegisterUrl)
-            send(null, 'fourth')
-        `,
-    }];
-    const stateDefintion = { units, links, verbose: true }; //because state won't carry function definitions
-    const Engine = engine(stateDefintion);
-    Engine.on('emit-step', (data) => {
-        //console.log('step emitted');
-        console.log(`${data.name}: ${data.status}`);
-    });
-}
+// function testEngine(){
+//     console.log('test engine');
+//     const { engine } = window.ExpressionEngine;
+//     const links = [];
+//     const units = [{
+//         handle: `
+//             ack()
+//             fetch(countRegisterUrl)
+//             send(null, 'fourth')
+//         `,
+//     }];
+//     const stateDefintion = { units, links, verbose: true }; //because state won't carry function definitions
+//     const Engine = engine(stateDefintion);
+//     Engine.on('emit-step', (data) => {
+//         //console.log('step emitted');
+//         console.log(`${data.name}: ${data.status}`);
+//     });
+// }
 
 function initScene(evt, units, links) {
     if(window.innerWidth > 750){
@@ -1448,7 +1456,7 @@ function initScene(evt, units, links) {
     setTimeout(() => {
         //return testEngine();
         const { engine } = window.ExpressionEngine;
-        const stateDefintion = { units, links, verbose: true }; //because state won't carry function definitions
+        const stateDefintion = { units, links, verbose: false }; //because state won't carry function definitions
         const Engine = engine(stateDefintion);
 
         engineBindState(Engine, _state);
