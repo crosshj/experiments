@@ -1371,6 +1371,8 @@ var filtrex = __webpack_require__(10);
 
 window.filtrex = filtrex;
 var compileExpression = filtrex.compileExpression;
+
+var customFunctions = __webpack_require__(30);
 /*
     TODO:
     - need a delay for links and compiled function
@@ -1388,8 +1390,12 @@ var compileExpression = filtrex.compileExpression;
     - cache / memory
 */
 
+
 var handleDelay = 5000;
 var funcDelay = 3000;
+var DONE = true;
+var WAITING = false;
+var FAILED = false;
 
 function sleeper(ms) {
   return function (x) {
@@ -1399,197 +1405,16 @@ function sleeper(ms) {
       }, ms);
     });
   };
-}
+} // OMG - https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise
+
+
+var isPromise = function isPromise(object) {
+  return object && typeof object.then === 'function';
+};
 
 function ExpressionEngine() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       emitStep = _ref.emitStep;
-
-  //TODO: maybe check if node versus browser better
-  var fetch = typeof window !== 'undefined' && window.fetch ? window.fetch : function () {
-    return new Promise(function (resolve, reject) {
-      // maybe use request here so this works in node
-      resolve();
-    });
-  };
-  var DONE = true;
-  var WAITING = false;
-  var FAILED = false;
-
-  function _fetch(url) {
-    var fetchPromise = fetch(url).then(function (x) {
-      return x.text();
-    }).then(function (t) {
-      var result = tryParse(t);
-
-      if (!result) {
-        throw new Error('failed to parse');
-      }
-
-      return result;
-    });
-    return fetchPromise;
-  }
-
-  var mappedItems = [];
-
-  function _map(mapper, input, output) {
-    //console.log('custom function [map] ran');
-    var mapped = mappedItems.find(function (x) {
-      return x.name === output;
-    });
-
-    if (mapped) {
-      return mapped.error ? FAILED : DONE;
-    } //if input is url, get result from promiseQueue
-    //TODO: if not??
-    //const queued = promiseQueue.find(x => x.name === input);
-
-
-    var queued = false;
-
-    if (!queued) {
-      mappedItems.push({
-        name: output,
-        result: '',
-        error: 'could not find input source for mapping'
-      });
-      return FAILED;
-    }
-
-    var inputValue = queued.result; //output is a string to be used as name for variable
-    // ^^^ these variables will be bound to /called with later iterations
-
-    var mapping;
-    var mappingError;
-
-    try {
-      //TODO: what if mapper is not a function?
-      //TODO: mapper syntax (use sop?)
-      mapping = mapper(inputValue);
-    } catch (e) {
-      mappingError = e;
-    }
-
-    var mappedItem = {
-      name: output,
-      result: mapping,
-      error: mappingError
-    };
-    mappedItems.push(mappedItem); // console.log({
-    //     mapper, input, output, inputValue
-    // });
-
-    return mappedItem.error ? FAILED : DONE;
-  }
-
-  function _send(message, nodes) {
-    var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10000;
-
-    //console.log(arguments)
-    //console.log('custom function [send] ran');
-    //test if array, wrap in array if not
-    //TODO:
-    function flatPromise() {
-      var resolve, reject;
-      var promise = new Promise(function (res, rej) {
-        resolve = res;
-        reject = rej;
-      });
-      return {
-        promise: promise,
-        resolve: resolve,
-        reject: reject
-      };
-    }
-
-    var _flatPromise = flatPromise(),
-        resolve = _flatPromise.resolve,
-        reject = _flatPromise.reject,
-        p = _flatPromise.promise;
-
-    var nodesArray = Array.isArray(nodes) ? nodes : [nodes];
-    var timer = undefined;
-    var nodesDone = nodesArray.map(function (label) {
-      return {
-        label: label,
-        done: false
-      };
-    });
-
-    var listener = function listener() {
-      var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref2$data = _ref2.data,
-          data = _ref2$data === void 0 ? {} : _ref2$data,
-          removeListener = _ref2.removeListener,
-          error = _ref2.error;
-
-      timer = timer || setTimeout(function () {
-        removeListener && removeListener();
-        reject({
-          message: 'send not acknowledged within time limit',
-          nodesDone: nodesDone
-        });
-      }, timeout);
-
-      if (error) {
-        clearTimeout(timer);
-        removeListener && removeListener();
-        reject({
-          message: 'send error occured',
-          error: error,
-          nodesDone: nodesDone
-        });
-        return;
-      } // only handle ack events
-
-
-      var isAck = data.name === 'ack';
-
-      if (!isAck) {
-        return;
-      } // mark a node as done
-
-
-      var foundNode = nodesDone.find(function (n) {
-        return n.label === data.src.label;
-      });
-      foundNode && (foundNode.done = true); // should listen for ack from all nodes
-
-      var unfinishedNodes = nodesDone.find(function (n) {
-        return !n.done;
-      });
-
-      if (!unfinishedNodes) {
-        clearTimeout(timer);
-        removeListener && removeListener();
-        resolve({
-          message: 'all send\'s ack\'ed',
-          nodesDone: nodesDone
-        });
-      }
-    };
-
-    var sendPromise = p;
-    sendPromise.listener = listener;
-    sendPromise.targets = nodesArray;
-    sendPromise.message = message;
-    return sendPromise;
-  }
-
-  function _ack(value, nodes) {
-    //test if array, wrap in array if not
-    //TODO:
-    //console.log('custom function [ack] ran');
-    return DONE;
-  }
-
-  var customFunctions = {
-    ack: _ack,
-    fetch: _fetch,
-    map: _map,
-    send: _send
-  };
 
   var compile = function compile(exp, custFn, maxFails) {
     var fails = 0; // return a function that will continuosly compile and run (as promises resolve) until true
@@ -1651,11 +1476,7 @@ function ExpressionEngine() {
       }).find(function (x) {
         return x;
       });
-      var mappingError = mappedItems.map(function (x) {
-        return x.error;
-      }).find(function (x) {
-        return x;
-      });
+      var mappingError =  false && false;
       var tooManyFails = fails > maxFails ? "Maximum failures exceeded: ".concat(maxFails) : undefined;
       var finished = result || asyncError || mappingError || tooManyFails; //console.log({ result, asyncError, mappingError })
 
@@ -1714,17 +1535,6 @@ function ExpressionEngine() {
       });
       compiled(data, callback);
     };
-  }; // SIMPLE EXAMPLE
-  // var myfilter = compileExpression(
-  //     'strlen(firstname) > 5',
-  //     { strlen: s => s.length }); // custom functions
-  // console.log(myfilter({ firstname: 'Joe' }));    // returns 0
-  // console.log(myfilter({ firstname: 'Joseph' })); // returns 1
-  // OMG - https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise
-
-
-  var isPromise = function isPromise(object) {
-    return object && typeof object.then === 'function';
   };
   /*
       TODO:
@@ -1926,16 +1736,16 @@ notify about environment:
 */
 
 function Environment() {
-  var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      _ref3$units = _ref3.units,
-      units = _ref3$units === void 0 ? [] : _ref3$units,
-      _ref3$links = _ref3.links,
-      links = _ref3$links === void 0 ? [] : _ref3$links,
-      verbose = _ref3.verbose;
+  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref2$units = _ref2.units,
+      units = _ref2$units === void 0 ? [] : _ref2$units,
+      _ref2$links = _ref2.links,
+      links = _ref2$links === void 0 ? [] : _ref2$links,
+      verbose = _ref2.verbose;
 
-  var mapUnitToCompiled = function mapUnitToCompiled(n, _ref4) {
-    var emit = _ref4.emit,
-        control = _ref4.control;
+  var mapUnitToCompiled = function mapUnitToCompiled(n, _ref3) {
+    var emit = _ref3.emit,
+        control = _ref3.control;
     var handle = n.handle,
         start = n.start; // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
 
@@ -15650,6 +15460,197 @@ module.exports = {"_from":"escodegen@1.3.x","_id":"escodegen@1.3.3","_inBundle":
 /***/ (function(module) {
 
 module.exports = {"_from":"jison@^0.4.18","_id":"jison@0.4.18","_inBundle":false,"_integrity":"sha512-FKkCiJvozgC7VTHhMJ00a0/IApSxhlGsFIshLW6trWJ8ONX2TQJBBz6DlcO1Gffy4w9LT+uL+PA+CVnUSJMF7w==","_location":"/jison","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"jison@^0.4.18","name":"jison","escapedName":"jison","rawSpec":"^0.4.18","saveSpec":null,"fetchSpec":"^0.4.18"},"_requiredBy":["/filtrex"],"_resolved":"https://registry.npmjs.org/jison/-/jison-0.4.18.tgz","_shasum":"c68a6a54bfe7028fa40bcfc6cc8bbd9ed291f502","_spec":"jison@^0.4.18","_where":"C:\\_repos\\experiments\\svg\\node_modules\\filtrex","author":{"name":"Zach Carter","email":"zach@carter.name","url":"http://zaa.ch"},"bin":{"jison":"lib/cli.js"},"bugs":{"url":"http://github.com/zaach/jison/issues","email":"jison@librelist.com"},"bundleDependencies":false,"dependencies":{"JSONSelect":"0.4.0","cjson":"0.3.0","ebnf-parser":"0.1.10","escodegen":"1.3.x","esprima":"1.1.x","jison-lex":"0.3.x","lex-parser":"~0.1.3","nomnom":"1.5.2"},"deprecated":false,"description":"A parser generator with Bison's API","devDependencies":{"browserify":"2.x.x","jison":"0.4.x","test":"0.6.x","uglify-js":"~2.4.0"},"engines":{"node":">=0.4"},"homepage":"http://jison.org","keywords":["jison","bison","yacc","parser","generator","lexer","flex","tokenizer","compiler"],"license":"MIT","main":"lib/jison","name":"jison","preferGlobal":true,"repository":{"type":"git","url":"git://github.com/zaach/jison.git"},"scripts":{"test":"node tests/all-tests.js"},"version":"0.4.18"};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports) {
+
+//TODO: maybe check if node versus browser better
+var fetch = typeof window !== 'undefined' && window.fetch ? window.fetch : function () {
+  return new Promise(function (resolve, reject) {
+    // maybe use request here so this works in node
+    resolve();
+  });
+};
+var DONE = true;
+var WAITING = false;
+var FAILED = false;
+
+function _fetch(url) {
+  var fetchPromise = fetch(url).then(function (x) {
+    return x.text();
+  }).then(function (t) {
+    var result = tryParse(t);
+
+    if (!result) {
+      throw new Error('failed to parse');
+    }
+
+    return result;
+  });
+  return fetchPromise;
+}
+
+var mappedItems = [];
+
+function _map(mapper, input, output) {
+  //console.log('custom function [map] ran');
+  var mapped = mappedItems.find(function (x) {
+    return x.name === output;
+  });
+
+  if (mapped) {
+    return mapped.error ? FAILED : DONE;
+  } //if input is url, get result from promiseQueue
+  //TODO: if not??
+  //const queued = promiseQueue.find(x => x.name === input);
+
+
+  var queued = false;
+
+  if (!queued) {
+    mappedItems.push({
+      name: output,
+      result: '',
+      error: 'could not find input source for mapping'
+    });
+    return FAILED;
+  }
+
+  var inputValue = queued.result; //output is a string to be used as name for variable
+  // ^^^ these variables will be bound to /called with later iterations
+
+  var mapping;
+  var mappingError;
+
+  try {
+    //TODO: what if mapper is not a function?
+    //TODO: mapper syntax (use sop?)
+    mapping = mapper(inputValue);
+  } catch (e) {
+    mappingError = e;
+  }
+
+  var mappedItem = {
+    name: output,
+    result: mapping,
+    error: mappingError
+  };
+  mappedItems.push(mappedItem); // console.log({
+  //     mapper, input, output, inputValue
+  // });
+
+  return mappedItem.error ? FAILED : DONE;
+}
+
+function _send(message, nodes) {
+  var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10000;
+
+  //console.log(arguments)
+  //console.log('custom function [send] ran');
+  //test if array, wrap in array if not
+  //TODO:
+  function flatPromise() {
+    var resolve, reject;
+    var promise = new Promise(function (res, rej) {
+      resolve = res;
+      reject = rej;
+    });
+    return {
+      promise: promise,
+      resolve: resolve,
+      reject: reject
+    };
+  }
+
+  var _flatPromise = flatPromise(),
+      resolve = _flatPromise.resolve,
+      reject = _flatPromise.reject,
+      p = _flatPromise.promise;
+
+  var nodesArray = Array.isArray(nodes) ? nodes : [nodes];
+  var timer = undefined;
+  var nodesDone = nodesArray.map(function (label) {
+    return {
+      label: label,
+      done: false
+    };
+  });
+
+  var listener = function listener() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref$data = _ref.data,
+        data = _ref$data === void 0 ? {} : _ref$data,
+        removeListener = _ref.removeListener,
+        error = _ref.error;
+
+    timer = timer || setTimeout(function () {
+      removeListener && removeListener();
+      reject({
+        message: 'send not acknowledged within time limit',
+        nodesDone: nodesDone
+      });
+    }, timeout);
+
+    if (error) {
+      clearTimeout(timer);
+      removeListener && removeListener();
+      reject({
+        message: 'send error occured',
+        error: error,
+        nodesDone: nodesDone
+      });
+      return;
+    } // only handle ack events
+
+
+    var isAck = data.name === 'ack';
+
+    if (!isAck) {
+      return;
+    } // mark a node as done
+
+
+    var foundNode = nodesDone.find(function (n) {
+      return n.label === data.src.label;
+    });
+    foundNode && (foundNode.done = true); // should listen for ack from all nodes
+
+    var unfinishedNodes = nodesDone.find(function (n) {
+      return !n.done;
+    });
+
+    if (!unfinishedNodes) {
+      clearTimeout(timer);
+      removeListener && removeListener();
+      resolve({
+        message: 'all send\'s ack\'ed',
+        nodesDone: nodesDone
+      });
+    }
+  };
+
+  var sendPromise = p;
+  sendPromise.listener = listener;
+  sendPromise.targets = nodesArray;
+  sendPromise.message = message;
+  return sendPromise;
+}
+
+function _ack(value, nodes) {
+  //test if array, wrap in array if not
+  //TODO:
+  //console.log('custom function [ack] ran');
+  return DONE;
+}
+
+var customFunctions = {
+  ack: _ack,
+  fetch: _fetch,
+  map: _map,
+  send: _send
+};
+module.exports = customFunctions;
 
 /***/ })
 /******/ ]);
