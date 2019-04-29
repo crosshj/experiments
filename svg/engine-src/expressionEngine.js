@@ -332,7 +332,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             if(!_message && result){
                 _message = result.message;
             }
-            console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+            //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
 
             const linkUpdates = context.state.links
                 .map(x => {
@@ -435,7 +435,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
         }
 
         if(name === 'send' && targets){
-            console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+            //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
             const targetUnits = targets.map(label => {
                 return context.units.find(u => u.label === label && u.handle);
             }).filter(x => !!x);
@@ -448,8 +448,8 @@ function Environment({ units = [], links = [], verbose } = {}) {
             //TODO: sending unit must have link to receiver unit, otherwise error
 
             //TODO: add function to remove listener
-            this.on('emit-step', (data) => {
-                listener({ data });
+            const { remove } = this.on('emit-step', (data) => {
+                listener({ data, removeListener: remove });
             });
             targetUnits.forEach(u => setTimeout(() => u.handle({
                 sendFrom: data.src.label,
@@ -462,7 +462,13 @@ function Environment({ units = [], links = [], verbose } = {}) {
         if (context.eventListeners[key] === undefined) {
             context.eventListeners[key] = [];
         }
+        callback._hash = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
         context.eventListeners[key].push(callback);
+        const remove = () => {
+            context.eventListeners[key] = context.eventListeners[key]
+                .filter(x => x._hash !== callback._hash);
+        };
+        return { remove };
     }
 
     function _emit(context, key, data) {

@@ -1331,31 +1331,30 @@ function engineBindState(Engine, _state){
             this should be done in renderer, not here
         */
         //console.log({ linksChange: JSON.stringify(data) })
+
+        //TODO: this needs to be done better!! (remove animation)
+        //removeAnimation();
         _state.update(({ links }) => {
             data.forEach(u => {
                 const stateLink = links.find(s => s.label === u.label);
                 if(u.state === 'receive'){
                     stateLink.class = (cleanClass(stateLink.class) + " pulse").trim();
-                    removeAnimation();
                     animateLink({ label: u.label }, null, 'reverse');
                     stateLink.selected = true;
                     return;
                 }
                 if(u.state === 'send'){
                     stateLink.class = (cleanClass(stateLink.class) + " pulse").trim();
-                    removeAnimation();
                     animateLink({ label: u.label });
                     stateLink.selected = true;
                     return;
                 }
                 if(u.state === 'fail'){
-                    removeAnimation();
                     stateLink.class = "fail";
                     //stateLink.selected = false;
                     return;
                 }
                 if(u.state === 'success'){
-                    removeAnimation();
                     stateLink.class = cleanClass(stateLink.class);
                     stateLink.selected = false;
                     return;

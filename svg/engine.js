@@ -1742,9 +1742,9 @@ function Environment() {
 
       if (!_message && result) {
         _message = result.message;
-      }
+      } //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
 
-      console.log("ACK:".concat(status, " [").concat(_message, "] ").concat(_targets.join(' ,'), " -> ").concat(src.label));
+
       var linkUpdates = context.state.links.map(function (x) {
         var update = {
           label: x.label,
@@ -1855,7 +1855,7 @@ function Environment() {
     }
 
     if (name === 'send' && targets) {
-      console.log("SEND [".concat(data.message, "] ").concat(data.src.label, " -> ").concat(targets.join(' ,')));
+      //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
       var targetUnits = targets.map(function (label) {
         return context.units.find(function (u) {
           return u.label === label && u.handle;
@@ -1876,11 +1876,14 @@ function Environment() {
       //TODO: add function to remove listener
 
 
-      this.on('emit-step', function (data) {
+      var _this$on = this.on('emit-step', function (data) {
         listener({
-          data: data
+          data: data,
+          removeListener: remove
         });
-      });
+      }),
+          remove = _this$on.remove;
+
       targetUnits.forEach(function (u) {
         return setTimeout(function () {
           return u.handle({
@@ -1897,7 +1900,20 @@ function Environment() {
       context.eventListeners[key] = [];
     }
 
+    callback._hash = _toConsumableArray(Array(30)).map(function () {
+      return Math.random().toString(36)[2];
+    }).join('');
     context.eventListeners[key].push(callback);
+
+    var remove = function remove() {
+      context.eventListeners[key] = context.eventListeners[key].filter(function (x) {
+        return x._hash !== callback._hash;
+      });
+    };
+
+    return {
+      remove: remove
+    };
   }
 
   function _emit(context, key, data) {
@@ -15415,8 +15431,9 @@ module.exports = {"_from":"jison@^0.4.18","_id":"jison@0.4.18","_inBundle":false
     - create connection, create unit
     - cache / memory
 */
-var funcDelay = 2500;
-var ackDelay = 2500;
+var funcDelay = 3000;
+var ackDelay = 2000;
+var sendDelay = 0;
 var DONE = true;
 var WAITING = false;
 var FAILED = false;
@@ -15592,10 +15609,12 @@ function _send(message, nodes) {
     if (!unfinishedNodes) {
       clearTimeout(timer);
       removeListener && removeListener();
-      resolve({
-        message: 'all send\'s ack\'ed',
-        nodesDone: nodesDone
-      });
+      setTimeout(function () {
+        resolve({
+          message: 'all send\'s ack\'ed',
+          nodesDone: nodesDone
+        });
+      }, sendDelay);
     }
   };
 
@@ -15709,7 +15728,7 @@ var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep, curr
         this.result = undefined;
         this.error = undefined;
         this.promise = result //TODO: reject status errors?
-        .then(sleeper(['ack'].includes(key) ? 0 : funcDelay)).then(function (res) {
+        .then(sleeper(['ack', 'send'].includes(key) ? 0 : funcDelay)).then(function (res) {
           emitStep && emitStep({
             name: key,
             result: res,

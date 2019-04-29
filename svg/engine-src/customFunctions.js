@@ -15,8 +15,9 @@
     - cache / memory
 */
 
-const funcDelay = 2500;
-const ackDelay = 2500;
+const funcDelay = 3000;
+const ackDelay = 2000;
+const sendDelay = 0;
 
 const DONE = true;
 const WAITING = false;
@@ -163,10 +164,12 @@ function _send(message, nodes, timeout = 10000) {
         if (!unfinishedNodes) {
             clearTimeout(timer);
             removeListener && removeListener();
-            resolve({
-                message: 'all send\'s ack\'ed',
-                nodesDone
-            });
+            setTimeout(() => {
+                resolve({
+                    message: 'all send\'s ack\'ed',
+                    nodesDone
+                });
+            }, sendDelay);
         }
     };
 
@@ -268,7 +271,7 @@ const wrapCustomFunctions = (custFuncs, emitStep, currentNode) => {
                     this.error = undefined;
                     this.promise = result
                         //TODO: reject status errors?
-                        .then(sleeper(['ack'].includes(key) ? 0: funcDelay))
+                        .then(sleeper(['ack', 'send'].includes(key) ? 0: funcDelay))
                         .then(res => {
                             emitStep && emitStep({
                                 name: key, result: res, status: 'success'
