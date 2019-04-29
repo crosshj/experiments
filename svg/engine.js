@@ -1373,44 +1373,8 @@ window.filtrex = filtrex;
 var compileExpression = filtrex.compileExpression;
 
 var customFunctions = __webpack_require__(30);
-/*
-    TODO:
-    - need a delay for links and compiled function
-    - need to verify links for send
-
-    other API/keyword ideas:
-    - delay, wait for net, wait for message
-    - different types of messages (.on)
-    - switch
-    - affect unit color, dimensions, etc
-    - affect link color
-    - add node to unit, remove/disable link/node
-    - disable node, sleep node, set node state
-    - create connection, create unit
-    - cache / memory
-*/
-
 
 var handleDelay = 5000;
-var funcDelay = 3000;
-var DONE = true;
-var WAITING = false;
-var FAILED = false;
-
-function sleeper(ms) {
-  return function (x) {
-    return new Promise(function (resolve) {
-      return setTimeout(function () {
-        return resolve(x);
-      }, ms);
-    });
-  };
-} // OMG - https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise
-
-
-var isPromise = function isPromise(object) {
-  return object && typeof object.then === 'function';
-};
 
 function ExpressionEngine() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -1535,100 +1499,6 @@ function ExpressionEngine() {
       });
       compiled(data, callback);
     };
-  };
-  /*
-      TODO:
-      Need to know what unit is acting
-      emit-step should maybe just be in compiled (line 131)
-      idea is for this functionality ^^^ to notify outside world of progress
-      need to be able to modify/keep global state so that functions can share data
-  */
-
-
-  var wrapCustomFunctions = function wrapCustomFunctions(custFuncs) {
-    // should probably just be called a queue or results and not promises
-    var promises = [];
-    var wrapped = Object.keys(custFuncs).reduce(function (all, key) {
-      all[key] = function () {
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        var funcKey = "".concat(key, ":").concat(args.join('-')); //console.log(`custom function [${key}] ran`);
-        //console.log({ funcKey })
-
-        var queued = promises.find(function (x) {
-          return x.name === funcKey;
-        });
-
-        if (queued && queued.error) {
-          //console.log(`queued error: ${!!queued.error}`);
-          return FAILED;
-        }
-
-        if (queued && queued.result) {
-          //console.log(`queued result: ${!!queued.result}`);
-          return DONE;
-        }
-
-        var result = custFuncs[key].apply(custFuncs, args);
-
-        if (!isPromise(result)) {
-          result = new Promise(function (resolve) {
-            return resolve(result);
-          });
-        } //console.log('queued, waiting');
-
-
-        queued = new function QueueItem() {
-          var _this = this;
-
-          this.name = funcKey;
-          this.func = key;
-          this.result = undefined;
-          this.error = undefined;
-          this.promise = result //TODO: reject status errors?
-          .then(sleeper(key !== 'fetch' ? funcDelay : 3)).then(function (res) {
-            emitStep && emitStep({
-              name: key,
-              result: res,
-              status: 'success'
-            });
-            _this.result = res;
-            return res;
-          }).catch(function (err) {
-            console.log({
-              wrapCustomFunctionsError: err
-            });
-            debugger;
-            emitStep && emitStep({
-              name: key,
-              result: err,
-              status: 'error'
-            });
-            _this.error = err; //throw new Error('error in custom function promise');
-          });
-        }();
-        emitStep && emitStep({
-          name: key,
-          targets: result.targets,
-          message: result.message,
-          listener: result.listener,
-          status: 'start'
-        });
-        promises.push(queued);
-        return WAITING;
-      };
-
-      return all;
-    }, {});
-    wrapped.promises = promises;
-
-    wrapped.reset = function () {
-      promises = [];
-    };
-
-    return wrapped;
   }; //TODO: expose customFunctions? and maxFails to browser
 
 
@@ -1654,7 +1524,7 @@ function ExpressionEngine() {
       console.log('EXPRESSION: ' + exampleExpression);
     }
 
-    return compile(ex, wrapCustomFunctions(customFunctions), maxFails);
+    return compile(ex, customFunctions(emitStep), maxFails);
   };
 
   if (typeof window === 'undefined') {
@@ -1795,23 +1665,23 @@ function Environment() {
     };
 
     function Umvelt() {
-      var _this2 = this;
+      var _this = this;
 
       this.on = function (key, callback) {
         return _on(context, key, callback);
       };
 
       this.emit = function (key, data) {
-        return _emit.bind(_this2)(context, key, data);
+        return _emit.bind(_this)(context, key, data);
       };
 
       this.start = function (state) {
-        return _fakeRun.bind(_this2)(state, context);
+        return _fakeRun.bind(_this)(state, context);
       }; // this is for internal signals
 
 
       this.control = function (key, data) {
-        return _control.bind(_this2)(context, key, data);
+        return _control.bind(_this)(context, key, data);
       };
 
       context.units = compiledUnits(this); //console.log({ compiledUnits });
@@ -1821,7 +1691,7 @@ function Environment() {
   }();
 
   function _control(context, key, data) {
-    var _this3 = this;
+    var _this2 = this;
 
     var name = data.name,
         targets = data.targets,
@@ -1839,14 +1709,14 @@ function Environment() {
       // TODO: guard: updates is array, each item has label and state
       var action = 'units-change';
 
-      _this3.emit(action, updates);
+      _this2.emit(action, updates);
     };
 
     var emitLinksUpdate = function emitLinksUpdate(updates) {
       // TODO: guard: updates is array, each item has label and state
       var action = 'links-change';
 
-      _this3.emit(action, updates);
+      _this2.emit(action, updates);
     };
 
     if (name === 'start' && !status) {
@@ -2012,19 +1882,24 @@ function Environment() {
   }
 
   function _fakeRun(state, context) {
-    var _this4 = this;
+    var _this3 = this;
 
     context.state = state;
-    var unitsWithStartHandlers = context.units.filter(function (x) {
-      return x.start;
-    }); //console.log({ unitsWithStartHandlers });
+    var fake = false;
 
-    setTimeout(function () {
-      unitsWithStartHandlers.forEach(function (x) {
-        return x.start();
-      });
-    }, 2000);
-    return;
+    if (!fake) {
+      var unitsWithStartHandlers = context.units.filter(function (x) {
+        return x.start;
+      }); //console.log({ unitsWithStartHandlers });
+
+      setTimeout(function () {
+        unitsWithStartHandlers.forEach(function (x) {
+          return x.start();
+        });
+      }, 2000);
+      return;
+    }
+
     var longDelay = 2000;
     var shortDelay = 50;
 
@@ -2054,7 +1929,7 @@ function Environment() {
               debugger;
             }
 
-            _this4.emit(action, [{
+            _this3.emit(action, [{
               label: label,
               state: state
             }]);
@@ -2094,7 +1969,7 @@ function Environment() {
         if (count >= 10) {
           console.log('FAKE ITERATION MAX: DONE!');
 
-          _this4.emit('units-change', [{
+          _this3.emit('units-change', [{
             label: state.units[0].label,
             state: 'success'
           }]);
@@ -15465,16 +15340,49 @@ module.exports = {"_from":"jison@^0.4.18","_id":"jison@0.4.18","_inBundle":false
 /* 30 */
 /***/ (function(module, exports) {
 
-//TODO: maybe check if node versus browser better
+/*
+    TODO:
+    - need a delay for links and compiled function
+    - need to verify links for send
+
+    other API/keyword ideas:
+    - delay, wait for net, wait for message
+    - different types of messages (.on)
+    - switch
+    - affect unit color, dimensions, etc
+    - affect link color
+    - add node to unit, remove/disable link/node
+    - disable node, sleep node, set node state
+    - create connection, create unit
+    - cache / memory
+*/
+var funcDelay = 3000;
+var DONE = true;
+var WAITING = false;
+var FAILED = false;
+
+function sleeper(ms) {
+  return function (x) {
+    return new Promise(function (resolve) {
+      return setTimeout(function () {
+        return resolve(x);
+      }, ms);
+    });
+  };
+} // OMG - https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise
+
+
+var isPromise = function isPromise(object) {
+  return object && typeof object.then === 'function';
+}; //TODO: maybe check if node versus browser better
+
+
 var fetch = typeof window !== 'undefined' && window.fetch ? window.fetch : function () {
   return new Promise(function (resolve, reject) {
     // maybe use request here so this works in node
     resolve();
   });
 };
-var DONE = true;
-var WAITING = false;
-var FAILED = false;
 
 function _fetch(url) {
   var fetchPromise = fetch(url).then(function (x) {
@@ -15650,7 +15558,103 @@ var customFunctions = {
   map: _map,
   send: _send
 };
-module.exports = customFunctions;
+/*
+TODO:
+Need to know what unit is acting
+emit-step should maybe just be in compiled (line 131)
+idea is for this functionality ^^^ to notify outside world of progress
+need to be able to modify/keep global state so that functions can share data
+*/
+
+var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep) {
+  // should probably just be called a queue or results and not promises
+  var promises = [];
+  var wrapped = Object.keys(custFuncs).reduce(function (all, key) {
+    all[key] = function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      var funcKey = "".concat(key, ":").concat(args.join('-')); //console.log(`custom function [${key}] ran`);
+      //console.log({ funcKey })
+
+      var queued = promises.find(function (x) {
+        return x.name === funcKey;
+      });
+
+      if (queued && queued.error) {
+        //console.log(`queued error: ${!!queued.error}`);
+        return FAILED;
+      }
+
+      if (queued && queued.result) {
+        //console.log(`queued result: ${!!queued.result}`);
+        return DONE;
+      }
+
+      var result = custFuncs[key].apply(custFuncs, args);
+
+      if (!isPromise(result)) {
+        result = new Promise(function (resolve) {
+          return resolve(result);
+        });
+      } //console.log('queued, waiting');
+
+
+      queued = new function QueueItem() {
+        var _this = this;
+
+        this.name = funcKey;
+        this.func = key;
+        this.result = undefined;
+        this.error = undefined;
+        this.promise = result //TODO: reject status errors?
+        .then(sleeper(key !== 'fetch' ? funcDelay : 3)).then(function (res) {
+          emitStep && emitStep({
+            name: key,
+            result: res,
+            status: 'success'
+          });
+          _this.result = res;
+          return res;
+        }).catch(function (err) {
+          console.log({
+            wrapCustomFunctionsError: err
+          });
+          debugger;
+          emitStep && emitStep({
+            name: key,
+            result: err,
+            status: 'error'
+          });
+          _this.error = err; //throw new Error('error in custom function promise');
+        });
+      }();
+      emitStep && emitStep({
+        name: key,
+        targets: result.targets,
+        message: result.message,
+        listener: result.listener,
+        status: 'start'
+      });
+      promises.push(queued);
+      return WAITING;
+    };
+
+    return all;
+  }, {});
+  wrapped.promises = promises;
+
+  wrapped.reset = function () {
+    promises = [];
+  };
+
+  return wrapped;
+};
+
+module.exports = function (emitStep) {
+  return wrapCustomFunctions(customFunctions, emitStep);
+};
 
 /***/ })
 /******/ ]);

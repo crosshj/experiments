@@ -3,40 +3,8 @@ window.filtrex = filtrex;
 const { compileExpression } = filtrex;
 
 const customFunctions = require('./customFunctions');
-/*
-    TODO:
-    - need a delay for links and compiled function
-    - need to verify links for send
-
-    other API/keyword ideas:
-    - delay, wait for net, wait for message
-    - different types of messages (.on)
-    - switch
-    - affect unit color, dimensions, etc
-    - affect link color
-    - add node to unit, remove/disable link/node
-    - disable node, sleep node, set node state
-    - create connection, create unit
-    - cache / memory
-*/
 
 const handleDelay = 5000;
-const funcDelay = 3000;
-
-const DONE = true;
-const WAITING = false;
-const FAILED = false;
-
-function sleeper(ms) {
-    return function(x) {
-        return new Promise(resolve => setTimeout(() => resolve(x), ms));
-    };
-}
-
-// OMG - https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise
-const isPromise = function (object) {
-    return object && typeof object.then === 'function';
-};
 
 function ExpressionEngine({ emitStep } = {}) {
     var compile = (exp, custFn, maxFails) => {
@@ -165,86 +133,6 @@ function ExpressionEngine({ emitStep } = {}) {
         };
     };
 
-    /*
-        TODO:
-        Need to know what unit is acting
-        emit-step should maybe just be in compiled (line 131)
-        idea is for this functionality ^^^ to notify outside world of progress
-        need to be able to modify/keep global state so that functions can share data
-    */
-    const wrapCustomFunctions = (custFuncs) => {
-        // should probably just be called a queue or results and not promises
-        let promises = [];
-        const wrapped = Object.keys(custFuncs)
-            .reduce((all, key) => {
-                all[key] = (...args) => {
-                    const funcKey = `${key}:${args.join('-')}`;
-
-                    //console.log(`custom function [${key}] ran`);
-                    //console.log({ funcKey })
-
-                    var queued = promises.find(x => x.name === funcKey);
-                    if (queued && queued.error) {
-                        //console.log(`queued error: ${!!queued.error}`);
-                        return FAILED;
-                    }
-                    if (queued && queued.result) {
-                        //console.log(`queued result: ${!!queued.result}`);
-                        return DONE;
-                    }
-
-                    var result = custFuncs[key](...args);
-                    if (!isPromise(result)) {
-                        result = new Promise((resolve) => resolve(result))
-                    }
-
-                    //console.log('queued, waiting');
-                    queued = new function QueueItem() {
-                        this.name = funcKey;
-                        this.func = key;
-                        this.result = undefined;
-                        this.error = undefined;
-                        this.promise = result
-                            //TODO: reject status errors?
-                            .then(sleeper(key !== 'fetch' ? funcDelay : 3))
-                            .then(res => {
-                                emitStep && emitStep({
-                                    name: key, result: res, status: 'success'
-                                });
-                                this.result = res;
-                                return res;
-                            })
-                            .catch(err => {
-                                console.log({ wrapCustomFunctionsError: err});
-                                debugger
-                                emitStep && emitStep({
-                                    name: key, result: err, status: 'error'
-                                });
-                                this.error = err;
-                                //throw new Error('error in custom function promise');
-                            });
-                    };
-
-                    emitStep && emitStep({
-                        name: key,
-                        targets: result.targets,
-                        message: result.message,
-                        listener: result.listener,
-                        status: 'start'
-                    });
-
-                    promises.push(queued);
-                    return WAITING;
-                };
-                return all;
-            }, {});
-        wrapped.promises = promises;
-        wrapped.reset = () => {
-            promises = [];
-        };
-        return wrapped;
-    };
-
     //TODO: expose customFunctions? and maxFails to browser
     var maxFails = 20;
     const expressionEngine = (exampleExpression, verbose) => {
@@ -272,7 +160,7 @@ function ExpressionEngine({ emitStep } = {}) {
 
         if (verbose) { console.log('EXPRESSION: ' + exampleExpression); }
 
-        return compile(ex, wrapCustomFunctions(customFunctions), maxFails);
+        return compile(ex, customFunctions(emitStep), maxFails);
     };
 
     if (typeof window === 'undefined') {
@@ -562,14 +450,18 @@ function Environment({ units = [], links = [], verbose } = {}) {
     function _fakeRun(state, context) {
         context.state = state;
 
-        const unitsWithStartHandlers = context.units.filter(x => x.start);
-        //console.log({ unitsWithStartHandlers });
+        const fake = false;
+        if(!fake){
+            const unitsWithStartHandlers = context.units.filter(x => x.start);
+            //console.log({ unitsWithStartHandlers });
 
-        setTimeout(() => {
-            unitsWithStartHandlers.forEach(x => x.start());
-        }, 2000);
+            setTimeout(() => {
+                unitsWithStartHandlers.forEach(x => x.start());
+            }, 2000);
 
-        return;
+            return;
+        }
+
         const longDelay = 2000;
         const shortDelay = 50;
         const events = (current, next, link) => [
@@ -607,7 +499,6 @@ function Environment({ units = [], links = [], verbose } = {}) {
             return getPromise;
         });
 
-
         const promiseSeries = function (tasks, callback) {
             return tasks.reduce((promiseChain, currentTask) => {
                 return promiseChain.then(chainResults =>
@@ -634,8 +525,6 @@ function Environment({ units = [], links = [], verbose } = {}) {
             });
         };
         doAll();
-
-
     }
 
     return new Umvelt();
