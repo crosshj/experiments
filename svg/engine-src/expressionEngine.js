@@ -26,26 +26,29 @@ function ExpressionEngine({ emitStep, currentNode } = {}) {
             propertyName, // name of the property being accessed
             get, // safe getter that retrieves the property from obj
             obj // the object passed to compiled expression
-        ){
-            if(propertyName === 'null'){
+        ) {
+            if (propertyName === 'null') {
                 return null;
             }
-            if(propertyName === 'undefined'){
+            if (propertyName === 'undefined') {
                 return undefined;
             }
-            if(propertyName.includes('unit:')){
+            if (propertyName.includes('unit:')) {
                 return propertyName.replace('unit:', '');
             }
-            const [func, index, prop ]  = propertyName.split('.');
+            const [func, index, prop, prop2] = propertyName.split('.');
             const supportedCommands = Object.keys(custFn);
             //console.log({ func, index, path, supportedCommands })
 
-            if(supportedCommands.includes(func)){
+            if (supportedCommands.includes(func)) {
                 //console.log({ func, index, prop })
                 var res = undefined;
                 try {
                     res = custFn.promises.filter(x => x.func === func)[index].result[prop];
-                } catch(e){}
+                    if (prop2) {
+                        res = res[prop2];
+                    }
+                } catch (e) { }
                 return res;
                 //console.log(custFn.promises.filter(x => x.func === func));
             }
@@ -55,7 +58,7 @@ function ExpressionEngine({ emitStep, currentNode } = {}) {
         function compiled(data, callback) {
             // promise are reset after finished state
             const beginRun = custFn.promises.length === 0;
-            if(beginRun){
+            if (beginRun) {
                 custFn.bindInput(data);
             }
             myFunc = myFunc || compileExpression(
@@ -257,7 +260,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
         var { handle, start } = n;
         // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
         const emitStep = (data) => {
-            const dataWithUnitInfo = { src: n, ...data};
+            const dataWithUnitInfo = { src: n, ...data };
             control('emit-step', dataWithUnitInfo);
         };
 
@@ -301,7 +304,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
         return Umvelt;
     })();
 
-    function _control(context, key, data){
+    function _control(context, key, data) {
         const {
             name, targets, message, listener, status, src, result
         } = data;
@@ -323,16 +326,16 @@ function Environment({ units = [], links = [], verbose } = {}) {
             this.emit(action, updates);
         };
 
-        if(name === 'ack' && status === 'start'){
+        if (name === 'ack' && status === 'start') {
             var _targets = targets;
             var _message = message;
-            if(!_targets && result){
+            if (!_targets && result) {
                 _targets = result.targets;
             }
-            if(!_message && result){
+            if (!_message && result) {
                 _message = result.message;
             }
-            //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+            console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
 
             const linkUpdates = context.state.links
                 .map(x => {
@@ -341,13 +344,13 @@ function Environment({ units = [], links = [], verbose } = {}) {
                         state: 'no_update'
                     };
 
-                    if(x.start.parent.block === src.label){
-                        if(!_targets.includes(x.end.parent.block)){
+                    if (x.start.parent.block === src.label) {
+                        if (!_targets.includes(x.end.parent.block)) {
                             return update;
                         }
                         update.state = 'send';
-                    } else if(x.end.parent.block === src.label){
-                        if(!_targets.includes(x.start.parent.block)){
+                    } else if (x.end.parent.block === src.label) {
+                        if (!_targets.includes(x.start.parent.block)) {
                             return update;
                         }
                         update.state = 'receive';
@@ -360,7 +363,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             return;
         }
 
-        if(name === 'start' && !status){
+        if (name === 'start' && !status) {
             emitUnitsUpdate([{
                 label: src.label,
                 state: 'active'
@@ -368,7 +371,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             return;
         }
 
-        if(name === 'end' && !status){
+        if (name === 'end' && !status) {
             emitUnitsUpdate([{
                 label: src.label,
                 state: 'success'
@@ -378,25 +381,25 @@ function Environment({ units = [], links = [], verbose } = {}) {
 
         this.emit(key, data)
 
-        if(name === 'send'){
+        if (name === 'send') {
             /*
                 TODO: also need to handle ack!
             */
-            if(data.status === 'error'){
+            if (data.status === 'error') {
                 //debugger;
             }
 
-            if(data.status === 'start'){
+            if (data.status === 'start') {
                 emitUnitsUpdate([{
                     label: src.label,
                     state: 'wait'
                 }]);
             }
             var _targets = targets;
-            if(result && result.nodesDone){
+            if (result && result.nodesDone) {
                 _targets = result.nodesDone.map(x => x.label);
             }
-            if(!_targets){
+            if (!_targets) {
                 console.log('UNHANDLED: situation in engine handling send message')
                 debugger
                 return;
@@ -408,22 +411,22 @@ function Environment({ units = [], links = [], verbose } = {}) {
                         state: 'no_update'
                     };
 
-                    if(x.start.parent.block === src.label){
-                        if(!_targets.includes(x.end.parent.block)){
+                    if (x.start.parent.block === src.label) {
+                        if (!_targets.includes(x.end.parent.block)) {
                             return update;
                         }
                         update.state = data.status === 'start'
                             ? 'send'
                             : data.status;
-                    } else if(x.end.parent.block === src.label){
-                        if(!_targets.includes(x.start.parent.block)){
+                    } else if (x.end.parent.block === src.label) {
+                        if (!_targets.includes(x.start.parent.block)) {
                             return update;
                         }
                         update.state = 'start'
                             ? 'receive'
                             : data.status;
                     }
-                    if (update.state === 'error'){
+                    if (update.state === 'error') {
                         update.state = 'fail';
                         update.data = data;
                     }
@@ -434,13 +437,13 @@ function Environment({ units = [], links = [], verbose } = {}) {
             emitLinksUpdate(linkUpdates);
         }
 
-        if(name === 'send' && targets){
-            //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+        if (name === 'send' && targets) {
+            console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
             const targetUnits = targets.map(label => {
                 return context.units.find(u => u.label === label && u.handle);
             }).filter(x => !!x);
 
-            if(targetUnits.length !== targets.length){
+            if (targetUnits.length !== targets.length) {
                 listener({ error: 'cannot find all nodes or handlers', data: { targetUnits } });
                 return;
             }
@@ -508,7 +511,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
         context.state = state;
 
         const fake = false;
-        if(!fake){
+        if (!fake) {
             const unitsWithStartHandlers = context.units.filter(x => x.start);
             //console.log({ unitsWithStartHandlers });
 

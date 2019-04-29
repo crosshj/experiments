@@ -1,5 +1,5 @@
 const apis = {
-    ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
+    ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=1',
     bored: 'http://www.boredapi.com/api/activity/',
     countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
     countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
@@ -24,8 +24,8 @@ const simple = {
         width: 110,
         height: 40,
         start: `
-            fetch("https://api.countapi.xyz/hit/boxesandwires/visits")
-            send(fetch.0.value, ('unit:जो है वही है'))
+            fetch("${apis.ghibli}")
+            send(fetch.0.0.title, ('unit:जो है वही है'))
         `,
         handle: exampleExpression || `
             ack()
