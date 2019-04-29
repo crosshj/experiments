@@ -15,11 +15,21 @@
     - cache / memory
 */
 
-const funcDelay = 3000;
+const funcDelay = 2500;
+const ackDelay = 2500;
 
 const DONE = true;
 const WAITING = false;
 const FAILED = false;
+
+function flatPromise() {
+    let resolve, reject;
+    const promise = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
+    });
+    return { promise, resolve, reject };
+}
 
 function sleeper(ms) {
     return function(x) {
@@ -109,15 +119,8 @@ function _send(message, nodes, timeout = 10000) {
     //console.log('custom function [send] ran');
     //test if array, wrap in array if not
     //TODO:
-    function flatPromise() {
-        let resolve, reject;
-        const promise = new Promise((res, rej) => {
-            resolve = res;
-            reject = rej;
-        });
-        return { promise, resolve, reject };
-    }
-    const { resolve, reject, promise: p } = flatPromise();
+
+    const { resolve, reject, promise: p } = new flatPromise();
 
     var nodesArray = Array.isArray(nodes)
         ? nodes
@@ -126,7 +129,6 @@ function _send(message, nodes, timeout = 10000) {
     var timer = undefined;
     const nodesDone = nodesArray.map(label => ({ label, done: false }));
     const listener = ({ data = {}, removeListener, error } = {}) => {
-
         timer = timer || setTimeout(() => {
             removeListener && removeListener();
             reject({
@@ -137,6 +139,7 @@ function _send(message, nodes, timeout = 10000) {
 
         if (error) {
             clearTimeout(timer);
+            timer = undefined;
             removeListener && removeListener();
             reject({
                 message: 'send error occured',
@@ -175,11 +178,32 @@ function _send(message, nodes, timeout = 10000) {
     return sendPromise;
 }
 
-function _ack(value, nodes) {
-    //test if array, wrap in array if not
-    //TODO:
-    //console.log('custom function [ack] ran');
-    return DONE;
+function _ack(sender, target, message) {
+    const { resolve, reject, promise: p } = new flatPromise();
+
+    /*
+        TODO: should maybe send an ack message the way that _send does
+    */
+
+    const ackPromise = p;
+    setTimeout(() => {
+        if(sender && typeof message !== 'undefined'){
+            resolve({
+                targets: [sender], message
+            });
+        } else {
+            //console.log('---- REJECT!');
+            reject({
+                message: 'ack error occured',
+                error: JSON.stringify({ targets: [sender], message })
+            });
+        }
+    }, ackDelay);
+
+    ackPromise.targets = [sender];
+    ackPromise.message = message;
+
+    return ackPromise;
 }
 
 const customFunctions = {
@@ -196,18 +220,29 @@ emit-step should maybe just be in compiled (line 131)
 idea is for this functionality ^^^ to notify outside world of progress
 need to be able to modify/keep global state so that functions can share data
 */
-const wrapCustomFunctions = (custFuncs, emitStep) => {
+const wrapCustomFunctions = (custFuncs, emitStep, currentNode) => {
     // should probably just be called a queue or results and not promises
     let promises = [];
+    let global = undefined;
+    let find = (fn) => {
+        return promises.find(fn)
+    };
     const wrapped = Object.keys(custFuncs)
         .reduce((all, key) => {
             all[key] = (...args) => {
-                const funcKey = `${key}:${args.join('-')}`;
+                var funcKey = `${key}:${args.join('-')}`;
+                if(key === 'ack' && global){
+                    funcKey = `${key}:${global.sendFrom}-${global.sendMessage}`;
+                }
 
                 //console.log(`custom function [${key}] ran`);
                 //console.log({ funcKey })
 
-                var queued = promises.find(x => x.name === funcKey);
+                var queued = find(x => x.name === funcKey);
+
+                // if(queued && (key === "send" || key === "ack")){
+                //     console.log(`--- sending queued response for ${funcKey}`);
+                // }
                 if (queued && queued.error) {
                     //console.log(`queued error: ${!!queued.error}`);
                     return FAILED;
@@ -217,7 +252,10 @@ const wrapCustomFunctions = (custFuncs, emitStep) => {
                     return DONE;
                 }
 
-                var result = custFuncs[key](...args);
+                var result = (key === 'ack' && global)
+                    ? custFuncs[key](global.sendFrom, currentNode, global.sendMessage)
+                    : custFuncs[key](...args);
+
                 if (!isPromise(result)) {
                     result = new Promise((resolve) => resolve(result))
                 }
@@ -230,7 +268,7 @@ const wrapCustomFunctions = (custFuncs, emitStep) => {
                     this.error = undefined;
                     this.promise = result
                         //TODO: reject status errors?
-                        .then(sleeper(key !== 'fetch' ? funcDelay : 3))
+                        .then(sleeper(['ack'].includes(key) ? 0: funcDelay))
                         .then(res => {
                             emitStep && emitStep({
                                 name: key, result: res, status: 'success'
@@ -239,8 +277,8 @@ const wrapCustomFunctions = (custFuncs, emitStep) => {
                             return res;
                         })
                         .catch(err => {
-                            console.log({ wrapCustomFunctionsError: err });
-                            debugger
+                            console.log({ wrapCustomFunctionsError: err, key, funcKey });
+                            //debugger
                             emitStep && emitStep({
                                 name: key, result: err, status: 'error'
                             });
@@ -265,8 +303,14 @@ const wrapCustomFunctions = (custFuncs, emitStep) => {
     wrapped.promises = promises;
     wrapped.reset = () => {
         promises = [];
+        wrapped.promises = promises;
+        global = undefined;
+    };
+    wrapped.bindInput = (data) => {
+        //console.log(`--- bind data: ${JSON.stringify(data)}`);
+        global = data
     };
     return wrapped;
 };
 
-module.exports = (emitStep) => wrapCustomFunctions(customFunctions, emitStep);
+module.exports = (emitStep, currentNode) => wrapCustomFunctions(customFunctions, emitStep, currentNode);

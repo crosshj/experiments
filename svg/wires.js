@@ -1330,7 +1330,7 @@ function engineBindState(Engine, _state){
                 - remove animation
             this should be done in renderer, not here
         */
-        console.log({ linksChange: JSON.stringify(data) })
+        //console.log({ linksChange: JSON.stringify(data) })
         _state.update(({ links }) => {
             data.forEach(u => {
                 const stateLink = links.find(s => s.label === u.label);

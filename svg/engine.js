@@ -1374,11 +1374,12 @@ var compileExpression = filtrex.compileExpression;
 
 var customFunctions = __webpack_require__(30);
 
-var handleDelay = 5000;
+var handleDelay = 2500;
 
 function ExpressionEngine() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      emitStep = _ref.emitStep;
+      emitStep = _ref.emitStep,
+      currentNode = _ref.currentNode;
 
   var compile = function compile(exp, custFn, maxFails) {
     var fails = 0; // return a function that will continuosly compile and run (as promises resolve) until true
@@ -1431,8 +1432,17 @@ function ExpressionEngine() {
       }
     }
 
+    var myFunc = undefined;
+
     function compiled(data, callback) {
-      var myFunc = compileExpression(exp, custFn, propFunction);
+      // promise are reset after finished state
+      var beginRun = custFn.promises.length === 0;
+
+      if (beginRun) {
+        custFn.bindInput(data);
+      }
+
+      myFunc = myFunc || compileExpression(exp, custFn, propFunction);
       var result = myFunc(data); //console.log({ promises: custFn.promises });
 
       var asyncError = custFn.promises.map(function (x) {
@@ -1448,12 +1458,13 @@ function ExpressionEngine() {
         emitStep && emitStep({
           name: 'end'
         });
+        custFn.reset(); //myFunc = undefined;
+
         /*
             TODO: wish this worked
             the idea is that wrapped state should be reset when script has finished
             this seems to not be the case
         */
-        //custFn.reset();
 
         if (!callback) {
           return;
@@ -1524,7 +1535,7 @@ function ExpressionEngine() {
       console.log('EXPRESSION: ' + exampleExpression);
     }
 
-    return compile(ex, customFunctions(emitStep), maxFails);
+    return compile(ex, customFunctions(emitStep, currentNode), maxFails);
   };
 
   if (typeof window === 'undefined') {
@@ -1614,8 +1625,7 @@ function Environment() {
       verbose = _ref2.verbose;
 
   var mapUnitToCompiled = function mapUnitToCompiled(n, _ref3) {
-    var emit = _ref3.emit,
-        control = _ref3.control;
+    var control = _ref3.control;
     var handle = n.handle,
         start = n.start; // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
 
@@ -1627,11 +1637,14 @@ function Environment() {
       control('emit-step', dataWithUnitInfo);
     };
 
+    var currentNode = n.label;
     handle = handle && new ExpressionEngine({
-      emitStep: emitStep
+      emitStep: emitStep,
+      currentNode: currentNode
     })(handle, verbose);
     start = start && new ExpressionEngine({
-      emitStep: emitStep
+      emitStep: emitStep,
+      currentNode: currentNode
     })(start, verbose);
     var fns = {
       handle: handle,
@@ -1719,6 +1732,48 @@ function Environment() {
       _this2.emit(action, updates);
     };
 
+    if (name === 'ack' && status === 'start') {
+      var _targets = targets;
+      var _message = message;
+
+      if (!_targets && result) {
+        _targets = result.targets;
+      }
+
+      if (!_message && result) {
+        _message = result.message;
+      }
+
+      console.log("ACK:".concat(status, " [").concat(_message, "] ").concat(_targets.join(' ,'), " -> ").concat(src.label));
+      var linkUpdates = context.state.links.map(function (x) {
+        var update = {
+          label: x.label,
+          state: 'no_update'
+        };
+
+        if (x.start.parent.block === src.label) {
+          if (!_targets.includes(x.end.parent.block)) {
+            return update;
+          }
+
+          update.state = 'send';
+        } else if (x.end.parent.block === src.label) {
+          if (!_targets.includes(x.start.parent.block)) {
+            return update;
+          }
+
+          update.state = 'receive';
+        }
+
+        return update;
+      }).filter(function (x) {
+        return x.state !== 'no_update';
+      }); //console.log({ links: linkUpdates, src, targets })
+
+      emitLinksUpdate(linkUpdates);
+      return;
+    }
+
     if (name === 'start' && !status) {
       emitUnitsUpdate([{
         label: src.label,
@@ -1741,8 +1796,7 @@ function Environment() {
       /*
           TODO: also need to handle ack!
       */
-      if (data.status === 'error') {
-        debugger;
+      if (data.status === 'error') {//debugger;
       }
 
       if (data.status === 'start') {
@@ -1766,7 +1820,7 @@ function Environment() {
         return;
       }
 
-      var linkUpdates = context.state.links.map(function (x) {
+      var _linkUpdates = context.state.links.map(function (x) {
         var update = {
           label: x.label,
           state: 'no_update'
@@ -1796,10 +1850,12 @@ function Environment() {
         return x.state !== 'no_update';
       }); //console.log({ links: linkUpdates, src, targets })
 
-      emitLinksUpdate(linkUpdates);
+
+      emitLinksUpdate(_linkUpdates);
     }
 
     if (name === 'send' && targets) {
+      console.log("SEND [".concat(data.message, "] ").concat(data.src.label, " -> ").concat(targets.join(' ,')));
       var targetUnits = targets.map(function (label) {
         return context.units.find(function (u) {
           return u.label === label && u.handle;
@@ -1827,7 +1883,10 @@ function Environment() {
       });
       targetUnits.forEach(function (u) {
         return setTimeout(function () {
-          return u.handle();
+          return u.handle({
+            sendFrom: data.src.label,
+            sendMessage: data.message
+          });
         }, handleDelay);
       });
     }
@@ -15356,10 +15415,24 @@ module.exports = {"_from":"jison@^0.4.18","_id":"jison@0.4.18","_inBundle":false
     - create connection, create unit
     - cache / memory
 */
-var funcDelay = 3000;
+var funcDelay = 2500;
+var ackDelay = 2500;
 var DONE = true;
 var WAITING = false;
 var FAILED = false;
+
+function flatPromise() {
+  var resolve, reject;
+  var promise = new Promise(function (res, rej) {
+    resolve = res;
+    reject = rej;
+  });
+  return {
+    promise: promise,
+    resolve: resolve,
+    reject: reject
+  };
+}
 
 function sleeper(ms) {
   return function (x) {
@@ -15458,23 +15531,10 @@ function _send(message, nodes) {
   //console.log('custom function [send] ran');
   //test if array, wrap in array if not
   //TODO:
-  function flatPromise() {
-    var resolve, reject;
-    var promise = new Promise(function (res, rej) {
-      resolve = res;
-      reject = rej;
-    });
-    return {
-      promise: promise,
-      resolve: resolve,
-      reject: reject
-    };
-  }
-
-  var _flatPromise = flatPromise(),
-      resolve = _flatPromise.resolve,
-      reject = _flatPromise.reject,
-      p = _flatPromise.promise;
+  var _ref = new flatPromise(),
+      resolve = _ref.resolve,
+      reject = _ref.reject,
+      p = _ref.promise;
 
   var nodesArray = Array.isArray(nodes) ? nodes : [nodes];
   var timer = undefined;
@@ -15486,11 +15546,11 @@ function _send(message, nodes) {
   });
 
   var listener = function listener() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        _ref$data = _ref.data,
-        data = _ref$data === void 0 ? {} : _ref$data,
-        removeListener = _ref.removeListener,
-        error = _ref.error;
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref2$data = _ref2.data,
+        data = _ref2$data === void 0 ? {} : _ref2$data,
+        removeListener = _ref2.removeListener,
+        error = _ref2.error;
 
     timer = timer || setTimeout(function () {
       removeListener && removeListener();
@@ -15502,6 +15562,7 @@ function _send(message, nodes) {
 
     if (error) {
       clearTimeout(timer);
+      timer = undefined;
       removeListener && removeListener();
       reject({
         message: 'send error occured',
@@ -15545,11 +15606,37 @@ function _send(message, nodes) {
   return sendPromise;
 }
 
-function _ack(value, nodes) {
-  //test if array, wrap in array if not
-  //TODO:
-  //console.log('custom function [ack] ran');
-  return DONE;
+function _ack(sender, target, message) {
+  var _ref3 = new flatPromise(),
+      resolve = _ref3.resolve,
+      reject = _ref3.reject,
+      p = _ref3.promise;
+  /*
+      TODO: should maybe send an ack message the way that _send does
+  */
+
+
+  var ackPromise = p;
+  setTimeout(function () {
+    if (sender && typeof message !== 'undefined') {
+      resolve({
+        targets: [sender],
+        message: message
+      });
+    } else {
+      //console.log('---- REJECT!');
+      reject({
+        message: 'ack error occured',
+        error: JSON.stringify({
+          targets: [sender],
+          message: message
+        })
+      });
+    }
+  }, ackDelay);
+  ackPromise.targets = [sender];
+  ackPromise.message = message;
+  return ackPromise;
 }
 
 var customFunctions = {
@@ -15566,21 +15653,34 @@ idea is for this functionality ^^^ to notify outside world of progress
 need to be able to modify/keep global state so that functions can share data
 */
 
-var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep) {
+var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep, currentNode) {
   // should probably just be called a queue or results and not promises
   var promises = [];
+  var global = undefined;
+
+  var find = function find(fn) {
+    return promises.find(fn);
+  };
+
   var wrapped = Object.keys(custFuncs).reduce(function (all, key) {
     all[key] = function () {
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      var funcKey = "".concat(key, ":").concat(args.join('-')); //console.log(`custom function [${key}] ran`);
+      var funcKey = "".concat(key, ":").concat(args.join('-'));
+
+      if (key === 'ack' && global) {
+        funcKey = "".concat(key, ":").concat(global.sendFrom, "-").concat(global.sendMessage);
+      } //console.log(`custom function [${key}] ran`);
       //console.log({ funcKey })
 
-      var queued = promises.find(function (x) {
+
+      var queued = find(function (x) {
         return x.name === funcKey;
-      });
+      }); // if(queued && (key === "send" || key === "ack")){
+      //     console.log(`--- sending queued response for ${funcKey}`);
+      // }
 
       if (queued && queued.error) {
         //console.log(`queued error: ${!!queued.error}`);
@@ -15592,7 +15692,7 @@ var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep) {
         return DONE;
       }
 
-      var result = custFuncs[key].apply(custFuncs, args);
+      var result = key === 'ack' && global ? custFuncs[key](global.sendFrom, currentNode, global.sendMessage) : custFuncs[key].apply(custFuncs, args);
 
       if (!isPromise(result)) {
         result = new Promise(function (resolve) {
@@ -15609,7 +15709,7 @@ var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep) {
         this.result = undefined;
         this.error = undefined;
         this.promise = result //TODO: reject status errors?
-        .then(sleeper(key !== 'fetch' ? funcDelay : 3)).then(function (res) {
+        .then(sleeper(['ack'].includes(key) ? 0 : funcDelay)).then(function (res) {
           emitStep && emitStep({
             name: key,
             result: res,
@@ -15619,9 +15719,11 @@ var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep) {
           return res;
         }).catch(function (err) {
           console.log({
-            wrapCustomFunctionsError: err
-          });
-          debugger;
+            wrapCustomFunctionsError: err,
+            key: key,
+            funcKey: funcKey
+          }); //debugger
+
           emitStep && emitStep({
             name: key,
             result: err,
@@ -15647,13 +15749,20 @@ var wrapCustomFunctions = function wrapCustomFunctions(custFuncs, emitStep) {
 
   wrapped.reset = function () {
     promises = [];
+    wrapped.promises = promises;
+    global = undefined;
+  };
+
+  wrapped.bindInput = function (data) {
+    //console.log(`--- bind data: ${JSON.stringify(data)}`);
+    global = data;
   };
 
   return wrapped;
 };
 
-module.exports = function (emitStep) {
-  return wrapCustomFunctions(customFunctions, emitStep);
+module.exports = function (emitStep, currentNode) {
+  return wrapCustomFunctions(customFunctions, emitStep, currentNode);
 };
 
 /***/ })

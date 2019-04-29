@@ -29,7 +29,7 @@ const simple = {
         `,
         handle: exampleExpression || `
             ack()
-            send(null, ('unit:जो है वही है'))
+            send(ack.0.message, ('unit:जो है वही है'))
         `,
         nodes: [null, null, null, null, { label: 'fourth'}, null, {
                 label: 'sixth'
@@ -47,7 +47,7 @@ const simple = {
         },,,,,,{ label: 'seventh'}],
         handle: `
             ack()
-            send(null, ('unit:גליטש'))
+            send(ack.0.message, ('unit:גליטש'))
         `
     }, {
         label: 'גליטש',
@@ -62,7 +62,7 @@ const simple = {
         },,{ label: 'fourth'}],
         handle: `
             ack()
-            send(null, ('unit:ομφαλός'))
+            send(ack.0.message, ('unit:ομφαλός'))
         `
     }],
     wires: [{

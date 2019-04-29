@@ -4,9 +4,9 @@ const { compileExpression } = filtrex;
 
 const customFunctions = require('./customFunctions');
 
-const handleDelay = 5000;
+const handleDelay = 2500;
 
-function ExpressionEngine({ emitStep } = {}) {
+function ExpressionEngine({ emitStep, currentNode } = {}) {
     var compile = (exp, custFn, maxFails) => {
         var fails = 0;
         // return a function that will continuosly compile and run (as promises resolve) until true
@@ -39,6 +39,7 @@ function ExpressionEngine({ emitStep } = {}) {
             const [func, index, prop ]  = propertyName.split('.');
             const supportedCommands = Object.keys(custFn);
             //console.log({ func, index, path, supportedCommands })
+
             if(supportedCommands.includes(func)){
                 //console.log({ func, index, prop })
                 var res = undefined;
@@ -50,8 +51,14 @@ function ExpressionEngine({ emitStep } = {}) {
             }
         }
 
+        var myFunc = undefined;
         function compiled(data, callback) {
-            var myFunc = compileExpression(
+            // promise are reset after finished state
+            const beginRun = custFn.promises.length === 0;
+            if(beginRun){
+                custFn.bindInput(data);
+            }
+            myFunc = myFunc || compileExpression(
                 exp,
                 custFn,
                 propFunction
@@ -79,12 +86,14 @@ function ExpressionEngine({ emitStep } = {}) {
                 emitStep && emitStep({
                     name: 'end'
                 });
+                custFn.reset();
+                //myFunc = undefined;
+
                 /*
                     TODO: wish this worked
                     the idea is that wrapped state should be reset when script has finished
                     this seems to not be the case
                 */
-                //custFn.reset();
                 if (!callback) {
                     return;
                 }
@@ -160,7 +169,7 @@ function ExpressionEngine({ emitStep } = {}) {
 
         if (verbose) { console.log('EXPRESSION: ' + exampleExpression); }
 
-        return compile(ex, customFunctions(emitStep), maxFails);
+        return compile(ex, customFunctions(emitStep, currentNode), maxFails);
     };
 
     if (typeof window === 'undefined') {
@@ -244,7 +253,7 @@ notify about environment:
 */
 function Environment({ units = [], links = [], verbose } = {}) {
 
-    const mapUnitToCompiled = (n, { emit, control }) => {
+    const mapUnitToCompiled = (n, { control }) => {
         var { handle, start } = n;
         // TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
         const emitStep = (data) => {
@@ -252,8 +261,9 @@ function Environment({ units = [], links = [], verbose } = {}) {
             control('emit-step', dataWithUnitInfo);
         };
 
-        handle = handle && new ExpressionEngine({ emitStep })(handle, verbose);
-        start = start && new ExpressionEngine({ emitStep })(start, verbose);
+        const currentNode = n.label;
+        handle = handle && new ExpressionEngine({ emitStep, currentNode })(handle, verbose);
+        start = start && new ExpressionEngine({ emitStep, currentNode })(start, verbose);
         const fns = { handle, start };
         Object.keys(fns).forEach(p => {
             !fns[p] && delete fns[p];
@@ -292,14 +302,15 @@ function Environment({ units = [], links = [], verbose } = {}) {
     })();
 
     function _control(context, key, data){
-        const { name, targets, message, listener, status, src, result } = data;
+        const {
+            name, targets, message, listener, status, src, result
+        } = data;
         //console.log({ context, key, data, engine: this });
 
         //TODO: if send/ack from one compiled script then
         //  - TODO: activate link (send message to UI for link)
         //  - DONE: notify other compiled script
         //  - ...
-
 
         const emitUnitsUpdate = (updates) => {
             // TODO: guard: updates is array, each item has label and state
@@ -312,6 +323,42 @@ function Environment({ units = [], links = [], verbose } = {}) {
             this.emit(action, updates);
         };
 
+        if(name === 'ack' && status === 'start'){
+            var _targets = targets;
+            var _message = message;
+            if(!_targets && result){
+                _targets = result.targets;
+            }
+            if(!_message && result){
+                _message = result.message;
+            }
+            console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+
+            const linkUpdates = context.state.links
+                .map(x => {
+                    const update = {
+                        label: x.label,
+                        state: 'no_update'
+                    };
+
+                    if(x.start.parent.block === src.label){
+                        if(!_targets.includes(x.end.parent.block)){
+                            return update;
+                        }
+                        update.state = 'send';
+                    } else if(x.end.parent.block === src.label){
+                        if(!_targets.includes(x.start.parent.block)){
+                            return update;
+                        }
+                        update.state = 'receive';
+                    }
+                    return update;
+                })
+                .filter(x => x.state !== 'no_update');
+            //console.log({ links: linkUpdates, src, targets })
+            emitLinksUpdate(linkUpdates);
+            return;
+        }
 
         if(name === 'start' && !status){
             emitUnitsUpdate([{
@@ -336,7 +383,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
                 TODO: also need to handle ack!
             */
             if(data.status === 'error'){
-                debugger;
+                //debugger;
             }
 
             if(data.status === 'start'){
@@ -388,6 +435,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
         }
 
         if(name === 'send' && targets){
+            console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
             const targetUnits = targets.map(label => {
                 return context.units.find(u => u.label === label && u.handle);
             }).filter(x => !!x);
@@ -403,7 +451,10 @@ function Environment({ units = [], links = [], verbose } = {}) {
             this.on('emit-step', (data) => {
                 listener({ data });
             });
-            targetUnits.forEach(u => setTimeout(() => u.handle(), handleDelay));
+            targetUnits.forEach(u => setTimeout(() => u.handle({
+                sendFrom: data.src.label,
+                sendMessage: data.message
+            }), handleDelay));
         }
     }
 
