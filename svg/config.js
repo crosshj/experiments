@@ -1,8 +1,25 @@
+function base64Encode( stringInput ) {
+    // READ MORE: https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_Unicode_Problem
+    var normalizedInput = encodeURIComponent( stringInput )
+        .replace(
+            /%([0-9A-F]{2})/g,
+            function toSolidBytes( $0, hex ) {
+                return( String.fromCharCode( "0x" + hex ) );
+            }
+        );
+    return btoa( normalizedInput );
+}
+
+const dataURIPayload = {
+    value: Math.floor(Math.random()*100) + '-' + Math.random().toString(36).substring(2, 15)
+};
+
 const apis = {
     ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=1',
     bored: 'http://www.boredapi.com/api/activity/',
     countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
     countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
+    dataURI: 'data:application/json;charset=utf-8;base64,' + base64Encode(JSON.stringify(dataURIPayload))
 };
 const api = 'countRegister';
 const exampleExpression = false && `
@@ -24,8 +41,8 @@ const simple = {
         width: 110,
         height: 40,
         start: `
-            fetch("${apis.ghibli}")
-            send(fetch.0.0.title, ('unit:जो है वही है'))
+            fetch("${apis.dataURI}")
+            send(fetch.0.value, ('unit:जो है वही है'))
         `,
         handle: exampleExpression || `
             ack()
