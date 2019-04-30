@@ -40,6 +40,12 @@ const simple = {
         y: 60,
         width: 110,
         height: 40,
+        // NOTE: leads to a bad situation
+        // start: `
+        //     fetch("${apis.dataURI}")
+        //     send(fetch.0.value, ('unit:जो है वही है'))
+        //     send(fetch.0.value, ('unit:גליטש'))
+        // `,
         start: `
             fetch("${apis.dataURI}")
             send(fetch.0.value, ('unit:जो है वही है'))
