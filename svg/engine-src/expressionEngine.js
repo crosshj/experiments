@@ -309,7 +309,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     class Loop {
         constructor() {
             this.items = [];
-            this.delay = 3000;
+            this.delay = 1500;
             this.width = 1;
             this.start();
         }

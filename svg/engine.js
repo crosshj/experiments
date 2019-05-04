@@ -1722,7 +1722,7 @@ function Environment() {
       _classCallCheck(this, Loop);
 
       this.items = [];
-      this.delay = 3000;
+      this.delay = 1500;
       this.width = 1;
       this.start();
     }
@@ -15533,8 +15533,8 @@ module.exports = {"_from":"jison@^0.4.18","_id":"jison@0.4.18","_inBundle":false
     - create connection, create unit
     - cache / memory
 */
-var funcDelay = 3000;
-var ackDelay = 2000;
+var funcDelay = 0;
+var ackDelay = 0;
 var sendDelay = 0;
 var DONE = true;
 var WAITING = false;
@@ -15644,7 +15644,7 @@ function _map(mapper, input, output) {
 }
 
 function _send(message, nodes) {
-  var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10000;
+  var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 20000;
 
   //console.log(arguments)
   //console.log('custom function [send] ran');

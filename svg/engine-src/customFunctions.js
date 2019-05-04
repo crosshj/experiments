@@ -15,8 +15,8 @@
     - cache / memory
 */
 
-const funcDelay = 3000;
-const ackDelay = 2000;
+const funcDelay = 0;
+const ackDelay = 0;
 const sendDelay = 0;
 
 const DONE = true;
@@ -115,7 +115,7 @@ function _map(mapper, input, output) {
         : DONE;
 }
 
-function _send(message, nodes, timeout = 10000) {
+function _send(message, nodes, timeout = 20000) {
     //console.log(arguments)
     //console.log('custom function [send] ran');
     //test if array, wrap in array if not
