@@ -1355,6 +1355,12 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -1696,10 +1702,11 @@ function Environment() {
       this.start = function (state) {
         return _fakeRun.bind(_this)(state, context);
       }; // this is for internal signals
+      //this.control = (key, data) => _control.bind(this)(context, key, data);
 
 
       this.control = function (key, data) {
-        return _control.bind(_this)(context, key, data);
+        _gameLoop(_control.bind(_this), context, key, data);
       };
 
       context.units = compiledUnits(this); //console.log({ compiledUnits });
@@ -1707,6 +1714,83 @@ function Environment() {
 
     return Umvelt;
   }();
+
+  var Loop =
+  /*#__PURE__*/
+  function () {
+    function Loop() {
+      _classCallCheck(this, Loop);
+
+      this.items = [];
+      this.delay = 2000;
+      this.width = 1;
+      this.start();
+    }
+
+    _createClass(Loop, [{
+      key: "isEmpty",
+      value: function isEmpty() {
+        return this.items.length == 0;
+      }
+    }, {
+      key: "add",
+      value: function add(element) {
+        if (Array.isArray(element)) {
+          [].push.apply(this.items, element);
+          return;
+        }
+
+        this.items.push(element);
+      } // maybe remove multiple items at a time?
+
+    }, {
+      key: "remove",
+      value: function remove() {
+        if (this.isEmpty()) {
+          return undefined;
+        }
+
+        return this.items.shift();
+      }
+    }, {
+      key: "process",
+      value: function process() {
+        //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+        //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+        var item = this.remove();
+
+        if (!item) {
+          return;
+        }
+
+        console.log('-- tick');
+        item();
+      } //TODO: pause/resume
+
+    }, {
+      key: "start",
+      value: function start() {
+        this.interval = setInterval(this.process.bind(this), this.delay);
+      }
+    }]);
+
+    return Loop;
+  }(); //const loopEvents = ['start', 'end', 'send', 'ack'];
+
+
+  function _gameLoop(controller, context, key, data) {
+    var name = data.name; // reject some events ???
+    // if(!loopEvents.includes(name)){
+    //     return;
+    // }
+    // create queue if not created
+
+    context.loop = context.loop || new Loop(); // queue event
+
+    context.loop.add(function () {
+      return controller(context, key, data);
+    });
+  }
 
   function _control(context, key, data) {
     var _this2 = this;
@@ -1747,9 +1831,9 @@ function Environment() {
 
       if (!_message && result) {
         _message = result.message;
-      }
+      } //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
 
-      console.log("ACK:".concat(status, " [").concat(_message, "] ").concat(_targets.join(' ,'), " -> ").concat(src.label));
+
       var linkUpdates = context.state.links.map(function (x) {
         var update = {
           label: x.label,
@@ -1860,7 +1944,7 @@ function Environment() {
     }
 
     if (name === 'send' && targets) {
-      console.log("SEND [".concat(data.message, "] ").concat(data.src.label, " -> ").concat(targets.join(' ,')));
+      //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
       var targetUnits = targets.map(function (label) {
         return context.units.find(function (u) {
           return u.label === label && u.handle;

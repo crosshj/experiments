@@ -295,14 +295,74 @@ function Environment({ units = [], links = [], verbose } = {}) {
             this.start = (state) => _fakeRun.bind(this)(state, context);
 
             // this is for internal signals
-            this.control = (key, data) => _control.bind(this)(context, key, data);
-
+            //this.control = (key, data) => _control.bind(this)(context, key, data);
+            this.control = (key, data) => {
+                _gameLoop(_control.bind(this), context, key, data);
+            };
             context.units = compiledUnits(this);
             //console.log({ compiledUnits });
         }
 
         return Umvelt;
     })();
+
+    class Loop {
+        constructor() {
+            this.items = [];
+            this.delay = 2000;
+            this.width = 1;
+            this.start();
+        }
+        isEmpty(){
+            return this.items.length == 0;
+        }
+        add(element){
+            if(Array.isArray(element)){
+                [].push.apply(this.items, element);
+                return;
+            }
+            this.items.push(element);
+        }
+        // maybe remove multiple items at a time?
+        remove(){
+            if(this.isEmpty()){
+                return undefined;
+            }
+            return this.items.shift();
+        }
+        process(){
+            //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+            //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+            const item = this.remove();
+            if(!item){
+                return;
+            }
+            console.log('-- tick');
+            item();
+        }
+        //TODO: pause/resume
+        start(){
+            this.interval = setInterval(this.process.bind(this), this.delay);
+        }
+    }
+
+    //const loopEvents = ['start', 'end', 'send', 'ack'];
+    function _gameLoop(controller, context, key, data){
+        const {
+            name
+        } = data;
+
+        // reject some events ???
+        // if(!loopEvents.includes(name)){
+        //     return;
+        // }
+
+        // create queue if not created
+        context.loop = context.loop || new Loop();
+
+        // queue event
+        context.loop.add(() => controller(context, key, data))
+    }
 
     function _control(context, key, data) {
         const {
@@ -335,7 +395,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             if (!_message && result) {
                 _message = result.message;
             }
-            console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+            //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
 
             const linkUpdates = context.state.links
                 .map(x => {
@@ -438,7 +498,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
         }
 
         if (name === 'send' && targets) {
-            console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+            //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
             const targetUnits = targets.map(label => {
                 return context.units.find(u => u.label === label && u.handle);
             }).filter(x => !!x);
