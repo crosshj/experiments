@@ -40,7 +40,7 @@ const simple = {
         y: 60,
         width: 110,
         height: 40,
-        // NOTE: leads to a bad situation
+        // NOTE: leads to bad situations
         // start: `
         //     fetch("${apis.dataURI}")
         //     send(fetch.0.value, ('unit:जो है वही है'))

@@ -4,7 +4,7 @@ const { compileExpression } = filtrex;
 
 const customFunctions = require('./customFunctions');
 
-const handleDelay = 2500;
+const handleDelay = 0;
 
 function ExpressionEngine({ emitStep, currentNode } = {}) {
     var compile = (exp, custFn, maxFails) => {
@@ -309,7 +309,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     class Loop {
         constructor() {
             this.items = [];
-            this.delay = 2000;
+            this.delay = 3000;
             this.width = 1;
             this.start();
         }
@@ -317,6 +317,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             return this.items.length == 0;
         }
         add(element){
+            // todo: priority
             if(Array.isArray(element)){
                 [].push.apply(this.items, element);
                 return;
@@ -331,13 +332,13 @@ function Environment({ units = [], links = [], verbose } = {}) {
             return this.items.shift();
         }
         process(){
-            //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
-            //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
             const item = this.remove();
             if(!item){
                 return;
             }
-            console.log('-- tick');
+            if(item.log){
+                console.log(item.log);
+            }
             item();
         }
         //TODO: pause/resume
@@ -349,7 +350,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     //const loopEvents = ['start', 'end', 'send', 'ack'];
     function _gameLoop(controller, context, key, data){
         const {
-            name
+            name, targets, message, listener, status, src, result
         } = data;
 
         // reject some events ???
@@ -361,7 +362,11 @@ function Environment({ units = [], links = [], verbose } = {}) {
         context.loop = context.loop || new Loop();
 
         // queue event
-        context.loop.add(() => controller(context, key, data))
+        const event = () => controller(context, key, data);
+        //event.log = `${name.toUpperCase()}:${status}`;
+        //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+        //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+        context.loop.add(event)
     }
 
     function _control(context, key, data) {

@@ -1380,7 +1380,7 @@ var compileExpression = filtrex.compileExpression;
 
 var customFunctions = __webpack_require__(30);
 
-var handleDelay = 2500;
+var handleDelay = 0;
 
 function ExpressionEngine() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -1722,7 +1722,7 @@ function Environment() {
       _classCallCheck(this, Loop);
 
       this.items = [];
-      this.delay = 2000;
+      this.delay = 3000;
       this.width = 1;
       this.start();
     }
@@ -1735,6 +1735,7 @@ function Environment() {
     }, {
       key: "add",
       value: function add(element) {
+        // todo: priority
         if (Array.isArray(element)) {
           [].push.apply(this.items, element);
           return;
@@ -1755,15 +1756,16 @@ function Environment() {
     }, {
       key: "process",
       value: function process() {
-        //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
-        //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
         var item = this.remove();
 
         if (!item) {
           return;
         }
 
-        console.log('-- tick');
+        if (item.log) {
+          console.log(item.log);
+        }
+
         item();
       } //TODO: pause/resume
 
@@ -1779,7 +1781,13 @@ function Environment() {
 
 
   function _gameLoop(controller, context, key, data) {
-    var name = data.name; // reject some events ???
+    var name = data.name,
+        targets = data.targets,
+        message = data.message,
+        listener = data.listener,
+        status = data.status,
+        src = data.src,
+        result = data.result; // reject some events ???
     // if(!loopEvents.includes(name)){
     //     return;
     // }
@@ -1787,9 +1795,14 @@ function Environment() {
 
     context.loop = context.loop || new Loop(); // queue event
 
-    context.loop.add(function () {
+    var event = function event() {
       return controller(context, key, data);
-    });
+    }; //event.log = `${name.toUpperCase()}:${status}`;
+    //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
+    //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+
+
+    context.loop.add(event);
   }
 
   function _control(context, key, data) {
