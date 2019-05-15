@@ -1722,7 +1722,7 @@ function Environment() {
       _classCallCheck(this, Loop);
 
       this.items = [];
-      this.delay = 1500;
+      this.delay = 2500;
       this.width = 1;
       this.start();
     }
@@ -1735,13 +1735,38 @@ function Environment() {
     }, {
       key: "add",
       value: function add(element) {
-        // todo: priority
-        if (Array.isArray(element)) {
-          [].push.apply(this.items, element);
+        var priority = Array.isArray(element) ? element.find(function (e) {
+          return e.priority;
+        }) : element.priority;
+        var isPriority = priority && priority > 0;
+
+        if (isPriority) {//console.log(element.data);
+        }
+
+        function addToFront(el, target) {
+          if (Array.isArray(el)) {
+            [].unshift.apply(target, el);
+            return;
+          }
+
+          target.unshift(el);
+        }
+
+        function addToEnd(el, target) {
+          if (Array.isArray(el)) {
+            [].push.apply(target, el);
+            return;
+          }
+
+          target.push(el);
+        }
+
+        if (isPriority) {
+          addToFront(element, this.items);
           return;
         }
 
-        this.items.push(element);
+        addToEnd(element, this.items);
       } // maybe remove multiple items at a time?
 
     }, {
@@ -1766,6 +1791,7 @@ function Environment() {
           console.log(item.log);
         }
 
+        console.log(item.data);
         item();
       } //TODO: pause/resume
 
@@ -1802,6 +1828,10 @@ function Environment() {
     //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
 
 
+    var successfulSend = name === 'send' && status === 'success';
+    var ackStart = name === 'ack' && status === 'start';
+    event.priority = successfulSend || ackStart || name === 'end' ? 1 : 0;
+    event.data = data;
     context.loop.add(event);
   }
 

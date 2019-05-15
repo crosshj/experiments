@@ -309,7 +309,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     class Loop {
         constructor() {
             this.items = [];
-            this.delay = 1500;
+            this.delay = 2500;
             this.width = 1;
             this.start();
         }
@@ -317,12 +317,35 @@ function Environment({ units = [], links = [], verbose } = {}) {
             return this.items.length == 0;
         }
         add(element){
-            // todo: priority
-            if(Array.isArray(element)){
-                [].push.apply(this.items, element);
+            const priority = Array.isArray(element)
+                ? element.find(e => e.priority)
+                : element.priority;
+
+            const isPriority = priority && priority > 0;
+            if(isPriority){
+                //console.log(element.data);
+            }
+            function addToFront(el, target){
+                if(Array.isArray(el)){
+                    [].unshift.apply(target, el);
+                    return;
+                }
+                target.unshift(el);
+            }
+
+            function addToEnd(el, target){
+                if(Array.isArray(el)){
+                    [].push.apply(target, el);
+                    return;
+                }
+                target.push(el);
+            }
+
+            if(isPriority){
+                addToFront(element, this.items);
                 return;
             }
-            this.items.push(element);
+            addToEnd(element, this.items);
         }
         // maybe remove multiple items at a time?
         remove(){
@@ -339,6 +362,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             if(item.log){
                 console.log(item.log);
             }
+            console.log(item.data)
             item();
         }
         //TODO: pause/resume
@@ -366,6 +390,12 @@ function Environment({ units = [], links = [], verbose } = {}) {
         //event.log = `${name.toUpperCase()}:${status}`;
         //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
         //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
+        const successfulSend = name === 'send' && status === 'success';
+        const ackStart = name === 'ack' && status === 'start';
+        event.priority = successfulSend || ackStart || name === 'end'
+            ? 1
+            : 0;
+        event.data = data;
         context.loop.add(event)
     }
 
