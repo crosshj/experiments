@@ -355,6 +355,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             return this.items.shift();
         }
         process(){
+            //TODO: instead of (or in addition to) priority, batch/sort updates before run
             const item = this.remove();
             if(!item){
                 return;
