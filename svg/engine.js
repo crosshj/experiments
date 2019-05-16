@@ -1781,6 +1781,7 @@ function Environment() {
     }, {
       key: "process",
       value: function process() {
+        //TODO: instead of (or in addition to) priority, batch/sort updates before run
         var item = this.remove();
 
         if (!item) {
