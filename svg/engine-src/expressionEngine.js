@@ -363,7 +363,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
             if(item.log){
                 console.log(item.log);
             }
-            console.log(item.data)
+            //console.log(item.data)
             item();
         }
         //TODO: pause/resume
