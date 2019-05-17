@@ -1691,8 +1691,8 @@ function Environment() {
     function Umvelt() {
       var _this = this;
 
-      this.on = function (key, callback) {
-        return _on(context, key, callback);
+      this.on = function (key, callback, priority) {
+        return _on(context, key, callback, priority);
       };
 
       this.emit = function (key, data) {
@@ -1722,7 +1722,7 @@ function Environment() {
       _classCallCheck(this, Loop);
 
       this.items = [];
-      this.delay = 2500;
+      this.delay = 0;
       this.width = 1;
       this.start();
     }
@@ -1779,27 +1779,49 @@ function Environment() {
         return this.items.shift();
       }
     }, {
+      key: "nextTick",
+      value: function nextTick() {
+        this.process.bind(this)();
+      }
+    }, {
       key: "process",
       value: function process() {
+        var _this2 = this;
+
         //TODO: instead of (or in addition to) priority, batch/sort updates before run
         var item = this.remove();
 
         if (!item) {
+          setTimeout(function () {
+            _this2.nextTick();
+          }, this.delay);
           return;
         }
 
         if (item.log) {
           console.log(item.log);
-        } //console.log(item.data)
+        }
 
+        var delay = typeof item.delay !== 'undefined' ? item.delay : this.delay;
+        setTimeout(function () {
+          //console.log(item.data)
+          item();
 
-        item();
+          if (item.blocking) {
+            _this2.nextTick();
+          }
+        }, delay);
+
+        if (!item.blocking) {
+          this.nextTick();
+        }
       } //TODO: pause/resume
 
     }, {
       key: "start",
       value: function start() {
-        this.interval = setInterval(this.process.bind(this), this.delay);
+        //this.interval = setInterval(this.process.bind(this), this.delay);
+        this.nextTick.bind(this)();
       }
     }]);
 
@@ -1813,6 +1835,7 @@ function Environment() {
         message = data.message,
         listener = data.listener,
         status = data.status,
+        state = data.state,
         src = data.src,
         result = data.result; // reject some events ???
     // if(!loopEvents.includes(name)){
@@ -1829,15 +1852,41 @@ function Environment() {
     //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
 
 
-    var successfulSend = name === 'send' && status === 'success';
-    var ackStart = name === 'ack' && status === 'start';
-    event.priority = successfulSend || ackStart || name === 'end' ? 1 : 0;
+    var ackSuccess = name === 'ack' && status === 'success';
+    var fetchSuccess = name === 'fetch' && status === 'success';
+    var sendEnd = name === 'send' && status === 'success';
+    var unitEnd = name === 'end' && src;
+    var unitStart = name === 'start' && src;
+    var sendStart = name === 'send' && status === 'start';
+    var ackStart = name === 'ack' && status === 'start'; // event.priority = successfulSend || ackStart || name === 'end'
+    //     ? 1
+    //     : 0;
+    // event.priority = ackSuccess
+    //     ? 1
+    //     : 0;
+    // what delay means
+    // unitStart - unit won't go active until link send animation is done
+    // ackStart - receive won't start until until link send animation is done
+    // ackSuccess - unit and link won't go inactive until link receive animation is done
+    // fetchSuccess - faking fetch taking some time
+    // sendStart - send will start with a delay, but fires aynchronously (so other events can resolve)
+
+    if (unitStart || ackStart || ackSuccess || fetchSuccess) {
+      event.blocking = true;
+      event.delay = 2100;
+    }
+
+    if (sendStart) {
+      event.blocking = false;
+      event.delay = 2100;
+    }
+
     event.data = data;
     context.loop.add(event);
   }
 
   function _control(context, key, data) {
-    var _this2 = this;
+    var _this3 = this;
 
     var name = data.name,
         targets = data.targets,
@@ -1855,14 +1904,14 @@ function Environment() {
       // TODO: guard: updates is array, each item has label and state
       var action = 'units-change';
 
-      _this2.emit(action, updates);
+      _this3.emit(action, updates);
     };
 
     var emitLinksUpdate = function emitLinksUpdate(updates) {
       // TODO: guard: updates is array, each item has label and state
       var action = 'links-change';
 
-      _this2.emit(action, updates);
+      _this3.emit(action, updates);
     };
 
     if (name === 'ack' && status === 'start') {
@@ -2009,12 +2058,14 @@ function Environment() {
       //TODO: add function to remove listener
 
 
+      var priority = 1;
+
       var _this$on = this.on('emit-step', function (data) {
         listener({
           data: data,
           removeListener: remove
         });
-      }),
+      }, priority),
           remove = _this$on.remove;
 
       targetUnits.forEach(function (u) {
@@ -2028,7 +2079,7 @@ function Environment() {
     }
   }
 
-  function _on(context, key, callback) {
+  function _on(context, key, callback, priority) {
     if (context.eventListeners[key] === undefined) {
       context.eventListeners[key] = [];
     }
@@ -2036,7 +2087,12 @@ function Environment() {
     callback._hash = _toConsumableArray(Array(30)).map(function () {
       return Math.random().toString(36)[2];
     }).join('');
-    context.eventListeners[key].push(callback);
+
+    if (priority) {
+      context.eventListeners[key].unshift(callback);
+    } else {
+      context.eventListeners[key].push(callback);
+    }
 
     var remove = function remove() {
       context.eventListeners[key] = context.eventListeners[key].filter(function (x) {
@@ -2090,7 +2146,7 @@ function Environment() {
   }
 
   function _fakeRun(state, context) {
-    var _this3 = this;
+    var _this4 = this;
 
     context.state = state;
     var fake = false;
@@ -2137,7 +2193,7 @@ function Environment() {
               debugger;
             }
 
-            _this3.emit(action, [{
+            _this4.emit(action, [{
               label: label,
               state: state
             }]);
@@ -2177,7 +2233,7 @@ function Environment() {
         if (count >= 10) {
           console.log('FAKE ITERATION MAX: DONE!');
 
-          _this3.emit('units-change', [{
+          _this4.emit('units-change', [{
             label: state.units[0].label,
             state: 'success'
           }]);
@@ -15675,7 +15731,7 @@ function _map(mapper, input, output) {
 }
 
 function _send(message, nodes) {
-  var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 20000;
+  var timeout = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1000;
 
   //console.log(arguments)
   //console.log('custom function [send] ran');

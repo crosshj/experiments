@@ -290,7 +290,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
         };
 
         function Umvelt() {
-            this.on = (key, callback) => _on(context, key, callback);
+            this.on = (key, callback, priority) => _on(context, key, callback, priority);
             this.emit = (key, data) => _emit.bind(this)(context, key, data);
             this.start = (state) => _fakeRun.bind(this)(state, context);
 
@@ -309,7 +309,7 @@ function Environment({ units = [], links = [], verbose } = {}) {
     class Loop {
         constructor() {
             this.items = [];
-            this.delay = 2500;
+            this.delay = 0;
             this.width = 1;
             this.start();
         }
@@ -354,28 +354,49 @@ function Environment({ units = [], links = [], verbose } = {}) {
             }
             return this.items.shift();
         }
+        nextTick(){
+            this.process.bind(this)();
+        }
         process(){
             //TODO: instead of (or in addition to) priority, batch/sort updates before run
             const item = this.remove();
             if(!item){
+                setTimeout(() => {
+                    this.nextTick();
+                }, this.delay);
                 return;
             }
             if(item.log){
                 console.log(item.log);
             }
-            //console.log(item.data)
-            item();
+
+            const delay = typeof item.delay !== 'undefined'
+                ? item.delay
+                : this.delay;
+
+            setTimeout(() => {
+                //console.log(item.data)
+                item();
+                if(item.blocking){
+                    this.nextTick();
+                }
+            }, delay);
+
+            if(!item.blocking){
+                this.nextTick();
+            }
         }
         //TODO: pause/resume
         start(){
-            this.interval = setInterval(this.process.bind(this), this.delay);
+            //this.interval = setInterval(this.process.bind(this), this.delay);
+            this.nextTick.bind(this)();
         }
     }
 
     //const loopEvents = ['start', 'end', 'send', 'ack'];
     function _gameLoop(controller, context, key, data){
         const {
-            name, targets, message, listener, status, src, result
+            name, targets, message, listener, status, state, src, result
         } = data;
 
         // reject some events ???
@@ -391,11 +412,39 @@ function Environment({ units = [], links = [], verbose } = {}) {
         //event.log = `${name.toUpperCase()}:${status}`;
         //console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
         //console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
-        const successfulSend = name === 'send' && status === 'success';
+        const ackSuccess = name === 'ack' && status === 'success';
+        const fetchSuccess = name === 'fetch' && status === 'success';
+        const sendEnd = name === 'send' && status === 'success';
+        const unitEnd = name === 'end' && src;
+        const unitStart = name === 'start' && src;
+        const sendStart = name === 'send' && status === 'start';
         const ackStart = name === 'ack' && status === 'start';
-        event.priority = successfulSend || ackStart || name === 'end'
-            ? 1
-            : 0;
+
+        // event.priority = successfulSend || ackStart || name === 'end'
+        //     ? 1
+        //     : 0;
+
+        // event.priority = ackSuccess
+        //     ? 1
+        //     : 0;
+
+        // what delay means
+        // unitStart - unit won't go active until link send animation is done
+        // ackStart - receive won't start until until link send animation is done
+        // ackSuccess - unit and link won't go inactive until link receive animation is done
+        // fetchSuccess - faking fetch taking some time
+        // sendStart - send will start with a delay, but fires aynchronously (so other events can resolve)
+
+        if(unitStart || ackStart || ackSuccess || fetchSuccess){
+            event.blocking = true;
+            event.delay = 2100;
+        }
+
+        if(sendStart){
+            event.blocking = false;
+            event.delay = 2100;
+        }
+
         event.data = data;
         context.loop.add(event)
     }
@@ -547,9 +596,10 @@ function Environment({ units = [], links = [], verbose } = {}) {
             //TODO: sending unit must have link to receiver unit, otherwise error
 
             //TODO: add function to remove listener
+            const priority = 1;
             const { remove } = this.on('emit-step', (data) => {
                 listener({ data, removeListener: remove });
-            });
+            }, priority);
             targetUnits.forEach(u => setTimeout(() => u.handle({
                 sendFrom: data.src.label,
                 sendMessage: data.message
@@ -557,12 +607,16 @@ function Environment({ units = [], links = [], verbose } = {}) {
         }
     }
 
-    function _on(context, key, callback) {
+    function _on(context, key, callback, priority) {
         if (context.eventListeners[key] === undefined) {
             context.eventListeners[key] = [];
         }
         callback._hash = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
-        context.eventListeners[key].push(callback);
+        if (priority){
+            context.eventListeners[key].unshift(callback);
+        } else {
+            context.eventListeners[key].push(callback);
+        }
         const remove = () => {
             context.eventListeners[key] = context.eventListeners[key]
                 .filter(x => x._hash !== callback._hash);

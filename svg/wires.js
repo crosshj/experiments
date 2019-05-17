@@ -1314,10 +1314,27 @@ function engineBindState(Engine, _state) {
       .replace(' pulse', '')
       .replace('fail', '')
       .replace('wait', '')
-      .replace('pulse', '');;
+      .replace('pulse', '');
+  };
+
+  var t0;
+  const emitStep = (data) => {
+    //debugger;
+    t0 = t0 || performance.now();
+    var t1 = performance.now();
+    var tDiff = Math.floor(t1 - t0);
+    t0 = t1 + 0;
+    const { label } = (data.src || data);
+    const linkSpacer = data.name === 'link' && data.state === 'success'
+      ? '\n\n'
+      : '';
+    console.log(`[${label}] ${data.name}: ${data.status || data.state} - ${tDiff} ms ${linkSpacer}`);
+    //console.log({ data });
+
   };
 
   const unitsChange = (data) => {
+    data.forEach(d => emitStep({name: 'unit', ...d}));
     _state.update(({ units }) => {
       data.forEach(u => {
         const stateUnit = units.find(s => s.label === u.label);
@@ -1343,6 +1360,7 @@ function engineBindState(Engine, _state) {
   };
 
   const linksChange = (data) => {
+    data.forEach(d => emitStep({name: 'link', ...d}));
     /*
         TODO: side effects come along with updating state here:
             - animate link
@@ -1384,16 +1402,7 @@ function engineBindState(Engine, _state) {
     });
   };
 
-  var t0;
-  const emitStep = (data) => {
-    return;
-    t0 = t0 || performance.now();
-    var t1 = performance.now();
-    var tDiff = Math.floor(t1 - t0);
-    t0 = t1;
-    console.log(`[${data.src.label}] ${data.name}: ${data.status} - ${tDiff} ms`);
-    //console.log({ data });
-  };
+
 
   // const unitsDeactivate = (data) => {
   //     _state.update(({ units }) => {
@@ -1408,7 +1417,8 @@ function engineBindState(Engine, _state) {
 
   Engine.on('units-change', unitsChange);
   Engine.on('links-change', linksChange);
-  Engine.on('emit-step', emitStep);
+  //Engine.on('emit-step', emitStep);
+  Engine.on('emit-step', ()=>{});
 }
 
 // --------------------------------------------------------------
