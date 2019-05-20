@@ -115,7 +115,7 @@ function _map(mapper, input, output) {
         : DONE;
 }
 
-function _send(message, nodes, timeout = 20000) {
+function _send(message, nodes, timeout = 1000) {
     //console.log(arguments)
     //console.log('custom function [send] ran');
     //test if array, wrap in array if not
