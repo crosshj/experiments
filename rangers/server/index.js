@@ -16,6 +16,10 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+var request = require('request');
+
+var rangers = require('./getRangersBasics.json');
+
 function rangerVisible(ranger){
     //console.log({ name: ranger[0] })
     const lowerEvos = [
@@ -88,6 +92,16 @@ function recordToRangers(data = []){
         return rangers.map(rangerToChart);
 }
 
+app.get('/rangers', (req, res) => {
+    if(rangers){
+        return res.json(rangers);
+    }
+    return res.json({});
+
+    const rangersUrl = 'https://rangers.lerico.net/api/getRangersBasics';
+    //TODO: get above and save to getRangersBasics.json
+});
+
 app.get('/data', (req, res) => {
     readPvp((err, d) => {
         const r = recordToRangers(d);
@@ -124,7 +138,12 @@ app.post('/pull', (req, res) => {
 });
 
 app.get('/*', function(req, res){
-    var path = req.params[0] ? req.params[0] : 'index.html';
+    var path = req.params[0]
+        ? req.params[0]
+        : 'index.html';
+    if(!path.includes('.')){
+        path += '.html';
+    }
     res.sendFile(path, {root: __dirname + '/../client'});
 });
 

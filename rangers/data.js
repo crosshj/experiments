@@ -7,7 +7,7 @@ const {
   tryParse
 } = require('./utilities');
 
-var request = require('request')
+var request = require('request');
 
 function getCachedRequest(){
   var cachedRequest = require('cached-request')(request)

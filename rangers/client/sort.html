@@ -1,0 +1,31 @@
+<pre>
+have a look at window.rangers
+
+hit rate => ranger.antiAvoidProb
+skill hit rate => ranger.antiSkillAvoidProb
+</pre>
+
+<script>
+fetch('rangers')
+    .then(x => x.json())
+    .then(x => {
+        window.rangers = x
+            .filter(r => r.unitCode[0] !== 'g') //guardians
+            .filter(r=> r.unitType !== 'SPECIAL') //leonards
+            .filter(r=> r.skillCode
+                ? !r.skillCode.includes("_enemy")
+                : true) //enemy
+            //u90218-wingwing
+            .filter( r => !(
+                r.unitCode.includes('u90') && r.unitCode.split('-')[0].length === 6
+            ))
+            .filter( r => !(
+                r.unitCode.includes('u81') && r.unitCode.split('-')[0].length === 6
+            ))
+            .filter( r => !(
+                r.unitCode.includes('u82') && r.unitCode.split('-')[0].length === 6
+            ))
+            ;
+    })
+    .catch(console.log);
+</script>

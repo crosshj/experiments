@@ -5,6 +5,7 @@
   "main": "most_used.js",
   "scripts": {
     "start": "node ./server",
+    "watch": "nodemon ./server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
