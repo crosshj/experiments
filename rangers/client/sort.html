@@ -33,7 +33,12 @@ skill hit rate => ranger.antiSkillAvoidProb
                     r.unitCode.includes('u82') && r.unitCode.split('-')[0].length === 6
                 ))
                 ;
-                console.table(rangers.filter(x => !!x.antiAvoidProb || !!x.antiSkillAvoidProb), ['unitCode', 'antiAvoidProb', 'antiSkillAvoidProb'])
+                console.table(
+                    rangers.filter(
+                        x => !!x.antiAvoidProb || !!x.antiSkillAvoidProb),
+                        ['unitCode', 'antiAvoidProb', 'antiSkillAvoidProb',
+                        'avoidProbability', 'skillAvoidProbability']
+                    );
 
         })
         .catch(console.log);
