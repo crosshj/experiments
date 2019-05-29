@@ -19,6 +19,7 @@ const port = 3000;
 var request = require('request');
 
 var rangers = require('./getRangersBasics.json');
+var UNIT = require('./UNIT.json');
 
 function rangerVisible(ranger){
     //console.log({ name: ranger[0] })
@@ -91,6 +92,13 @@ function recordToRangers(data = []){
 
         return rangers.map(rangerToChart);
 }
+
+app.get('/translateUNIT', (req, res) => {
+    if(UNIT){
+        return res.json(UNIT);
+    }
+    return res.json({});
+});
 
 app.get('/rangers', (req, res) => {
     if(rangers){
