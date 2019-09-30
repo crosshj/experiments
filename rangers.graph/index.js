@@ -44,6 +44,7 @@ const rangersGraph = {
 
 };
 
+// https://stackoverflow.com/questions/29466257/edges-reflecting-weight-in-cytoscape
 const graphToCyto = (graph) => {
     const elements = [];
     Object.keys(graph).forEach(source => {
@@ -51,7 +52,8 @@ const graphToCyto = (graph) => {
         elements.push({
             data: {
                 id: source,
-                width: 1
+                width: 1,
+                weight: graph[source].length
             },
         });
         //edges
@@ -71,9 +73,9 @@ const graphStyle = [ // the stylesheet for the graph
     {
         selector: 'node',
         style: {
-            'background-color': '#ccc',
+            'background-color': 'mapData(weight, 0, 10, green, blue)',
             label: 'data(id)',
-            color: '#000',
+            color: '#ccc',
             width: 'label',
             height: 'label',
             shape: 'round-rectangle',
