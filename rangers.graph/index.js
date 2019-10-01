@@ -44,16 +44,41 @@ const rangersGraph = {
 
 };
 
+const groups = [
+    {
+        data: {'id': 'resources'},
+        classes: 'group'
+    },
+    {
+        data: {'id': 'stages'},
+        classes: 'group'
+    }
+];
+
+const resourceList = [
+    'rangers',
+    'feathers',
+    'gear',
+    'gold',
+    'gems',
+    'leonards',
+    'rubies',
+    'materials'
+];
+
 // https://stackoverflow.com/questions/29466257/edges-reflecting-weight-in-cytoscape
 const graphToCyto = (graph) => {
-    const elements = [];
+    const elements = groups;
     Object.keys(graph).forEach(source => {
         //nodes
         elements.push({
             data: {
                 id: source,
                 width: 1,
-                weight: graph[source].length
+                weight: graph[source].length,
+                parent: resourceList.includes(source)
+                    ? 'resources'
+                    : 'stages'
             },
         });
         //edges
@@ -73,8 +98,9 @@ const graphStyle = [ // the stylesheet for the graph
     {
         selector: 'node',
         style: {
-            'background-color': 'mapData(weight, 0, 10, green, blue)',
-            label: 'data(id)',
+            'background-color': 'mapData(weight, 1, 10, green, blue)',
+            content: 'data(id)',
+            //label: 'data(id)',
             color: '#ccc',
             width: 'label',
             height: 'label',
@@ -93,7 +119,21 @@ const graphStyle = [ // the stylesheet for the graph
             'target-arrow-color': 'red',
             'target-arrow-shape': 'triangle'
         }
-    }
+    },
+    {
+        selector: '.group',
+        style: {
+            'background-opacity': 0,
+            'border-opacity': 0,
+            label: ''
+        }
+    },
+    // {
+    //     selector: '[weight>=4]',
+    //     style: {
+    //         'background-color': 'red',
+    //     }
+    // }
 ];
 
 const elements = graphToCyto(rangersGraph);
@@ -105,6 +145,10 @@ var cy = cytoscape({
     layout: {
         name: 'circle',
     },
+
+    // layout: {
+    //     name: 'preset',
+    // },
 
     // layout: {
     //     name: 'cose',
