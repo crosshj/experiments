@@ -1,15 +1,9 @@
 const rangersGraph = {
     rangers: [
-        'pvp',
-        'specialStage',
-        'eventStage',
-        'infiniTower',
-        'world',
-        'mission',
-        'gold',
-        'rangers'
+        'rangers',
+        'performance'
     ],
-    feathers: [
+    performance: [
         'pvp',
         'specialStage',
         'eventStage',
@@ -17,14 +11,11 @@ const rangersGraph = {
         'world',
         'mission'
     ],
+    feathers: [
+        'performance'
+    ],
     gear: [
-        'pvp',
-        'specialStage',
-        'eventStage',
-        'infiniTower',
-        'world',
-        'mission',
-        'gold',
+        'performance',
         'gear'
     ],
     gold: ['rangers', 'gear'],
