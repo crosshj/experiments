@@ -25,7 +25,7 @@ const rangersGraph = {
     feathers: [
         'performance'
     ],
-    eventTickets: ['eventStage'],
+    eventTickets: ['performance'],
     gold: ['rangers', 'gear', 'lab'],
     rubies: ['gacha', 'feathers', 'performance'],
     materials: [
