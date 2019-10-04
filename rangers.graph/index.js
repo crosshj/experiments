@@ -3,6 +3,10 @@ const rangersGraph = {
         'rangers',
         'performance'
     ],
+    gear: [
+        'performance',
+        'gear'
+    ],
     performance: [
         'pvp',
         'specialStage',
@@ -11,27 +15,32 @@ const rangersGraph = {
         'world',
         'mission'
     ],
+    gacha: [
+        'rangers',
+        'gear'
+    ],
+    friendPoints: [
+        'gacha'
+    ],
     feathers: [
         'performance'
     ],
-    gear: [
-        'performance',
-        'gear'
-    ],
-    gold: ['rangers', 'gear'],
-    rubies: ['rangers', 'feathers'],
+    eventTickets: ['eventStage'],
+    gold: ['rangers', 'gear', 'lab'],
+    rubies: ['gacha', 'feathers', 'performance'],
     materials: [
-        'gold', 'rangers', 'gems'
+        'gold', 'rangers', 'lab'
     ],
     gems: ['leonards'],
     leonards: ['rangers'],
     pvp: ['rubies', 'gems'],
-    specialStage: [],
-    eventStage: ['rangers'],
+    advent: ['rangers', 'materials', 'gold'],
+    specialStage: ['rangers', 'materials', 'gold', 'leonards', 'eventTickets'],
+    eventStage: ['rangers', 'gold', 'gear'],
     infiniTower: ['leonards', 'gold'],
-    world: ['rangers', 'gold'],
+    world: ['rangers', 'gold', 'eventTickets'],
     mission: ['feathers'],
-    lab: ['materials', 'rangers', 'leonards', 'gems']
+    lab: ['materials', 'rangers', 'leonards', 'gems', 'feathers']
 
 };
 
@@ -54,7 +63,12 @@ const resourceList = [
     'gems',
     'leonards',
     'rubies',
-    'materials'
+    'materials',
+    'lab',
+    'gacha',
+    'performance',
+    'friendPoints',
+    'eventTickets'
 ];
 
 // https://stackoverflow.com/questions/29466257/edges-reflecting-weight-in-cytoscape
@@ -78,7 +92,10 @@ const graphToCyto = (graph) => {
                 data: {
                     id: `${source}-${target}`,
                     source, target
-                }
+                },
+                classes: resourceList.includes(target)
+                    ? 'gain'
+                    : 'loss'
             });
         });
     });
@@ -106,8 +123,8 @@ const graphStyle = [ // the stylesheet for the graph
         style: {
             'width': 1,
             'curve-style': 'bezier',
-            'line-color': '#ccc',
-            'target-arrow-color': 'red',
+            'line-color': 'white',
+            'target-arrow-color': 'white',
             'target-arrow-shape': 'triangle'
         }
     },
@@ -119,6 +136,20 @@ const graphStyle = [ // the stylesheet for the graph
             label: ''
         }
     },
+    {
+        selector: '.gain',
+        style: {
+            'line-color': 'green',
+            'target-arrow-color': 'green',
+        }
+    },
+    {
+        selector: '.loss',
+        style: {
+            'line-color': 'red',
+            'target-arrow-color': 'red',
+        }
+    },
     // {
     //     selector: '[weight>=4]',
     //     style: {
@@ -128,6 +159,7 @@ const graphStyle = [ // the stylesheet for the graph
 ];
 
 const elements = graphToCyto(rangersGraph);
+console.log({ elements });
 var cy = cytoscape({
     container: document.getElementById('cy'),
     elements,
