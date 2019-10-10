@@ -1,24 +1,89 @@
 <!doctype html>
-
 <html lang="en">
+
+<!--
+  page based on css template at:
+  https://materializecss.com/templates/starter-template/preview.html
+ -->
+
 <head>
   <meta charset="utf-8">
-
   <title>Broken Clock</title>
-  <meta name="description" content="Broken Clock">
-  <meta name="author" content="">
-
-  <link rel="stylesheet" href="index.css">
-
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fafafa">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="index.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
+  <header>
+    <nav class="cyan lighten-2" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo">Broken Clock</a>
+      </div>
+    </nav>
+  </header>
 
-	<blockquote>Even a broken clock is right twice a day.</blockquote>
-  
-	Or is it?  Can a clock be broken in a way that it is never right or right more or less than 2 times a day?
-	
-	<script src="index.js"></script>
+  <main>
+    <div class="container">
+        <div class="section center-align">
+          <img class="responsive-img circle" src="./brokenClock.jpg" />
+        </div>
+      <div class="section">
+        <h6>INTRO</h6>
+        <blockquote>Even a broken clock is right twice a day.</blockquote>
+        <p>
+          Or is it? This aphorism is used to say something about the state of rightness by noting that even a broken thing can be right.
+        </p>
+        <p>
+          But can a clock be broken in a way that it is never right or right more or less than 2 times a day?
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <h6>TODO</h6>
+        <p>
+            Here's what I intend to do with this page as time allows.
+        </p>
+        <ul class="collection">
+          <li class="collection-item">pass a defintion of broken, returns the number of times a day the clock is right</li>
+          <li class="collection-item">provide a way for people to nag me to make updates to this page</li>
+          <li class="collection-item">provide a way for people to upload and share their defintions of broken</li>
+          <li class="collection-item">explore some random front-end stuff - css lib(s) and web components</li>
+          <li class="collection-item">discuss rightness, broken-ness, etc.</li>
+        </ul>
+      </div>
+
+      <!-- <ul class="pagination center-align">
+          <li class="disabled"><a href="#!">
+            <i class="material-icons">chevron_left</i></a>
+          </li>
+
+          <li class="active"><a href="#!">1</a></li>
+          <li class="waves-effect"><a href="#!">2</a></li>
+          <li class="waves-effect"><a href="#!">3</a></li>
+          <li class="waves-effect"><a href="#!">4</a></li>
+          <li class="waves-effect"><a href="#!">5</a></li>
+
+          <li class="waves-effect">
+            <a href="#!"><i class="material-icons">chevron_right</i></a>
+          </li>
+      </ul> -->
+
+    </div>
+  </main>
+
+  <footer class="page-footer cyan lighten-2 fixed">
+      <div class="container">
+        <div class="row"></div>
+      </div>
+  </footer>
+
+  <script src="index.js"></script>
 </body>
 
 </html>
