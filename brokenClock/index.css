@@ -1,7 +1,7 @@
-
+/*
 body {
-    /* background-color: #222; */
-}
+    background-color: #222;
+} */
 
 body {
     display: flex;
@@ -9,6 +9,24 @@ body {
     flex-direction: column;
   }
 
-  main {
-    flex: 1 0 auto;
-  }
+main {
+  flex: 1 0 auto;
+}
+
+main .container:first-child {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+img.clock {
+  max-width: 30%;
+}
+
+#functionInput {
+  min-height: 295px;
+  border: 0px;
+}
+
+.CodeMirror {
+  height: auto;
+}
