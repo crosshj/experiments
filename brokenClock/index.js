@@ -9,22 +9,47 @@ const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .func
 	matchBrackets: true
 });
 
-function imBroken(thisDay, thisMinute){
-	const broken = true;
-	if (broken) {
-		return 59;
-	}
-	return thisMinute;
-}
-
 const imComment =
 `/*
 there are 1440 minutes in a day represented by 720 clock hand positions
 edit the function below and the box below will tell you how often a day it is right
 */`;
 
-editor.getDoc().setValue(imComment + '\n' + imBroken.toString())
+// function imBroken(thisDay, thisMinute){
+// 	const broken = true;
+// 	if (broken) {
+// 		return 59;
+// 	}
+// 	return thisMinute;
+// }
 
+// editor.getDoc().setValue(imComment + '\n' + imBroken.toString())
+
+const imBrokenFuncStr = `
+${imComment}
+function imBroken(thisDay, thisMinute){
+  // OMG! will never reach the later return statements!
+
+  // the typical clock is broken/wrong like this?
+  return thisMinute + 0.001;
+
+  // this clock is always fast by some random amount
+  return thisMinute + Math.random();
+
+  // a clock that is sometimes fast and sometimes slow
+  // if analog and transitioning between fast and slow, it will be right in sub-minute space
+  // if digital and transitioning between fast and slow, this guarantee does not exist
+  // either way, it's not predictibly wrong, so it's more wrong
+  return thisMinute + Math.random() - 0.5;
+
+  // a clock with minute hand stuck at 27, hour hand working
+  return (thisMinute - 27) % 60
+    ? false
+    : thisMinute;
+}
+`;
+
+editor.getDoc().setValue(imBrokenFuncStr);
 // the line numbers to be "readonly"
 var readOnlyLines = (
 	new Array(imComment.split('\n').length + 1)
