@@ -30,3 +30,7 @@ img.clock {
 .CodeMirror {
   height: auto;
 }
+
+.section.simulation {
+  padding-top: 0;
+}
