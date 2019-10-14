@@ -4,7 +4,7 @@
 const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .functionInput'), {
 	lineNumbers: false,
   mode:  "javascript",
-	theme: 'bespin',
+	//theme: 'bespin',
 	styleActiveLine: true,
 	matchBrackets: true
 });
@@ -25,8 +25,9 @@ edit the function below and the box below will tell you how often a day it is ri
 
 // editor.getDoc().setValue(imComment + '\n' + imBroken.toString())
 
-const imBrokenFuncStr = `
-${imComment}
+const imBrokenFuncStr =
+`${imComment}
+
 function imBroken(thisDay, thisMinute){
   // OMG! will never reach the later return statements!
 
