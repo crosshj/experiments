@@ -29,6 +29,7 @@ img.clock {
 
 .CodeMirror {
   height: auto;
+  font-size: 13px;
 }
 
 .section.simulation {

@@ -38,8 +38,8 @@ function imBroken(thisDay, thisMinute){
   return thisMinute + Math.random();
 
   // a clock that is sometimes fast and sometimes slow
-  // if analog and transitioning between fast and slow, it will be right in sub-minute space
-  // if digital and transitioning between fast and slow, this guarantee does not exist
+  // if analog + transitioning fast/slow, will be right between minutes
+  // if digital + transitioning fast/slow, no similar guarantee
   // either way, it's not predictibly wrong, so it's more wrong
   return thisMinute + Math.random() - 0.5;
 
