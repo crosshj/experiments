@@ -22,9 +22,19 @@
   <div class="grid-container">
     <header>
       <nav role="navigation">
-        <div class="nav-wrapper container">
-          <a id="logo-container" href="#" class="brand-logo">template app</a>
-        </div>
+        <div class="nav-wrapper">
+          <a id="logo-container" href="#" class="brand-logo center">Template App</a>
+          <ul id="slide-out" class="sidenav sidenav-fixed">
+              <li><a class="subheader">Subsection</a></li>
+              <li><a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
+                      <i class="material-icons">star</i>Action 1</a>
+              </li>
+          </ul>
+
+          <a href="#" data-target="slide-out" class="sidenav-trigger">
+              <i class="material-icons">menu</i>
+          </a>
+      </div>
       </nav>
     </header>
     <main>
@@ -167,6 +177,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="index.js"></script>
 </body>
 

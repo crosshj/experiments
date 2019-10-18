@@ -1,9 +1,30 @@
-
-.split, .gutter.gutter-horizontal {
-  float: left;
+html.ns-draggable-cursor {
+	cursor: ns-resize;
 }
-.gutter.gutter-horizontal {
-  cursor: ew-resize;
+
+main, footer {
+  padding-left: 300px;
+}
+
+@media only screen and (min-width : 992px) {
+  .sidenav.sidenav-fixed {
+    box-shadow: unset;
+    background: #eafffb;
+    margin-top: 65px;
+    z-index: -1;
+  }
+}
+
+@media only screen and (max-width : 992px) {
+  main, footer {
+    padding-left: 0;
+  }
+  .sidenav.sidenav-fixed {
+    box-shadow: reset;
+    background: reset;
+    margin-top: reset;
+    z-index: reset;
+  }
 }
 
 .grid-container {
@@ -14,7 +35,7 @@
   right: 0;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr 5px 200px;
+  grid-template-rows: auto 1fr 3px 200px;
   grid-template-areas: "header" "main" "gutter" "terminal";
 }
 
@@ -37,6 +58,7 @@ nav {
 .gutter {
   background: #5d4c3c;
   grid-area: gutter;
+  cursor: ns-resize;
 }
 
 .terminal {
