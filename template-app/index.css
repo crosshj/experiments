@@ -1,0 +1,55 @@
+
+.split, .gutter.gutter-horizontal {
+  float: left;
+}
+.gutter.gutter-horizontal {
+  cursor: ew-resize;
+}
+
+.grid-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr 5px 200px;
+  grid-template-areas: "header" "main" "gutter" "terminal";
+}
+
+header {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-area: header;
+}
+
+main {
+  grid-area: main;
+  overflow-y: auto;
+}
+
+nav {
+  background-color: #76e2ca;
+}
+
+
+.gutter {
+  background: #5d4c3c;
+  grid-area: gutter;
+}
+
+.terminal {
+  grid-area: terminal;
+  overflow-y: auto;
+}
+
+.CodeMirror {
+  height: 100%;
+  font-size: 13px;
+}
+
+.simulation {
+  padding-top: 0;
+  height: 100%;
+}
