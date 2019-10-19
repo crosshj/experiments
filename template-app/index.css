@@ -2,16 +2,21 @@ html.ns-draggable-cursor {
 	cursor: ns-resize;
 }
 
+:root {
+  --sidenav-full-width: 275px;
+}
+
 main, footer {
-  padding-left: 300px;
+  padding-left: var(--sidenav-full-width);
 }
 
 @media only screen and (min-width : 992px) {
   .sidenav.sidenav-fixed {
     box-shadow: unset;
-    background: #eafffb;
+    background: #eee;
     margin-top: 65px;
     z-index: -1;
+    width: var(--sidenav-full-width);
   }
 }
 
@@ -69,7 +74,14 @@ nav {
 .CodeMirror {
   height: 100%;
   font-size: 13px;
+  background: #eee;
 }
+
+.CodeMirror-gutter{
+  background: #e0e0e0;
+}
+
+.CodeMirror pre.CodeMirror-line { padding-left: 15px }
 
 .simulation {
   padding-top: 0;
