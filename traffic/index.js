@@ -3,7 +3,7 @@
 
 const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .functionInput'), {
 	lineNumbers: true,
-	mode: "javascript",
+	mode: "markdown",
 	theme: 'bespin',
 	styleActiveLine: true,
 	matchBrackets: true
@@ -12,7 +12,23 @@ const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .func
 CodeMirror.keyMap.default["Shift-Tab"] = "indentLess";
 CodeMirror.keyMap.default["Tab"] = "indentMore";
 
-editor.getDoc().setValue((new Array(300)).fill('WIP: will be able to control traffic sim here').join('\n'));
+const notes =
+`## current state:
+- basic project scaffolded, using sketch.js
+- some particle effects, but nothing like what is needed
+
+## todo:
+- get some basic particle system set up and make sure it can do what's needed: collision, spawn points, etc
+- create roads generatively
+- add vehicle particles
+- explore some ideas about traffic
+
+## resources:
+- https://news.ycombinator.com/item?id=6765029
+
+`;
+
+editor.getDoc().setValue(notes);
 
 
 Split({
