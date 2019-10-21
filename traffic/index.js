@@ -54,6 +54,23 @@ setupSideNav();
 
 
 
+
+// ----------------------------------------
+// Example
+// ----------------------------------------
+var MAX_PARTICLES = 500;
+var COLOURS = ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423'];
+const CAR_WIDTH = 10;
+var particles = [];
+var pool = [];
+var demo = Sketch.create({
+	fullscreen: false,
+	height: document.querySelector('.container.canvas').clientHeight,
+	width: document.querySelector('.container.canvas').clientWidth,
+	container: document.querySelector('.container.canvas'),
+	retina: 'auto'
+});
+
 // ----------------------------------------
 // Particle
 // ----------------------------------------
@@ -65,24 +82,26 @@ Particle.prototype = {
 		this.alive = true;
 		this.radius = radius || 10;
 		this.wander = 0;
-		this.theta = random(TWO_PI);
-		this.drag = 0.92;
-		this.color = '#fff';
+		//this.theta = random(TWO_PI);
+		//this.drag = 0.92;
+		//this.color = '#fff';
 		this.x = x || 0.0;
 		this.y = y || 0.0;
-		this.vx = 0.0;
-		this.vy = 0.0;
+		//this.vx = 0.0;
+		//this.vy = 0.0;
+		const speed = random(1, 2);
+		this.life = demo.height/speed;
+		this.speed = speed;
 	},
 	move: function () {
-		this.x += this.vx;
-		this.y += this.vy;
-		this.vx *= this.drag;
-		this.vy *= this.drag;
-		this.theta += random(-0.5, 0.5) * this.wander;
-		this.vx += sin(this.theta) * 0.1;
-		this.vy += cos(this.theta) * 0.1;
-		this.radius *= 0.96;
-		this.alive = this.radius > 0.5;
+		//this.x += this.vx;
+		this.y -= this.speed;
+		//this.vx *= this.drag;
+		//this.vy *= this.drag;
+		//this.theta += random(-0.5, 0.5) * this.wander;
+		//this.radius *= 0.99;
+		this.life -= 1;
+		this.alive = this.life > 0;
 	},
 	draw: function (ctx) {
 		ctx.beginPath();
@@ -91,40 +110,31 @@ Particle.prototype = {
 		ctx.fill();
 	}
 };
-// ----------------------------------------
-// Example
-// ----------------------------------------
-var MAX_PARTICLES = 50;
-var COLOURS = ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423'];
-var particles = [];
-var pool = [];
-var demo = Sketch.create({
-	container: document.querySelector('.container.canvas'),
-	retina: 'auto'
-});
+
 demo.setup = function () {
 	// Set off some initial particles.
-	var i, x, y;
-	for (i = 0; i < 100; i++) {
-		x = (demo.width * 0.5) + random(-100, 100);
-		y = (demo.height * 0.5) + random(-100, 100);
-		demo.spawn(x, y);
-	}
+	// var i, x, y;
+	// for (i = 0; i < 100; i++) {
+	// 	x = (demo.width * 0.5) + random(-100, 100);
+	// 	y = (demo.height * 0.5) + random(-100, 100);
+	// 	demo.spawn(x, y);
+	// }
 };
 demo.spawn = function (x, y) {
-
 	var particle, theta, force;
-	if (particles.length >= MAX_PARTICLES)
-		pool.push(particles.shift());
+	if (particles.length >= MAX_PARTICLES){
+		return;
+		//pool.push(particles.shift());
+	}
 	particle = pool.length ? pool.pop() : new Particle();
-	particle.init(x, y, random(5, 40));
-	particle.wander = random(0.5, 2.0);
+	particle.init(x, y, CAR_WIDTH/2);
+	//particle.wander = random(0.5, 2.0);
 	particle.color = random(COLOURS);
-	particle.drag = random(0.9, 0.99);
-	theta = random(TWO_PI);
-	force = random(2, 8);
-	particle.vx = sin(theta) * force;
-	particle.vy = cos(theta) * force;
+	//particle.drag = random(0.9, 0.99);
+	//theta = random(TWO_PI);
+	//force = random(2, 8);
+	//particle.vx = sin(theta) * force;
+	//particle.vy = cos(theta) * force;
 	particles.push(particle);
 };
 demo.update = function () {
@@ -136,26 +146,16 @@ demo.update = function () {
 	}
 };
 demo.draw = function () {
+	//if(particles.length < 200){
+		const DEMO_MARGIN = 450;
+		for (var j = DEMO_MARGIN; j < demo.width-DEMO_MARGIN; j+=CAR_WIDTH) {
+			if(random(0, 1000) > 991){
+				demo.spawn(j, demo.height);
+			}
+		}
+	//}
 	demo.globalCompositeOperation = 'lighter';
 	for (var i = particles.length - 1; i >= 0; i--) {
 		particles[i].draw(demo);
-	}
-};
-demo.mousemove = function () {
-	var particle, theta, force, touch, max, i, j, n;
-	for (i = 0, n = demo.touches.length; i < n; i++) {
-		touch = demo.touches[i], max = random(1, 4);
-		for (j = 0; j < max; j++) {
-			demo.spawn(touch.x, touch.y);
-		}
-	}
-};
-demo.touch = function () {
-	var particle, theta, force, touch, max, i, j, n;
-	for (i = 0, n = demo.touches.length; i < n; i++) {
-		touch = demo.touches[i], max = random(1, 4);
-		for (j = 0; j < max; j++) {
-			demo.spawn(touch.x, touch.y);
-		}
 	}
 };
