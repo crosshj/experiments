@@ -98,7 +98,9 @@ const LANES_COUNT = 10;
 const DEMO_MARGIN = Math.floor((CLIENT_WIDTH - LANES_COUNT*CAR_WIDTH)/2);
 var particles = [];
 var pool = [];
+var road = undefined;
 var demo = Sketch.create({
+	interval: 1.5,
 	fullscreen: false,
 	height: CLIENT_HEIGHT,
 	width: CLIENT_WIDTH,
@@ -146,7 +148,45 @@ Particle.prototype = {
 	}
 };
 
+function Road(x, y, lanes, laneWidth){
+	this.init(x, y, lanes, laneWidth);
+}
+Road.prototype = {
+	init: function (x, y, lanes, laneWidth) {
+		this.x = x;
+		this.y = y;
+		this.lanes = lanes;
+		this.laneWidth = laneWidth;
+	},
+	draw: function (ctx){
+		console.log('-- road draw');
+
+		// outside lines
+		ctx.beginPath();
+		ctx.moveTo(this.x, this.y);
+		ctx.lineTo(this.x, CLIENT_HEIGHT);
+		const laneRightX = this.x+(this.lanes*this.laneWidth);
+		ctx.moveTo(laneRightX, this.y);
+		ctx.lineTo(laneRightX, CLIENT_HEIGHT);
+		ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+		ctx.stroke();
+
+		// lane lines
+		ctx.setLineDash([3, 5.5]);
+		ctx.beginPath();
+		for(var l = 1; l < this.lanes; l++){
+			const lineX = this.x + l * this.laneWidth;
+			ctx.moveTo(lineX, this.y);
+			ctx.lineTo(lineX, CLIENT_HEIGHT);
+		}
+		ctx.strokeStyle = "rgba(255, 255, 0, 0.7)";
+		ctx.stroke();
+	}
+};
+
 demo.setup = function () {
+	road = new Road();
+	road.init(DEMO_MARGIN, 0, LANES_COUNT, CAR_WIDTH);
 	// Set off some initial particles.
 	// var i, x, y;
 	// for (i = 0; i < 100; i++) {
@@ -181,15 +221,20 @@ demo.update = function () {
 	}
 };
 demo.draw = function () {
+	road.draw(demo);
+
 	//if(particles.length < 200){
 		for (var j = DEMO_MARGIN; j < demo.width-DEMO_MARGIN; j+=CAR_WIDTH) {
 			if(random(0, 1000) > 991){
-				demo.spawn(j, demo.height);
+				demo.spawn(j+(CAR_WIDTH/2), demo.height);
 			}
 		}
 	//}
+
+
 	demo.globalCompositeOperation = 'lighter';
 	for (var i = particles.length - 1; i >= 0; i--) {
 		particles[i].draw(demo);
 	}
+
 };
