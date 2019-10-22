@@ -159,8 +159,6 @@ Road.prototype = {
 		this.laneWidth = laneWidth;
 	},
 	draw: function (ctx){
-		console.log('-- road draw');
-
 		// outside lines
 		ctx.beginPath();
 		ctx.moveTo(this.x, this.y);
