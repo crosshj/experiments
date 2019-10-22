@@ -52,6 +52,37 @@ function setupSideNav() {
 }
 setupSideNav();
 
+/* Get the documentElement (<html>) to display the page in fullscreen */
+var elem = document.documentElement;
+
+/* View in fullscreen */
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) { /* Firefox */
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    elem.msRequestFullscreen();
+  }
+}
+
+/* Close fullscreen */
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) { /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE/Edge */
+    document.msExitFullscreen();
+  }
+}
+
+
+
 
 
 
@@ -61,14 +92,18 @@ setupSideNav();
 var MAX_PARTICLES = 500;
 var COLOURS = ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423'];
 const CAR_WIDTH = 10;
+const CLIENT_HEIGHT = document.querySelector('.container.canvas').clientHeight;
+const CLIENT_WIDTH = document.querySelector('.container.canvas').clientWidth;
+const LANES_COUNT = 10;
+const DEMO_MARGIN = Math.floor((CLIENT_WIDTH - LANES_COUNT*CAR_WIDTH)/2);
 var particles = [];
 var pool = [];
 var demo = Sketch.create({
 	fullscreen: false,
-	height: document.querySelector('.container.canvas').clientHeight,
-	width: document.querySelector('.container.canvas').clientWidth,
+	height: CLIENT_HEIGHT,
+	width: CLIENT_WIDTH,
 	container: document.querySelector('.container.canvas'),
-	retina: 'auto'
+	//retina: 'auto'
 });
 
 // ----------------------------------------
@@ -147,7 +182,6 @@ demo.update = function () {
 };
 demo.draw = function () {
 	//if(particles.length < 200){
-		const DEMO_MARGIN = 450;
 		for (var j = DEMO_MARGIN; j < demo.width-DEMO_MARGIN; j+=CAR_WIDTH) {
 			if(random(0, 1000) > 991){
 				demo.spawn(j, demo.height);
