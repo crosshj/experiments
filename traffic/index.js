@@ -1,4 +1,13 @@
+/*
+TODO:
 
+- change lane
+- don't collide:
+	- detect if change lane is needed
+	- react when stuck
+
+
+*/
 
 
 const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .functionInput'), {
@@ -130,7 +139,21 @@ Particle.prototype = {
 		this.life = demo.height/speed;
 		this.speed = speed;
 	},
+	changeLane: function(){
+		if(this.changing && this.changing.length){
+			const change = this.changing.pop();
+			this.x += change;
+			return;
+		}
+		if(random(0,1) > 0.01){
+			return;
+		}
+		const transitionLength = 10;
+		const change = Math.floor(random(-1, 1)) * CAR_WIDTH;
+		this.changing = (new Array(transitionLength)).fill(change/transitionLength);
+	},
 	move: function () {
+		this.changeLane();
 		//this.x += this.vx;
 		this.y -= this.speed;
 		//this.vx *= this.drag;
@@ -222,7 +245,7 @@ demo.draw = function () {
 	road.draw(demo);
 
 	//if(particles.length < 200){
-		for (var j = DEMO_MARGIN; j < demo.width-DEMO_MARGIN; j+=CAR_WIDTH) {
+		for (var j = DEMO_MARGIN; j < demo.width-DEMO_MARGIN-CAR_WIDTH; j+=CAR_WIDTH) {
 			if(random(0, 1000) > 991){
 				demo.spawn(j+(CAR_WIDTH/2), demo.height);
 			}
