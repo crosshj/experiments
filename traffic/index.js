@@ -99,7 +99,15 @@ function closeFullscreen() {
 // Example
 // ----------------------------------------
 var MAX_PARTICLES = 500;
-var COLOURS = ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423'];
+var COLOURS = [
+	'#69D2E7', //blue
+	'#A7DBD8', //lightblue
+	'#E0E4CC', //lightyellow
+	'#f7ac73', //lightorange
+	'#B794F7', //purple
+	'#86C58B', //lightgreen
+	'#A37666' //lightbrown
+];
 const CAR_WIDTH = 10;
 const CLIENT_HEIGHT = document.querySelector('.container.canvas').clientHeight;
 const CLIENT_WIDTH = document.querySelector('.container.canvas').clientWidth;
@@ -120,17 +128,20 @@ var demo = Sketch.create({
 // ----------------------------------------
 // Particle
 // ----------------------------------------
-function Particle(x, y, radius) {
-	this.init(x, y, radius);
+function Particle(x, y, lane, radius, sense) {
+	this.init(x, y, lane, radius, sense);
 }
 Particle.prototype = {
-	init: function (x, y, radius) {
+	init: function (x, y, lane, radius, sense) {
+		this.sense = (view) => sense(this, view);
+		//console.log(`vehicle spawn at lane: ${lane}`)
 		this.alive = true;
 		this.radius = radius || 10;
 		this.wander = 0;
 		//this.theta = random(TWO_PI);
 		//this.drag = 0.92;
 		//this.color = '#fff';
+		this.lane = lane;
 		this.x = x || 0.0;
 		this.y = y || 0.0;
 		//this.vx = 0.0;
@@ -140,21 +151,48 @@ Particle.prototype = {
 		this.speed = speed;
 	},
 	changeLane: function(){
-		if(this.changing && this.changing.length){
-			const change = this.changing.pop();
-			this.x += change;
-			return;
+		// if(Math.random() > 0.005){
+		// 	return;
+		// }
+		const transitionLength = Math.floor(10/this.speed);
+		var changeDirection = (Math.random() >= 0.25
+			? -1 // pass left
+			: 1  // pass right
+		);
+		if(this.lane === 1){
+			changeDirection = 1;
 		}
-		if(random(0,1) > 0.01){
-			return;
+		if(this.lane === LANES_COUNT){
+			changeDirection = -1;
 		}
-		const transitionLength = 10;
-		const change = Math.floor(random(-1, 1)) * CAR_WIDTH;
-		this.changing = (new Array(transitionLength)).fill(change/transitionLength);
+		this.lane += changeDirection;
+		const change = changeDirection * CAR_WIDTH;
+		const postChange = (new Array(10)).fill(0)
+		this.changing = (new Array(transitionLength))
+			.fill(change/transitionLength)
+			.concat(postChange);
 	},
 	move: function () {
-		this.changeLane();
+		const isChangingLane = this.changing && this.changing.length;
+		if(isChangingLane){
+			const delta = this.changing.pop();
+			this.x += delta;
+			if(!this.changing.length){
+				//console.log(this.lane)
+				this.x = DEMO_MARGIN + ((this.lane-1) * CAR_WIDTH) + (CAR_WIDTH/2)
+			}
+		} else {
+			const frontCar = this.sense('front');
+			if(frontCar && this.y - frontCar.y <= (20 * this.speed)){
+				this.changeLane();
+				//console.log(`car in front at ${this.y - frontCar.y}`);
+			}
+		}
+
 		//this.x += this.vx;
+		// this.y -= this.changing && this.changing.length
+		// 	? 1.5 * this.speed
+		// 	: this.speed;
 		this.y -= this.speed;
 		//this.vx *= this.drag;
 		//this.vy *= this.drag;
@@ -166,7 +204,9 @@ Particle.prototype = {
 	draw: function (ctx) {
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.radius, 0, TWO_PI);
-		ctx.fillStyle = this.color;
+		ctx.fillStyle = this.changing && this.changing.length
+			? 'red'
+			: this.color;
 		ctx.fill();
 	}
 };
@@ -216,14 +256,15 @@ demo.setup = function () {
 	// 	demo.spawn(x, y);
 	// }
 };
-demo.spawn = function (x, y) {
+demo.spawn = function (x, y, lane, sense) {
 	var particle, theta, force;
 	if (particles.length >= MAX_PARTICLES){
 		return;
 		//pool.push(particles.shift());
 	}
-	particle = pool.length ? pool.pop() : new Particle();
-	particle.init(x, y, CAR_WIDTH/2);
+	//particle = pool.length ? pool.pop() : new Particle(x, y, lane, CAR_WIDTH/2);
+	particle = new Particle(x, y, lane, CAR_WIDTH/2, sense);
+	//particle.init(x, y, lane, CAR_WIDTH/2);
 	//particle.wander = random(0.5, 2.0);
 	particle.color = random(COLOURS);
 	//particle.drag = random(0.9, 0.99);
@@ -232,25 +273,54 @@ demo.spawn = function (x, y) {
 	//particle.vx = sin(theta) * force;
 	//particle.vy = cos(theta) * force;
 	particles.push(particle);
+	//console.log({ particles: particles.length })
 };
 demo.update = function () {
-	var i, particle;
-	for (i = particles.length - 1; i >= 0; i--) {
-		particle = particles[i];
-		if (particle.alive) particle.move();
-		else pool.push(particles.splice(i, 1)[0]);
+	particles = particles.filter(p => p.alive);
+	//var i, particle;
+	for (var i = particles.length - 1; i >= 0; i--) {
+		particles[i].move();
+		// particle = particles[i];
+		// if (particle.alive) particle.move();
+		// else pool.push(particles.splice(i, 1)[0]);
 	}
 };
+function sense(observer, view){
+	var result = undefined;
+	if(view === 'front'){
+		// all cars in front
+		const frontCars = particles.filter(p => p.x === observer.x && observer.y > p.y);
+		// only closest car to observer
+		return frontCars.length
+			? frontCars.sort((a, b) => b.y - a.y)[0]
+			: undefined;
+	}
+	const observation = {
+		action, result
+	};
+	return observation;
+}
 demo.draw = function () {
 	road.draw(demo);
 
 	//if(particles.length < 200){
-		for (var j = DEMO_MARGIN; j < demo.width-DEMO_MARGIN-CAR_WIDTH; j+=CAR_WIDTH) {
-			if(random(0, 1000) > 991){
-				demo.spawn(j+(CAR_WIDTH/2), demo.height);
-			}
-		}
+		// for (var j = DEMO_MARGIN, lane = 1; j < demo.width-DEMO_MARGIN-1; j+=CAR_WIDTH, lane++) {
+		// 	if(random(0, 1000) > 991){
+		// 		demo.spawn(j+(CAR_WIDTH/2), demo.height, lane);
+		// 	}
+		// }
 	//}
+
+	for (var lane = 1; lane <= LANES_COUNT; lane++) {
+		if(random(0, 1000) > 985){
+			demo.spawn(
+				DEMO_MARGIN + ((lane-1) * CAR_WIDTH) + (CAR_WIDTH/2),
+				demo.height,
+				lane,
+				sense
+			);
+		}
+	}
 
 
 	demo.globalCompositeOperation = 'lighter';
@@ -258,4 +328,8 @@ demo.draw = function () {
 		particles[i].draw(demo);
 	}
 
+	document.getElementById('stats-qty').innerText = particles.length;
+	document.getElementById('stats-speed').innerText = particles.length
+		? (50 * particles.reduce((all, one) => all + one.speed, 0) / particles.length).toFixed(2)
+		: 0;
 };

@@ -3,17 +3,17 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Traffic Sim</title>
+  <title>traffic</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fafafa">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link crossorigin="anonymous" href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <script src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link crossorigin="anonymous" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css" />
+  <link crossorigin="anonymous" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css">
+  <link crossorigin="anonymous" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
   <link href="index.css" rel="stylesheet" type="text/css">
 </head>
@@ -23,7 +23,7 @@
     <header>
       <nav role="navigation">
         <div class="nav-wrapper">
-          <a id="logo-container" href="#" class="brand-logo center">Traffic Sim</a>
+          <a id="logo-container" href="#" class="brand-logo center">traffic</a>
           <ul id="slide-out" class="sidenav">
               <li><a class="subheader">Subsection</a></li>
               <li><a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
@@ -38,6 +38,10 @@
       </nav>
     </header>
     <main>
+      <div class="stats">
+        <div>Vehicles: <span id="stats-qty"></span></div>
+        <div>Speed: <span id="stats-speed"></span> fph</div>
+      </div>
       <div class="container canvas">
       </div>
     </main>
@@ -51,12 +55,12 @@
   </div>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/markdown/markdown.js"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/markdown/markdown.js"></script>
   <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sketch.js/1.0/sketch.min.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/sketch.js/1.0/sketch.min.js"></script>
   <script src="index.js"></script>
 </body>
 

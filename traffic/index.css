@@ -74,3 +74,16 @@ nav {
   margin: 0;
   max-width: unset;
 }
+
+.stats {
+  position: absolute;
+  top: 45px;
+  left: 0px;
+  color: #ffffff94;
+  padding: 10px;
+  border: 1px solid #ffffff5e;
+  border-radius: 4px;
+  margin: 10px;
+  min-width: 120px;
+  box-sizing: border-box;
+}
