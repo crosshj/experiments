@@ -6,7 +6,8 @@ html.ns-draggable-cursor {
   --sidenav-full-width: 275px;
   --main-theme-color: #120024;
   --dark-text-color: #46304d;
-  --lighter-text-color: #5c3f64;
+  --lighter-text-color: #c7a9d0;
+  --light-background-color: #372348;
 }
 
 .grid-container {
@@ -17,7 +18,7 @@ html.ns-draggable-cursor {
   right: 0;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr 1px 0px;
+  grid-template-rows: auto 1fr 1px 5px;
   grid-template-areas: "header" "main" "gutter" "terminal";
 }
 
@@ -73,6 +74,7 @@ nav {
   overflow: hidden;
   margin: 0;
   max-width: unset;
+  display: flex;
 }
 
 .stats {
@@ -86,4 +88,12 @@ nav {
   margin: 10px;
   min-width: 120px;
   box-sizing: border-box;
+}
+
+.sidenav {
+  background: var(--light-background-color);
+}
+
+.sidenav li a,  .sidenav li a i{
+  color: var(--lighter-text-color) !important;
 }

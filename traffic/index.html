@@ -7,9 +7,8 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fafafa">
+  <link rel="icon" href="data:;base64,=">
   <link crossorigin="anonymous" href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-  <script crossorigin="anonymous" src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
 
   <link crossorigin="anonymous" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css" />
   <link crossorigin="anonymous" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css">
@@ -25,9 +24,42 @@
         <div class="nav-wrapper">
           <a id="logo-container" href="#" class="brand-logo center">traffic</a>
           <ul id="slide-out" class="sidenav">
-              <li><a class="subheader">Subsection</a></li>
-              <li><a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
-                      <i class="material-icons">star</i>Action 1</a>
+              <li><a class="subheader">Actions</a></li>
+              <li>
+                <a
+                  data-target="modal1"
+                  class="waves-effect sidenav-close modal-trigger"
+                  href="#"
+                  onclick="window.App.console.show(event)"
+                >
+                <i class="material-icons">star</i>Show Console</a>
+              </li>
+              <li>
+                  <a
+                    data-target="modal1"
+                    class="waves-effect sidenav-close modal-trigger"
+                    href="#"
+                    onclick="window.App.console.hide(event)"
+                  >
+                  <i class="material-icons">star</i>Hide Console</a>
+              </li>
+              <li>
+                  <a
+                  data-target="modal1"
+                  class="waves-effect sidenav-close modal-trigger"
+                  href="#"
+                  onclick="window.App.openFullscreen(event)"
+                >
+                <i class="material-icons">fullscreen</i>Open Fullscreen</a>
+              </li>
+              <li>
+                  <a
+                  data-target="modal1"
+                  class="waves-effect sidenav-close modal-trigger"
+                  href="#"
+                  onclick="window.App.closeFullscreen(event)"
+                >
+                <i class="material-icons">close</i>Exit Fullscreen</a>
               </li>
           </ul>
 
@@ -55,13 +87,10 @@
   </div>
 
 
-  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js"></script>
-  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js"></script>
-  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/markdown/markdown.js"></script>
   <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/sketch.js/1.0/sketch.min.js"></script>
-  <script src="index.js"></script>
+  <script type="module" src="index.js"></script>
+  <script nomodule>console.log('modules not supported');</script>
+  <!-- <script src="index.js"></script> -->
 </body>
 
 </html>
