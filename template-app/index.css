@@ -32,7 +32,6 @@ header {
   top: 0;
 }
 
-
 .sidenav .brand-logo {
   display: none;
   /* font-size: 1.4rem; */
@@ -81,12 +80,6 @@ header {
   #logo-container {
     display: none;
   }
-  header {
-    margin-left: 175px;
-  }
-  main{
-    margin-left: var(--sidenav-full-width);
-  }
 }
 
 @media only screen and (max-width : 992px) {
@@ -102,7 +95,8 @@ header {
 }
 
 .grid-container {
-  /* position: absolute;
+  position: absolute;
+  /*
   top: 0;
   bottom: 0;
   left: 0;
@@ -140,7 +134,7 @@ nav a.sidenav-trigger i,
       rgba(0, 0, 0, 0.09) 0%,
       rgba(249, 0, 0, 0) 100%
     );
-    }
+  }
   .grid-container {
     left: var(--sidenav-full-width);
   }
