@@ -19,75 +19,58 @@
 </head>
 
 <body>
+  <ul id="slide-out" class="sidenav sidenav-fixed">
+    <li>
+      <a href="#" class="brand-logo">Template App</a>
+    </li>
+    <li><a class="subheader">Subsection</a></li>
+
+    <li>
+      <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
+        <i class="material-icons">account_balance</i>Action 1
+      </a>
+    </li>
+
+    <li>
+      <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
+        <i class="material-icons">donut_small</i>Action 2
+      </a>
+    </li>
+
+    <li>
+      <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
+        <i class="material-icons">group_work</i>Action 3
+      </a>
+    </li>
+
+    <li><a class="subheader">Actions</a></li>
+    <li>
+      <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+        onclick="window.App.console.show(event)">
+        <i class="material-icons">star</i>Show Console</a>
+    </li>
+    <li>
+      <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+        onclick="window.App.console.hide(event)">
+        <i class="material-icons">star</i>Hide Console</a>
+    </li>
+    <li>
+      <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+        onclick="window.App.openFullscreen(event)">
+        <i class="material-icons">fullscreen</i>Open Fullscreen</a>
+    </li>
+    <li>
+      <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+        onclick="window.App.closeFullscreen(event)">
+        <i class="material-icons">close</i>Exit Fullscreen</a>
+    </li>
+
+  </ul>
   <div class="grid-container">
     <header>
       <nav role="navigation">
         <div class="nav-wrapper">
           <a id="logo-container" href="#" class="brand-logo center">Template App</a>
-          <ul id="slide-out" class="sidenav sidenav-fixed">
-            <li>
-              <a href="#" class="brand-logo">Template App</a>
-            </li>
-            <li><a class="subheader">Subsection</a></li>
-
-            <li>
-              <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
-                <i class="material-icons">account_balance</i>Action 1
-              </a>
-            </li>
-
-            <li>
-              <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
-                <i class="material-icons">donut_small</i>Action 2
-              </a>
-            </li>
-
-            <li>
-              <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#!">
-                <i class="material-icons">group_work</i>Action 3
-              </a>
-            </li>
-
-            <li><a class="subheader">Actions</a></li>
-            <li>
-              <a
-                data-target="modal1"
-                class="waves-effect sidenav-close modal-trigger"
-                href="#"
-                onclick="window.App.console.show(event)"
-              >
-              <i class="material-icons">star</i>Show Console</a>
-            </li>
-            <li>
-                <a
-                  data-target="modal1"
-                  class="waves-effect sidenav-close modal-trigger"
-                  href="#"
-                  onclick="window.App.console.hide(event)"
-                >
-                <i class="material-icons">star</i>Hide Console</a>
-            </li>
-            <li>
-                <a
-                data-target="modal1"
-                class="waves-effect sidenav-close modal-trigger"
-                href="#"
-                onclick="window.App.openFullscreen(event)"
-              >
-              <i class="material-icons">fullscreen</i>Open Fullscreen</a>
-            </li>
-            <li>
-                <a
-                data-target="modal1"
-                class="waves-effect sidenav-close modal-trigger"
-                href="#"
-                onclick="window.App.closeFullscreen(event)"
-              >
-              <i class="material-icons">close</i>Exit Fullscreen</a>
-            </li>
-
-          </ul>
-
           <a href="#" data-target="slide-out" class="sidenav-trigger">
             <i class="material-icons">menu</i>
           </a>
@@ -99,8 +82,10 @@
         <div class="section">
           <h6>Notes</h6>
           <p><strike>I want to use this to play around with things like <a
-              href="https://github.com/soulwire/sketch.js/blob/master/examples/particles.html">using sketch.js particle
-              system to simulate traffic patterns</strike></a>. (see <a href="../traffic/">Traffic Simulator</a></a>)</p>
+                href="https://github.com/soulwire/sketch.js/blob/master/examples/particles.html">using sketch.js
+                particle
+                system to simulate traffic patterns</strike></a>. (see <a href="../traffic/">Traffic Simulator</a></a>)
+          </p>
 
           <p>Another idea which should be included in anything I do: <a
               href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">Automatic Dark
