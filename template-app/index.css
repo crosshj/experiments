@@ -172,3 +172,32 @@ nav a.sidenav-trigger i,
   padding-top: 0;
   height: 100%;
 }
+
+lorum-section {
+  height: auto;
+  background-color: reset;
+  color: reset;
+
+  /* padding: unset; */
+  background-clip: content-box;
+  padding: 20px 0;
+  display: block;
+  transition: height 2s, background-color 2s, color 2s;
+}
+
+lorum-section .section {
+  padding: 0;
+}
+
+lorum-section h5 {
+  margin-top: 0px;
+}
+
+lorum-section.loading {
+  height: 700px;
+  display: block;
+  min-width: 100%;
+  background-color: #f3f3f3;
+  color: #f3f3f3;
+  border-top: 1px solid #eee;
+}
