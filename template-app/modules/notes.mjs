@@ -31,7 +31,7 @@ function notesModule(){
                 <p>
                     This template will be used by any app I create.
                     This will be a part of application hub.
-                    Here is currently what is left to do (and what has been done).
+                    Here is a running list of what is currently left to do (and what has been done).
                 </p>
                 <form></form>
             </div>

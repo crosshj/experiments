@@ -21,9 +21,25 @@
 
 <body>
   <ul id="slide-out" class="sidenav sidenav-fixed">
-    <li>
+    <li class="hide-on-large-only user-sidebar">
+      <div class="user-view">
+        <div class="background">
+          <!-- http://png-pixel.com/ -->
+          <img
+            style="width: 100%; height: 100%"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mN88R8AAtUB6S/lfiQAAAAASUVORK5CYII="
+          >
+        </div>
+        <a href="#user"><img class="circle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNcsHz5fwAGzALvecGDrgAAAABJRU5ErkJggg=="></a>
+        <a href="#name"><span class="name">User Name</span></a>
+        <a href="#email"><span class="email">username@gmail.com</span></a>
+      </div>
+    </li>
+
+    <li class="show-on-large-only">
       <a href="#" class="brand-logo">Template App</a>
     </li>
+
     <li><a class="subheader">Subsection</a></li>
 
     <li>
@@ -75,6 +91,15 @@
           <a href="#" data-target="slide-out" class="sidenav-trigger">
             <i class="material-icons">menu</i>
           </a>
+          <ul class="right hide-on-med-and-down">
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">
+              <i class="material-icons left">account_circle</i>
+              <!-- <img alt="" class="user-image circle responsive-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNcsHz5fwAGzALvecGDrgAAAABJRU5ErkJggg=="> -->
+              <span>User Name</span>
+              <i class="material-icons right">arrow_drop_down</i>
+            </a></li>
+          </ul>
         </div>
       </nav>
     </header>
