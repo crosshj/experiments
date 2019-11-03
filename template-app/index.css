@@ -5,7 +5,7 @@ html.ns-draggable-cursor {
 :root {
   --sidenav-full-width: 175px;
   --header-height: 45px;
-  --main-theme-color: #3d5d6d;
+  --main-theme-color: #ccc;
   --main-theme-text-color: #fff;
   --theme-subdued-color: #f5f5f5;
   --theme-text-color: #fff;
@@ -14,6 +14,11 @@ html.ns-draggable-cursor {
 /* main, footer {
   padding-left: var(--sidenav-full-width);
 } */
+
+[type="checkbox"]:checked+span:not(.lever):before {
+  border-right-color: var(--main-theme-color);
+  border-bottom-color: var(--main-theme-color);
+}
 
 main {
   grid-area: main;
@@ -173,31 +178,56 @@ nav a.sidenav-trigger i,
   height: 100%;
 }
 
-lorum-section {
-  height: auto;
-  background-color: reset;
-  color: reset;
+
+
+
+.section-module {
+  background-color: unset;
+  color: unset;
+  min-height: 0px;
 
   /* padding: unset; */
   background-clip: content-box;
-  padding: 20px 0;
+  margin: 20px 0;
   display: block;
-  transition: height 2s, background-color 2s, color 2s;
+  transition-delay: 5s;
+  transition-timing-function: ease-in;
+  transition: min-height 1s, background-color 1s, color 1s;
 }
 
-lorum-section .section {
+.section-module.transition a {
+  color: inherit;
+}
+
+.section-module .section {
   padding: 0;
 }
 
-lorum-section h5 {
+.section-module h5 {
   margin-top: 0px;
 }
 
-lorum-section.loading {
-  height: 700px;
+.section-module.loading {
+  color: #eee;
+  background-color: #eee;
+  min-height: 250px;
   display: block;
   min-width: 100%;
-  background-color: #f3f3f3;
-  color: #f3f3f3;
-  border-top: 1px solid #eee;
+}
+
+.section-module.loading:after {
+  display: flex;
+  color: white;
+  font-size: 7em;
+  justify-content: center;
+  margin-top: -15px;
+  font-weight: lighter;
+}
+
+lorum-section.loading:after {
+  content: 'lorum ipsum';
+}
+
+notes-section.loading:after {
+  content: 'notes';
 }

@@ -6,7 +6,7 @@
   <title>Template App</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#fafafa">
+  <meta name="theme-color" content="#227a9c">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <script src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
@@ -79,34 +79,13 @@
     </header>
     <main>
       <div class="container">
-        <div class="section">
-          <h5>Notes</h5>
-          <p><strike>I want to use this to play around with things like <a
-                href="https://github.com/soulwire/sketch.js/blob/master/examples/particles.html">using sketch.js
-                particle
-                system to simulate traffic patterns</strike></a>. (see <a href="../traffic/">Traffic Simulator</a></a>)
-          </p>
-
-          <p>Another idea which should be included in anything I do: <a
-              href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">Automatic Dark
-              Mode</a> (see also Theming).</p>
-        </div>
+        <notes-section class="loading section-module"></notes-section>
 
         <div class="divider"></div>
-
-        <div class="section">
-          <h5>Todo</h5>
-          <pre>
-            - hide/show CLI/terminal
-
-          </pre>
-        </div>
-        <div class="divider"></div>
-        <lorum-section class="loading"></lorum-section>
+        <lorum-section class="loading section-module"></lorum-section>
 
         <div class="divider"></div>
-        <lorum-section class="loading"></lorum-section>
-
+        <lorum-section class="loading section-module"></lorum-section>
       </div>
     </main>
     <div class="gutter gutter-footer"></div>
@@ -122,8 +101,7 @@
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js"></script>
   <script crossorigin="anonymous"
     src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="index.js"></script>
-  <script type="module" src="modules/lorum.js"></script>
+  <script type="module" src="index.js"></script>
 </body>
 
 </html>

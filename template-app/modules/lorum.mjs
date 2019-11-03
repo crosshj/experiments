@@ -75,7 +75,6 @@ function loremIpsumfy(){
     NodeList.prototype.forEach = backupNodeListForEach;
 }
 
-//setTimeout( () => loremIpsumfy(), 3000);
 loremIpsumfy();
 
 export default () => {};
