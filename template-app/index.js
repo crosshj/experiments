@@ -1,6 +1,6 @@
 import './modules/notes.mjs';
 import './modules/lorum.mjs';
-import theme from '/modules/theme.mjs';
+import theme from './modules/theme.mjs';
 theme({
 	mainColor: document.querySelector('meta[name="theme-color"]').content
 });
