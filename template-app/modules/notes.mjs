@@ -9,6 +9,12 @@ automatic Dark Mode (also themes).
 `, `
 automatic service worker
 `, `
+user menu module
+`, `
+app loading spinner / overlay
+`, `
+DONE: basic user menu with html/css
+`, `
 DONE: placeholders for lazyloaded sections/modules
 `, `
 DONE: responsive with breakpoints and different layouts for mobile, tablet, and phone
