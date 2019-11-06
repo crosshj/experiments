@@ -111,7 +111,7 @@ header {
    */
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr 1px 0px;
+  grid-template-rows: auto 1fr 3px 0px;
   grid-template-areas: "header" "main" "gutter" "terminal";
 }
 

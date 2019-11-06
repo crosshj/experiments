@@ -1,5 +1,23 @@
 import Split from "https://dev.jspm.io/split-grid";
 //import "https://dev.jspm.io/materialize-css/dist/js/materialize.min.js";
+// ^^^ not working ?
+
+//TODO: should also append CSS needed
+/*
+
+<script src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link crossorigin="anonymous" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+*/
+
+const appendScript = (callback) => {
+	var materializeScript = document.createElement('script');
+	materializeScript.crossOrigin = "anonymous";
+	materializeScript.onload = callback;
+	materializeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js";
+	document.head.appendChild(materializeScript);
+};
 
 const setupApp = () => {
 	const splitInstance = Split({
@@ -15,7 +33,6 @@ const setupApp = () => {
 			document.documentElement.classList.remove("ns-draggable-cursor");
 		}
 	});
-
 
 	//materialize
 	function setupSideNav() {
@@ -61,12 +78,13 @@ const setupApp = () => {
 
 	const cons = {
 		show: (e) => {
-			document.querySelector('.grid-container').style['grid-template-rows'] = 'auto 1fr 1px 300px';
+			document.querySelector('.grid-container').style['grid-template-rows'] = 'auto 1fr 3px 300px';
 			//e.stopPropagation();
 			return false;
 		},
 		hide: (e) => {
-			delete document.querySelector('.grid-container').style['grid-template-rows'];
+			document.querySelector('.grid-container').style['grid-template-rows'] = 'auto 1fr 3px 0px';
+			//delete document.querySelector('.grid-container').style['grid-template-rows'];
 			//e.stopPropagation();
 			return false;
 		}
@@ -77,4 +95,9 @@ const setupApp = () => {
 	return { split: splitInstance, materialize, openFullscreen, closeFullscreen, console: cons };
 };
 
-export default setupApp();
+export default (callback) => {
+	appendScript(() => {
+		const app = setupApp();
+		callback(null, app);
+	});
+};
