@@ -1,10 +1,10 @@
-import './modules/notes.mjs';
-import './modules/lorum.mjs';
+import '../shared/modules/notes.mjs';
+import '../shared/modules/lorum.mjs';
 
-import Editor from './modules/editor.mjs';
+import Editor from '../shared/modules/editor.mjs';
 window.Editor = Editor;
 
-import theme from './modules/theme.mjs';
+import theme from '../shared/modules/theme.mjs';
 theme && theme({
 	mainColor: document.querySelector('meta[name="theme-color"]').content
 });
