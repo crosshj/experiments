@@ -2,6 +2,10 @@ import Editor from '../shared/modules/editor.mjs';
 import Sketch from './modules/sketch.mjs';
 import App from '../shared/modules/app.mjs';
 
+App((err, app) => {
+	window.App = app;
+});
+
 const text =
 `## current state:
 - basic project scaffolded, using sketch.js
@@ -20,10 +24,6 @@ const text =
 Editor({ text }, (error, editor) => {
 	//TODO: error handle
 	window.Editor = editor;
-});
-
-App((err, app) => {
-	window.App = app;
 });
 
 window.Sketch = Sketch;
