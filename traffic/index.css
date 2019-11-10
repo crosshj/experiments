@@ -10,6 +10,17 @@ html.ns-draggable-cursor {
   --light-background-color: #372348;
 }
 
+#loading-screen {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s, visibility 0.5s;
+}
+
+#loading-screen.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
 .grid-container {
   position: absolute;
   top: 0;

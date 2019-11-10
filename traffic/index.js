@@ -1,9 +1,34 @@
+const startLoad = performance.now();
+
 import Editor from '../shared/modules/editor.mjs';
 import Sketch from './modules/sketch.mjs';
 import App from '../shared/modules/app.mjs';
 
+const appendStyleSheet = (url, callback) => {
+	var style = document.createElement('link');
+	style.rel = "stylesheet";
+	style.crossOrigin = "anonymous";
+	style.onload = callback;
+	style.href = url;
+	document.head.appendChild(style);
+};
+
 App((err, app) => {
 	window.App = app;
+	appendStyleSheet("./index.css", () => {
+		const doneLoad = performance.now();
+		const totalTime = doneLoad - startLoad;
+		var timeToDelay = 800;
+		timeToDelay = (totalTime < timeToDelay)
+			? timeToDelay - totalTime
+			: 0;
+
+		const loadingEl = document.querySelector('#loading-screen');
+		setTimeout(() => {
+			loadingEl.classList.add('hidden');
+			Sketch();
+		}, timeToDelay);
+	});
 });
 
 const text =

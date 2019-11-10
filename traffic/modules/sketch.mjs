@@ -260,4 +260,4 @@ const setupSketch = () => {
 
 console.log('---- fooo');
 
-export default setupSketch();
+export default setupSketch;

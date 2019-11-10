@@ -2,21 +2,30 @@ import Split from "https://dev.jspm.io/split-grid";
 //import "https://dev.jspm.io/materialize-css/dist/js/materialize.min.js";
 // ^^^ not working ?
 
-//TODO: should also append CSS needed
-/*
-
-<script src="https://unpkg.com/split-grid/dist/split-grid.js"></script>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link crossorigin="anonymous" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-*/
-
 const appendScript = (callback) => {
 	var materializeScript = document.createElement('script');
 	materializeScript.crossOrigin = "anonymous";
 	materializeScript.onload = callback;
 	materializeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js";
 	document.head.appendChild(materializeScript);
+};
+
+const appendStyleSheet = (url, callback) => {
+	var style = document.createElement('link');
+	style.rel = "stylesheet";
+	style.crossOrigin = "anonymous";
+	style.onload = callback;
+	style.href = url;
+	document.head.appendChild(style);
+};
+
+const addStylesAndFonts = (callback) => {
+	const materialIconsCssUrl = "https://fonts.googleapis.com/icon?family=Material+Icons";
+	const materializeCssUrl = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css";
+
+	appendStyleSheet(materialIconsCssUrl, () => {
+		appendStyleSheet(materializeCssUrl, callback)
+	});
 };
 
 const setupApp = () => {
@@ -96,8 +105,10 @@ const setupApp = () => {
 };
 
 export default (callback) => {
-	appendScript(() => {
-		const app = setupApp();
-		callback(null, app);
+	addStylesAndFonts(() => {
+		appendScript(() => {
+			const app = setupApp();
+			callback(null, app);
+		});
 	});
 };
