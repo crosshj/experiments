@@ -27,8 +27,8 @@ Variatic functions were where I stopped.  I could have my C `console.log` either
 ## possible solutions
 Then I started thinking that transpiling might help.  Here's some information on that.
 
-https://kentcdodds.com/blog/write-your-own-code-transform
-https://itnext.io/introduction-to-custom-babel-plugins-98a62dad16ee
+[https://kentcdodds.com/blog/write-your-own-code-transform](https://kentcdodds.com/blog/write-your-own-code-transform)
+[https://itnext.io/introduction-to-custom-babel-plugins-98a62dad16ee](https://itnext.io/introduction-to-custom-babel-plugins-98a62dad16ee)
 
 The idea I have is that a babel plugin could be written to transform my modified C into standard C + library functions which understood `console.log` for example.
 
