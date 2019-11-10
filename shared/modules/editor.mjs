@@ -2,20 +2,30 @@ import CodeMirror from "https://dev.jspm.io/codemirror@5.49.0/lib/codemirror.js"
 // import "https://dev.jspm.io/codemirror@5.49.0/mode/javascript/javascript.js";
 // import "https://dev.jspm.io/codemirror@5.49.0/mode/markdown/markdown.js";
 
-/*
-  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js"></script>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css">
-*/
-
 const appendScript = (url, callback) => {
 	var materializeScript = document.createElement('script');
 	materializeScript.crossOrigin = "anonymous";
 	materializeScript.onload = callback;
 	materializeScript.src = url;
 	document.head.appendChild(materializeScript);
+};
+
+const appendStyleSheet = (url, callback) => {
+	var style = document.createElement('link');
+	style.rel = "stylesheet";
+	style.crossOrigin = "anonymous";
+	style.onload = callback;
+	style.href = url;
+	document.head.appendChild(style);
+};
+
+const codeMirrorCss = (callback) => {
+	const codeMirrorCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css";
+	const codeMirrorThemeCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css";
+
+	appendStyleSheet(codeMirrorCssUrl, () => {
+		appendStyleSheet(codeMirrorThemeCssUrl, callback)
+	});
 };
 
 const codeMirrorJs = (callback) => {
@@ -45,10 +55,12 @@ const setupEditor = ({ text }) => {
 };
 
 const allTheEditorThings = ({ text }, callback) => {
-	codeMirrorJs(() => {
-		codeMirrorJavascriptModeJs(() => {
-			const theEditor = setupEditor({ text });
-			callback(null, theEditor);
+	codeMirrorCss(() => {
+		codeMirrorJs(() => {
+			codeMirrorJavascriptModeJs(() => {
+				const theEditor = setupEditor({ text });
+				callback(null, theEditor);
+			});
 		});
 	});
 }
