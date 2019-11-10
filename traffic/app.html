@@ -1,0 +1,51 @@
+<div class="grid-container">
+    <header>
+        <nav role="navigation">
+            <div class="nav-wrapper">
+                <a id="logo-container" href="#" class="brand-logo center">traffic</a>
+                <ul id="slide-out" class="sidenav">
+                    <li><a class="subheader">Actions</a></li>
+                    <li>
+                        <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+                            onclick="window.App.console.show(event)">
+                            <i class="material-icons">star</i>Show Console</a>
+                    </li>
+                    <li>
+                        <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+                            onclick="window.App.console.hide(event)">
+                            <i class="material-icons">star</i>Hide Console</a>
+                    </li>
+                    <li>
+                        <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+                            onclick="window.App.openFullscreen(event)">
+                            <i class="material-icons">fullscreen</i>Open Fullscreen</a>
+                    </li>
+                    <li>
+                        <a data-target="modal1" class="waves-effect sidenav-close modal-trigger" href="#"
+                            onclick="window.App.closeFullscreen(event)">
+                            <i class="material-icons">close</i>Exit Fullscreen</a>
+                    </li>
+                </ul>
+
+                <a href="#" data-target="slide-out" class="sidenav-trigger show-on-large">
+                    <i class="material-icons">menu</i>
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="stats">
+            <div>Vehicles: <span id="stats-qty"></span></div>
+            <div>Speed: <span id="stats-speed"></span> fph</div>
+        </div>
+        <div class="container canvas">
+        </div>
+    </main>
+
+    <div class="gutter gutter-footer"></div>
+    <div class="terminal">
+        <div class="simulation">
+            <textarea class="functionInput"></textarea>
+        </div>
+    </div>
+</div>

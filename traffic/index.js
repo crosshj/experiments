@@ -3,35 +3,9 @@ const startLoad = performance.now();
 import Editor from '../shared/modules/editor.mjs';
 import Sketch from './modules/sketch.mjs';
 import App from '../shared/modules/app.mjs';
+import AppDom from '../shared/modules/appDom.mjs';
 
-const appendStyleSheet = (url, callback) => {
-	var style = document.createElement('link');
-	style.rel = "stylesheet";
-	style.crossOrigin = "anonymous";
-	style.onload = callback;
-	style.href = url;
-	document.head.appendChild(style);
-};
-
-App((err, app) => {
-	window.App = app;
-	appendStyleSheet("./index.css", () => {
-		const doneLoad = performance.now();
-		const totalTime = doneLoad - startLoad;
-		var timeToDelay = 800;
-		timeToDelay = (totalTime < timeToDelay)
-			? timeToDelay - totalTime
-			: 0;
-
-		const loadingEl = document.querySelector('#loading-screen');
-		setTimeout(() => {
-			loadingEl.classList.add('hidden');
-			Sketch();
-		}, timeToDelay);
-	});
-});
-
-const text =
+const editorText =
 `## current state:
 - basic project scaffolded, using sketch.js
 - some particle effects, but nothing like what is needed
@@ -46,9 +20,39 @@ const text =
 - https://news.ycombinator.com/item?id=6765029
 
 `;
-Editor({ text }, (error, editor) => {
-	//TODO: error handle
-	window.Editor = editor;
-});
 
-window.Sketch = Sketch;
+const appendStyleSheet = (url, callback) => {
+	var style = document.createElement('link');
+	style.rel = "stylesheet";
+	style.crossOrigin = "anonymous";
+	style.onload = callback;
+	style.href = url;
+	document.head.appendChild(style);
+};
+
+AppDom(() => {
+	App((err, app) => {
+		window.App = app;
+		appendStyleSheet("./index.css", () => {
+			const doneLoad = performance.now();
+			const totalTime = doneLoad - startLoad;
+			var timeToDelay = 800;
+			timeToDelay = (totalTime < timeToDelay)
+				? timeToDelay - totalTime
+				: 0;
+
+			const loadingEl = document.querySelector('#loading-screen');
+			setTimeout(() => {
+				window.Sketch = Sketch();
+
+				Editor({ text: editorText }, (error, editor) => {
+					//TODO: error handle
+					window.Editor = editor;
+				});
+
+				loadingEl.classList.add('hidden');
+				document.body.classList.remove('loading');
+			}, timeToDelay);
+		});
+	});
+});

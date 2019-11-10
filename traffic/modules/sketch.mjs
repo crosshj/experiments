@@ -258,6 +258,4 @@ const setupSketch = () => {
 	return demo;
 };
 
-console.log('---- fooo');
-
 export default setupSketch;

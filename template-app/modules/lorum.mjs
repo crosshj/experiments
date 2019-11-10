@@ -75,6 +75,4 @@ function loremIpsumfy(){
     NodeList.prototype.forEach = backupNodeListForEach;
 }
 
-loremIpsumfy();
-
-export default () => {};
+export default loremIpsumfy;

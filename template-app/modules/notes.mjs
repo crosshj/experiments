@@ -65,6 +65,4 @@ function notesModule(){
     NodeList.prototype.forEach = backupNodeListForEach;
 }
 
-notesModule();
-
-export default () => {};
+export default notesModule;
