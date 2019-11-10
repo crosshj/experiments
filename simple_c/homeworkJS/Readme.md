@@ -43,3 +43,57 @@ However, what I have in mind is different.  Use JS ecosystem solutions for all o
 To me, this seems like a fun exercise, but also a pain in the ass.  I am not sure how far I will go with this, but I have been meaning to understand babel plugins better.
 
 All that said, transpiling worked to make JSX a hit! And npm has been wonderful for the node community.  I wonder how well node ecosystem would adapt to C code.
+
+## rubber to the road (transpiling with babel)
+
+Here's an example of a babel plugin that would add an empty string argument to all `console.log` calls.  Also, `console.log` could be changed to something like `myConsoleLog` (see commented code).
+
+See it live at: [AST explorer](https://astexplorer.net/#/gist/efd7bf03421958d48b76b485df3992e4/aca807a582baec56dde692f69107667ededbbe8a)
+
+```
+export default function(babel) {
+  const { types: t } = babel;
+
+  return {
+    visitor: {
+      MemberExpression(path){
+        if (
+          path.node.object.name === 'console' &&
+          path.node.property.name === 'log'
+        ) {
+          //path.replaceWithSourceString("myConsoleLog");
+          path.parentPath.node.arguments
+            .push(
+              t.stringLiteral('')
+            )
+        }
+      }
+      
+    }
+  };
+};
+```
+
+so this:
+```
+console.log('foo');
+```
+
+would become this:
+```
+console.log('foo', "");
+```
+
+This is just one small step.  Obviously, all the functionality of console.log does not come along for the ride.  For one, this just covers strings and does not handle objects.  But do we have to have all that?  Not sure.
+
+## next steps
+
+The package.json for this project already uses nodemon to instruct make to compile and run the c code already in place.  
+
+Could we get babel to translate the code before make takes over?
+
+Could the library code for `console.log` be included without the main program having knowledge of it?
+
+What about `scanf` or `strcmp`?  Maybe `scanf` could be replaced with `prompt`, but `strcmp` needs to know what kind of variable it is scanning.
+
+How far can this go without creating a complicated mess?
