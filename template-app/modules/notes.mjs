@@ -5,11 +5,11 @@ terminal should be popover and resizeable
 `, `
 scrollbar should not be over header
 `, `
-automatic Dark Mode (also themes).
+user menu module
 `, `
 automatic service worker
 `, `
-user menu module
+DONE: automatic Dark Mode (also themes) - <a href="https://css-tricks.com/dark-modes-with-css/">https://css-tricks.com/dark-modes-with-css/</a>
 `, `
 DONE: app loading spinner / overlay
 `, `

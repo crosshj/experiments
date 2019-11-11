@@ -16,6 +16,16 @@ const appendStyleSheet = (url, callback) => {
 	document.head.appendChild(style);
 };
 
+theme && theme({
+	mainColor: document.querySelector('meta[name="theme-color"]').content
+});
+
+const preferDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const darkEnabled = document.querySelector(":root").classList.contains("dark-enabled");
+if(preferDarkMode && darkEnabled){
+	document.body.style.backgroundColor = "#363238";
+}
+
 AppDom(() => {
 	App((err, app) => {
 		window.App = app;
@@ -33,10 +43,6 @@ AppDom(() => {
 				Editor({ text: notes }, (error, editor) => {
 					//TODO: error handle
 					window.Editor = editor;
-				});
-
-				theme && theme({
-					mainColor: document.querySelector('meta[name="theme-color"]').content
 				});
 
 				Notes();
