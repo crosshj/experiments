@@ -20,6 +20,7 @@
         '**/*',
         '../shared/**/*'
     ],
+    "notify": false,
     "middleware": [
         function (req, res, next) {
             if (req.url === '/'){

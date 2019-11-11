@@ -11,7 +11,7 @@ automatic service worker
 `, `
 user menu module
 `, `
-app loading spinner / overlay
+DONE: app loading spinner / overlay
 `, `
 DONE: basic user menu with html/css
 `, `
