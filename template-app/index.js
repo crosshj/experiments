@@ -49,7 +49,9 @@ AppDom(() => {
 				Lorum();
 
 				loadingEl.classList.add('hidden');
-				document.body.classList.remove('loading');
+				setTimeout(() => {
+					document.body.classList.remove('loading');
+				}, 250);
 			}, timeToDelay);
 		});
 	});
