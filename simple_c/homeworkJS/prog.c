@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
+
+typedef enum {
+    true=1, false=0
+} bool;
 
 typedef struct _console {
     void (*log)(char* arg, ...);
@@ -52,7 +57,7 @@ void progExercise(){
   char firstChar;
   char lastChar;
 
-  printf("\nEnter a number:\n");
+  printf("\nEnter a number (%d):\n", rand());
   scanf("%s", myNumber);
 
   printf("\nYOUR NUMBER: \t%s\n", myNumber);
