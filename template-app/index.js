@@ -4,7 +4,7 @@ import App from '../shared/modules/app.mjs';
 import Editor from '../shared/modules/editor.mjs';
 import Notes from './modules/notes.mjs';
 import Lorum from './modules/lorum.mjs';
-import theme from '../shared/modules/theme.mjs';
+import Theme from '../shared/modules/theme.mjs';
 import AppDom from '../shared/modules/appDom.mjs';
 
 const appendStyleSheet = (url, callback) => {
@@ -16,15 +16,7 @@ const appendStyleSheet = (url, callback) => {
 	document.head.appendChild(style);
 };
 
-theme && theme({
-	mainColor: document.querySelector('meta[name="theme-color"]').content
-});
-
-const preferDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-const darkEnabled = document.querySelector(":root").classList.contains("dark-enabled");
-if(preferDarkMode && darkEnabled){
-	document.body.style.backgroundColor = "#363238";
-}
+window.Theme = Theme({});
 
 AppDom(() => {
 	App((err, app) => {
