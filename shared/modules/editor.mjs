@@ -1,6 +1,6 @@
-import CodeMirror from "https://dev.jspm.io/codemirror@5.49.0/lib/codemirror.js";
-// import "https://dev.jspm.io/codemirror@5.49.0/mode/javascript/javascript.js";
-// import "https://dev.jspm.io/codemirror@5.49.0/mode/markdown/markdown.js";
+//import CodeMirror from "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js";
+//import "https://dev.jspm.io/codemirror@5.49.0/mode/javascript/javascript.js";
+//import "https://dev.jspm.io/codemirror@5.49.0/mode/markdown/markdown.js";
 
 const appendScript = (url, callback) => {
 	var materializeScript = document.createElement('script');
@@ -38,15 +38,18 @@ const codeMirrorJavascriptModeJs = (callback) => {
 	appendScript(url, callback);
 };
 
-const setupEditor = ({ text }) => {
-	const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .functionInput'), {
+const setupEditor = (text, opts) => {
+	const darkEnabled = window.localStorage.getItem('themeDark') === "true";
+	const defaultOptions = {
 		lineNumbers: true,
 		mode: "markdown",
-		//theme: 'bespin',
+		theme: darkEnabled ? "bespin" : "",
 		styleActiveLine: true,
 		matchBrackets: true
-	});
-
+	};
+	const options = { ...defaultOptions, ...opts };
+	const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .functionInput'), options);
+	//console.log({ options });
 	CodeMirror.keyMap.default["Shift-Tab"] = "indentLess";
 	CodeMirror.keyMap.default["Tab"] = "indentMore";
 
@@ -54,11 +57,12 @@ const setupEditor = ({ text }) => {
 	return editor;
 };
 
-const allTheEditorThings = ({ text }, callback) => {
+const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 	codeMirrorCss(() => {
 		codeMirrorJs(() => {
 			codeMirrorJavascriptModeJs(() => {
-				const theEditor = setupEditor({ text });
+				const theEditor = setupEditor(text, opts || {});
+				theEditor.setOption("mode", opts.mode);
 				callback(null, theEditor);
 			});
 		});

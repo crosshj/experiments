@@ -14,18 +14,43 @@ function toggleDark(){
     var _themeColor;
     const darkEnabled = window.localStorage.getItem('themeDark') === "true";
     window.localStorage.setItem('themeDark', !darkEnabled);
+    const loadingScreenEl = document.getElementById('loading-screen');
+    if(loadingScreenEl){
 
-
-    if(!darkEnabled){
-        document.body.style.backgroundColor = "#363238";
-        document.querySelector(":root").classList.add("dark-enabled");
-        _themeColor = darkColor;
-    } else {
-        document.body.style.backgroundColor = "white";
-        document.querySelector(":root").classList.remove("dark-enabled");
-        _themeColor = lightColor;
+        loadingScreenEl.classList.remove('hidden');
+        document.body.style.overflow = "hidden";
+        loadingScreenEl.style.background = !darkEnabled ? "#363238" : "white";
+        //loadingScreenEl.style.color = "white";
+        //loadingScreenEl.style.fill = "white";
     }
-    metaThemeColorEl.setAttribute("content", _themeColor);
+
+    setTimeout(() => {
+        if(!darkEnabled){
+            window.Editor && window.Editor.setOption("theme", "bespin");
+            window.Editor && window.Editor.setOption("mode", "javascript");
+            document.body.style.backgroundColor = "#363238";
+            document.querySelector(":root").classList.add("dark-enabled");
+            _themeColor = darkColor;
+        } else {
+            window.Editor && window.Editor.setOption("theme", "default");
+            document.body.style.backgroundColor = "white";
+            document.querySelector(":root").classList.remove("dark-enabled");
+            _themeColor = lightColor;
+        }
+        metaThemeColorEl.setAttribute("content", _themeColor);
+
+        setTimeout(() => {
+            document.body.style.overflow = "auto";
+            if(loadingScreenEl){
+                loadingScreenEl.classList.add('hidden');
+                loadingScreenEl.style.background = undefined;
+                //loadingScreenEl.style.color = undefined;
+                //loadingScreenEl.style.fill = undefined;
+            }
+        }, 1000);
+
+    }, 500);
+
 }
 
 function theme({
@@ -38,10 +63,12 @@ function theme({
     const darkEnabled = window.localStorage.getItem('themeDark') === "true";
 
     if(darkEnabled){
+        window.Editor && window.Editor.setOption("theme", "bespin");
         document.body.style.backgroundColor = "#363238";
         document.querySelector(":root").classList.add("dark-enabled");
         _themeColor = darkColor;
     } else {
+        window.Editor && window.Editor.setOption("theme", "");
         _themeColor = lightColor;
     }
 

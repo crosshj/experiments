@@ -10,9 +10,15 @@ function getHtml(callback){
 }
 
 function AppDom(callback){
-    Loading(() => {
-        getHtml(() => {
-            callback();
+    Loading((loadingError, loading) => {
+        getHtml((domError, dom) => {
+            callback(null, {
+                loading, dom,
+                error: {
+                    loading: loadingError,
+                    dom: domError
+                }
+            });
         });
     });
 }

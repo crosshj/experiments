@@ -18,8 +18,9 @@ const appendStyleSheet = (url, callback) => {
 
 window.Theme = Theme({});
 
-AppDom(() => {
+AppDom((domErrors, appDom) => {
 	App((err, app) => {
+		app.dom = appDom;
 		window.App = app;
 		appendStyleSheet("./index.css", () => {
 			const doneLoad = performance.now();

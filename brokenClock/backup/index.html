@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<!--
+  page based on css template at:
+  https://materializecss.com/templates/starter-template/preview.html
+ -->
+
+<head>
+  <meta charset="utf-8">
+  <title>Broken Clock</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fafafa">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <link href="index.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <header>
+    <nav class="cyan lighten-2" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo">Broken Clock</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="center-align">
+        <img class="responsive-img circle clock" src="./brokenClock.jpg" />
+      </div>
+
+      <div class="section">
+        <h6>INTRO</h6>
+        <blockquote>Even a broken clock is right twice a day.</blockquote>
+        <p>
+          Or is it? This aphorism is used to say something about the state of rightness by noting that even a broken
+          thing can be right in some sense.
+        </p>
+        <p>
+          But can a clock be broken in a way that it is right more or less than 2 times a day?
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <h6>PLAY</h6>
+        <p>
+          Let's play around with this idea. Can you create a broken clock that is right more than two times a day?
+        </p>
+        <p>
+          Change the code below and the following box will tell you how many times your clock is right per day.
+        </p>
+      </div>
+
+      <div class="section simulation">
+        <textarea class="functionInput"></textarea>
+        <div class="card-panel blue white-text">
+          <p>Your clock is right <span class="result text-darken-1"></span> times a day on average based on 7 days of
+            operation.</span></p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <h6>REFLECT</h6>
+        <p>
+          After messing around for a while, you will probably step away with a few observations. I will provide a way to
+          share your observations in the future. If you know me IRL, please share!
+        </p>
+        <p></p>
+
+        <div class="section">
+          <h6>
+            Here are a few points I have heard noted:
+          </h6>
+
+          <table class="striped">
+            <thead>
+              <tr>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>analog broken clocks have a restricted form of broken.  A digital clock can transition from fast broke to slow broke without the possibility of being right in the middle.</td>
+              </tr>
+              <tr>
+                <td>a clock can be broken, but more right than other broken clocks, e.g., <pre>return thisMinute + 1;</pre> versus <pre>return 33;</pre</td>
+              </tr>
+              <tr>
+                <td>most clocks we use are broken in the sense that they are never exactly right on some level, e.g., <pre>return thisMinute + 0.00001;</pre></td>
+              </tr>
+              <tr>
+                <td>there are a ton of seconds in a day, much more opportunity to be broken, e.g., <pre>0.0000000000001</pre></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <h6>TODO</h6>
+        <p>
+          Here's what I intend to do with this page as time allows:
+        </p>
+        <form>
+          <p>
+            <label>
+              <input type="checkbox" checked="checked" />
+              <span>pass a defintion of broken, returns the number of times a day the clock is right</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input type="checkbox" checked="checked" />
+              <span>explore some random front-end stuff - css lib(s), web components, and maybe more (or less)</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input type="checkbox" />
+              <span>provide a way for people to nag me to make updates to this page</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input type="checkbox" />
+              <span>people can upload and share their defintions of broken and comment</span>
+            </label>
+          </p>
+          <p>
+            <label>
+              <input type="checkbox" />
+              <span>clock at the top does some cool/broke stuff - example: https://cssanimation.rocks/clocks/</span>
+            </label>
+          </p>
+        </form>
+      </div>
+
+      <!-- <ul class="pagination center-align">
+          <li class="disabled"><a href="#!">
+            <i class="material-icons">chevron_left</i></a>
+          </li>
+
+          <li class="active"><a href="#!">1</a></li>
+          <li class="waves-effect"><a href="#!">2</a></li>
+          <li class="waves-effect"><a href="#!">3</a></li>
+          <li class="waves-effect"><a href="#!">4</a></li>
+          <li class="waves-effect"><a href="#!">5</a></li>
+
+          <li class="waves-effect">
+            <a href="#!"><i class="material-icons">chevron_right</i></a>
+          </li>
+      </ul> -->
+
+    </div>
+
+    <div class="section center-align">
+      <img class="responsive-img" src="./escalator.jpg" />
+    </div>
+  </main>
+
+  <footer class="page-footer cyan lighten-2 fixed">
+    <div class="container">
+      <div class="row"></div>
+    </div>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>

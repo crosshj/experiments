@@ -34,6 +34,7 @@ body.loading {
     color: #03A9F4;
     fill: #00BCD4;
     padding-bottom: 200px;
+    transition: background-color 0.4s, color 0.4s, fill 0.4s;
 }
 
 #loading-screen p {
@@ -85,16 +86,19 @@ function addStyle(styles) {
 
     /* Append style to the head element */
     document.getElementsByTagName("head")[0].appendChild(css);
+    return css;
 }
 
 function createLoadingDiv(callback){
     document.body.classList.add('loading');
     const bodyBackgroundColor = document.body.style.backgroundColor || "white";
-    addStyle(loadingStyle.replace('{{BACKGROUND_COLOR}}', bodyBackgroundColor));
+    const style = addStyle(loadingStyle.replace('{{BACKGROUND_COLOR}}', bodyBackgroundColor));
     const el = document.createElement('div');
     document.body.appendChild(el);
     el.outerHTML = loadingDiv;
-    callback();
+    callback(null, {
+        el, style
+    });
 }
 
 
