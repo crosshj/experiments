@@ -18,9 +18,20 @@ const userMenu = `
 	</li>
 `;
 
-const brandLogo = (title) => `
+const brandLogo = (title, icon) => `
 	<li class="show-on-large-only">
-		<a href="#" class="brand-logo">${title}</a>
+		<a href="#" class="brand-logo" style="
+			display: flex;
+			align-items: center;
+		">
+			${icon
+					? `<img src="${icon}" height="20" style="
+							padding-right: 8px;
+						"/>`
+					: ''
+			}
+			${title}
+		</a>
 	</li>
 `;
 
@@ -86,7 +97,7 @@ function sideMenu({ menu = {} } = {}) {
 
 	menuString += '<ul id="slide-out" class="sidenav sidenav-fixed">';
 	menuString += userMenu;
-	menuString += brandLogo(config.title || 'template');
+	menuString += brandLogo(config.title || 'template', config.icon);
 
 	let combinedMenu = { ...defaultMenuItems, ...menu };
 	// if menu prop overwrote default, do something about it
@@ -117,7 +128,9 @@ function getHtml(callback) {
 				domText += sideMenu(config);
 			}
 			domText += htmlText;
-			domText = domText.replace(/{{title}}/g, config.title || 'template');
+			domText = domText
+				.replace(/{{title}}/g, config.title || 'template')
+				.replace(/{{icon}}/g, config.icon || '');
 			document.body.innerHTML += domText;
 			callback();
 		})

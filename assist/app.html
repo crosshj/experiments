@@ -2,7 +2,14 @@
     <header>
         <nav role="navigation">
             <div class="nav-wrapper">
-                <a id="logo-container" href="#" class="brand-logo center">{{title}}</a>
+                <a id="logo-container" href="#" class="brand-logo center" style="
+                ">
+                  <object type="image/svg+xml" data="{{icon}}"
+                    style="fill:inherit; height: 23px;"
+                  >
+                  </object>
+                  {{title}}
+                </a>
                 <a href="#" data-target="slide-out" class="sidenav-trigger">
                     <i class="material-icons">menu</i>
                 </a>

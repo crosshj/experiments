@@ -36,6 +36,10 @@ html.ns-draggable-cursor {
   filter: brightness(0.95) contrast(1.2);
 }
 
+path {
+  fill: red;
+}
+
 body, label {
   color: var(--main-theme-text-color);
 }

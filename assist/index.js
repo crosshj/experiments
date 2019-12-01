@@ -19,6 +19,7 @@ window.Theme = Theme({});
 
 const opts = {
 	title: 'Assistant',
+	icon: './images/light.svg',
 	menu: {
 		"Actions": [{
 				text: "Toggle Dark",
