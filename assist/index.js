@@ -18,7 +18,22 @@ const appendStyleSheet = (url, callback) => {
 window.Theme = Theme({});
 
 const opts = {
-	title: 'assist'
+	title: 'Assistant',
+	menu: {
+		"Actions": [{
+				text: "Toggle Dark",
+				onclick: "window.Theme.toggleDark()",
+				icon: "settings_brightness"
+			}, {
+				text: "Open Fullscreen",
+				onclick: "window.App.openFullscreen(event)",
+				icon: "fullscreen"
+			}, {
+				text: "Exit Fullscreen",
+				onclick: "window.App.closeFullscreen(event)",
+				icon: "fullscreen_exit"
+		}]
+	}
 };
 AppDom.config(opts);
 App.config(opts);

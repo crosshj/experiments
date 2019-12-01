@@ -40,6 +40,17 @@ body, label {
   color: var(--main-theme-text-color);
 }
 
+@media only screen and (min-width: 993px){
+  body #toast-container {
+    top: unset;
+    right: 1%;
+  }
+}
+
+.dark-enabled .btn.disabled {
+  background-color: #dfdfdf2e !important;
+}
+
 .user-sidebar .user-view>a {
   color: var(--main-theme-text-invert-color);
 }

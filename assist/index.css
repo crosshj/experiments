@@ -47,6 +47,10 @@ body, label {
   }
 }
 
+.dark-enabled .btn.disabled {
+  background-color: #dfdfdf2e !important;
+}
+
 .user-sidebar .user-view>a {
   color: var(--main-theme-text-invert-color);
 }
