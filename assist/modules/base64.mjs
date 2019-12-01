@@ -96,6 +96,7 @@ function notesModule(){
 								console.error('Could not copy text: ', err);
 							});
 						e.preventDefault();
+						textBox.focus();
 						return false;
 					};
 					pasteButton.onclick = (e) => {
@@ -113,6 +114,7 @@ function notesModule(){
 								console.error('Could not paste text: ', err);
 							});
 						e.preventDefault();
+						textBox.focus();
 						return false;
 					};
 				} else {
