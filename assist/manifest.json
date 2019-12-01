@@ -5,17 +5,18 @@
   "theme_color": "#47414a",
   "icons": [
     {
-      "src": "../assist/images/manifest-icon-192.png",
+      "src": "experiments/assist/images/manifest-icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "../assist/images/manifest-icon-512.png",
+      "src": "experiments/assist/images/manifest-icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "start_url": "../assist/?source=pwa",
+  "scope": "experiments/assist/",
+  "start_url": "experiments/assist/?source=pwa",
   "display": "standalone",
   "orientation": "portrait"
 }
