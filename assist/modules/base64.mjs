@@ -24,7 +24,7 @@ function notesModule(){
 				el.innerHTML = `
             <div class="section">
                 <h5>base64</h5>
-								<textarea rows=30 style="${taStyle}"></textarea>
+								<textarea rows=28 style="${taStyle}"></textarea>
 						</div>
 						<div class="flex-row center" style="${butRowStyle}">
 							<a class="encode-button btn waves-effect waves-light">encode</a>
