@@ -24,7 +24,7 @@ function notesModule(){
 				el.innerHTML = `
             <div class="section">
                 <h5>base64</h5>
-								<textarea rows=28 style="${taStyle}"></textarea>
+								<textarea rows=8 style="${taStyle}" spellcheck="false"></textarea>
 						</div>
 						<div class="flex-row center" style="${butRowStyle}">
 							<a class="encode-button btn waves-effect waves-light">encode</a>
@@ -80,11 +80,16 @@ function notesModule(){
 					buttonDisabler();
 				};
 
+				textBox.onchange = () => {
+					buttonDisabler();
+				};
+
 				if(navigator.clipboard){
 					copyButton.onclick = (e) => {
 						navigator.clipboard.writeText(textBox.value)
 							.then(() => {
 								M.toast({html: 'Text copied to clipboard!'});
+								textBox.focus();
 							})
 							.catch(err => {
 								M.toast({html: 'Error copying text!', classes: 'error'});
@@ -101,6 +106,7 @@ function notesModule(){
 								}
 								textBox.value += text;
 								buttonDisabler();
+								textBox.focus();
 							})
 							.catch(err => {
 								M.toast({html: 'Error pasting text!', classes: 'error'});
@@ -118,6 +124,7 @@ function notesModule(){
 					try {
 						textBox.value = btoa(textBox.value).replace(/==$/, '');
 						buttonDisabler();
+						textBox.focus();
 					} catch(err) {
 						M.toast({html: 'Error encoding text!', classes: 'error'});
 						console.error('Could not encode text: ', err);
@@ -129,6 +136,7 @@ function notesModule(){
 					try {
 						textBox.value = atob(textBox.value);
 						buttonDisabler();
+						textBox.focus();
 					} catch(err) {
 						M.toast({html: 'Error decoding text!', classes: 'error'});
 						console.error('Could not decode text: ', err);
@@ -139,6 +147,7 @@ function notesModule(){
 
 				buttonDisabler();
 				textBox.focus();
+				textBox.click();
 
         el.classList.remove('loading');
 

@@ -52,11 +52,11 @@ AppDom((domErrors, appDom) => {
 
 			const loadingEl = document.querySelector('#loading-screen');
 			setTimeout(() => {
-				const notes = (new Array(300)).fill('code goes here').join('\n');
-				Editor({ text: notes }, (error, editor) => {
-					//TODO: error handle
-					window.Editor = editor;
-				});
+				// const notes = (new Array(300)).fill('code goes here').join('\n');
+				// Editor({ text: notes }, (error, editor) => {
+				// 	//TODO: error handle
+				// 	window.Editor = editor;
+				// });
 
 				Base64();
 

@@ -313,12 +313,13 @@ nav a.sidenav-trigger i,
   font-weight: lighter;
 }
 
-base64-section.loading:after {
+.container base64-section.loading:after {
   content: 'base64';
 }
 
-base64-section {
-
+.container base64-section {
+  /* min-height: 700px; */
+  /* overflow: hidden; */
 }
 
 .toast.error {
