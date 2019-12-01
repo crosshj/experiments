@@ -75,19 +75,19 @@ const defaultMenuItems = {
 	}],
 	"Other Apps": [{
 			text: "Assistant",
-			href: "../assist",
+			href: "https://assistant.crosshj.com",
 			icon: "assistant"
 		}, {
 			text: "Broken Clock",
-			href: "../brokenClock",
+			href: "https://crosshj.com/experiments/brokenClock",
 			icon: "av_timer"
 		}, {
 			text: "Template App",
-			href: "../template-app",
+			href: "https://crosshj.com/experiments/template-app",
 			icon: "filter_none"
 		}, {
 			text: "Traffic Sim",
-			href: "../traffic",
+			href: "https://crosshj.com/experiments/traffic",
 			icon: "traffic"
 	}]
 };
