@@ -33,8 +33,51 @@ function notesModule(){
 				`;
 
 				const textBox = el.querySelector('textarea');
+				const encodeButton = el.querySelector('.encode-button');
+				const decodeButton = el.querySelector('.decode-button');
 				const copyButton = el.querySelector('.copy-button');
 				const pasteButton = el.querySelector('.paste-button');
+
+				const decodeButtonDisabler = () => {
+					var disableDecode = false;
+					try {
+						atob(textBox.value);
+					} catch(e) {
+						disableDecode = true;
+					}
+
+					if(disableDecode || !textBox.value.trim()){
+						decodeButton.classList.add('disabled');
+					} else {
+						decodeButton.classList.remove('disabled');
+					}
+				};
+				const encodeButtonDisabler = () => {
+					if(!textBox.value.trim()){
+						encodeButton.classList.add('disabled');
+					} else {
+						encodeButton.classList.remove('disabled');
+					}
+				};
+				const copyButtonDisabler = () => {
+					if(!textBox.value.trim()){
+						copyButton.classList.add('disabled');
+					} else {
+						copyButton.classList.remove('disabled');
+					}
+				};
+
+				const buttonDisabler = () => {
+					//console.log({ value: textBox.value })
+					encodeButtonDisabler();
+					copyButtonDisabler();
+					decodeButtonDisabler();
+				};
+
+				textBox.oninput = () => {
+					buttonDisabler();
+				};
+
 				if(navigator.clipboard){
 					copyButton.onclick = (e) => {
 						navigator.clipboard.writeText(textBox.value)
@@ -52,6 +95,7 @@ function notesModule(){
 						navigator.clipboard.readText()
 							.then(text => {
 								textBox.value = text;
+								buttonDisabler();
 							})
 							.catch(err => {
 								M.toast({html: 'Error pasting text!', classes: 'error'});
@@ -65,11 +109,10 @@ function notesModule(){
 					pasteButton.style.display = 'none';
 				}
 
-				const encodeButton = el.querySelector('.encode-button');
-				const decodeButton = el.querySelector('.decode-button');
 				encodeButton.onclick = (e) => {
 					try {
 						textBox.value = btoa(textBox.value);
+						buttonDisabler();
 					} catch(err) {
 						M.toast({html: 'Error encoding text!', classes: 'error'});
 						console.error('Could not encode text: ', err);
@@ -80,6 +123,7 @@ function notesModule(){
 				decodeButton.onclick = (e) => {
 					try {
 						textBox.value = atob(textBox.value);
+						buttonDisabler();
 					} catch(err) {
 						M.toast({html: 'Error decoding text!', classes: 'error'});
 						console.error('Could not decode text: ', err);
@@ -87,6 +131,9 @@ function notesModule(){
 					e.preventDefault();
 					return false;
 				};
+
+				buttonDisabler();
+				textBox.focus();
 
         el.classList.remove('loading');
 
