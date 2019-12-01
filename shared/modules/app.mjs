@@ -2,6 +2,8 @@ import Split from "https://dev.jspm.io/split-grid";
 //import "https://dev.jspm.io/materialize-css/dist/js/materialize.min.js";
 // ^^^ not working ?
 
+let config = {};
+
 const appendScript = (callback) => {
 	var materializeScript = document.createElement('script');
 	materializeScript.crossOrigin = "anonymous";
@@ -104,7 +106,7 @@ const setupApp = () => {
 	return { split: splitInstance, materialize, openFullscreen, closeFullscreen, console: cons };
 };
 
-export default (callback) => {
+function App(callback){
 	addStylesAndFonts(() => {
 		appendScript(() => {
 			const app = setupApp();
@@ -112,3 +114,10 @@ export default (callback) => {
 		});
 	});
 };
+
+App.config = (_config) => {
+	console.log('TODO: App config');
+	config = _config;
+};
+
+export default App;
