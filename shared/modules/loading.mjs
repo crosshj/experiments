@@ -3,6 +3,10 @@ body.loading {
     overflow: hidden;
 }
 
+#loading-screen.hidden {
+    display: none;
+}
+
 @keyframes rotate {
     from {
         transform: rotateZ(0deg)
