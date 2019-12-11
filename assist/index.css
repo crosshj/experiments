@@ -31,11 +31,6 @@ html.ns-draggable-cursor {
   --theme-text-color: black;
 }
 
-:root.dark-enabled ul#slide-out {
-  background-color: var(--main-theme-background-color);
-  filter: brightness(0.95) contrast(1.2);
-}
-
 path {
   fill: red;
 }
@@ -59,14 +54,6 @@ body, label {
   color: var(--main-theme-text-invert-color);
 }
 
-.user-sidebar a,
-.sidenav li>a,
-.sidenav li>a>i.material-icons,
-.sidenav .subheader {
-  opacity: 1;
-  color: var(--main-theme-text-color);
-}
-
 .user-sidebar .user-view {
   background-color: var(--main-theme-color);
 }
@@ -82,10 +69,6 @@ a.dropdown-trigger.user-view-right {
 
 nav .brand-logo, nav a {
   color: var(--main-theme-text-invert-color);
-}
-
-a {
-  color: var(--main-theme-highlight-color);
 }
 
 [type="checkbox"]:checked+span:not(.lever):before {
@@ -157,10 +140,6 @@ header {
     padding-left: 1rem;
     height: var(--header-height);
     line-height: var(--header-height);
-    opacity: .5;
-  }
-  .sidenav li>a:hover {
-    opacity: 1;
   }
   .sidenav a.subheader {
     line-height: 70px;

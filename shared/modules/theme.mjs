@@ -8,6 +8,25 @@ const safeFn = (fn, fallback) => {
 	}
 };
 
+function addStyle(styles, { id }) {
+
+	/* Create style element */
+	var css = document.createElement('style');
+	css.type = 'text/css';
+	if(id){
+		css.id = id;
+	}
+
+	if (css.styleSheet)
+			css.styleSheet.cssText = styles;
+	else
+			css.appendChild(document.createTextNode(styles));
+
+	/* Append style to the head element */
+	document.getElementsByTagName("head")[0].appendChild(css);
+	return css;
+}
+
 var metaThemeColorEl = document.querySelector("meta[name=theme-color]");
 
 const lightColor = safeFn(() =>
@@ -19,9 +38,44 @@ const darkColor = safeFn(() =>
 	metaThemeColorEl.content || '#363238'
 );
 
-
 function changeStyleVariable(name, value){
     document.documentElement.style.setProperty('--' + name, value);
+}
+
+const themeCSS = `
+	ul#slide-out {
+		background-color: var(--main-theme-background-color);
+		filter: brightness(0.80) contrast(1.2);
+	}
+	:root.dark-enabled ul#slide-out {
+		background-color: var(--main-theme-background-color);
+		filter: brightness(0.95) contrast(1.3);
+	}
+
+	.user-sidebar a,
+	#slide-out.sidenav li>a,
+	#slide-out.sidenav li>a>i.material-icons,
+	#slide-out.sidenav .subheader {
+		color: var(--main-theme-text-color);
+		opacity: 0.5;
+	}
+	.user-sidebar a:hover,
+	#slide-out.sidenav li>a:hover,
+	#slide-out.sidenav li>a>i.material-icons:hover,
+	#slide-out.sidenav .subheader:hover {
+		opacity: 1;
+	}
+	#slide-out.sidenav .brand-logo {
+		opacity: 1;
+	}
+	a {
+		color: var(--main-theme-highlight-color);
+	}
+`;
+
+function setThemeCSS(){
+	const id = 'theme-base-css';
+	addStyle(themeCSS, { id })
 }
 
 function toggleDark(){
@@ -90,6 +144,7 @@ function theme({
     console.log(`--- main color should be: ${_themeColor}`);
     //changeStyleVariable('main-theme-color', mainColor);
 
+		setThemeCSS();
 
     return {
         toggleDark
