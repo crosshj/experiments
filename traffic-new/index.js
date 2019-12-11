@@ -1,25 +1,10 @@
 const startLoad = performance.now();
 
-import Editor from '../shared/modules/editor.mjs';
 import Sketch from './modules/sketch.mjs';
 import App from '../shared/modules/app.mjs';
 import AppDom from '../shared/modules/appDom.mjs';
+import Theme from '../shared/modules/theme.mjs';
 
-const editorText =
-`## current state:
-- basic project scaffolded, using sketch.js
-- some particle effects, but nothing like what is needed
-
-## todo:
-- get some basic particle system set up and make sure it can do what's needed: collision, spawn points, etc
-- create roads generatively
-- add vehicle particles
-- explore some ideas about traffic
-
-## resources:
-- https://news.ycombinator.com/item?id=6765029
-
-`;
 
 const appendStyleSheet = (url, callback) => {
 	var style = document.createElement('link');
@@ -30,8 +15,11 @@ const appendStyleSheet = (url, callback) => {
 	document.head.appendChild(style);
 };
 
+
+window.Theme = Theme({});
+
 const opts = {
-	title: 'Assistant',
+	title: 'Traffic',
 	menu: {
 		"Actions": [{
 				text: "Toggle Dark",

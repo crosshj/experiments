@@ -1,9 +1,23 @@
 // https://www.w3.org/wiki/Dynamic_style_-_manipulating_CSS_with_JavaScript
 
+const safeFn = (fn, fallback) => {
+	try{
+		return fn();
+	} catch(e) {
+		return fallback;
+	}
+};
+
 var metaThemeColorEl = document.querySelector("meta[name=theme-color]");
 
-const lightColor = document.querySelector("meta[name=light-theme-color]").content;
-const darkColor = document.querySelector("meta[name=dark-theme-color]").content;
+const lightColor = safeFn(() =>
+	document.querySelector("meta[name=light-theme-color]").content,
+	metaThemeColorEl.content || 'white'
+);
+const darkColor = safeFn(() =>
+	document.querySelector("meta[name=dark-theme-color]").content,
+	metaThemeColorEl.content || '#363238'
+);
 
 
 function changeStyleVariable(name, value){
