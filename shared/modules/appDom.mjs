@@ -19,7 +19,7 @@ const userMenu = `
 `;
 
 const brandLogo = (title, icon) => `
-	<li class="show-on-large-only">
+	<li class="hide-on-med-and-down">
 		<a href="#" class="brand-logo" style="
 			display: flex;
 			align-items: center;

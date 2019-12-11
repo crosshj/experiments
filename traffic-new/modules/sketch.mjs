@@ -11,6 +11,15 @@ TODO:
 
 */
 
+function debounce(func, time){
+	var time = time || 100; // 100 by default if no param
+	var timer;
+	return function(event){
+			if(timer) clearTimeout(timer);
+			timer = setTimeout(func, time, event);
+	};
+}
+
 
 const setupSketch = () => {
 	// ----------------------------------------
@@ -253,7 +262,14 @@ const setupSketch = () => {
 			: 0;
 	};
 
-	demo.restart = setupSketch;
+	demo.restart = () => {
+		window.removeEventListener("resize", demo.resizeListener);
+		demo.destroy();
+		demo = setupSketch();
+	};
+
+	demo.resizeListener = debounce(demo.restart, 100);
+	window.addEventListener("resize", demo.resizeListener);
 
 	return demo;
 };

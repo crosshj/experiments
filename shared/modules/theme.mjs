@@ -71,6 +71,9 @@ const themeCSS = `
 	a {
 		color: var(--main-theme-highlight-color);
 	}
+	#slide-out.sidenav .user-sidebar {
+		min-height: 165px;
+	}
 `;
 
 function setThemeCSS(){

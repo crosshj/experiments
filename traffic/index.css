@@ -47,6 +47,7 @@ main {
 
 nav {
   background-color: var(--main-theme-color);
+  box-shadow: none;
 }
 
 
