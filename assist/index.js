@@ -25,6 +25,15 @@ const opts = {
 	title: 'Assistant',
 	icon: './images/light.svg',
 	menu: {
+		"Tools": [{
+			text: "Notes",
+			onclick: "window.switchTool('notes')",
+			icon: "create"
+		}, {
+			text: "Encode",
+			onclick: "window.switchTool('encode')",
+			icon: "lock"
+		}],
 		"Actions": [{
 			text: "Toggle Dark",
 			onclick: "window.Theme.toggleDark()",
@@ -38,15 +47,6 @@ const opts = {
 			onclick: "window.App.closeFullscreen(event)",
 			icon: "fullscreen_exit"
 		}],
-		"Tools": [{
-			text: "Notes",
-			onclick: "window.switchTool('notes')",
-			icon: "create"
-		}, {
-			text: "Encode",
-			onclick: "window.switchTool('encode')",
-			icon: "fingerprint"
-		}]
 	}
 };
 AppDom.config(opts);

@@ -99,7 +99,12 @@ function sideMenu({ menu = {} } = {}) {
 	menuString += userMenu;
 	menuString += brandLogo(config.title || 'template', config.icon);
 
-	let combinedMenu = { ...defaultMenuItems, ...menu };
+	const preserveOrder = Object.keys(menu).reduce((all, one) => {
+		all[one] = null;
+		return all;
+	}, {});
+	console.log({ preserveOrder })
+	let combinedMenu = { ...preserveOrder, ...defaultMenuItems, ...menu };
 	// if menu prop overwrote default, do something about it
 
 	Object.keys(combinedMenu).forEach(key => {
