@@ -8,10 +8,10 @@
  |   http://www.browsersync.io/docs/options/
  */
 
- const path = require('path');
- const packageJson = require(path.resolve(process.cwd(), 'package.json'));
+const path = require('path');
+const packageJson = require(path.resolve(process.cwd(), 'package.json'));
 
- module.exports = {
+module.exports = {
     "server": {
         baseDir: "..",
         directory: false
@@ -23,8 +23,8 @@
     "notify": false,
     "middleware": [
         function (req, res, next) {
-            if (req.url === '/'){
-                res.writeHead(302, {Location: `/${packageJson.name}/`});
+            if (req.url === '/') {
+                res.writeHead(302, { Location: `/${packageJson.name}/` });
                 res.end();
                 return;
             }

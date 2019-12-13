@@ -17,22 +17,35 @@ const appendStyleSheet = (url, callback) => {
 
 window.Theme = Theme({});
 
+window.switchTool = (name) => {
+	alert(`Switch to ${name}`);
+};
+
 const opts = {
 	title: 'Assistant',
 	icon: './images/light.svg',
 	menu: {
 		"Actions": [{
-				text: "Toggle Dark",
-				onclick: "window.Theme.toggleDark()",
-				icon: "settings_brightness"
-			}, {
-				text: "Open Fullscreen",
-				onclick: "window.App.openFullscreen(event)",
-				icon: "fullscreen"
-			}, {
-				text: "Exit Fullscreen",
-				onclick: "window.App.closeFullscreen(event)",
-				icon: "fullscreen_exit"
+			text: "Toggle Dark",
+			onclick: "window.Theme.toggleDark()",
+			icon: "settings_brightness"
+		}, {
+			text: "Open Fullscreen",
+			onclick: "window.App.openFullscreen(event)",
+			icon: "fullscreen"
+		}, {
+			text: "Exit Fullscreen",
+			onclick: "window.App.closeFullscreen(event)",
+			icon: "fullscreen_exit"
+		}],
+		"Tools": [{
+			text: "Notes",
+			onclick: "window.switchTool('notes')",
+			icon: "create"
+		}, {
+			text: "Encode",
+			onclick: "window.switchTool('encode')",
+			icon: "fingerprint"
 		}]
 	}
 };
