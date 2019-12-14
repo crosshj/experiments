@@ -103,7 +103,7 @@ function sideMenu({ menu = {} } = {}) {
 		all[one] = null;
 		return all;
 	}, {});
-	console.log({ preserveOrder })
+
 	let combinedMenu = { ...preserveOrder, ...defaultMenuItems, ...menu };
 	// if menu prop overwrote default, do something about it
 

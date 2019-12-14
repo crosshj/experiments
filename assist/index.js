@@ -3,6 +3,7 @@ const startLoad = performance.now();
 import App from '../shared/modules/app.mjs';
 import Editor from '../shared/modules/editor.mjs';
 import Base64 from './modules/base64.mjs';
+import Notes from './modules/notes.mjs';
 import Theme from '../shared/modules/theme.mjs';
 import AppDom from '../shared/modules/appDom.mjs';
 
@@ -73,6 +74,7 @@ AppDom((domErrors, appDom) => {
 				// });
 
 				Base64();
+				Notes();
 
 				loadingEl.classList.add('hidden');
 				setTimeout(() => {

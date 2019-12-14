@@ -389,3 +389,26 @@ nav a.sidenav-trigger i,
 /* * {
   transition: color 0.5s ease-out, background-color 0.5s ease-out;
 } */
+
+
+#notes-list {
+  border: unset;
+}
+
+#notes-list li {
+  background-color:unset;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  border: 1px solid;
+}
+
+#notes-list li i:last-child {
+  cursor: pointer;
+}
+
+#notes-list li span {
+  white-space: pre-wrap;
+}
