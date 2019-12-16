@@ -140,7 +140,7 @@ function notesModule() {
 		deleteConfirm.onclick = (event) => {
 			const isCancel = event.target.outerHTML.includes('>Cancel<');
 			const isConfirm = event.target.outerHTML.includes('>Okay<');
-			const isButton = event.target.tagName.toLowerCase() === 'i';
+			const isButton = event.target.tagName.toLowerCase() === 'i' || event.target.className.includes('btn-flat');
 
 			if(!isButton){
 				return true;
@@ -271,8 +271,8 @@ function notesModule() {
 		allNotes.forEach(addNote);
 
 		buttonDisabler();
-		textBox.focus();
-		textBox.click();
+		//textBox.focus();
+		//textBox.click();
 
 		el.classList.remove('loading');
 

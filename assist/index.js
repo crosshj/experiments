@@ -23,7 +23,7 @@ window.switchTool = (name) => {
 	Array.from(document.querySelectorAll('.section-module'))
 		.forEach(moduleEl => moduleEl.classList.add('hidden'));
 	document.querySelector(`${name}-section`).classList.remove('hidden');
-	console.log(`Switch to ${name}`);
+	//console.log(`Switch to ${name}`);
 };
 
 const opts = {
