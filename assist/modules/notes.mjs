@@ -211,7 +211,7 @@ function notesModule() {
 
 		const addNote = ({ item, key }) => {
 			notesList.innerHTML += `
-				<li class="collection-item" data-key="${key}">
+				<li class="collection-item" data-key="${key}" tabIndex=10>
 					<span>${item}</span>
 					<div class="actions">
 						<i class="material-icons">edit</i>

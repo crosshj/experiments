@@ -450,6 +450,8 @@ nav a.sidenav-trigger i,
 }
 #notes-list li.collection-item:focus {
   border-color: #FF9800 !important;
+  background: #ff980014;
+  outline: none;
 }
 #notes-list li.collection-item:focus-within {
   border-color: #FF9800 !important;
