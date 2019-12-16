@@ -19,7 +19,11 @@ const appendStyleSheet = (url, callback) => {
 window.Theme = Theme({});
 
 window.switchTool = (name) => {
-	alert(`Switch to ${name}`);
+	localStorage.setItem('tool-choice', name);
+	Array.from(document.querySelectorAll('.section-module'))
+		.forEach(moduleEl => moduleEl.classList.add('hidden'));
+	document.querySelector(`${name}-section`).classList.remove('hidden');
+	console.log(`Switch to ${name}`);
 };
 
 const opts = {
@@ -32,7 +36,7 @@ const opts = {
 			icon: "create"
 		}, {
 			text: "Encode",
-			onclick: "window.switchTool('encode')",
+			onclick: "window.switchTool('base64')",
 			icon: "lock"
 		}],
 		"Actions": [{
@@ -73,6 +77,8 @@ AppDom((domErrors, appDom) => {
 				// 	window.Editor = editor;
 				// });
 
+				const toolChoice = localStorage.getItem('tool-choice') || 'notes';
+				window.switchTool(toolChoice);
 				Base64();
 				Notes();
 

@@ -140,6 +140,12 @@ function notesModule() {
 		deleteConfirm.onclick = (event) => {
 			const isCancel = event.target.outerHTML.includes('>Cancel<');
 			const isConfirm = event.target.outerHTML.includes('>Okay<');
+			const isButton = event.target.tagName.toLowerCase() === 'i';
+
+			if(!isButton){
+				return true;
+			}
+
 			if(isCancel){
 				deleteState = undefined;
 			}
@@ -158,7 +164,7 @@ function notesModule() {
 			const isEditCancel = event.target.outerHTML.includes('>not_interested<');
 
 			if(!isButton){
-				return;
+				return true;
 			}
 			//console.log(event.target);
 
@@ -232,7 +238,13 @@ function notesModule() {
 			addButtonDisabler();
 		};
 
-		textBox.oninput = () => {
+		// shift enter for adding on desktop
+		textBox.onkeyup = (event) => {
+			if (event.keyCode == 13 && event.shiftKey) {
+				addButton.onclick(event);
+			}
+		};
+		textBox.oninput = (event) => {
 			buttonDisabler();
 		};
 

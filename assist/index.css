@@ -422,15 +422,20 @@ nav a.sidenav-trigger i,
 
 #notes-list li .actions {
   display: flex;
+  flex-wrap: wrap-reverse;
 }
 
 #notes-list li .actions i {
   cursor: pointer;
   margin-left: 15px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 #notes-list li span {
   white-space: pre-wrap;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 #notes-list span[contenteditable=true] {
@@ -438,6 +443,16 @@ nav a.sidenav-trigger i,
   /* border: 1px solid; */
   outline: 0px;
   /* background: #ffffff1a; */
+}
+
+#notes-list li.collection-item:active {
+  border-color: #FF9800 !important;
+}
+#notes-list li.collection-item:focus {
+  border-color: #FF9800 !important;
+}
+#notes-list li.collection-item:focus-within {
+  border-color: #FF9800 !important;
 }
 
 .hidden {
