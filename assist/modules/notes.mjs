@@ -80,6 +80,69 @@ class Storage {
 	}
 }
 
+//https://mediatemple.net/blog/tips/carousels-dont-have-to-be-complicated/
+const listsSelector = () => `
+<style>
+	.lists-selector {
+		display: flex;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+
+		scroll-snap-points-x: repeat(50px);
+		scroll-snap-type: mandatory;
+		scroll-behavior: smooth;
+	}
+	.lists-selector::-webkit-scrollbar {
+		display: none;
+	}
+	.lists-selector > div {
+		/* make sure the width is honored */
+		flex-shrink: 0;
+		width: 300px;
+		max-width: 25%;
+		height: 50px;
+		padding: 0;
+		text-align: center;
+	}
+	.lists-selector > div > .btn {
+		height: 100%;
+		width: 100%;
+	}
+	// .lists-selector:after {
+	// 	background-image: linear-gradient(
+	// 		to right,
+	// 		transparent 0,
+	// 		var(--main-theme-background-color) 90%
+	// 	);
+	// 	margin-left: -300px;
+	// 	width: 300px;
+	// 	content: '';
+	// 	z-index: 1;
+	// 	pointer-events: none;
+	// }
+	.selector-item  + .selector-item  {
+		margin-left: 10px;
+	}
+</style>
+<div class="lists-selector">
+	<div class="selector-item">
+		<a class="waves-effect waves-light btn">Slide #1</a>
+	</div>
+	<div class="selector-item">
+		<a class="waves-effect waves-light btn cyan lighten-3">Slide #2</a>
+	</div>
+	<div class="selector-item">
+		<a class="waves-effect waves-light btn">Slide #3</a>
+	</div>
+	<div class="selector-item">
+		<a class="waves-effect waves-light btn">Slide #4</a>
+	</div>
+	<div class="selector-item">
+		<a class="waves-effect waves-light btn">Slide #5</a>
+	</div>
+</div>
+`;
+
 
 function notesModule() {
 	const storage = new Storage();
@@ -108,6 +171,7 @@ function notesModule() {
 		el.innerHTML = `
 			<div class="section">
 				<h5>notes</h5>
+				${listsSelector()}
 				<ul id="notes-list" class="collection"></ul>
 				<textarea rows=8 style="${taStyle}" spellcheck="false"></textarea>
 			</div>
@@ -132,6 +196,38 @@ function notesModule() {
 		const notesList = el.querySelector('#notes-list');
 		const addButton = el.querySelector('.add-button');
 		const deleteConfirm = el.querySelector('#modal-delete-confirm');
+		const listsSelectorEl = el.querySelector('.lists-selector');
+
+		listsSelectorEl.onclick = (event) => {
+			const isListItem = event.target.tagName.toLowerCase() === 'a';
+
+			if(isListItem){
+				const listItemParent = event.target.closest('.lists-selector');
+				const {
+					clientWidth,
+					scrollWidth,
+					scrollLeft,
+					offsetLeft: parentOffsetLeft
+				} = listItemParent;
+				const {
+					offsetLeft: childOffsetLeft
+				} = event.target;
+				const dims = {
+					offsetLeft:  childOffsetLeft - parentOffsetLeft,
+					clientWidth,
+					scrollWidth,
+					scrollLeft
+				};
+				console.log(dims);
+				if(dims.offsetLeft > scrollWidth / 2){
+					listItemParent.scrollLeft = dims.offsetLeft;
+				} else {
+					listItemParent.scrollLeft = 0;
+				}
+
+				//console.log(event.target.innerHTML);
+			}
+		};
 
 		var deleteConfirmModalEl;
 		var deleteConfirmModalInstance;
