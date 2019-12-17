@@ -80,6 +80,8 @@ class Storage {
 	}
 }
 
+//inspired by https://github.com/huextrat/Taskist
+
 //https://mediatemple.net/blog/tips/carousels-dont-have-to-be-complicated/
 const listsSelector = () => `
 <style>
@@ -100,7 +102,7 @@ const listsSelector = () => `
 		flex-shrink: 0;
 		width: 300px;
 		max-width: 25%;
-		height: 50px;
+		height: auto;
 		padding: 0;
 		text-align: center;
 	}
@@ -126,19 +128,19 @@ const listsSelector = () => `
 </style>
 <div class="lists-selector">
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn">Slide #1</a>
+		<a class="waves-effect waves-light btn red">Red</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn cyan lighten-3">Slide #2</a>
+		<a class="waves-effect waves-light btn blue">Blue</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn">Slide #3</a>
+		<a class="waves-effect waves-light btn orange">Orange</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn">Slide #4</a>
+		<a class="waves-effect waves-light btn green">Green</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn">Slide #5</a>
+		<a class="waves-effect waves-light btn purple">Purple</a>
 	</div>
 </div>
 `;
