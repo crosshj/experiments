@@ -453,6 +453,13 @@ nav a.sidenav-trigger i,
   background: #ff980014;
   outline: none;
 }
+#notes-list li.collection-item .actions {
+  display: none;
+}
+#notes-list li.collection-item:focus .actions,
+#notes-list li.collection-item:focus-within .actions {
+  display: flex;
+}
 #notes-list li.collection-item:focus-within {
   border-color: #FF9800 !important;
 }

@@ -86,6 +86,9 @@ class Storage {
 const listsSelector = () => `
 <style>
 	.lists-selector {
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin-bottom: 5px;
 		display: flex;
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
@@ -93,6 +96,18 @@ const listsSelector = () => `
 		scroll-snap-points-x: repeat(50px);
 		scroll-snap-type: mandatory;
 		scroll-behavior: smooth;
+
+		/* https://codepen.io/matthewbeta/pen/fzoHI */
+		background-image:
+			linear-gradient(to right, var(--main-theme-background-color), var(--main-theme-background-color)),
+			linear-gradient(to right, var(--main-theme-background-color), var(--main-theme-background-color)),
+			linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0)),
+			linear-gradient(to left, rgba(0, 0, 0, 0.25), transparent);
+		background-position: left center, right center, left center, right center;
+		background-repeat: no-repeat;
+		background-color: var(--main-theme-background-color);
+		background-size: 100px 100%, 100px 100%, 20px 100%, 20px 100%;
+		background-attachment: local, local, scroll, scroll;
 	}
 	.lists-selector::-webkit-scrollbar {
 		display: none;
@@ -125,22 +140,30 @@ const listsSelector = () => `
 	.selector-item  + .selector-item  {
 		margin-left: 10px;
 	}
+	.selector-item .btn {
+		opacity: 1;
+	}
+	.selector-item .btn:not(.selected) {
+		//opacity: .5;
+		pointer-events: unset !important;
+		color: var(--main-theme-background-color);
+	}
 </style>
 <div class="lists-selector">
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn red">Red</a>
+		<a class="waves-effect waves-light btn red selected">Red</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn blue">Blue</a>
+		<a class="waves-effect waves-light btn blue disabled">Blue</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn orange">Orange</a>
+		<a class="waves-effect waves-light btn orange disabled">Orange</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn green">Green</a>
+		<a class="waves-effect waves-light btn green disabled">Green</a>
 	</div>
 	<div class="selector-item">
-		<a class="waves-effect waves-light btn purple">Purple</a>
+		<a class="waves-effect waves-light btn purple disabled">Purple</a>
 	</div>
 </div>
 `;
@@ -220,12 +243,19 @@ function notesModule() {
 					scrollWidth,
 					scrollLeft
 				};
-				console.log(dims);
 				if(dims.offsetLeft > scrollWidth / 2){
 					listItemParent.scrollLeft = dims.offsetLeft;
 				} else {
 					listItemParent.scrollLeft = 0;
 				}
+
+				Array.from(el.querySelectorAll('.selector-item a'))
+					.forEach(btn => {
+						btn.classList.remove('selected');
+						btn.classList.add('disabled')
+					});
+				event.target.classList.add('selected');
+				event.target.classList.remove('disabled');
 
 				//console.log(event.target.innerHTML);
 			}
