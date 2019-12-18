@@ -106,7 +106,7 @@ const listsSelector = () => `
 		background-position: left center, right center, left center, right center;
 		background-repeat: no-repeat;
 		background-color: var(--main-theme-background-color);
-		background-size: 100px 100%, 100px 100%, 20px 100%, 20px 100%;
+		background-size: 20px 100%, 20px 100%, 20px 100%, 20px 100%;
 		background-attachment: local, local, scroll, scroll;
 	}
 	.lists-selector::-webkit-scrollbar {
