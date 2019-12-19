@@ -38,8 +38,8 @@ const setupSketch = () => {
 		'#A37666' //lightbrown
 	];
 	const CAR_WIDTH = 10;
-	const CLIENT_HEIGHT = document.querySelector('.container.canvas').clientHeight;
-	const CLIENT_WIDTH = document.querySelector('.container.canvas').clientWidth;
+	const CLIENT_HEIGHT = document.querySelector('.container.canvas.road').clientHeight;
+	const CLIENT_WIDTH = document.querySelector('.container.canvas.road').clientWidth;
 	const LANES_COUNT = 10;
 	const DEMO_MARGIN = Math.floor((CLIENT_WIDTH - LANES_COUNT * CAR_WIDTH) / 2);
 
@@ -52,7 +52,7 @@ const setupSketch = () => {
 		fullscreen: false,
 		height: CLIENT_HEIGHT,
 		width: CLIENT_WIDTH,
-		container: document.querySelector('.container.canvas'),
+		container: document.querySelector('.container.canvas.road'),
 		//retina: 'auto'
 	});
 	demo.margin = DEMO_MARGIN;
@@ -133,7 +133,6 @@ const setupSketch = () => {
 				);
 			}
 		}
-
 
 		demo.globalCompositeOperation = 'lighter';
 		for (var i = particles.length - 1; i >= 0; i--) {

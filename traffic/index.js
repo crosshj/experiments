@@ -1,6 +1,8 @@
 const startLoad = performance.now();
 
 import Sketch from './modules/sketch.mjs';
+import RoadMap from './modules/map.mjs';
+
 import App from '../shared/modules/app.mjs';
 import AppDom from '../shared/modules/appDom.mjs';
 import Theme from '../shared/modules/theme.mjs';
@@ -32,11 +34,45 @@ const appendStyleSheet = (url, callback) => {
 
 // `;
 
+const switchMap = {
+	road: () => {
+		window.Sketch && window.Sketch.start()
+		window.Sketch = window.Sketch || Sketch();
+	},
+	map: () => {
+		window.RoadMap && window.RoadMap.start()
+		window.RoadMap = window.RoadMap || new RoadMap();
+	}
+};
+
+window.switchTool = (name) => {
+	localStorage.setItem('tool-choice', name);
+
+	window.Sketch && window.Sketch.stop();
+	window.RoadMap && window.RoadMap.stop();
+	Array.from(document.querySelectorAll('.container.canvas'))
+		.forEach(moduleEl => moduleEl.classList.add('hidden'));
+	document.querySelector(`.container.canvas.${name}`)
+		.classList.remove('hidden');
+
+	switchMap[name]();
+	console.log(`Switch to ${name}`);
+};
+
 window.Theme = Theme({});
 
 const opts = {
 	title: 'Traffic',
 	menu: {
+		"Modes": [{
+				text: "Road",
+				onclick: "switchTool('road')",
+				icon: "directions_car"
+			}, {
+				text: "Map",
+				onclick: "switchTool('map')",
+				icon: "map"
+		}],
 		"Actions": [{
 				text: "Toggle Dark",
 				onclick: "window.Theme.toggleDark()",
@@ -72,10 +108,12 @@ AppDom(() => {
 				window.Editor = editor;
 			});
 			*/
+			const toolChoice = localStorage.getItem('tool-choice') || 'road';
+			window.switchTool(toolChoice);
 
 			const loadingEl = document.querySelector('#loading-screen');
 			setTimeout(() => {
-				window.Sketch = Sketch();
+				//window.Sketch = Sketch();
 
 				loadingEl.classList.add('hidden');
 				document.body.classList.remove('loading');

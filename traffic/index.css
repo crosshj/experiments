@@ -81,12 +81,23 @@ header, main, footer {
 
 .container.canvas {
   background: var(--main-theme-color);
+  left: 0px;
   width: 100%;
   height: 100%;
   overflow: hidden;
   margin: 0;
   max-width: unset;
   display: flex;
+  position: fixed;
+  top: 0px;
+  padding-left: 100px;
+}
+
+@media only screen and (max-width: 992px){
+  .container.canvas {
+      left: 0;
+      padding-left: 0px;
+  }
 }
 
 .stats {
@@ -108,4 +119,8 @@ header, main, footer {
     bottom: unset;
     top: 54px;
   }
+}
+
+.hidden {
+  visibility: hidden !important;
 }
