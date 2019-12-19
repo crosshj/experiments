@@ -46,7 +46,7 @@ const switchMap = {
 };
 
 window.switchTool = (name) => {
-	localStorage.setItem('tool-choice', name);
+	localStorage.setItem('tool-choice-traffic', name);
 
 	window.Sketch && window.Sketch.stop();
 	window.RoadMap && window.RoadMap.stop();
@@ -108,12 +108,12 @@ AppDom(() => {
 				window.Editor = editor;
 			});
 			*/
-			const toolChoice = localStorage.getItem('tool-choice') || 'road';
-			window.switchTool(toolChoice);
 
 			const loadingEl = document.querySelector('#loading-screen');
 			setTimeout(() => {
-				//window.Sketch = Sketch();
+				window.Sketch = Sketch();
+				const toolChoice = localStorage.getItem('tool-choice-traffic') || 'road';
+				window.switchTool(toolChoice);
 
 				loadingEl.classList.add('hidden');
 				document.body.classList.remove('loading');
