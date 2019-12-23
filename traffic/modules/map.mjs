@@ -1,6 +1,8 @@
 import Sketch from "https://dev.jspm.io/sketch-js/js/sketch.min.js";
+import Particle from '../models/Particle.mjs';
 
 import addChunksToStage from './chunks.mjs';
+
 /*
 
 procedural road generation:
@@ -14,6 +16,17 @@ https://www.redblobgames.com/x/1805-conveyor-belts/
 
 */
 
+const MAX_PARTICLES = 10;
+
+var COLOURS = [
+    '#69D2E7', //blue
+    '#A7DBD8', //lightblue
+    '#E0E4CC', //lightyellow
+    '#f7ac73', //lightorange
+    '#B794F7', //purple
+    '#86C58B', //lightgreen
+    '#A37666' //lightbrown
+];
 
 function debounce(func, time) {
     var time = time || 100; // 100 by default if no param
@@ -125,7 +138,6 @@ function drawRoadChunk(ctx, chunk){
         ctx.moveTo(base.x, base.y + 4);
         ctx.lineTo(base.x + chunk.width, base.y + 4);
         ctx.stroke();
-
     }
 
     if(chunk.type === "curved"){
@@ -379,6 +391,16 @@ function MapChunk(ctx, chunk, chunkSize=50){
 
 }
 
+function populationDraw(ctx){
+    const { particles = []} = ctx;
+    for (var i = particles.length - 1; i >= 0; i--) {
+        particles[i].draw(ctx, {
+            x: center.x,
+            y: center.y
+        });
+    }
+}
+
 function mapDraw(ctx, stageWidth, stageHeight){
     const mid = {
         x: center.x + ctx.width / 2,
@@ -390,6 +412,8 @@ function mapDraw(ctx, stageWidth, stageHeight){
     _stage.chunks.forEach(ch =>
         MapChunk(ctx, ch)
     );
+
+    populationDraw(ctx);
 }
 
 function mapTouchMove(width, height){
@@ -413,33 +437,117 @@ function mapTouchMove(width, height){
     }
 }
 
+function mapSpawn(particle, ctx){
+    const { particles, sense } = ctx;
+    const { x, y, lane, radius = 3 } = particle;
+    if(!particles){
+        console.log('world has no particles set!!');
+        return;
+    }
+    if (particles.length >= MAX_PARTICLES) {
+        return;
+    }
+    const newParticle = new Particle(
+        ctx, x, y, lane, radius, sense
+    );
+    //newParticle.changeLane = () => {};
+    newParticle.color = random(COLOURS);
+    newParticle.life = 400 / newParticle.speed;
+    //newParticle.speed = 1;
+    particles.push(newParticle);
+}
+
+function mapUpdate(sketch){
+    const particles = sketch.particles = sketch.particles.filter(p => p.alive);
+    const [LANES_COUNT, CAR_WIDTH] = [2, 10];
+    for (var i = particles.length - 1; i >= 0; i--) {
+        particles[i].move(LANES_COUNT, CAR_WIDTH);
+    }
+    sketch.spawnPoints.forEach(sp => {
+        const particle = sp.emit();
+        const { x, y, lane } = particle || {};
+        if(particle){
+            sketch.spawn(x, y, lane);
+        }
+    })
+}
+
+function sense(sketch, observer, view) {
+    const { particles = [] } = sketch;
+    var result = undefined;
+    if (view === 'front') {
+        // all cars in front
+        const frontCars = particles.filter(p => Math.round(p.x) === Math.round(observer.x) && observer.y > p.y);
+        // only closest car to observer
+        return frontCars.length
+            ? frontCars.sort((a, b) => b.y - a.y)[0]
+            : undefined;
+    }
+    const observation = {
+        action, result
+    };
+    return observation;
+}
+
 function Map() {
     const CLIENT_HEIGHT = document.querySelector('.container.canvas.map').clientHeight;
     const CLIENT_WIDTH = document.querySelector('.container.canvas.map').clientWidth;
     const [STAGE_WIDTH, STAGE_HEIGHT] = [800, 800];
 
-    var demo = Sketch.create({
+    var map = Sketch.create({
         interval: 1.5,
         fullscreen: false,
         height: CLIENT_HEIGHT,
         width: CLIENT_WIDTH,
         container: document.querySelector('.container.canvas.map'),
-        touchmove: () => mapTouchMove.bind(demo)(STAGE_WIDTH, STAGE_HEIGHT)
+        touchmove: () => mapTouchMove.bind(map)(STAGE_WIDTH, STAGE_HEIGHT)
         //retina: 'auto'
     });
+    map.particles = [];
+    map.sense = (observer, view) => sense(map, observer, view);
+    map.spawn = (x, y, lane) => mapSpawn({ x, y, lane }, map);
 
-    demo.draw = () => mapDraw(demo, STAGE_WIDTH, STAGE_HEIGHT);
-
-    demo.restart = () => {
-        window.removeEventListener("resize", demo.resizeListener);
-        demo.destroy();
-        demo = Map();
+    const SpawnPoint = function({x, y}){
+        this.init(x, y);
+    }
+    SpawnPoint.prototype = {
+        init: function(x, y){
+            this.x = x;
+            this.y = y;
+        },
+        emit: function(){
+            if (random(0, 1000) < 900){
+                return;
+            }
+            const {x, y} = this;
+            const lane = Math.round(random(1,2));
+            return {x: x + (lane-1) * 10, y, lane};
+        }
     };
 
-    demo.resizeListener = debounce(demo.restart, 100);
-    window.addEventListener("resize", demo.resizeListener);
+    map.margin = CLIENT_WIDTH/2 + 75;
+    map.spawnPoints = [
+        new SpawnPoint({
+            x: CLIENT_WIDTH/2 + 80.5,
+            y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25
+        })
+    ];
 
-    return demo;
+
+    map.update = () => mapUpdate(map);
+
+    map.draw = () => mapDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
+
+    map.restart = () => {
+        window.removeEventListener("resize", map.resizeListener);
+        map.destroy();
+        map = Map();
+    };
+
+    map.resizeListener = debounce(map.restart, 100);
+    window.addEventListener("resize", map.resizeListener);
+
+    return map;
 }
 
 export default Map;

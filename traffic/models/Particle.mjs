@@ -40,7 +40,7 @@ Particle.prototype = {
         }
         this.lane += changeDirection;
         const change = changeDirection * CAR_WIDTH;
-        const postChange = (new Array(10)).fill(0)
+        const postChange = (new Array(10)).fill(0);  // delay after change
         this.changing = (new Array(transitionLength))
             .fill(change / transitionLength)
             .concat(postChange);
@@ -74,9 +74,9 @@ Particle.prototype = {
         this.life -= 1;
         this.alive = this.life > 0;
     },
-    draw: function (ctx) {
+    draw: function (ctx, center = {}) {
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, TWO_PI);
+        ctx.arc(this.x + (center.x || 0), this.y + (center.y || 0), this.radius, 0, TWO_PI);
         ctx.fillStyle = this.changing && this.changing.length
             ? 'red'
             : this.color;
