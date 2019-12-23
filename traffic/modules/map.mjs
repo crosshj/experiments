@@ -65,6 +65,8 @@ function drawRoadChunk(ctx, chunk){
     const LINE_WHITE_LIGHT = "#888";
     const ROAD_COLOR = "#222";
 
+    const piOver180 = 0.01745329252;
+
 
     ctx.save();
     ctx.translate(
@@ -129,16 +131,16 @@ function drawRoadChunk(ctx, chunk){
     if(chunk.type === "curved"){
         ctx.beginPath();
         ctx.moveTo(base.x-1, base.y + 5);
-        ctx.quadraticCurveTo(
-            base.x + chunk.width -5, base.y + 5,
-            base.x + chunk.width -5, base.y + chunk.height +1
-        );
-        ctx.lineTo(base.x + 5, base.y + chunk.height+1);
+        // ctx.quadraticCurveTo(
+        //     base.x + chunk.width -5, base.y + 5,
+        //     base.x + chunk.width -5, base.y + chunk.height +1
+        // );
+        ctx.arc(base.x, base.y + chunk.height , 45, -90*piOver180, 0,  false);
+        ctx.lineTo(base.x, base.y + chunk.height);
         ctx.quadraticCurveTo(
             base.x + 5, base.y + chunk.height - 5,
             base.x-1, base.y + chunk.height - 5
         );
-
         ctx.fill();
 
         // center lane lines
@@ -187,10 +189,11 @@ function drawRoadChunk(ctx, chunk){
         ctx.setLineDash([]);
         ctx.strokeStyle = LINE_WHITE;
         ctx.moveTo(base.x, base.y + 4);
-        ctx.quadraticCurveTo(
-            base.x + chunk.width -4, base.y + 5,
-            base.x + chunk.width -4, base.y + chunk.height
-        );
+        // ctx.quadraticCurveTo(
+        //     base.x + chunk.width -4, base.y + 5,
+        //     base.x + chunk.width -4, base.y + chunk.height
+        // );
+        ctx.arc(base.x, base.y + chunk.height , 46, -90*piOver180, 0,  false);
         ctx.stroke();
 
         // inner lane border
