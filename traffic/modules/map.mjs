@@ -100,7 +100,7 @@ function drawRoadChunk(ctx, chunk){
 
         //lower lanes dashed
         ctx.beginPath();
-        ctx.strokeStyle = LINE_YELLOW;
+        ctx.strokeStyle = LINE_WHITE;
         ctx.setLineDash(LINE_BROKEN);
         ctx.moveTo(base.x, base.y + chunk.height/2 + 10);
         ctx.lineTo(base.x + chunk.width, base.y + chunk.height/2 + 10);
@@ -108,7 +108,7 @@ function drawRoadChunk(ctx, chunk){
 
         //upper lanes dashed
         ctx.beginPath();
-        ctx.strokeStyle = LINE_YELLOW;
+        ctx.strokeStyle = LINE_WHITE;
         ctx.setLineDash(LINE_BROKEN);
         ctx.moveTo(base.x, base.y + chunk.height/2 - 10);
         ctx.lineTo(base.x + chunk.width, base.y + chunk.height/2 - 10);
@@ -161,7 +161,7 @@ function drawRoadChunk(ctx, chunk){
 
         // outer lanes dashed
         ctx.beginPath();
-        ctx.strokeStyle = LINE_YELLOW;
+        ctx.strokeStyle = LINE_WHITE;
         ctx.setLineDash(LINE_BROKEN);
         ctx.moveTo(base.x, base.y + chunk.height/2 -10);
         ctx.quadraticCurveTo(
@@ -172,7 +172,7 @@ function drawRoadChunk(ctx, chunk){
 
         // inner lanes dashed
         ctx.beginPath();
-        ctx.strokeStyle = LINE_YELLOW;
+        ctx.strokeStyle = LINE_WHITE;
 
         ctx.setLineDash(LINE_BROKEN_CURVE);
         ctx.moveTo(base.x, base.y + chunk.height/2 +10);
