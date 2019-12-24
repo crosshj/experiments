@@ -1,11 +1,13 @@
 
-function Particle(sketch, x, y, lane, radius, sense) {
-    this.init(sketch, x, y, lane, radius, sense);
+function Particle(sketch, x, y, lane, radius, sense, direction, life, margin) {
+    this.init(sketch, x, y, lane, radius, sense, direction, life, margin);
 }
 
 Particle.prototype = {
-    init: function (sketch, x, y, lane, radius, sense) {
+    init: function (sketch, x, y, lane, radius, sense, direction, life, margin) {
         this.sense = (view) => sense(this, view);
+        this.direction = direction || 0;
+        this.margin = margin;
         //console.log(`vehicle spawn at lane: ${lane}`)
         this.sketch = sketch;
         this.alive = true;
@@ -20,10 +22,16 @@ Particle.prototype = {
         //this.vx = 0.0;
         //this.vy = 0.0;
         const speed = random(1, 2);
-        this.life = sketch.height / speed;
+        this.life = life
+            ? life/speed
+            : (sketch.height / speed);
         this.speed = speed;
     },
     changeLane: function (LANES_COUNT, CAR_WIDTH) {
+        if(this.direction !== 270){
+            //TODO: have not worked out lane change for other directions
+            return;
+        }
         // if(Math.random() > 0.005){
         // 	return;
         // }
@@ -52,7 +60,8 @@ Particle.prototype = {
             this.x += delta;
             if (!this.changing.length) {
                 //console.log(this.lane)
-                this.x = this.sketch.margin + ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
+                //TODO: need to work out margin, does not work well!!!
+                this.x = (this.margin || this.sketch.margin) + ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
             }
         } else {
             const frontCar = this.sense('front');
@@ -66,7 +75,20 @@ Particle.prototype = {
         // this.y -= this.changing && this.changing.length
         // 	? 1.5 * this.speed
         // 	: this.speed;
-        this.y -= this.speed;
+
+        if(Number(this.direction) === 270){
+            this.y -= this.speed;
+        }
+        if(Number(this.direction) === 180){
+            this.x -= this.speed;
+        }
+        if(Number(this.direction) === 90){
+            this.y += this.speed;
+        }
+        if(Number(this.direction) === 0){
+            this.x += this.speed;
+        }
+
         //this.vx *= this.drag;
         //this.vy *= this.drag;
         //this.theta += random(-0.5, 0.5) * this.wander;

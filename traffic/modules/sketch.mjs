@@ -76,6 +76,7 @@ const setupSketch = () => {
 		}
 		//particle = pool.length ? pool.pop() : new Particle(x, y, lane, CAR_WIDTH/2);
 		particle = new Particle(demo, x, y, lane, CAR_WIDTH / 2, sense);
+		particle.direction = 270;
 		//particle.init(x, y, lane, CAR_WIDTH/2);
 		//particle.wander = random(0.5, 2.0);
 		particle.color = random(COLOURS);

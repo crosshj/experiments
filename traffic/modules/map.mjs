@@ -1,5 +1,6 @@
 import Sketch from "https://dev.jspm.io/sketch-js/js/sketch.min.js";
 import Particle from '../models/Particle.mjs';
+import SpawnPoint from '../models/SpawnPoint.mjs';
 
 import addChunksToStage from './chunks.mjs';
 
@@ -16,7 +17,7 @@ https://www.redblobgames.com/x/1805-conveyor-belts/
 
 */
 
-const MAX_PARTICLES = 10;
+const MAX_PARTICLES = 1000;
 
 var COLOURS = [
     '#69D2E7', //blue
@@ -28,6 +29,21 @@ var COLOURS = [
     '#A37666' //lightbrown
 ];
 
+const centerSettings = window.localStorage.getItem('mapCenter');
+
+const center = centerSettings
+    ? JSON.parse(centerSettings)
+    : {
+        x: 0,
+        y: 0
+    };
+const setCenterSettings = (settings) =>
+    window.localStorage.setItem(
+        'mapCenter',
+        JSON.stringify(settings)
+    );
+
+
 function debounce(func, time) {
     var time = time || 100; // 100 by default if no param
     var timer;
@@ -36,11 +52,6 @@ function debounce(func, time) {
         timer = setTimeout(func, time, event);
     };
 }
-
-const center = {
-    x: 0,
-    y: 0
-};
 
 function Stage(ctx, mid, width, height, chunkSize=50){
     //ctx.clearRect(width * -0.5, height * -0.5, ctx.width, ctx.height);
@@ -435,11 +446,12 @@ function mapTouchMove(width, height){
     if(center.y > 0.25* height){
         center.y = 0.25* height;
     }
+    setCenterSettings(center);
 }
 
 function mapSpawn(particle, ctx){
     const { particles, sense } = ctx;
-    const { x, y, lane, radius = 3 } = particle;
+    const { x, y, lane, radius = 3, direction, life, margin } = particle;
     if(!particles){
         console.log('world has no particles set!!');
         return;
@@ -448,12 +460,9 @@ function mapSpawn(particle, ctx){
         return;
     }
     const newParticle = new Particle(
-        ctx, x, y, lane, radius, sense
+        ctx, x, y, lane, radius, sense, direction, life, margin
     );
-    //newParticle.changeLane = () => {};
     newParticle.color = random(COLOURS);
-    newParticle.life = 400 / newParticle.speed;
-    //newParticle.speed = 1;
     particles.push(newParticle);
 }
 
@@ -463,11 +472,16 @@ function mapUpdate(sketch){
     for (var i = particles.length - 1; i >= 0; i--) {
         particles[i].move(LANES_COUNT, CAR_WIDTH);
     }
+    function shuffle(array) {
+        array.sort(() => Math.random() - 0.5);
+    }
+    shuffle(sketch.spawnPoints);
     sketch.spawnPoints.forEach(sp => {
         const particle = sp.emit();
-        const { x, y, lane } = particle || {};
+        //const { x, y, lane, direction } = particle || {};
         if(particle){
-            sketch.spawn(x, y, lane);
+            //sketch.spawn(x, y, lane, direction);
+            mapSpawn(particle, sketch);
         }
     })
 }
@@ -505,34 +519,50 @@ function Map() {
     });
     map.particles = [];
     map.sense = (observer, view) => sense(map, observer, view);
-    map.spawn = (x, y, lane) => mapSpawn({ x, y, lane }, map);
+    //map.spawn = (x, y, lane, direction) => mapSpawn({ x, y, lane, direction }, map);
 
-    const SpawnPoint = function({x, y}){
-        this.init(x, y);
-    }
-    SpawnPoint.prototype = {
-        init: function(x, y){
-            this.x = x;
-            this.y = y;
-        },
-        emit: function(){
-            if (random(0, 1000) < 900){
-                return;
-            }
-            const {x, y} = this;
-            const lane = Math.round(random(1,2));
-            return {x: x + (lane-1) * 10, y, lane};
-        }
-    };
-
-    map.margin = CLIENT_WIDTH/2 + 75;
+    //map.margin = CLIENT_WIDTH/2 + 75;
     map.spawnPoints = [
+        //3rd column
+        new SpawnPoint({
+            x: CLIENT_WIDTH/2 - STAGE_WIDTH/2 +130.5,
+            y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25,
+            life: 400,
+            margin: CLIENT_WIDTH/2 + STAGE_WIDTH/2 - 125,
+            direction: 270
+        }),
+
+        //2nd column
         new SpawnPoint({
             x: CLIENT_WIDTH/2 + 80.5,
-            y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25
+            y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25,
+            life: 400,
+            margin: CLIENT_WIDTH/2 + 75,
+            direction: 270
+        }),
+
+        // 1st column
+        new SpawnPoint({
+            x: CLIENT_WIDTH/2 + STAGE_WIDTH/2 -120,
+            y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25,
+            life: 400,
+            margin: CLIENT_WIDTH/2 - STAGE_WIDTH/2 + 125.5,
+            direction: 270
+        }),
+        // horizonta;l
+        new SpawnPoint({
+            x: CLIENT_WIDTH/2 - STAGE_WIDTH/2,
+            y: CLIENT_HEIGHT/2 - STAGE_HEIGHT/2 + 25 + 280,
+            life: 100,
+            direction: 0
+        }),
+        new SpawnPoint({
+            x: CLIENT_WIDTH/2 + STAGE_WIDTH/2,
+            y: CLIENT_HEIGHT/2 - STAGE_HEIGHT/2 + 25 + 120,
+            life: 350,
+            direction: 180
         })
     ];
-
 
     map.update = () => mapUpdate(map);
 
