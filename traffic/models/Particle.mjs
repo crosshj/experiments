@@ -28,13 +28,11 @@ Particle.prototype = {
         this.speed = speed;
     },
     changeLane: function (LANES_COUNT, CAR_WIDTH) {
-        if(this.direction !== 270){
-            //TODO: have not worked out lane change for other directions
-            return;
-        }
-        // if(Math.random() > 0.005){
-        // 	return;
+        // if(this.direction !== 270){
+        //     //TODO: have not worked out lane change for other directions
+        //     return;
         // }
+
         const transitionLength = Math.floor(10 / this.speed);
         var changeDirection = (Math.random() >= 0.25
             ? -1 // pass left
@@ -57,17 +55,81 @@ Particle.prototype = {
         const isChangingLane = this.changing && this.changing.length;
         if (isChangingLane) {
             const delta = this.changing.pop();
-            this.x += delta;
+
+
+            // incremental change in perpendicular direction
+            if(Number(this.direction) === 270){ // north
+                this.x += delta;
+            }
+            if(Number(this.direction) === 180){ // west
+                this.y -= delta;
+            }
+            if(Number(this.direction) === 90){  // south
+                this.x -= delta;
+            }
+            if(Number(this.direction) === 0){   // east
+                this.y += delta;
+            }
+
+            // last step (NOT NEEDED?)
+            /*
             if (!this.changing.length) {
                 //console.log(this.lane)
                 //TODO: need to work out margin, does not work well!!!
-                this.x = (this.margin || this.sketch.margin) + ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
+
+                // north bound
+                if(Number(this.direction) === 270){
+                    this.x =
+                    (this.margin || this.sketch.margin) +
+                    ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
+                }
+                // west bound
+                if(Number(this.direction) === 180){
+                    this.y =
+                        (this.margin || this.sketch.margin) +
+                        ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
+                }
+                // south bound
+                if(Number(this.direction) === 90){
+                    this.x =
+                        (this.margin || this.sketch.margin) +
+                        ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
+                }
+                // east bound
+                if(Number(this.direction) === 0){
+                    this.y =
+                        (this.margin || this.sketch.margin) +
+                        ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
+                }
             }
+            */
         } else {
             const frontCar = this.sense('front');
-            if (frontCar && this.y - frontCar.y <= (20 * this.speed)) {
-                this.changeLane(LANES_COUNT, CAR_WIDTH);
-                //console.log(`car in front at ${this.y - frontCar.y}`);
+
+
+            if(Number(this.direction) === 270){ // north
+                if (frontCar && this.y - frontCar.y <= (10 * this.speed)) {
+                    this.changeLane(LANES_COUNT, CAR_WIDTH);
+                    //console.log(`car in front at ${this.y - frontCar.y}`);
+                }
+            }
+            if(Number(this.direction) === 180){ // west
+                if (frontCar && this.x - frontCar.x  <= (10 * this.speed)) {
+                    this.changeLane(LANES_COUNT, CAR_WIDTH);
+                    //console.log(`car in front at ${this.y - frontCar.y}`);
+                }
+            }
+            if(Number(this.direction) === 90){  // south
+                if (frontCar && frontCar.y - this.y <= (10 * this.speed)) {
+                    this.changeLane(LANES_COUNT, CAR_WIDTH);
+                    //console.log(`car in front at ${this.y - frontCar.y}`);
+                }
+            }
+            if(Number(this.direction) === 0){   // east
+                if (frontCar && frontCar.x - this.x  <= (10 * this.speed)) {
+                    this.changeLane(LANES_COUNT, CAR_WIDTH);
+                    //console.log(`car in front at ${this.y - frontCar.y}`);
+                }
             }
         }
 

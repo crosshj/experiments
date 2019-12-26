@@ -17,7 +17,7 @@ https://www.redblobgames.com/x/1805-conveyor-belts/
 
 */
 
-const MAX_PARTICLES = 1000;
+const MAX_PARTICLES = 100;
 
 var COLOURS = [
     '#69D2E7', //blue
@@ -490,12 +490,46 @@ function sense(sketch, observer, view) {
     const { particles = [] } = sketch;
     var result = undefined;
     if (view === 'front') {
-        // all cars in front
-        const frontCars = particles.filter(p => Math.round(p.x) === Math.round(observer.x) && observer.y > p.y);
-        // only closest car to observer
-        return frontCars.length
-            ? frontCars.sort((a, b) => b.y - a.y)[0]
-            : undefined;
+        if(Number(observer.direction) === 270){ // north
+            // all cars in front
+            const frontCars = particles.filter(p =>
+                Math.abs(p.x - observer.x) < 5 && observer.y > p.y
+            );
+            // only closest car to observer
+            return frontCars.length
+                ? frontCars.sort((a, b) => b.y - a.y)[0]
+                : undefined;
+        }
+        if(Number(observer.direction) === 180){ // west
+            // all cars in front
+            const frontCars = particles.filter(p =>
+                Math.abs(p.y - observer.y) < 5 && p.x < observer.x
+            );
+            // only closest car to observer
+            return frontCars.length
+                ? frontCars.sort((a, b) => b.x - a.x)[0]
+                : undefined;
+        }
+        if(Number(observer.direction) === 90){  // south
+            // all cars in front
+            const frontCars = particles.filter(p =>
+                Math.abs(p.x - observer.x) < 5 && p.y > observer.y
+            );
+            // only closest car to observer
+            return frontCars.length
+                ? frontCars.sort((a, b) => a.y - b.y)[0]
+                : undefined;
+        }
+        if(Number(observer.direction) === 0){   // east
+            // all cars in front
+            const frontCars = particles.filter(p =>
+                Math.abs(p.y - observer.y) < 5 && p.x > observer.x
+            );
+            // only closest car to observer
+            return frontCars.length
+                ? frontCars.sort((a, b) => a.x - b.x)[0]
+                : undefined;
+        }
     }
     const observation = {
         action, result
@@ -549,11 +583,21 @@ function Map() {
             margin: CLIENT_WIDTH/2 + STAGE_WIDTH/2 - 125,
             direction: 270
         }),
+
+        // TOP column
+        new SpawnPoint({
+            x: CLIENT_WIDTH/2 + 19,
+            y: CLIENT_HEIGHT/2 - STAGE_HEIGHT/2 +25,
+            life: 250,
+            margin: CLIENT_WIDTH/2 + STAGE_WIDTH/2 - 125,
+            direction: 90
+        }),
+
         // horizonta;l
         new SpawnPoint({
             x: CLIENT_WIDTH/2 - STAGE_WIDTH/2,
             y: CLIENT_HEIGHT/2 - STAGE_HEIGHT/2 + 25 + 280,
-            life: 100,
+            life: 300,
             direction: 0
         }),
         new SpawnPoint({
