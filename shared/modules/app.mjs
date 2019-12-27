@@ -1,4 +1,6 @@
-import Split from "https://dev.jspm.io/split-grid";
+//import Split from "https://dev.jspm.io/split-grid";
+import Split from "../vendor/split-grid.js";
+
 //import "https://dev.jspm.io/materialize-css/dist/js/materialize.min.js";
 // ^^^ not working ?
 

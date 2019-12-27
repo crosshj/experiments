@@ -1,4 +1,6 @@
-import Sketch from "https://dev.jspm.io/sketch-js/js/sketch.min.js";
+//import Sketch from "https://dev.jspm.io/sketch-js/js/sketch.min.js";
+import Sketch from "../../shared/vendor/sketch.min.js";
+
 import Particle from '../models/Particle.mjs';
 import SpawnPoint from '../models/SpawnPoint.mjs';
 
