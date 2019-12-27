@@ -119,6 +119,7 @@ Particle.prototype = {
             }
             if(carsInFront && !safeOnSide){
                 const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
+                // TODO: would be nice to only temporarily change speed
                 this.speed = clone(frontBlocker.speed);
                 this.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
             }
