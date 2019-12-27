@@ -111,7 +111,6 @@ AppDom(() => {
 
 			const loadingEl = document.querySelector('#loading-screen');
 			setTimeout(() => {
-				window.Sketch = Sketch();
 				const toolChoice = localStorage.getItem('tool-choice-traffic') || 'road';
 				window.switchTool(toolChoice);
 

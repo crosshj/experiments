@@ -108,6 +108,14 @@ const setupSketch = () => {
 				? frontCars.sort((a, b) => b.y - a.y)[0]
 				: undefined;
 		}
+		if(view === 'proximity'){
+				const neighbors = particles.filter(p =>
+						observer.id !== p.id &&
+						Math.abs(p.x - observer.x) < 20
+						&& Math.abs(p.y - observer.y) < 20
+				);
+				return neighbors;
+		}
 		const observation = {
 			action, result
 		};

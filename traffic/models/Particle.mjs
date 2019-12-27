@@ -3,36 +3,68 @@ function Particle(sketch, x, y, lane, radius, sense, direction, life, margin) {
     this.init(sketch, x, y, lane, radius, sense, direction, life, margin);
 }
 
+const clone = o => JSON.parse(JSON.stringify(o));
+
+function rotate(cx, cy, x, y, angle) {
+    var radians = (Math.PI / 180) * angle,
+        cos = Math.cos(radians),
+        sin = Math.sin(radians),
+        nx = (cos * (x - cx)) + (sin * (y - cy)) + cx,
+        ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+    return [nx, ny];
+}
+
+const worldToLocal = (self, others=[]) => {
+    const mapped = {
+        front: [],
+        left: [],
+        right: [],
+        back: []
+    };
+
+    const translated = others.map(o => {
+        const rot = self.direction === 270
+            ? [o.x, o.y]
+            : rotate(self.x, self.y, o.x, o.y, self.direction === 90
+                ? 270 - self.direction
+                : 90 - self.direction
+            );
+        return {
+            h: Number((rot[0] - self.x).toFixed(5)),
+            v: Number((self.y - rot[1]).toFixed(5)),
+            speed: o.speed, life: o.life
+        };
+    });
+    const sameLane = h => Math.abs(Math.round(h)) === 0;
+    mapped.front = translated.filter(t => sameLane(t.h) && t.v > 0 );
+    mapped.back = translated.filter(t => sameLane(t.h) && t.v <= 0 );
+    mapped.left = translated.filter(t => Math.round(t.h) < 0 );
+    mapped.right = translated.filter(t => Math.round(t.h) > 0 );
+
+    return mapped;
+};
+
 Particle.prototype = {
     init: function (sketch, x, y, lane, radius, sense, direction, life, margin) {
         this.sense = (view) => sense(this, view);
         this.direction = direction || 0;
-        this.margin = margin;
-        //console.log(`vehicle spawn at lane: ${lane}`)
+        this.margin = margin; //DEPRECATE
         this.sketch = sketch;
         this.alive = true;
         this.radius = radius || 10;
         this.wander = 0;
-        //this.theta = random(TWO_PI);
-        //this.drag = 0.92;
-        //this.color = '#fff';
         this.lane = lane;
         this.x = x || 0.0;
         this.y = y || 0.0;
-        //this.vx = 0.0;
-        //this.vy = 0.0;
         const speed = random(1, 2);
         this.life = life
             ? life/speed
             : (sketch.height / speed);
         this.speed = speed;
+        const hashCode = s => s.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0);
+        this.id = hashCode((new Date()).toString());
     },
     changeLane: function (LANES_COUNT, CAR_WIDTH) {
-        // if(this.direction !== 270){
-        //     //TODO: have not worked out lane change for other directions
-        //     return;
-        // }
-
         const transitionLength = Math.floor(10 / this.speed);
         var changeDirection = (Math.random() >= 0.25
             ? -1 // pass left
@@ -56,7 +88,7 @@ Particle.prototype = {
         if (isChangingLane) {
             const delta = this.changing.pop();
 
-
+            // this should be worked out using local -> global conversion
             // incremental change in perpendicular direction
             if(Number(this.direction) === 270){ // north
                 this.x += delta;
@@ -71,73 +103,28 @@ Particle.prototype = {
                 this.y += delta;
             }
 
-            // last step (NOT NEEDED?)
-            /*
-            if (!this.changing.length) {
-                //console.log(this.lane)
-                //TODO: need to work out margin, does not work well!!!
-
-                // north bound
-                if(Number(this.direction) === 270){
-                    this.x =
-                    (this.margin || this.sketch.margin) +
-                    ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
-                }
-                // west bound
-                if(Number(this.direction) === 180){
-                    this.y =
-                        (this.margin || this.sketch.margin) +
-                        ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
-                }
-                // south bound
-                if(Number(this.direction) === 90){
-                    this.x =
-                        (this.margin || this.sketch.margin) +
-                        ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
-                }
-                // east bound
-                if(Number(this.direction) === 0){
-                    this.y =
-                        (this.margin || this.sketch.margin) +
-                        ((this.lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2)
-                }
+            if (!this.changing.length){
+                this.changing = undefined;
             }
-            */
         } else {
-            const frontCar = this.sense('front');
+            const neighbors = this.sense('proximity');
+            const local = worldToLocal(this, neighbors);
 
+            const carsInFront =  local.front && local.front.length &&
+                local.front.sort((a,b)=>a.v - b.v)[0].v < 15;
+            const safeOnSide = local.left.length === 0 && local.right.length === 0;
 
-            if(Number(this.direction) === 270){ // north
-                if (frontCar && this.y - frontCar.y <= (10 * this.speed)) {
-                    this.changeLane(LANES_COUNT, CAR_WIDTH);
-                    //console.log(`car in front at ${this.y - frontCar.y}`);
-                }
+            if(carsInFront && safeOnSide){
+                this.changeLane(LANES_COUNT, CAR_WIDTH);
             }
-            if(Number(this.direction) === 180){ // west
-                if (frontCar && this.x - frontCar.x  <= (10 * this.speed)) {
-                    this.changeLane(LANES_COUNT, CAR_WIDTH);
-                    //console.log(`car in front at ${this.y - frontCar.y}`);
-                }
-            }
-            if(Number(this.direction) === 90){  // south
-                if (frontCar && frontCar.y - this.y <= (10 * this.speed)) {
-                    this.changeLane(LANES_COUNT, CAR_WIDTH);
-                    //console.log(`car in front at ${this.y - frontCar.y}`);
-                }
-            }
-            if(Number(this.direction) === 0){   // east
-                if (frontCar && frontCar.x - this.x  <= (10 * this.speed)) {
-                    this.changeLane(LANES_COUNT, CAR_WIDTH);
-                    //console.log(`car in front at ${this.y - frontCar.y}`);
-                }
+            if(carsInFront && !safeOnSide){
+                const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
+                this.speed = clone(frontBlocker.speed);
+                this.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
             }
         }
 
-        //this.x += this.vx;
-        // this.y -= this.changing && this.changing.length
-        // 	? 1.5 * this.speed
-        // 	: this.speed;
-
+        // this should be worked out using local -> global conversion
         if(Number(this.direction) === 270){
             this.y -= this.speed;
         }
@@ -151,10 +138,6 @@ Particle.prototype = {
             this.x += this.speed;
         }
 
-        //this.vx *= this.drag;
-        //this.vy *= this.drag;
-        //this.theta += random(-0.5, 0.5) * this.wander;
-        //this.radius *= 0.99;
         this.life -= 1;
         this.alive = this.life > 0;
     },

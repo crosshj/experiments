@@ -489,47 +489,13 @@ function mapUpdate(sketch){
 function sense(sketch, observer, view) {
     const { particles = [] } = sketch;
     var result = undefined;
-    if (view === 'front') {
-        if(Number(observer.direction) === 270){ // north
-            // all cars in front
-            const frontCars = particles.filter(p =>
-                Math.abs(p.x - observer.x) < 5 && observer.y > p.y
-            );
-            // only closest car to observer
-            return frontCars.length
-                ? frontCars.sort((a, b) => b.y - a.y)[0]
-                : undefined;
-        }
-        if(Number(observer.direction) === 180){ // west
-            // all cars in front
-            const frontCars = particles.filter(p =>
-                Math.abs(p.y - observer.y) < 5 && p.x < observer.x
-            );
-            // only closest car to observer
-            return frontCars.length
-                ? frontCars.sort((a, b) => b.x - a.x)[0]
-                : undefined;
-        }
-        if(Number(observer.direction) === 90){  // south
-            // all cars in front
-            const frontCars = particles.filter(p =>
-                Math.abs(p.x - observer.x) < 5 && p.y > observer.y
-            );
-            // only closest car to observer
-            return frontCars.length
-                ? frontCars.sort((a, b) => a.y - b.y)[0]
-                : undefined;
-        }
-        if(Number(observer.direction) === 0){   // east
-            // all cars in front
-            const frontCars = particles.filter(p =>
-                Math.abs(p.y - observer.y) < 5 && p.x > observer.x
-            );
-            // only closest car to observer
-            return frontCars.length
-                ? frontCars.sort((a, b) => a.x - b.x)[0]
-                : undefined;
-        }
+    if(view === 'proximity'){
+        const neighbors = particles.filter(p =>
+            observer.id !== p.id &&
+            Math.abs(p.x - observer.x) < 20
+            && Math.abs(p.y - observer.y) < 20
+        );
+        return neighbors;
     }
     const observation = {
         action, result
@@ -593,13 +559,14 @@ function Map() {
             direction: 90
         }),
 
-        // horizonta;l
+        // horizontal - left
         new SpawnPoint({
             x: CLIENT_WIDTH/2 - STAGE_WIDTH/2,
             y: CLIENT_HEIGHT/2 - STAGE_HEIGHT/2 + 25 + 280,
             life: 300,
             direction: 0
         }),
+        // horizontal - right
         new SpawnPoint({
             x: CLIENT_WIDTH/2 + STAGE_WIDTH/2,
             y: CLIENT_HEIGHT/2 - STAGE_HEIGHT/2 + 25 + 120,
@@ -617,6 +584,11 @@ function Map() {
         map.destroy();
         map = Map();
     };
+
+    map.stop = () => {
+        console.log('traffic stopped');
+        map.running = false;;
+    }
 
     map.resizeListener = debounce(map.restart, 100);
     window.addEventListener("resize", map.resizeListener);
