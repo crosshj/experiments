@@ -559,7 +559,7 @@ function whichChunkContainsObserver(chunks, observer){
         const cd = getCardinal(observer.direction);
         const invCd = getInverseCardinal(observer.direction);
         if(!chunks[prevChunk.index][cd]){
-            console.log(`there was a previous chunk, update cardinals ${cd}`);
+            //console.log(`there was a previous chunk, update cardinals ${cd}`);
             chunks[prevChunk.index][cd] = chunks[newChunk.index];
         }
         if(!chunks[newChunk.index][invCd]){
