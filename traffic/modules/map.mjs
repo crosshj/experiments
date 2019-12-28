@@ -39,12 +39,12 @@ const center = centerSettings
         x: 0,
         y: 0
     };
-const setCenterSettings = (settings) =>
+const setCenterSettings = (settings) => {
     window.localStorage.setItem(
         'mapCenter',
         JSON.stringify(settings)
     );
-
+};
 
 function debounce(func, time) {
     var time = time || 100; // 100 by default if no param
@@ -416,7 +416,7 @@ function populationDraw(ctx){
 
 let backgroundCache;
 function mapDraw(ctx, stageWidth, stageHeight){
-    //first draw
+    //first draw (and hard redraw, ie. touchmove)
     if(!backgroundCache){
         const mid = {
             x: center.x + ctx.width / 2,
@@ -438,9 +438,9 @@ function mapDraw(ctx, stageWidth, stageHeight){
             MapChunk(ctx, ch, chunkSize);
         });
         ctx.stage = _stage;
-        backgroundCache = ctx.getImageData(0,0,stageWidth+2*chunkSize,stageHeight+2*chunkSize);
+        backgroundCache = ctx.getImageData(0,0,ctx.width,ctx.height);
     } else {
-        ctx.putImageData(backgroundCache,0,0);
+       ctx.putImageData(backgroundCache, 0, 0);
     }
     populationDraw(ctx);
 }
@@ -465,6 +465,7 @@ function mapTouchMove(width, height){
         center.y = 0.25* height;
     }
     setCenterSettings(center);
+    backgroundCache = undefined;
 }
 
 function mapSpawn(particle, ctx){
@@ -535,7 +536,7 @@ function whichChunkContainsObserver(chunks, observer){
         if(!!p){
             const cardinal = map(o.direction);
             if(!cardinal || !p[cardinal]){
-                debugger;
+                //debugger;
             } else {
                 return p[cardinal];
             }
@@ -547,18 +548,18 @@ function whichChunkContainsObserver(chunks, observer){
                 && o.y <= c.max.y
         });
         if(!foundChunk){
-            debugger;
+            //debugger;
         }
         //console.log(`I am in this chunk: ${foundChunk.index}`);
 
         return foundChunk;
     })(chunks, observer, prevChunk);
 
-    if(!!prevChunk){
+    if(!!prevChunk && !!newChunk){
         const cd = getCardinal(observer.direction);
         const invCd = getInverseCardinal(observer.direction);
         if(!chunks[prevChunk.index][cd]){
-            //console.log(`there was a previous chunk, update cardinals ${cd}`);
+            console.log(`there was a previous chunk, update cardinals ${cd}`);
             chunks[prevChunk.index][cd] = chunks[newChunk.index];
         }
         if(!chunks[newChunk.index][invCd]){
@@ -681,6 +682,7 @@ function Map() {
     map.draw = () => mapDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
 
     map.restart = () => {
+        backgroundCache = undefined;
         window.removeEventListener("resize", map.resizeListener);
         map.destroy();
         map = Map();

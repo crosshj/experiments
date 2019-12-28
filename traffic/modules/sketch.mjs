@@ -101,25 +101,17 @@ const setupSketch = () => {
 		}
 	};
 	function sense(observer, view) {
-		var result = undefined;
-		if (view === 'front') {
-			// all cars in front
-			const frontCars = particles.filter(p => p.x === observer.x && observer.y > p.y);
-			// only closest car to observer
-			return frontCars.length
-				? frontCars.sort((a, b) => b.y - a.y)[0]
-				: undefined;
-		}
+		var result = {};
 		if(view === 'proximity'){
 				const neighbors = particles.filter(p =>
 						observer.id !== p.id &&
 						Math.abs(p.x - observer.x) < 20
-						&& Math.abs(p.y - observer.y) < 20
+						|| Math.abs(p.y - observer.y) < 20
 				);
-				return neighbors;
+				result.neighbors = neighbors;
 		}
 		const observation = {
-			action, result
+			action: {}, result
 		};
 		return observation;
 	}
@@ -135,7 +127,7 @@ const setupSketch = () => {
 		//}
 
 		for (var lane = 1; lane <= LANES_COUNT; lane++) {
-			if (random(0, 1000) > 985) {
+			if (random(0, 1000) > 990) {
 				demo.spawn(
 					DEMO_MARGIN + ((lane - 1) * CAR_WIDTH) + (CAR_WIDTH / 2),
 					demo.height,

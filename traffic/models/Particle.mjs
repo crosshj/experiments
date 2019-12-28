@@ -108,7 +108,7 @@ Particle.prototype = {
             }
         } else {
             const senseResult = this.sense('proximity').result;
-            const { neighbors, umvelt } = senseResult;
+            const { neighbors, umvelt= {} } = senseResult;
             this.chunk = umvelt.chunk;
             const local = worldToLocal(this, neighbors);
 
@@ -148,9 +148,17 @@ Particle.prototype = {
         ctx.beginPath();
         if([0, 180].includes(this.direction)){
             //ctx.arc(this.x + (center.x || 0), this.y + (center.y || 0), this.radius, 0, TWO_PI);
-            ctx.rect(this.x-this.radius*1.5, this.y-this.radius*0.9, this.radius*3, this.radius*1.8);
+            ctx.rect(
+                this.x-this.radius*1.5 + (center.x || 0),
+                this.y-this.radius*0.9 + (center.y || 0),
+                this.radius*3, this.radius*1.8
+            );
         } else {
-            ctx.rect(this.x-this.radius*.9, this.y-this.radius*1.5, this.radius*1.8, this.radius*3);
+            ctx.rect(
+                this.x-this.radius*.9 + (center.x || 0),
+                this.y-this.radius*1.5 + (center.y || 0),
+                this.radius*1.8, this.radius*3
+            );
         }
         ctx.fillStyle = this.changing && this.changing.length
             ? 'red'
