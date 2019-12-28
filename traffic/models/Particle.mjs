@@ -123,9 +123,9 @@ Particle.prototype = {
             const carsInFront =  local.front && local.front.length &&
                 local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
             const safeOnRight = local.right.length === 0
-                || !local.right.find(r => distance(this, r) < 30);
+                || !local.right.find(r => distance(this, r) < 40);
             const safeOnLeft = local.left.length === 0
-                || !local.left.find(l => distance(this, l) < 30);;
+                || !local.left.find(l => distance(this, l) < 40);;
             const safeOnSide = safeOnLeft && safeOnRight;
 
             if(carsInFront && safeOnSide){

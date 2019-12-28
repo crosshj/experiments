@@ -46,6 +46,13 @@ const setCenterSettings = (settings) => {
     );
 };
 
+const distance = (self, target) => {
+    const {x, y} = self;
+    const {x: x2, y: y2} = target;
+    const distance =  Math.hypot(x2 -x, y2 - y);
+    return distance;
+};
+
 function debounce(func, time) {
     var time = time || 100; // 100 by default if no param
     var timer;
@@ -470,17 +477,29 @@ function mapTouchMove(width, height){
 
 function mapSpawn(particle, ctx){
     const { particles, sense } = ctx;
-    const { x, y, lane, radius = 3, direction, life, margin } = particle;
     if(!particles){
         console.log('world has no particles set!!');
         return;
     }
+
+    const { x, y, lane, radius = 3, direction, life, margin } = particle;
+
+    const tooClose = particles.find(p => {
+        const dist = distance({x, y}, p);
+        return dist < 10;
+    });
+    if(tooClose){
+        console.log('will not spawn particle too close');
+        return;
+    }
+
     if (particles.length >= MAX_PARTICLES) {
         return;
     }
     const newParticle = new Particle(
         ctx, x, y, lane, radius, sense, direction, life, margin
     );
+
     newParticle.color = random(COLOURS);
     particles.push(newParticle);
 }
