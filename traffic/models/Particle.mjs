@@ -5,6 +5,14 @@ function Particle(sketch, x, y, lane, radius, sense, direction, life, margin) {
 
 const clone = o => JSON.parse(JSON.stringify(o));
 
+const distance = (self, target) => {
+    const {x, y} = self;
+    const {v, h} = target;
+    const distance =  Math.hypot(h, v);
+    //distance < 30 && console.log(`x diff: ${h}, y diff: ${v}, distance: ${distance}`);
+    return distance;
+};
+
 function rotate(cx, cy, x, y, angle) {
     var radians = (Math.PI / 180) * angle,
         cos = Math.cos(radians),
@@ -114,12 +122,18 @@ Particle.prototype = {
 
             const carsInFront =  local.front && local.front.length &&
                 local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
-            const safeOnSide = local.left.length === 0 && local.right.length === 0;
+            const safeOnRight = local.right.length === 0
+                || !local.right.find(r => distance(this, r) < 30);
+            const safeOnLeft = local.left.length === 0
+                || !local.left.find(l => distance(this, l) < 30);;
+            const safeOnSide = safeOnLeft && safeOnRight;
 
             if(carsInFront && safeOnSide){
                 this.changeLane(LANES_COUNT, CAR_WIDTH);
+                return;
             }
             if(carsInFront && !safeOnSide){
+                //console.log('cannot pass')
                 const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
                 // TODO: would be nice to only temporarily change speed
                 this.speed = clone(frontBlocker.speed);
