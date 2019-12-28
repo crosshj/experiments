@@ -107,11 +107,13 @@ Particle.prototype = {
                 this.changing = undefined;
             }
         } else {
-            const neighbors = this.sense('proximity');
+            const senseResult = this.sense('proximity').result;
+            const { neighbors, umvelt } = senseResult;
+            this.chunk = umvelt.chunk;
             const local = worldToLocal(this, neighbors);
 
             const carsInFront =  local.front && local.front.length &&
-                local.front.sort((a,b)=>a.v - b.v)[0].v < 15;
+                local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
             const safeOnSide = local.left.length === 0 && local.right.length === 0;
 
             if(carsInFront && safeOnSide){
@@ -144,11 +146,18 @@ Particle.prototype = {
     },
     draw: function (ctx, center = {}) {
         ctx.beginPath();
-        ctx.arc(this.x + (center.x || 0), this.y + (center.y || 0), this.radius, 0, TWO_PI);
+        if([0, 180].includes(this.direction)){
+            //ctx.arc(this.x + (center.x || 0), this.y + (center.y || 0), this.radius, 0, TWO_PI);
+            ctx.rect(this.x-this.radius*1.5, this.y-this.radius*0.9, this.radius*3, this.radius*1.8);
+        } else {
+            ctx.rect(this.x-this.radius*.9, this.y-this.radius*1.5, this.radius*1.8, this.radius*3);
+        }
         ctx.fillStyle = this.changing && this.changing.length
             ? 'red'
             : this.color;
+        ctx.strokeStyle = "#888";
         ctx.fill();
+        ctx.stroke();
     }
 };
 

@@ -414,18 +414,34 @@ function populationDraw(ctx){
     }
 }
 
+let backgroundCache;
 function mapDraw(ctx, stageWidth, stageHeight){
-    const mid = {
-        x: center.x + ctx.width / 2,
-        y: center.y + ctx.height / 2 +25
-    };
-    const _stage = Stage(ctx, mid,  stageWidth, stageHeight);
-    _stage.chunks = addChunksToStage(_stage).chunks;
+    //first draw
+    if(!backgroundCache){
+        const mid = {
+            x: center.x + ctx.width / 2,
+            y: center.y + ctx.height / 2 +25
+        };
+        const _stage = Stage(ctx, mid,  stageWidth, stageHeight);
+        _stage.chunks = addChunksToStage(_stage).chunks;
 
-    _stage.chunks.forEach(ch =>
-        MapChunk(ctx, ch)
-    );
-
+        const chunkSize = 50;
+        _stage.chunks.forEach(ch => {
+            ch.min = {
+                x: ch.x,
+                y: ch.y
+            };
+            ch.max = {
+                x: ch.x + chunkSize,
+                y: ch.y + chunkSize
+            };
+            MapChunk(ctx, ch, chunkSize);
+        });
+        ctx.stage = _stage;
+        backgroundCache = ctx.getImageData(0,0,stageWidth+2*chunkSize,stageHeight+2*chunkSize);
+    } else {
+        ctx.putImageData(backgroundCache,0,0);
+    }
     populationDraw(ctx);
 }
 
@@ -488,19 +504,102 @@ function mapUpdate(sketch){
     })
 }
 
-function sense(sketch, observer, view) {
-    const { particles = [] } = sketch;
-    var result = undefined;
+function whichChunkContainsObserver(chunks, observer){
+    // given observer's current location:
+
+    // if observer is within current chunk, return chunk
+    const prevChunk = observer.chunk;
+    const isContained = !!prevChunk
+        && observer.x >= prevChunk.min.x
+        && observer.y >= prevChunk.min.y
+        && observer.x <= prevChunk.max.x
+        && observer.y <= prevChunk.max.y;
+    if(isContained){
+        return prevChunk;
+    }
+    const getCardinal = (dir) => ({
+        0: 'east',
+        90: 'south',
+        180: 'west',
+        270: 'north'
+    }[dir]);
+    const getInverseCardinal = (dir) => ({
+        0: 'west',
+        90: 'north',
+        180: 'east',
+        270: 'south'
+    }[dir]);
+
+    // if observer outside chunk, find which chunk
+    const newChunk = ((chunks, o, p) => {
+        if(!!p){
+            const cardinal = map(o.direction);
+            if(!cardinal || !p[cardinal]){
+                debugger;
+            } else {
+                return p[cardinal];
+            }
+        }
+        const foundChunk = chunks.find(c => {
+            return o.x >= c.min.x
+                && o.y >= c.min.y
+                && o.x <= c.max.x
+                && o.y <= c.max.y
+        });
+        if(!foundChunk){
+            debugger;
+        }
+        //console.log(`I am in this chunk: ${foundChunk.index}`);
+
+        return foundChunk;
+    })(chunks, observer, prevChunk);
+
+    if(!!prevChunk){
+        const cd = getCardinal(observer.direction);
+        const invCd = getInverseCardinal(observer.direction);
+        if(!chunks[prevChunk.index][cd]){
+            //console.log(`there was a previous chunk, update cardinals ${cd}`);
+            chunks[prevChunk.index][cd] = chunks[newChunk.index];
+        }
+        if(!chunks[newChunk.index][invCd]){
+            //console.log(`there was a previous chunk, update cardinals ${invCd}`);
+            chunks[newChunk.index][invCd] = chunks[prevChunk.index];
+        }
+    }
+    return newChunk;
+
+}
+
+function sense(map, observer, view) {
+    const { particles = [], chunks } = map;
+    var result = {};
+
     if(view === 'proximity'){
         const neighbors = particles.filter(p =>
             observer.id !== p.id &&
-            Math.abs(p.x - observer.x) < 20
-            && Math.abs(p.y - observer.y) < 20
+            (
+                Math.abs(p.x - observer.x) < 30
+                || Math.abs(p.y - observer.y) < 30
+            )
         );
-        return neighbors;
+        result.neighbors = neighbors;
     }
+    //console.log(map.stage.chunks[0]);
+
+    const chunk = whichChunkContainsObserver(map.stage.chunks, observer);
+    const lane = {};
+    const ahead = {};
+    const direction = 0;
+
+    result.umvelt = {
+        chunk,
+        lane,
+        ahead,
+        direction
+    };
     const observation = {
-        action, result
+        action: view,
+        result
     };
     return observation;
 }
