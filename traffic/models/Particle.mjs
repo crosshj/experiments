@@ -86,7 +86,7 @@ Particle.prototype = {
         }
         this.lane += changeDirection;
         const change = changeDirection * CAR_WIDTH;
-        const postChange = (new Array(10)).fill(0);  // delay after change
+        const postChange = (new Array(1)).fill(0);  // (don't) delay after change
         this.changing = (new Array(transitionLength))
             .fill(change / transitionLength)
             .concat(postChange);
@@ -130,7 +130,6 @@ Particle.prototype = {
 
             if(carsInFront && safeOnSide){
                 this.changeLane(LANES_COUNT, CAR_WIDTH);
-                return;
             }
             if(carsInFront && !safeOnSide){
                 //console.log('cannot pass')
@@ -138,6 +137,9 @@ Particle.prototype = {
                 // TODO: would be nice to only temporarily change speed
                 this.speed = clone(frontBlocker.speed);
                 this.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
+                this.life -= 1;
+                this.alive = this.life > 0;
+                return;
             }
         }
 
