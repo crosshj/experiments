@@ -15,14 +15,22 @@ const distance = (self, target) => {
     return distance;
 };
 
-function rotate(cx, cy, x, y, angle) {
+function rotate(centerX, centerY, x, y, angle) {
     var radians = (Math.PI / 180) * angle,
         cos = Math.cos(radians),
         sin = Math.sin(radians),
-        nx = (cos * (x - cx)) + (sin * (y - cy)) + cx,
-        ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+        nx = (cos * (x - centerX)) + (sin * (y - centerY)) + centerX,
+        ny = (cos * (y - centerY)) - (sin * (x - centerX)) + centerY;
     return [nx, ny];
 }
+
+function chunkRotCenter(chunk){
+    //TODO: change based on chunk attributes
+    return {
+        x: chunk.min.x,
+        y: chunk.max.y
+    }
+};
 
 const worldToLocal = (self, others=[]) => {
     const mapped = {
@@ -68,13 +76,32 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     self.chunk = umvelt.chunk;
     const local = worldToLocal(self, neighbors);
     if(self.chunk && self.chunk.type === "curved"){
+        const rotCenter = chunkRotCenter(self.chunk);
+        //console.log(rotCenter)
+
+        // TODO: not correct
+        // need this to rotate car as it turns
+        // const currentRotation = Math.atan(
+        //     (self.y-rotCenter.y-umvelt.center.y)/(rotCenter.x-umvelt.center.x)
+        // )* (180 / Math.PI);
+        // console.log(currentRotation);
+
+        const angle = 3.75 * (self.speed / 2);
+        //console.log(angle);
+        const newCoords = rotate(rotCenter.x-umvelt.center.x, rotCenter.y-umvelt.center.y, self.x, self.y, angle);
         // find center of rotation based on chunk
         // determine change in x, y, direction, and rotation based on speed and chunk rotation center
-        //self.x -= delta;
-        //self.y += self.speed;
+        self.x = newCoords[0];
+        self.y = newCoords[1];
         self.life -= 1;
         self.alive = self.life > 0;
+        self.turning = true;
         return;
+    }
+
+    if(self.turning){
+        self.turning = false;
+        self.direction = 180;
     }
 
     const isChangingLane = self.changing && self.changing.length;

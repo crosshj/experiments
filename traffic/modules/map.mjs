@@ -632,7 +632,11 @@ function sense(map, observer, view) {
     }
     //console.log(map.stage.chunks[0]);
 
-    const chunk = whichChunkContainsObserver(map.stage.chunks, observer);
+    const chunk = whichChunkContainsObserver(map.stage.chunks, {
+        chunk: observer.chunk,
+        x: observer.x + center.x,
+        y: observer.y + center.y
+    });
     const lane = {};
     const ahead = {};
     const direction = 0;
@@ -641,6 +645,7 @@ function sense(map, observer, view) {
         chunk,
         lane,
         ahead,
+        center,
         direction
     };
     const observation = {
@@ -692,7 +697,7 @@ function Map() {
         new SpawnPoint({
             x: CLIENT_WIDTH/2 + STAGE_WIDTH/2 -120,
             y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25,
-            life: 620,
+            life: 750,
             margin: CLIENT_WIDTH/2 + STAGE_WIDTH/2 - 125,
             direction: 270
         }),
