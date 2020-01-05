@@ -692,7 +692,7 @@ function Map() {
         new SpawnPoint({
             x: CLIENT_WIDTH/2 + STAGE_WIDTH/2 -120,
             y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25,
-            life: 400,
+            life: 620,
             margin: CLIENT_WIDTH/2 + STAGE_WIDTH/2 - 125,
             direction: 270
         }),

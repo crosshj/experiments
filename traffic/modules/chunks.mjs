@@ -10,6 +10,46 @@ function ArrayFromTo(first, last, step=1){
 	return array;
 }
 
+function linkChunks(stage){
+	const stats = stage.chunks.reduce((stats, one) => {
+		if(stats.height){
+			return stats;
+		}
+		if(one.x < stats.widthCounter){
+			stats.height = stage.chunks.length / stats.width;
+			delete stats.widthCounter;
+		} else {
+			stats.width++;
+			stats.widthCounter = one.x;
+		}
+		return stats;
+	}, {
+		width: 0, height: 0,
+		widthCounter: 0
+	});
+
+	stage.chunks.forEach((c, i) => {
+		const row = Math.floor(i/stats.width);
+		const column = i % stats.width;
+
+		c.north = row === 0
+			? undefined
+			: stage.chunks[i-stats.width];
+		c.south = row === (stats.height-1)
+			? undefined
+			: stage.chunks[i+stats.width];;
+
+		c.east = column === (stats.width -1)
+			? undefined
+			: stage.chunks[i+1];
+		c.west = column === 0
+			? undefined
+			: stage.chunks[i-1];
+	});
+
+	//console.log({ chunks: stage.chunks });
+}
+
 function chunks(_stage){
 	_stage.chunks[0].type = 'straight';
 
@@ -162,6 +202,8 @@ function chunks(_stage){
 				_stage.chunks[n].rotate = 270;
 			}
 		});
+
+	linkChunks(_stage);
 
 	return _stage;
 }

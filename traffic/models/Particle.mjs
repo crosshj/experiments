@@ -63,8 +63,21 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     // will resume speed if unblocked (+ will check if unblocked)
     // will change lane if blocked only in front
 
+    const senseResult = self.sense('proximity').result;
+    const { neighbors, umvelt= {} } = senseResult;
+    self.chunk = umvelt.chunk;
+    const local = worldToLocal(self, neighbors);
+    if(self.chunk && self.chunk.type === "curved"){
+        // find center of rotation based on chunk
+        // determine change in x, y, direction, and rotation based on speed and chunk rotation center
+        //self.x -= delta;
+        //self.y += self.speed;
+        self.life -= 1;
+        self.alive = self.life > 0;
+        return;
+    }
+
     const isChangingLane = self.changing && self.changing.length;
-    const shouldSense = !isChangingLane;
 
     if (isChangingLane) {
         const delta = self.changing.pop();
@@ -98,37 +111,31 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         return;
     }
 
-    if(shouldSense) {
-        const senseResult = self.sense('proximity').result;
-        const { neighbors, umvelt= {} } = senseResult;
-        self.chunk = umvelt.chunk;
-        const local = worldToLocal(self, neighbors);
+    const carsInFront =  local.front && local.front.length &&
+        local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
+    const safeOnRight = local.right.length === 0
+        || !local.right.find(r => distance(self, r) < 40);
+    const safeOnLeft = local.left.length === 0
+        || !local.left.find(l => distance(self, l) < 40);;
+    const safeOnSide = safeOnLeft && safeOnRight;
 
-        const carsInFront =  local.front && local.front.length &&
-            local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
-        const safeOnRight = local.right.length === 0
-            || !local.right.find(r => distance(self, r) < 40);
-        const safeOnLeft = local.left.length === 0
-            || !local.left.find(l => distance(self, l) < 40);;
-        const safeOnSide = safeOnLeft && safeOnRight;
-
-        if(carsInFront && safeOnSide){
-            self.changeLane(LANES_COUNT, CAR_WIDTH);
-            self.move(LANES_COUNT, CAR_WIDTH);
-            return;
-        }
-        if(carsInFront && !safeOnSide){
-            //console.log('cannot pass')
-            const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
-            // TODO: would be nice to only temporarily change speed
-            self.speed = clone(frontBlocker.speed);
-            self.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
-            self.life -= 1;
-            self.alive = self.life > 0;
-            //
-            return;
-        }
+    if(carsInFront && safeOnSide){
+        self.changeLane(LANES_COUNT, CAR_WIDTH);
+        self.move(LANES_COUNT, CAR_WIDTH);
+        return;
     }
+    if(carsInFront && !safeOnSide){
+        //console.log('cannot pass')
+        const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
+        // TODO: would be nice to only temporarily change speed
+        self.speed = clone(frontBlocker.speed);
+        self.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
+        self.life -= 1;
+        self.alive = self.life > 0;
+        //
+        return;
+    }
+
 
     // this should be worked out using local -> global conversion
     if(Number(self.direction) === 270){
