@@ -5,6 +5,8 @@ function Particle(sketch, x, y, lane, radius, sense, direction, life, margin) {
 
 const clone = o => JSON.parse(JSON.stringify(o));
 
+const hashCode = s => s.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0);
+
 const distance = (self, target) => {
     const {x, y} = self;
     const {v, h} = target;
@@ -52,6 +54,100 @@ const worldToLocal = (self, others=[]) => {
     return mapped;
 };
 
+function move(self, LANES_COUNT, CAR_WIDTH){
+    // will move in the proper direction
+    // will stop at intersections
+    // may change direction at intersection
+
+    // will slow down if blocked from changing lanes
+    // will resume speed if unblocked (+ will check if unblocked)
+    // will change lane if blocked only in front
+
+    const isChangingLane = self.changing && self.changing.length;
+    const shouldSense = !isChangingLane;
+
+    if (isChangingLane) {
+        const delta = self.changing.pop();
+
+        // this should be worked out using local -> global conversion
+        // incremental change in perpendicular direction
+        // TODO: change in x and y should relate to speed and triangular distance
+        if(Number(self.direction) === 270){ // north
+            self.x += delta;
+            self.y -= self.speed;
+        }
+        if(Number(self.direction) === 180){ // west
+            self.y -= delta;
+            self.x -= self.speed;
+        }
+        if(Number(self.direction) === 90){  // south
+            self.x -= delta;
+            self.y += self.speed;
+        }
+        if(Number(self.direction) === 0){   // east
+            self.y += delta;
+            self.x += self.speed;
+        }
+
+        if (!self.changing.length){
+            self.changing = undefined;
+        }
+
+        self.life -= 1;
+        self.alive = self.life > 0;
+        return;
+    }
+
+    if(shouldSense) {
+        const senseResult = self.sense('proximity').result;
+        const { neighbors, umvelt= {} } = senseResult;
+        self.chunk = umvelt.chunk;
+        const local = worldToLocal(self, neighbors);
+
+        const carsInFront =  local.front && local.front.length &&
+            local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
+        const safeOnRight = local.right.length === 0
+            || !local.right.find(r => distance(self, r) < 40);
+        const safeOnLeft = local.left.length === 0
+            || !local.left.find(l => distance(self, l) < 40);;
+        const safeOnSide = safeOnLeft && safeOnRight;
+
+        if(carsInFront && safeOnSide){
+            self.changeLane(LANES_COUNT, CAR_WIDTH);
+            self.move(LANES_COUNT, CAR_WIDTH);
+            return;
+        }
+        if(carsInFront && !safeOnSide){
+            //console.log('cannot pass')
+            const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
+            // TODO: would be nice to only temporarily change speed
+            self.speed = clone(frontBlocker.speed);
+            self.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
+            self.life -= 1;
+            self.alive = self.life > 0;
+            //
+            return;
+        }
+    }
+
+    // this should be worked out using local -> global conversion
+    if(Number(self.direction) === 270){
+        self.y -= self.speed;
+    }
+    if(Number(self.direction) === 180){
+        self.x -= self.speed;
+    }
+    if(Number(self.direction) === 90){
+        self.y += self.speed;
+    }
+    if(Number(self.direction) === 0){
+        self.x += self.speed;
+    }
+
+    self.life -= 1;
+    self.alive = self.life > 0;
+}
+
 Particle.prototype = {
     init: function (sketch, x, y, lane, radius, sense, direction, life, margin) {
         this.sense = (view) => sense(this, view);
@@ -69,7 +165,6 @@ Particle.prototype = {
             ? life/speed
             : (sketch.height / speed);
         this.speed = speed;
-        const hashCode = s => s.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0);
         this.id = hashCode((new Date()).toString());
     },
     changeLane: function (LANES_COUNT, CAR_WIDTH) {
@@ -92,73 +187,7 @@ Particle.prototype = {
             .concat(postChange);
     },
     move: function (LANES_COUNT, CAR_WIDTH) {
-        const isChangingLane = this.changing && this.changing.length;
-        if (isChangingLane) {
-            const delta = this.changing.pop();
-
-            // this should be worked out using local -> global conversion
-            // incremental change in perpendicular direction
-            if(Number(this.direction) === 270){ // north
-                this.x += delta;
-            }
-            if(Number(this.direction) === 180){ // west
-                this.y -= delta;
-            }
-            if(Number(this.direction) === 90){  // south
-                this.x -= delta;
-            }
-            if(Number(this.direction) === 0){   // east
-                this.y += delta;
-            }
-
-            if (!this.changing.length){
-                this.changing = undefined;
-            }
-        } else {
-            const senseResult = this.sense('proximity').result;
-            const { neighbors, umvelt= {} } = senseResult;
-            this.chunk = umvelt.chunk;
-            const local = worldToLocal(this, neighbors);
-
-            const carsInFront =  local.front && local.front.length &&
-                local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
-            const safeOnRight = local.right.length === 0
-                || !local.right.find(r => distance(this, r) < 40);
-            const safeOnLeft = local.left.length === 0
-                || !local.left.find(l => distance(this, l) < 40);;
-            const safeOnSide = safeOnLeft && safeOnRight;
-
-            if(carsInFront && safeOnSide){
-                this.changeLane(LANES_COUNT, CAR_WIDTH);
-            }
-            if(carsInFront && !safeOnSide){
-                //console.log('cannot pass')
-                const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
-                // TODO: would be nice to only temporarily change speed
-                this.speed = clone(frontBlocker.speed);
-                this.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
-                this.life -= 1;
-                this.alive = this.life > 0;
-                return;
-            }
-        }
-
-        // this should be worked out using local -> global conversion
-        if(Number(this.direction) === 270){
-            this.y -= this.speed;
-        }
-        if(Number(this.direction) === 180){
-            this.x -= this.speed;
-        }
-        if(Number(this.direction) === 90){
-            this.y += this.speed;
-        }
-        if(Number(this.direction) === 0){
-            this.x += this.speed;
-        }
-
-        this.life -= 1;
-        this.alive = this.life > 0;
+        return move(this, LANES_COUNT, CAR_WIDTH);
     },
     draw: function (ctx, center = {}) {
         ctx.beginPath();

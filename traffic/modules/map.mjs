@@ -46,6 +46,9 @@ const setCenterSettings = (settings) => {
     );
 };
 
+const hashCode = s => s.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0);
+const dateHash = hashCode((new Date()).toString())
+
 const distance = (self, target) => {
     const {x, y} = self;
     const {x: x2, y: y2} = target;
@@ -413,6 +416,28 @@ function MapChunk(ctx, chunk, chunkSize=50){
 
 function populationDraw(ctx){
     const { particles = []} = ctx;
+
+
+    //TODO: troubleshoot issues with cars too close to each other
+    //console.log(particles[0]);
+    // const distanceGraph = {};
+    // particles.forEach(p => {
+    //     particles.forEach(other => {
+    //         if(other.id === p.id){ return; }
+    //         if(distanceGraph[`${other.id}-${p.id}`]){ return; }
+    //         if(distanceGraph[`${p.id}-${other.id}`]){ return; }
+
+    //         const dist = distance(other, p);
+    //         if(dist < 5){
+    //             debugger;
+    //         }
+    //         distanceGraph[`${p.id}-${other.id}`] = dist;
+    //         distanceGraph[`${other.id}-${p.id}`] = dist;
+    //     });
+    // });
+    //const firstKey = Object.keys(distanceGraph)[0];
+    //console.log(distanceGraph[firstKey]);
+
     for (var i = particles.length - 1; i >= 0; i--) {
         particles[i].draw(ctx, {
             x: center.x,
@@ -489,7 +514,7 @@ function mapSpawn(particle, ctx){
         return dist < 10;
     });
     if(tooClose){
-        console.log('will not spawn particle too close');
+        //console.log('will not spawn particle too close');
         return;
     }
 
@@ -510,6 +535,7 @@ function mapUpdate(sketch){
     for (var i = particles.length - 1; i >= 0; i--) {
         particles[i].move(LANES_COUNT, CAR_WIDTH);
     }
+
     function shuffle(array) {
         array.sort(() => Math.random() - 0.5);
     }
@@ -644,7 +670,7 @@ function Map() {
 
     //map.margin = CLIENT_WIDTH/2 + 75;
     map.spawnPoints = [
-        //3rd column
+        //1st column
         new SpawnPoint({
             x: CLIENT_WIDTH/2 - STAGE_WIDTH/2 +130.5,
             y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25,
@@ -662,7 +688,7 @@ function Map() {
             direction: 270
         }),
 
-        // 1st column
+        // 3rd column
         new SpawnPoint({
             x: CLIENT_WIDTH/2 + STAGE_WIDTH/2 -120,
             y: CLIENT_HEIGHT/2 + STAGE_HEIGHT/2 + 25,
