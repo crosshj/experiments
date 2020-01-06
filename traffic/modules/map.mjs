@@ -17,6 +17,18 @@ https://stackoverflow.com/questions/48318881/generating-a-city-town-on-a-grid-si
 https://www.redblobgames.com/x/1805-conveyor-belts/
 
 
+
+graph:
+
+https://www.geeksforgeeks.org/implementation-graph-javascript/
+
+
+
+vehicle physics:
+
+https://github.com/pakastin/car
+
+
 */
 
 const MAX_PARTICLES = 100;
@@ -93,6 +105,7 @@ function Stage(ctx, mid, width, height, chunkSize=50){
 }
 
 function drawRoadChunk(ctx, chunk){
+    //TODO: this is where center offset should occur (instead it's being included in chunk object)
     const LINE_BROKEN = [3, 4];
     const LINE_BROKEN_CURVE = [4, 3];//[0, 7, 10, 10];
     const LINE_YELLOW = "#f8ca0d";
