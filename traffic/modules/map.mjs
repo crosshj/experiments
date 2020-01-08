@@ -31,7 +31,7 @@ https://github.com/pakastin/car
 
 */
 
-const MAX_PARTICLES = 100;
+const MAX_PARTICLES = 60;
 
 var COLOURS = [
     '#69D2E7', //blue
