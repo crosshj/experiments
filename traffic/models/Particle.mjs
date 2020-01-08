@@ -75,24 +75,15 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     const { neighbors, umvelt= {} } = senseResult;
     self.chunk = umvelt.chunk;
     const local = worldToLocal(self, neighbors);
+
     if(self.chunk && self.chunk.type === "curved"){
-        const rotCenter = chunkRotCenter(self.chunk);
-        //console.log(rotCenter)
+        //TODO: transform based on chunk should be used for all movements
+        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt);
 
-        // TODO: not correct
-        // need this to rotate car as it turns
-        // const currentRotation = Math.atan(
-        //     (self.y-rotCenter.y-umvelt.center.y)/(rotCenter.x-umvelt.center.x)
-        // )* (180 / Math.PI);
-        // console.log(currentRotation);
+        self.x = transform.x;
+        self.y = transform.y;
+        self.rotate = transform.rotate;
 
-        const angle = 3.75 * (self.speed / 2);
-        //console.log(angle);
-        const newCoords = rotate(rotCenter.x-umvelt.center.x, rotCenter.y-umvelt.center.y, self.x, self.y, angle);
-        // find center of rotation based on chunk
-        // determine change in x, y, direction, and rotation based on speed and chunk rotation center
-        self.x = newCoords[0];
-        self.y = newCoords[1];
         self.life -= 1;
         self.alive = self.life > 0;
         self.turning = true;
@@ -101,7 +92,8 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     if(self.turning){
         self.turning = false;
-        self.direction = 180;
+        self.direction = 180; //TODO: hard coded just to see it work, FIX THIS
+        delete self.rotate;
     }
 
     const isChangingLane = self.changing && self.changing.length;
@@ -224,27 +216,32 @@ Particle.prototype = {
         return move(this, LANES_COUNT, CAR_WIDTH);
     },
     draw: function (ctx, center = {}) {
-        ctx.beginPath();
+        ctx.save();
+        ctx.translate(
+            this.x + (center.x || 0),
+            this.y + (center.y || 0),
+        );
         if([0, 180].includes(this.direction)){
-            //ctx.arc(this.x + (center.x || 0), this.y + (center.y || 0), this.radius, 0, TWO_PI);
-            ctx.rect(
-                this.x-this.radius*1.5 + (center.x || 0),
-                this.y-this.radius*0.9 + (center.y || 0),
-                this.radius*3, this.radius*1.8
-            );
+            ctx.rotate((this.rotate) * Math.PI/180);
         } else {
-            ctx.rect(
-                this.x-this.radius*.9 + (center.x || 0),
-                this.y-this.radius*1.5 + (center.y || 0),
-                this.radius*1.8, this.radius*3
-            );
+            ctx.rotate((90 + (this.rotate || 0)) * Math.PI/180);
         }
+
+        ctx.beginPath();
+        //ctx.arc(this.x + (center.x || 0), this.y + (center.y || 0), this.radius, 0, TWO_PI);
+        ctx.rect(
+            this.radius*3/-2,
+            this.radius*1.8/-2,
+            this.radius*3, this.radius*1.8
+        );
+
         ctx.fillStyle = this.changing && this.changing.length
             ? 'red'
             : this.color;
         ctx.strokeStyle = "#888";
         ctx.fill();
-        ctx.stroke();
+        //ctx.stroke();
+        ctx.restore();
     }
 };
 

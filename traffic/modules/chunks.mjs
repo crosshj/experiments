@@ -1,3 +1,6 @@
+import Chunk from '../models/Chunk.mjs';
+/* this is a logical chunk of the map */
+
 function ArrayFromTo(first, last, step=1){
 	const array = [];
 
@@ -204,6 +207,8 @@ function chunks(_stage){
 		});
 
 	linkChunks(_stage);
+
+	_stage.chunks = _stage.chunks.map(c => new Chunk(c));
 
 	return _stage;
 }

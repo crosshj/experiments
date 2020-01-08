@@ -543,6 +543,9 @@ function mapSpawn(particle, ctx){
 }
 
 function mapUpdate(sketch){
+    if(sketch.dragging){
+        return;
+    }
     const particles = sketch.particles = sketch.particles.filter(p => p.alive);
     const [LANES_COUNT, CAR_WIDTH] = [2, 10];
     for (var i = particles.length - 1; i >= 0; i--) {
@@ -753,7 +756,7 @@ function Map() {
 
     map.stop = () => {
         console.log('traffic stopped');
-        map.running = false;;
+        map.running = false;
     }
 
     map.resizeListener = debounce(map.restart, 100);
