@@ -24,14 +24,6 @@ function rotate(centerX, centerY, x, y, angle) {
     return [nx, ny];
 }
 
-function chunkRotCenter(chunk){
-    //TODO: change based on chunk attributes
-    return {
-        x: chunk.min.x,
-        y: chunk.max.y
-    }
-};
-
 const worldToLocal = (self, others=[]) => {
     const mapped = {
         front: [],
@@ -87,12 +79,34 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         self.life -= 1;
         self.alive = self.life > 0;
         self.turning = true;
+        self.direction = 90; //because all turnes are based from 90
         return;
     }
 
     if(self.turning){
         self.turning = false;
-        self.direction = 180; //TODO: hard coded just to see it work, FIX THIS
+        const chunkMinX = self.chunk.min.x - umvelt.center.x;
+        const chunkMaxX = self.chunk.max.x - umvelt.center.x;
+
+        //TODO: hard coded just to see it work, FIX THIS
+        if(self.chunk.type === "straight" && [0, 180, undefined].includes(self.chunk.rotate)){
+
+            if(self.x - chunkMinX > chunkMaxX - self.x){
+                self.direction = 180;
+                //console.log(`closer to end: ${chunkMinX} ${chunkMaxX} ${self.x}`)
+            } else {
+                self.direction = 0;
+                //console.log(`closer to start: ${chunkMinX} ${chunkMaxX} ${self.x}`)
+            }
+        }
+        //TODO: hard coded just to see it work, FIX THIS
+        if([90, 270].includes(self.chunk.rotate)){
+            self.direction = 270;
+        }
+
+        if(self.chunk.type === "intersect"){
+            self.direction = 270;
+        }
         delete self.rotate;
     }
 

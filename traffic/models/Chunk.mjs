@@ -17,7 +17,10 @@ function curvedMove(chunk, car, umvelt){
 		// find center of rotation based on chunk
 		// determine change in x, y, direction, and rotation based on speed and chunk rotation center
 
-		const angle = 3.75 * (car.speed / 2);
+		const angleAmount = [180, 270].includes(chunk.rotate)
+			? -3.75
+			: 3.75;
+		const angle = angleAmount * (car.speed / 2);
 		const rotCenter = chunkRotCenter(chunk);
 		const newCoords = rotate(
 			rotCenter.x-umvelt.center.x,
@@ -48,21 +51,45 @@ function curvedMove(chunk, car, umvelt){
 		},
 			{ x: newCoords[0], y: newCoords[1] }
 		);
-		const relativeXDistance = newCoords[0] - rotCenter.x + umvelt.center.x;
+		const relativeXDistance = Math.abs(newCoords[0] - rotCenter.x + umvelt.center.x);
 
+		//TODO: see above, this is hacky and wrong
+		const rot = (() => {
+			return {
+				0: -90 * (1 - (relativeXDistance / distanceFromCenter)),
+				90: 90 * (1 - (relativeXDistance / distanceFromCenter)),
+				180: -90 * (1 - (relativeXDistance / distanceFromCenter)),
+				270: 90 * (1 - (relativeXDistance / distanceFromCenter)),
+			}[chunk.rotate||0];
+		})();
 		return {
 			x: newCoords[0],
 			y: newCoords[1],
-			rotate: -90 * (1 - (relativeXDistance / distanceFromCenter)) //TODO: see above, this is hacky and wrong
+			rotate: rot
 		};
 }
 
 function chunkRotCenter(chunk){
 	//TODO: change based on chunk attributes
-	return {
+	const rots = {
+		0: {
 			x: chunk.min.x,
 			y: chunk.max.y
+		},
+		90: {
+			x: chunk.min.x,
+			y: chunk.min.y
+		},
+		180: {
+			x: chunk.max.x,
+			y: chunk.min.y
+		},
+		270: {
+			x: chunk.max.x,
+			y: chunk.max.y
+		}
 	}
+	return rots[chunk.rotate || 0];
 };
 
 function Chunk(chunkdef) {

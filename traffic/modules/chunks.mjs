@@ -129,11 +129,46 @@ function chunks(_stage){
 	_stage.chunks[92].type = 'straight';
 	_stage.chunks[93].type = 'curved';
 
+	 // 3rd column
 	(new Array(10)).fill().forEach((x, i) => {
 			_stage.chunks[109+i*16].type = 'straight';
 			_stage.chunks[109+i*16].rotate = 90;
 
 	});
+	[{
+		index: 253, rotate: 0
+	},{
+		index: 252, rotate: 180
+	},{
+		index: 236, rotate: 270
+	},{
+		index: 237, rotate: 90
+	},{
+		index: 221, rotate: 0
+	},{
+		index: 220, rotate: 180
+	},{
+		index: 204, rotate: 270
+	},{
+		index: 206, rotate: 90
+	},{
+		index: 190, rotate: 0
+	},{
+		index: 189, rotate: 180
+	},{
+		index: 157, rotate: 270
+	},{
+		index: 158, rotate: 90
+	},{
+		index: 142, rotate: 0
+	},{
+		index: 141, rotate: 180
+	}]
+		.forEach(n => {
+			_stage.chunks[n.index].type = "curved";
+			_stage.chunks[n.index].rotate = n.rotate;
+		});
+	_stage.chunks[205].rotate = 0;
 
 	_stage.chunks[114].type = 'intersect';
 	_stage.chunks[114].degree = 3;
