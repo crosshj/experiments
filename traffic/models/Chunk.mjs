@@ -17,11 +17,19 @@ function curvedMove(chunk, car, umvelt){
 		// find center of rotation based on chunk
 		// determine change in x, y, direction, and rotation based on speed and chunk rotation center
 
-		const angleAmount = [180, 270].includes(chunk.rotate)
-			? -3.75
-			: 3.75;
-		const angle = angleAmount * (car.speed / 2);
+		const angleSign = [180, 270].includes(chunk.rotate)
+			? -1
+			: 1;
 		const rotCenter = chunkRotCenter(chunk);
+		const distanceFromCenter = distance({
+			x: rotCenter.x-umvelt.center.x,
+			y: rotCenter.y-umvelt.center.y,
+		},
+			car
+		);
+		//const distanceFromCenter = distance(rotCenter, car);
+		const angle = angleSign * 11 * (car.speed / 2) * (1 - distanceFromCenter/50);
+
 		const newCoords = rotate(
 			rotCenter.x-umvelt.center.x,
 			rotCenter.y-umvelt.center.y,
@@ -45,21 +53,16 @@ function curvedMove(chunk, car, umvelt){
 		const averageFactor = (xFactor + yFactor) / 2;
 		*/
 
-		const distanceFromCenter = distance({
-			x: rotCenter.x-umvelt.center.x,
-			y: rotCenter.y-umvelt.center.y,
-		},
-			{ x: newCoords[0], y: newCoords[1] }
-		);
 		const relativeXDistance = Math.abs(newCoords[0] - rotCenter.x + umvelt.center.x);
 
 		//TODO: see above, this is hacky and wrong
 		const rot = (() => {
+			const portion = (1 - (relativeXDistance / distanceFromCenter));
 			return {
-				0: -90 * (1 - (relativeXDistance / distanceFromCenter)),
-				90: 90 * (1 - (relativeXDistance / distanceFromCenter)),
-				180: -90 * (1 - (relativeXDistance / distanceFromCenter)),
-				270: 90 * (1 - (relativeXDistance / distanceFromCenter)),
+				0: -90 * portion,
+				90: 90 * portion,
+				180: -90 * portion,
+				270: 90 * portion,
 			}[chunk.rotate||0];
 		})();
 		return {

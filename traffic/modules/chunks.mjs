@@ -85,7 +85,7 @@ function chunks(_stage){
 	_stage.chunks[20].rotate = 90;
 
 	_stage.chunks[34].type = 'curved';
-	_stage.chunks[34].rotate = -180;
+	_stage.chunks[34].rotate = 180;
 
 	_stage.chunks[35].type = 'intersect';
 	_stage.chunks[35].degree = 3;
@@ -95,7 +95,7 @@ function chunks(_stage){
 	_stage.chunks[36].rotate = 90;
 
 	_stage.chunks[50].type = 'curved';
-	_stage.chunks[50].rotate = -90;
+	_stage.chunks[50].rotate = 270;
 
 	_stage.chunks[51].type = 'curved';
 	_stage.chunks[51].rotate = 90;
@@ -115,7 +115,7 @@ function chunks(_stage){
 
 	_stage.chunks[88].type = 'intersect';
 	_stage.chunks[88].degree = 3;
-	_stage.chunks[88].rotate = -90;
+	_stage.chunks[88].rotate = 270;
 	(new Array(5)).fill().forEach((x, i) => {
 			_stage.chunks[8+i*16].type = 'straight';
 			_stage.chunks[8+i*16].rotate = 90;

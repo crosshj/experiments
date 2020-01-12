@@ -31,7 +31,7 @@ https://github.com/pakastin/car
 
 */
 
-const MAX_PARTICLES = 60;
+const MAX_PARTICLES = 100;
 
 var COLOURS = [
     '#69D2E7', //blue
@@ -58,8 +58,8 @@ const setCenterSettings = (settings) => {
     );
 };
 
-const hashCode = s => s.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0);
-const dateHash = hashCode((new Date()).toString())
+//const hashCode = s => s.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0);
+//const dateHash = hashCode((new Date()).toString())
 
 const distance = (self, target) => {
     const {x, y} = self;
@@ -254,6 +254,12 @@ function drawRoadChunk(ctx, chunk){
             base.x-1, base.y + chunk.height - 4
         );
         ctx.stroke();
+
+        // indicators for road chunk rotation
+        // ctx.textAlign = "center";
+        // ctx.font = "100 8px serif";
+        // ctx.fillStyle = "#FFF";
+        // ctx.fillText(chunk.rotate || "0", chunk.width/2 -10, chunk.height/-2 + 15);
     }
 
     if(chunk.type === "intersect" && Number(chunk.degree) === 4){
@@ -461,6 +467,7 @@ function populationDraw(ctx){
 
 let backgroundCache;
 function mapDraw(ctx, stageWidth, stageHeight){
+    var t0 = performance.now();
     //first draw (and hard redraw, ie. touchmove)
     if(!backgroundCache){
         const mid = {
@@ -488,6 +495,8 @@ function mapDraw(ctx, stageWidth, stageHeight){
        ctx.putImageData(backgroundCache, 0, 0);
     }
     populationDraw(ctx);
+    var t1 = performance.now();
+    //console.log("Draw: " + (t1 - t0) + " milliseconds.");
 }
 
 function mapTouchMove(width, height){
@@ -543,6 +552,8 @@ function mapSpawn(particle, ctx){
 }
 
 function mapUpdate(sketch){
+    var t0 = performance.now();
+
     if(sketch.dragging){
         return;
     }
@@ -564,6 +575,8 @@ function mapUpdate(sketch){
             mapSpawn(particle, sketch);
         }
     })
+    var t1 = performance.now();
+    //console.log("Update: " + (t1 - t0) + " milliseconds.");
 }
 
 function whichChunkContainsObserver(chunks, observer){
@@ -579,18 +592,6 @@ function whichChunkContainsObserver(chunks, observer){
     if(isContained){
         return prevChunk;
     }
-    const getCardinal = (dir) => ({
-        0: 'east',
-        90: 'south',
-        180: 'west',
-        270: 'north'
-    }[dir]);
-    const getInverseCardinal = (dir) => ({
-        0: 'west',
-        90: 'north',
-        180: 'east',
-        270: 'south'
-    }[dir]);
 
     // if observer outside chunk, find which chunk
     const newChunk = ((chunks, o, p) => {
@@ -609,25 +610,13 @@ function whichChunkContainsObserver(chunks, observer){
                 && o.y <= c.max.y
         });
         if(!foundChunk){
-            //debugger;
+            debugger;
         }
         //console.log(`I am in this chunk: ${foundChunk.index}`);
 
         return foundChunk;
     })(chunks, observer, prevChunk);
 
-    if(!!prevChunk && !!newChunk){
-        const cd = getCardinal(observer.direction);
-        const invCd = getInverseCardinal(observer.direction);
-        if(!chunks[prevChunk.index][cd]){
-            //console.log(`there was a previous chunk, update cardinals ${cd}`);
-            chunks[prevChunk.index][cd] = chunks[newChunk.index];
-        }
-        if(!chunks[newChunk.index][invCd]){
-            //console.log(`there was a previous chunk, update cardinals ${invCd}`);
-            chunks[newChunk.index][invCd] = chunks[prevChunk.index];
-        }
-    }
     return newChunk;
 
 }
@@ -677,7 +666,7 @@ function Map() {
     const [STAGE_WIDTH, STAGE_HEIGHT] = [800, 800];
 
     var map = Sketch.create({
-        interval: 1.5,
+        interval: 1,
         fullscreen: false,
         height: CLIENT_HEIGHT,
         width: CLIENT_WIDTH,
@@ -743,8 +732,10 @@ function Map() {
         })
     ];
 
-    map.update = () => mapUpdate(map);
+    // map.update = () => {};
+    // map.draw = () => {};
 
+    map.update = () => mapUpdate(map);
     map.draw = () => mapDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
 
     map.restart = () => {
