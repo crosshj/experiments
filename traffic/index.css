@@ -93,6 +93,10 @@ header, main, footer {
   padding-left: 100px;
 }
 
+.container.canvas canvas {
+  transform: translateZ(0);
+}
+
 @media only screen and (max-width: 992px){
   .container.canvas {
       left: 0;
@@ -123,4 +127,10 @@ header, main, footer {
 
 .hidden {
   visibility: hidden !important;
+}
+
+div#stats-monitor {
+  top: 50px !important;
+  right: 10px !important;
+  left: unset !important;
 }

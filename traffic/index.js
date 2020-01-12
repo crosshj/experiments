@@ -116,6 +116,22 @@ AppDom(() => {
 
 				loadingEl.classList.add('hidden');
 				document.body.classList.remove('loading');
+
+				//framerate counter - https://github.com/mrdoob/stats.js/
+				(function(){
+					var script=document.createElement('script');
+					script.onload=function(){
+					var stats=new Stats();
+					stats.dom.id = "stats-monitor";
+					document.body.appendChild(stats.dom);
+					requestAnimationFrame(function loop(){
+						stats.update();
+						requestAnimationFrame(loop)
+					});
+					};
+					script.src='//mrdoob.github.io/stats.js/build/stats.min.js';
+					document.head.appendChild(script);}
+				)();
 			}, timeToDelay);
 		});
 	});
