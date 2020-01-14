@@ -190,6 +190,11 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         self.x += self.speed;
     }
 
+    // const newSenseResult = self.sense('proximity').result;
+    // if(!newSenseResult.umvelt.chunk){
+    //     self.alive = false;
+    // };
+
     self.life -= 1;
     if(self.alive){
         self.alive = self.life > 0;
@@ -238,6 +243,9 @@ Particle.prototype = {
         return move(this, LANES_COUNT, CAR_WIDTH);
     },
     draw: function (ctx, center = {}) {
+        if(!this.alive){
+            return;
+        }
         ctx.save();
         ctx.translate(
             this.x + (center.x || 0),

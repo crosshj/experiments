@@ -1,5 +1,4 @@
 
-import addChunksToStage from '../data/chunks.mjs';
 import {
 	get as getCenterSettings
 } from '../render/pan.mjs';
@@ -14,21 +13,7 @@ function Stage(ctx, mid, width, height, chunkSize=50){
 					width, height
 			);
 	}
-	const chunks = [];
-
-	var index = 0;
-	for (var y=0; y < height; y += chunkSize){
-			for (var x=0; x < width; x += chunkSize){
-					chunks.push({
-							index,
-							x: mid.x + (width * -0.5) + x,
-							y: mid.y + (height * -0.5) + y
-					});
-					index += 1;
-			}
-	}
-
-	return { chunks };
+	return {};
 }
 
 function drawRoadChunk(ctx, chunk){
@@ -323,14 +308,14 @@ function drawRoadChunk(ctx, chunk){
 	ctx.restore();
 }
 
-function MapChunk(ctx, chunk, chunkSize=50){
-	const { x, y, type } = chunk;
+function MapChunk(ctx, chunk){
+	const { x, y, type, size } = chunk;
 	ctx.setLineDash([]);
 	ctx.lineWidth = "1";
 
 	if(type){
 			//console.log(chunk);
-			drawRoadChunk(ctx, { ...chunk, ...{ width: chunkSize, height: chunkSize }});
+			drawRoadChunk(ctx, { ...chunk, ...{ width: size, height: size }});
 			return;
 	}
 	return;
@@ -338,23 +323,23 @@ function MapChunk(ctx, chunk, chunkSize=50){
 	ctx.textAlign = "center";
 	ctx.font = "12px Monospace";
 	ctx.fillStyle = "#555";
-	ctx.fillText(chunk.index, chunk.x+chunkSize/2, chunk.y+chunkSize/2);
+	ctx.fillText(chunk.index, chunk.x+size/2, chunk.y+size/2);
 
 	//return;
 	//bottom-right border
 	ctx.strokeStyle = 'red';
 	ctx.beginPath();
-	ctx.moveTo(x, y+chunkSize-1);
-	ctx.lineTo(x+chunkSize-1, y+chunkSize-1);
-	ctx.lineTo(x+chunkSize-1, y);
+	ctx.moveTo(x, y+size-1);
+	ctx.lineTo(x+size-1, y+size-1);
+	ctx.lineTo(x+size-1, y);
 	ctx.stroke();
 
 	//left-top border
 	ctx.strokeStyle = 'green';
 	ctx.beginPath();
-	ctx.moveTo(x, y+chunkSize-1);
+	ctx.moveTo(x, y+size-1);
 	ctx.lineTo(x, y);
-	ctx.lineTo(x+chunkSize-1, y);
+	ctx.lineTo(x+size-1, y);
 	ctx.stroke();
 
 
@@ -394,7 +379,8 @@ function populationDraw(ctx){
 
 let backgroundCache;
 function mapDraw(ctx, stageWidth, stageHeight){
-    const center = getCenterSettings();
+		const chunks = ctx.chunks;
+		const center = getCenterSettings();
     //var t0 = performance.now();
     //first draw (and hard redraw, ie. touchmove)
     if(!backgroundCache){
@@ -403,20 +389,10 @@ function mapDraw(ctx, stageWidth, stageHeight){
             y: center.y + ctx.height / 2 +25
         };
 				const _stage = Stage(ctx, mid,  stageWidth, stageHeight);
-				//TODO: would be nice to move this out so data model of chunks is not bound to render
-        _stage.chunks = addChunksToStage(_stage).chunks;
 
-        const chunkSize = 50;
+				_stage.chunks = chunks;
         _stage.chunks.forEach(ch => {
-            ch.min = {
-                x: ch.x,
-                y: ch.y
-            };
-            ch.max = {
-                x: ch.x + chunkSize,
-                y: ch.y + chunkSize
-            };
-            MapChunk(ctx, ch, chunkSize);
+            MapChunk(ctx, ch);
         });
         ctx.stage = _stage;
         backgroundCache = ctx.getImageData(0,0,ctx.width,ctx.height);

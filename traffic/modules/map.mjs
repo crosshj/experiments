@@ -4,6 +4,7 @@ import Particle from '../models/Particle.mjs';
 
 import mapDraw, { cacheKill } from '../render/map.mjs';
 import spawnPoints from '../data/spawnPoints.mjs';
+import chunks from '../data/chunks.mjs';
 
 /*
 
@@ -70,6 +71,7 @@ function mapTouchMove(width, height){
     }
     setCenterSettings(center);
     cacheKill();
+    this.chunksRefresh();
 }
 
 function mapSpawn(particle, ctx){
@@ -217,7 +219,7 @@ function sense(map, observer, view) {
 function Map() {
     const CLIENT_HEIGHT = document.querySelector('.container.canvas.map').clientHeight;
     const CLIENT_WIDTH = document.querySelector('.container.canvas.map').clientWidth;
-    const [STAGE_WIDTH, STAGE_HEIGHT] = [800, 800];
+    const [STAGE_WIDTH, STAGE_HEIGHT, CHUNK_SIZE] = [800, 800, 50];
 
     var map = Sketch.create({
         interval: 1,
@@ -237,8 +239,15 @@ function Map() {
         CLIENT_WIDTH, CLIENT_HEIGHT,
         STAGE_WIDTH, STAGE_HEIGHT
     );
+    map.chunksRefresh = () => {
+        map.chunks && console.log('TODO: wish we did not have to refresh chunks here!!!');
+        map.chunks = chunks(map, STAGE_WIDTH, STAGE_HEIGHT, CHUNK_SIZE);
+    };
+    map.chunksRefresh();
+
 
     map.update = () => mapUpdate(map);
+
     map.draw = () => mapDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
 
     map.restart = () => {
