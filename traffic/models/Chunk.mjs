@@ -13,6 +13,7 @@ const distance = (self, target) => {
 	//distance < 30 && console.log(`x diff: ${h}, y diff: ${v}, distance: ${distance}`);
 	return distance;
 };
+
 function curvedMove(chunk, car, umvelt){
 		// find center of rotation based on chunk
 		// determine change in x, y, direction, and rotation based on speed and chunk rotation center
