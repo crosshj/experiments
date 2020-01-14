@@ -402,7 +402,8 @@ function mapDraw(ctx, stageWidth, stageHeight){
             x: center.x + ctx.width / 2,
             y: center.y + ctx.height / 2 +25
         };
-        const _stage = Stage(ctx, mid,  stageWidth, stageHeight);
+				const _stage = Stage(ctx, mid,  stageWidth, stageHeight);
+				//TODO: would be nice to move this out so data model of chunks is not bound to render
         _stage.chunks = addChunksToStage(_stage).chunks;
 
         const chunkSize = 50;
