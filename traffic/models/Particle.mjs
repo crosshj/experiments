@@ -77,7 +77,9 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         self.rotate = transform.rotate;
 
         self.life -= 1;
-        self.alive = self.life > 0;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
         self.turning = true;
         self.direction = 90; //because all turnes are based from 90
         return;
@@ -140,7 +142,9 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         }
 
         self.life -= 1;
-        self.alive = self.life > 0;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
         return;
     }
 
@@ -162,9 +166,11 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         const frontBlocker = local.front.sort((a,b)=>a.v - b.v)[0];
         // TODO: would be nice to only temporarily change speed
         self.speed = clone(frontBlocker.speed);
-        self.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
+        //self.life = clone(frontBlocker.life) + (frontBlocker.v/frontBlocker.speed);
         self.life -= 1;
-        self.alive = self.life > 0;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
         //
         return;
     }
@@ -185,7 +191,9 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     }
 
     self.life -= 1;
-    self.alive = self.life > 0;
+    if(self.alive){
+        self.alive = self.life > 0;
+    }
 }
 
 Particle.prototype = {
