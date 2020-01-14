@@ -129,7 +129,7 @@ AppDom(() => {
 						requestAnimationFrame(loop)
 					});
 					};
-					script.src='//mrdoob.github.io/stats.js/build/stats.min.js';
+					script.src='../shared/vendor/stats.min.js';
 					document.head.appendChild(script);}
 				)();
 			}, timeToDelay);
