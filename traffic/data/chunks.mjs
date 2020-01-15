@@ -220,9 +220,9 @@ function demoChunks(chunks){
 			const straight = [133, 164, 181, 166].map(x => x+1);
 			const curved = [148, 150, 180, 182].map(x => x+1);
 			const intersect = [117, 149].map(x => x+1);
-			const rot90 = [117, 182].map(x => x+1);
+			const rot90 = [133, 117, 182].map(x => x+1);
 			const rot180 = [180].map(x => x+1);
-			const rot270 = [133, 164, 166, 149, 148].map(x => x+1);
+			const rot270 = [164, 166, 149, 148].map(x => x+1);
 
 			if(straight.includes(n)){
 				chunks[n].type = "straight";

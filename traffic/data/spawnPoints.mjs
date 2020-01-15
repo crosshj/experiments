@@ -17,7 +17,7 @@ function spawnPoints(
 			new SpawnPoint({
 					x: CLIENT_WIDTH / 2 + 80.5,
 					y: CLIENT_HEIGHT / 2 + STAGE_HEIGHT / 2 + 25,
-					life: 1200, //400,
+					life: 925, //400,
 					margin: CLIENT_WIDTH / 2 + 75,
 					direction: 270
 			}),

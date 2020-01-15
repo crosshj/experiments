@@ -69,7 +69,66 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     const local = worldToLocal(self, neighbors);
 
+    if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 121 && self.lane === 1){
+        console.log(self.lane)
+        //TODO: transform based on chunk should be used for all movements
+        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, 0);
+        self.direction = 270;
+        self.x = transform.x;
+        self.y = transform.y;
+        self.rotate = transform.rotate;
+
+        self.life -= 1;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
+        self.turning = true;
+        self.reverseCurve = transform.reverseCurve;
+        //self.direction = transform.reverseCurve ? -90 : 90; //because all turns are based from 90
+        return;
+    }
+
+    if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 150){
+        //TODO: transform based on chunk should be used for all movements
+        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, 90);
+
+        self.x = transform.x;
+        self.y = transform.y;
+        self.rotate = transform.rotate;
+
+        self.life -= 1;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
+        self.turning = true;
+        self.reverseCurve = transform.reverseCurve;
+        self.direction = transform.reverseCurve ? -90 : 90; //because all turns are based from 90
+        return;
+    }
+
+    if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 118){
+        //TODO: transform based on chunk should be used for all movements
+        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, 270);
+
+        self.x = transform.x;
+        self.y = transform.y;
+        self.rotate = transform.rotate;
+
+        self.life -= 1;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
+        self.turning = true;
+        self.reverseCurve = transform.reverseCurve;
+        self.direction = transform.reverseCurve ? -90 : 90; //because all turns are based from 90
+        return;
+    }
+
     if(self.chunk && self.chunk.type === "curved"){
+        if(self.chunk.index === 149){
+            self.reverseCurve = true;
+        }
+
         //TODO: transform based on chunk should be used for all movements
         const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt);
 
@@ -93,7 +152,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         const chunkMaxX = self.chunk.max.x - umvelt.center.x;
 
         //TODO: hard coded just to see it work, FIX THIS
-        if(self.chunk.type === "straight" && [0, 180, undefined].includes(self.chunk.rotate)){
+        if([0, 180, undefined].includes(self.chunk.rotate)){
             if(self.x - chunkMinX > chunkMaxX - self.x){
                 self.direction = 180;
                 //console.log(`closer to end: ${chunkMinX} ${chunkMaxX} ${self.x}`)
@@ -110,6 +169,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         if([90, 270].includes(self.chunk.rotate)){
             self.direction = 270;
 
+
             if(self.reverseCurve){
                 self.direction = self.direction === 90 ? 270 : 90;
             }
@@ -118,6 +178,11 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         if(self.chunk.type === "intersect"){
             self.direction = 270;
         }
+
+        if(self.chunk.index === 134){
+            self.direction = 90;
+        }
+
         delete self.rotate;
         delete self.reverseCurve;
     }

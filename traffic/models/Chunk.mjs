@@ -14,7 +14,7 @@ const distance = (self, target) => {
 	return distance;
 };
 
-function curvedMove(chunk, car, umvelt){
+function curvedMove(chunk, car, umvelt, intersect){
 		// find center of rotation based on chunk
 		// determine change in x, y, direction, and rotation based on speed and chunk rotation center
 
@@ -35,7 +35,7 @@ function curvedMove(chunk, car, umvelt){
 			reverseCurve = true;
 		}
 
-		const rotCenter = chunkRotCenter(chunk);
+		const rotCenter = chunkRotCenter(chunk, intersect);
 		const distanceFromCenter = distance({
 			x: rotCenter.x-umvelt.center.x,
 			y: rotCenter.y-umvelt.center.y,
@@ -91,8 +91,12 @@ function curvedMove(chunk, car, umvelt){
 		};
 }
 
-function chunkRotCenter(chunk){
+function chunkRotCenter(chunk, intersect){
 	//TODO: change based on chunk attributes
+	let whichRot = chunk.rotate || 0;
+	if(chunk.type === "intersect"){
+		whichRot = intersect;
+	}
 	const rots = {
 		0: {
 			x: chunk.min.x,
@@ -111,7 +115,7 @@ function chunkRotCenter(chunk){
 			y: chunk.max.y
 		}
 	}
-	return rots[chunk.rotate || 0];
+	return rots[whichRot];
 };
 
 function Chunk(chunkdef) {
@@ -126,15 +130,15 @@ Chunk.prototype = {
 			this[key] = chunkdef[key];
 		});
 	},
-	move: function (car, umvelt) {
+	move: function (car, umvelt, intersect) {
 		let xdiff = 'TODO';
 		let ydiff = 'TODO';
 		let rotate = random(0, 359);
 
 		let curvedTransform;
-		if(this.type === "curved"){
+		if(this.type === "curved" || this.type === "intersect"){
 			//TODO: should not be using umvelt here
-			curvedTransform = curvedMove(this, car, umvelt);
+			curvedTransform = curvedMove(this, car, umvelt, intersect);
 		}
 
 		const transform = {
