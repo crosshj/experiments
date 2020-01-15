@@ -167,11 +167,13 @@ function drawRoadChunk(ctx, chunk){
 			);
 			ctx.stroke();
 
-			// indicators for road chunk rotation
-			// ctx.textAlign = "center";
-			// ctx.font = "100 8px serif";
-			// ctx.fillStyle = "#FFF";
-			// ctx.fillText(chunk.rotate || "0", chunk.width/2 -10, chunk.height/-2 + 15);
+			if(window.DEBUG){
+				// indicators for road chunk rotation
+				ctx.textAlign = "center";
+				ctx.font = "100 8px serif";
+				ctx.fillStyle = "#FFF";
+				ctx.fillText(chunk.rotate || "0", chunk.width/2 -10, chunk.height/-2 + 15);
+			}
 	}
 
 	if(chunk.type === "intersect" && Number(chunk.degree) === 4){
@@ -318,7 +320,9 @@ function MapChunk(ctx, chunk){
 			drawRoadChunk(ctx, { ...chunk, ...{ width: size, height: size }});
 			return;
 	}
-	return;
+	if(!window.DEBUG){
+		return;
+	}
 	// text label for chunk index
 	ctx.textAlign = "center";
 	ctx.font = "12px Monospace";

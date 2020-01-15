@@ -257,6 +257,8 @@ function Map() {
         map = Map();
     };
 
+    map.cacheKill = cacheKill;
+
     map.stop = () => {
         console.log('traffic stopped');
         map.running = false;

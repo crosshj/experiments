@@ -37,14 +37,14 @@ function spawnPoints(
 					margin: CLIENT_WIDTH / 2 + STAGE_WIDTH / 2 - 125,
 					direction: 90
 			}),
-			// horizontal - left
+			// LEFT - row
 			new SpawnPoint({
 					x: CLIENT_WIDTH / 2 - STAGE_WIDTH / 2,
 					y: CLIENT_HEIGHT / 2 - STAGE_HEIGHT / 2 + 25 + 280,
-					life: 1200, //300
+					life: 2600, //300
 					direction: 0
 			}),
-			// horizontal - right
+			// RIGHT - row
 			new SpawnPoint({
 					x: CLIENT_WIDTH / 2 + STAGE_WIDTH / 2,
 					y: CLIENT_HEIGHT / 2 - STAGE_HEIGHT / 2 + 25 + 120,

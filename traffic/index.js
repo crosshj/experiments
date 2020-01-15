@@ -7,6 +7,7 @@ import App from '../shared/modules/app.mjs';
 import AppDom from '../shared/modules/appDom.mjs';
 import Theme from '../shared/modules/theme.mjs';
 
+//window.DEBUG = true;
 
 const appendStyleSheet = (url, callback) => {
 	var style = document.createElement('link');
@@ -74,6 +75,13 @@ const opts = {
 				icon: "map"
 		}],
 		"Actions": [{
+				text: "Toggle Debug",
+				onclick: `
+					window.DEBUG = !window.DEBUG;
+					typeof RoadMap !== 'undefined' && RoadMap.cacheKill();
+				`,
+				icon: "bug_report"
+			},{
 				text: "Toggle Dark",
 				onclick: "window.Theme.toggleDark()",
 				icon: "settings_brightness"

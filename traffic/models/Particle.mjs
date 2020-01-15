@@ -66,6 +66,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     const senseResult = self.sense('proximity').result;
     const { neighbors, umvelt= {} } = senseResult;
     self.chunk = umvelt.chunk;
+
     const local = worldToLocal(self, neighbors);
 
     if(self.chunk && self.chunk.type === "curved"){
@@ -81,18 +82,18 @@ function move(self, LANES_COUNT, CAR_WIDTH){
             self.alive = self.life > 0;
         }
         self.turning = true;
-        self.direction = 90; //because all turnes are based from 90
+        self.reverseCurve = transform.reverseCurve;
+        self.direction = transform.reverseCurve ? -90 : 90; //because all turns are based from 90
         return;
     }
 
-    if(self.turning){
+    if(self.chunk && self.turning){
         self.turning = false;
         const chunkMinX = self.chunk.min.x - umvelt.center.x;
         const chunkMaxX = self.chunk.max.x - umvelt.center.x;
 
         //TODO: hard coded just to see it work, FIX THIS
         if(self.chunk.type === "straight" && [0, 180, undefined].includes(self.chunk.rotate)){
-
             if(self.x - chunkMinX > chunkMaxX - self.x){
                 self.direction = 180;
                 //console.log(`closer to end: ${chunkMinX} ${chunkMaxX} ${self.x}`)
@@ -100,16 +101,25 @@ function move(self, LANES_COUNT, CAR_WIDTH){
                 self.direction = 0;
                 //console.log(`closer to start: ${chunkMinX} ${chunkMaxX} ${self.x}`)
             }
+
+            // if(self.reverseCurve){
+            //     self.direction = self.direction === 0 ? 180 : 0;
+            // }
         }
         //TODO: hard coded just to see it work, FIX THIS
         if([90, 270].includes(self.chunk.rotate)){
             self.direction = 270;
+
+            if(self.reverseCurve){
+                self.direction = self.direction === 90 ? 270 : 90;
+            }
         }
 
         if(self.chunk.type === "intersect"){
             self.direction = 270;
         }
         delete self.rotate;
+        delete self.reverseCurve;
     }
 
     const isChangingLane = self.changing && self.changing.length;

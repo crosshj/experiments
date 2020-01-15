@@ -21,6 +21,20 @@ function curvedMove(chunk, car, umvelt){
 		const angleSign = [180, 270].includes(chunk.rotate)
 			? -1
 			: 1;
+
+		let reverseCurve = car.reverseCurve;
+		if(!car.turning && car.direction === 0 && (!chunk.rotate || chunk.rotate === 0)){
+			reverseCurve = true;
+		}
+
+		if(!car.turning && car.direction === 90 && chunk.rotate === 180){
+			reverseCurve = true;
+		}
+
+		if(!car.turning && car.direction === 180 && chunk.rotate === 270){
+			reverseCurve = true;
+		}
+
 		const rotCenter = chunkRotCenter(chunk);
 		const distanceFromCenter = distance({
 			x: rotCenter.x-umvelt.center.x,
@@ -29,8 +43,11 @@ function curvedMove(chunk, car, umvelt){
 			car
 		);
 		//const distanceFromCenter = distance(rotCenter, car);
-		const angle = angleSign * 11 * (car.speed / 2) * (1 - distanceFromCenter/50);
 
+		let angle = angleSign * 11 * (car.speed / 2) * (1 - distanceFromCenter/50);
+		if(reverseCurve){
+			angle = -1 * angle;
+		}
 		const newCoords = rotate(
 			rotCenter.x-umvelt.center.x,
 			rotCenter.y-umvelt.center.y,
@@ -69,7 +86,8 @@ function curvedMove(chunk, car, umvelt){
 		return {
 			x: newCoords[0],
 			y: newCoords[1],
-			rotate: rot
+			rotate: rot,
+			reverseCurve
 		};
 }
 
