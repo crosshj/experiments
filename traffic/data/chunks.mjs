@@ -266,35 +266,38 @@ function initChunks(ctx, width, height, chunkSize){
 		this also means that chunks must be recomputed when stage changes position on canvas
 	*/
 	const center = getCenterSettings();
-	const mid = {
-			x: center.x + ctx.width / 2,
-			y: center.y + ctx.height / 2 +25
-	};
+
 	const chunks = [];
 	var index = 0;
 	for (var y=0; y < height; y += chunkSize){
 			for (var x=0; x < width; x += chunkSize){
 					chunks.push({
 							index,
-							x: mid.x + (width * -0.5) + x,
-							y: mid.y + (height * -0.5) + y
+							x: center.x + ctx.width / 2 + (width * -0.5) + x,
+							y: center.y + ctx.height / 2 +25 + (height * -0.5) + y,
+							_x: x,
+							_y: y
 					});
 					index += 1;
 			}
 	}
-	const demo = demoChunks(chunks);
-	demo.forEach(ch => {
+	const _chunks = demoChunks(chunks);
+	_chunks.forEach(ch => {
 		ch.min = {
 				x: ch.x,
-				y: ch.y
+				y: ch.y,
+				_x: ch._x,
+				_y: ch._y,
 		};
 		ch.max = {
 				x: ch.x + chunkSize,
-				y: ch.y + chunkSize
+				y: ch.y + chunkSize,
+				_x: ch._x + chunkSize,
+				_y: ch._y + chunkSize,
 		};
 		ch.size = chunkSize;
 	});
-	return demo;
+	return _chunks;
 }
 
 export default initChunks;
