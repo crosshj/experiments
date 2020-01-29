@@ -1,3 +1,4 @@
+import RenderCar from '../render/car.mjs';
 
 function Particle(sketch, x, y, lane, radius, sense, direction, life, margin) {
     this.init(sketch, x, y, lane, radius, sense, direction, life, margin);
@@ -317,35 +318,7 @@ Particle.prototype = {
         return move(this, LANES_COUNT, CAR_WIDTH);
     },
     draw: function (ctx, center = {}) {
-        if(!this.alive){
-            return;
-        }
-        ctx.save();
-        ctx.translate(
-            this.x + (center.x || 0),
-            this.y + (center.y || 0),
-        );
-        if([0, 180].includes(this.direction)){
-            ctx.rotate((this.rotate) * Math.PI/180);
-        } else {
-            ctx.rotate((90 + (this.rotate || 0)) * Math.PI/180);
-        }
-
-        ctx.beginPath();
-        //ctx.arc(this.x + (center.x || 0), this.y + (center.y || 0), this.radius, 0, TWO_PI);
-        ctx.rect(
-            this.radius*3/-2,
-            this.radius*1.8/-2,
-            this.radius*3, this.radius*1.8
-        );
-
-        ctx.fillStyle = this.changing && this.changing.length
-            ? 'red'
-            : this.color;
-        ctx.strokeStyle = "#888";
-        ctx.fill();
-        //ctx.stroke();
-        ctx.restore();
+        RenderCar(ctx, center, this);
     }
 };
 
