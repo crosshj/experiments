@@ -8,46 +8,14 @@ import { draw as MapChunk } from '../render/road.mjs';
 function Stage(ctx, mid, width, height, chunkSize=50){
 	//ctx.clearRect(width * -0.5, height * -0.5, ctx.width, ctx.height);
 	const darkEnabled = window.localStorage.getItem('themeDark') === "true";
-	if(!darkEnabled){
-			ctx.fillStyle = "#273f0d";
-			ctx.fillRect(
-					mid.x + (width * -0.5), mid.y + (height * -0.5),
-					width, height
-			);
-	}
+
+	ctx.fillStyle = darkEnabled ? "#090015" : "#273f0d";
+	ctx.fillRect(
+			mid.x, mid.y,
+			width, height
+	);
+
 	return {};
-}
-
-function populationDraw(ctx){
-	const { particles = []} = ctx;
-	const center = getCenterSettings();
-
-	//TODO: troubleshoot issues with cars too close to each other
-	//console.log(particles[0]);
-	// const distanceGraph = {};
-	// particles.forEach(p => {
-	//     particles.forEach(other => {
-	//         if(other.id === p.id){ return; }
-	//         if(distanceGraph[`${other.id}-${p.id}`]){ return; }
-	//         if(distanceGraph[`${p.id}-${other.id}`]){ return; }
-
-	//         const dist = distance(other, p);
-	//         if(dist < 5){
-	//             debugger;
-	//         }
-	//         distanceGraph[`${p.id}-${other.id}`] = dist;
-	//         distanceGraph[`${other.id}-${p.id}`] = dist;
-	//     });
-	// });
-	//const firstKey = Object.keys(distanceGraph)[0];
-	//console.log(distanceGraph[firstKey]);
-
-	for (var i = particles.length - 1; i >= 0; i--) {
-			particles[i].draw(ctx, {
-					x: center.x,
-					y: center.y
-			});
-	}
 }
 
 let backgroundCache;
@@ -72,7 +40,6 @@ function mapDraw(ctx, stageWidth, stageHeight){
     } else {
        ctx.putImageData(backgroundCache, 0, 0);
     }
-    populationDraw(ctx);
     //var t1 = performance.now();
     //console.log("Draw: " + (t1 - t0) + " milliseconds.");
 }

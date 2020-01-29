@@ -1,3 +1,12 @@
+/*
+
+currently, car's coordinates come with canvas and stage dimensions baked in
+
+idealy, we could think of car coordinates without considering these other coordinates until render happens
+
+*/
+
+
 function Car(ctx, center, car){
 	if(!car.alive){
 		return;

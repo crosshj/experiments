@@ -236,8 +236,7 @@ function Map() {
 
     //map.margin = CLIENT_WIDTH/2 + 75;
     map.spawnPoints = spawnPoints(
-        CLIENT_WIDTH, CLIENT_HEIGHT,
-        STAGE_WIDTH, STAGE_HEIGHT
+        CLIENT_WIDTH, CLIENT_HEIGHT
     );
     map.chunksRefresh = () => {
         map.chunks && console.log('TODO: wish we did not have to refresh chunks here!!!');
@@ -248,7 +247,17 @@ function Map() {
 
     map.update = () => mapUpdate(map);
 
-    map.draw = () => mapDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
+    map.draw = () => {
+        const center = getCenterSettings();
+        mapDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
+
+        map.particles.forEach(p => {
+            p.draw(map, {
+                x: center.x,
+                y: center.y
+            });
+        });
+    };
 
     map.restart = () => {
         cacheKill();

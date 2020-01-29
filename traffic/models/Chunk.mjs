@@ -83,6 +83,7 @@ function curvedMove(chunk, car, umvelt, intersect){
 				270: 90 * portion,
 			}[chunk.rotate||0];
 		})();
+
 		return {
 			x: newCoords[0],
 			y: newCoords[1],
