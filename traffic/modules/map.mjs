@@ -182,13 +182,16 @@ function sense(map, observer, view) {
     var result = {};
 
     if(view === 'proximity'){
-        const neighbors = particles.filter(p =>
-            observer.id !== p.id &&
-            (
-                Math.abs(p.x - observer.x) < 30
-                || Math.abs(p.y - observer.y) < 30
-            )
-        );
+        const neighbors = particles.filter(p => {
+            if(observer.id === p.id) {
+                return false;
+            }
+            const obsX = Math.abs(p.x - observer.x);
+            const obsY = Math.abs(p.y - observer.y);
+
+            const near = obsX < 30 || obsY < 30;
+            return near;
+        });
         result.neighbors = neighbors;
     }
     //console.log(map.stage.chunks[0]);
@@ -235,9 +238,11 @@ function Map() {
     //map.spawn = (x, y, lane, direction) => mapSpawn({ x, y, lane, direction }, map);
 
     //map.margin = CLIENT_WIDTH/2 + 75;
-    map.spawnPoints = spawnPoints(
-        CLIENT_WIDTH, CLIENT_HEIGHT
-    );
+    map.CLIENT_WIDTH = CLIENT_WIDTH;
+    map.CLIENT_HEIGHT = CLIENT_HEIGHT;
+
+    map.spawnPoints = spawnPoints();
+
     map.chunksRefresh = () => {
         map.chunks && console.log('TODO: wish we did not have to refresh chunks here!!!');
         map.chunks = chunks(map, STAGE_WIDTH, STAGE_HEIGHT, CHUNK_SIZE);

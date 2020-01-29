@@ -1,8 +1,6 @@
 import SpawnPoint from '../models/SpawnPoint.mjs';
 
-function spawnPoints(
-	CLIENT_WIDTH, CLIENT_HEIGHT
-) {
+function spawnPoints() {
 	return [
 			//1st column
 			{
@@ -47,8 +45,6 @@ function spawnPoints(
 					direction: 180
 			}
 	].map(x => {
-		x.x += CLIENT_WIDTH / 2;
-		x.y += CLIENT_HEIGHT / 2;
 		return new SpawnPoint(x);
 	});
 }

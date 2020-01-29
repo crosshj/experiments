@@ -64,10 +64,12 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     // will resume speed if unblocked (+ will check if unblocked)
     // will change lane if blocked only in front
 
+
     const senseResult = self.sense('proximity').result;
+
+
     const { neighbors, umvelt= {} } = senseResult;
     self.chunk = umvelt.chunk;
-
     const local = worldToLocal(self, neighbors);
 
     if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 121 && self.lane === 1){
@@ -102,7 +104,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         }
         self.turning = true;
         self.reverseCurve = transform.reverseCurve;
-        self.direction = transform.reverseCurve ? -90 : 90; //because all turns are based from 90
+        self.direction = transform.reverseCurve ? 90 : -90; //because all turns are based from 90
         return;
     }
 
@@ -120,7 +122,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         }
         self.turning = true;
         self.reverseCurve = transform.reverseCurve;
-        self.direction = transform.reverseCurve ? -90 : 90; //because all turns are based from 90
+        self.direction = transform.reverseCurve ? 90 : -90; //because all turns are based from 90
         return;
     }
 
@@ -223,6 +225,10 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         return;
     }
 
+    // if(local.front && local.front.length){
+    //     console.log(local.front);
+    // }
+
     const carsInFront =  local.front && local.front.length &&
         local.front.sort((a,b)=>a.v - b.v)[0].v < 30;
     const safeOnRight = local.right.length === 0
@@ -294,6 +300,8 @@ Particle.prototype = {
             : (sketch.height / speed);
         this.speed = speed;
         this.id = hashCode((new Date()).toString());
+        this.CLIENT_WIDTH = sketch.CLIENT_WIDTH;
+        this.CLIENT_HEIGHT = sketch.CLIENT_HEIGHT;
     },
     changeLane: function (LANES_COUNT, CAR_WIDTH) {
         const transitionLength = Math.floor(10 / this.speed);
@@ -315,11 +323,16 @@ Particle.prototype = {
             .concat(postChange);
     },
     move: function (LANES_COUNT, CAR_WIDTH) {
-        return move(this, LANES_COUNT, CAR_WIDTH);
+        //TODO: this add, do, subtract should go away
+        //TODO: also, car should only think in terms of itself - world should handle all else (see above)
+        this.x += this.CLIENT_WIDTH/2;
+        this.y += this.CLIENT_HEIGHT/2;
+        move(this, LANES_COUNT, CAR_WIDTH);
+        this.x -= this.CLIENT_WIDTH/2;
+        this.y -= this.CLIENT_HEIGHT/2;
+        return;
     },
-    draw: function (ctx, center = {}) {
-        RenderCar(ctx, center, this);
-    }
+    draw: function(ctx, center){ RenderCar(ctx, center, this); }
 };
 
 export default Particle;
