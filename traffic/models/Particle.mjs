@@ -70,13 +70,12 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     const local = worldToLocal(self, neighbors);
 
     if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 121 && self.lane === 1){
-        console.log(self.lane)
         //TODO: transform based on chunk should be used for all movements
         const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, 0);
         self.direction = 270;
         self.x = transform.x;
         self.y = transform.y;
-        self.rotate = transform.rotate;
+        self.rotate = 180 - transform.rotate;  //TODO: ugh!  a mess!!!;
 
         self.life -= 1;
         if(self.alive){
