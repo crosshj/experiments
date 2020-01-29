@@ -147,7 +147,7 @@ function whichChunkContainsObserver(chunks, observer, killObserver){
 
     // if observer outside chunk, find which chunk
     const newChunk = ((chunks, o, p) => {
-        if(!!p){
+        if(!!p){ // previous chunk
             const cardinal = map(o.direction);
             if(!cardinal || !p[cardinal]){
                 //debugger;
@@ -156,18 +156,20 @@ function whichChunkContainsObserver(chunks, observer, killObserver){
             }
         }
         const foundChunk = chunks.find(c => {
-            return o.x >= c.min.x
-                && o.y >= c.min.y
-                && o.x <= c.max.x
-                && o.y <= c.max.y
+            const x = o.x;
+            const y = o.y;
+            return x >= c.min.x
+                && y >= c.min.y
+                && x <= c.max.x
+                && y <= c.max.y
         });
         if(!foundChunk
             || !['curved', 'straight', 'intersect'].includes(foundChunk.type)
         ){
+            //debugger;
             killObserver();
-            debugger;
         }
-        //console.log(`I am in this chunk: ${foundChunk.index}`);
+        //console.log(`I am in this chunk: ${foundChunk && foundChunk.index}`);
 
         return foundChunk;
     })(chunks, observer, prevChunk);
@@ -198,8 +200,8 @@ function sense(map, observer, view) {
 
     const chunk = whichChunkContainsObserver(map.stage.chunks, {
         chunk: observer.chunk,
-        x: observer.x + center.x,
-        y: observer.y + center.y
+        x: observer.x + center.x + map.CLIENT_WIDTH/2,
+        y: observer.y + center.y + map.CLIENT_HEIGHT/2
     }, () => observer.alive = false);
     const lane = {};
     const ahead = {};

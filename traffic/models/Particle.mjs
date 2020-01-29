@@ -46,6 +46,9 @@ const worldToLocal = (self, others=[]) => {
             speed: o.speed, life: o.life
         };
     });
+    // if(others.length > 5){
+    //     debugger
+    // }
     const sameLane = h => Math.abs(Math.round(h)) === 0;
     mapped.front = translated.filter(t => sameLane(t.h) && t.v > 0 );
     mapped.back = translated.filter(t => sameLane(t.h) && t.v <= 0 );
@@ -64,13 +67,15 @@ function move(self, LANES_COUNT, CAR_WIDTH){
     // will resume speed if unblocked (+ will check if unblocked)
     // will change lane if blocked only in front
 
-
     const senseResult = self.sense('proximity').result;
-
-
     const { neighbors, umvelt= {} } = senseResult;
     self.chunk = umvelt.chunk;
     const local = worldToLocal(self, neighbors);
+
+    if(self.chunk && ["intersect", "curved"].includes(self.chunk.type)){
+        self.x += self.CLIENT_WIDTH/2;
+        self.y += self.CLIENT_HEIGHT/2;
+    }
 
     if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 121 && self.lane === 1){
         //TODO: transform based on chunk should be used for all movements
@@ -239,6 +244,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     if(carsInFront && safeOnSide){
         self.changeLane(LANES_COUNT, CAR_WIDTH);
+        //TODO: why????
         self.move(LANES_COUNT, CAR_WIDTH);
         return;
     }
@@ -325,11 +331,15 @@ Particle.prototype = {
     move: function (LANES_COUNT, CAR_WIDTH) {
         //TODO: this add, do, subtract should go away
         //TODO: also, car should only think in terms of itself - world should handle all else (see above)
-        this.x += this.CLIENT_WIDTH/2;
-        this.y += this.CLIENT_HEIGHT/2;
+        // this.x += this.CLIENT_WIDTH/2;
+        // this.y += this.CLIENT_HEIGHT/2;
         move(this, LANES_COUNT, CAR_WIDTH);
-        this.x -= this.CLIENT_WIDTH/2;
-        this.y -= this.CLIENT_HEIGHT/2;
+        // this.x -= this.CLIENT_WIDTH/2;
+        // this.y -= this.CLIENT_HEIGHT/2;
+        if(this.chunk && ["intersect", "curved"].includes(this.chunk.type)){
+            this.x -= this.CLIENT_WIDTH/2;
+            this.y -= this.CLIENT_HEIGHT/2;
+        }
         return;
     },
     draw: function(ctx, center){ RenderCar(ctx, center, this); }
