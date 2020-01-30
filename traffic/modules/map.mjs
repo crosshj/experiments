@@ -53,6 +53,7 @@ function mapTouchMove(width, height){
     if(!this.dragging){
         return;
     }
+
     const center = getCenterSettings();
     center.x += this.touches[0].dx;
     center.y += this.touches[0].dy;
