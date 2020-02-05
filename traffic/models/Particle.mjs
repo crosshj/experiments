@@ -69,6 +69,11 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     const senseResult = self.sense('proximity').result;
     const { neighbors, umvelt= {} } = senseResult;
+    if(self.chunk && umvelt.chunk && self.chunk.index === 121 && umvelt.chunk.index !== self.chunk.index){
+        //debugger;
+    }
+
+    self.prevChunk = self.chunk;
     self.chunk = umvelt.chunk;
     const local = worldToLocal(self, neighbors);
 
@@ -77,13 +82,71 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         self.y += self.CLIENT_HEIGHT/2;
     }
 
-    if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 121 && self.lane === 1){
-        //TODO: transform based on chunk should be used for all movements
-        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, 0);
-        self.direction = 270;
+    if(
+        self.chunk && self.chunk.type === "intersect"
+        && self.chunk.index === 86
+        && self.direction === 90
+        && self.lane === 1
+    ){
+        const intersect = 180;
+        self.reverseCurve = true;
+        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, intersect);
         self.x = transform.x;
         self.y = transform.y;
+
+        self.rotate = transform.rotate;  //TODO: ugh!  a mess!!!;
+        self.rotate = 180 -transform.rotate;
+
+        self.life -= 1;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
+        self.turning = true;
+        return;
+    }
+
+    if(
+        self.chunk && self.chunk.type === "intersect"
+        && self.chunk.index === 86
+        && self.direction === 90
+        && self.lane === 2
+    ){
+        const intersect = 90;
+        //self.reverseCurve = true;
+        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, intersect);
+        self.x = transform.x;
+        self.y = transform.y;
+
+        self.rotate = transform.rotate;  //TODO: ugh!  a mess!!!;
+        self.rotate = 180 + transform.rotate;
+
+        self.life -= 1;
+        if(self.alive){
+            self.alive = self.life > 0;
+        }
+        self.turning = true;
+        return;
+    }
+
+    if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 121 /*&& self.lane === 1*/){
+        //TODO: transform based on chunk should be used for all movements
+        const intersect = self.lane === 1
+            ? 0
+            : 270;
+        if(self.lane !== 1){
+            self.reverseCurve = true;
+        }
+        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, intersect);
+        self.x = transform.x;
+        self.y = transform.y;
+        // console.log({
+        //     x: self.x,
+        //     y: self.y
+        // });
         self.rotate = 180 - transform.rotate;  //TODO: ugh!  a mess!!!;
+        if(self.lane !== 1){
+            self.rotate = 180 + transform.rotate;
+        }
 
         self.life -= 1;
         if(self.alive){
@@ -155,39 +218,20 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     if(self.chunk && self.turning){
         self.turning = false;
-        const chunkMinX = self.chunk.min.x - umvelt.center.x;
-        const chunkMaxX = self.chunk.max.x - umvelt.center.x;
 
-        //TODO: hard coded just to see it work, FIX THIS
-        if([0, 180, undefined].includes(self.chunk.rotate)){
-            if(self.x - chunkMinX > chunkMaxX - self.x){
+        if(self.chunk && self.prevChunk.index !== self.chunk.index){
+            if( self.chunk.north && self.chunk.north.index === self.prevChunk.index){
+                self.direction = 90;
+            }
+            if( self.chunk.east && self.chunk.east.index === self.prevChunk.index){
                 self.direction = 180;
-                //console.log(`closer to end: ${chunkMinX} ${chunkMaxX} ${self.x}`)
-            } else {
+            }
+            if( self.chunk.south && self.chunk.south.index === self.prevChunk.index){
+                self.direction = 270;
+            }
+            if( self.chunk.west && self.chunk.west.index === self.prevChunk.index){
                 self.direction = 0;
-                //console.log(`closer to start: ${chunkMinX} ${chunkMaxX} ${self.x}`)
             }
-
-            // if(self.reverseCurve){
-            //     self.direction = self.direction === 0 ? 180 : 0;
-            // }
-        }
-        //TODO: hard coded just to see it work, FIX THIS
-        if([90, 270].includes(self.chunk.rotate)){
-            self.direction = 270;
-
-
-            if(self.reverseCurve){
-                self.direction = self.direction === 90 ? 270 : 90;
-            }
-        }
-
-        if(self.chunk.type === "intersect"){
-            self.direction = 270;
-        }
-
-        if(self.chunk.index === 134){
-            self.direction = 90;
         }
 
         delete self.rotate;
@@ -333,12 +377,25 @@ Particle.prototype = {
         //TODO: also, car should only think in terms of itself - world should handle all else (see above)
         // this.x += this.CLIENT_WIDTH/2;
         // this.y += this.CLIENT_HEIGHT/2;
+        const prev = ({x : this.x, y: this.y, type: this.chunk && this.chunk.type });
         move(this, LANES_COUNT, CAR_WIDTH);
+        const isCurveOrIntersect = this.chunk && ["intersect", "curved"].includes(this.chunk.type);
         // this.x -= this.CLIENT_WIDTH/2;
         // this.y -= this.CLIENT_HEIGHT/2;
-        if(this.chunk && ["intersect", "curved"].includes(this.chunk.type)){
+        if(isCurveOrIntersect){
             this.x -= this.CLIENT_WIDTH/2;
             this.y -= this.CLIENT_HEIGHT/2;
+        }
+
+        const change = {x : this.x - prev.x, y: this.y - prev.y };
+        if((Math.abs(change.x) > 5 || Math.abs(change.y) > 5)) {
+            //debugger
+        }
+
+        const senseResult = this.sense('proximity').result;
+        const { umvelt= {} } = senseResult;
+        if(!umvelt.chunk || !umvelt.chunk.type){
+            this.alive = false;
         }
         return;
     },

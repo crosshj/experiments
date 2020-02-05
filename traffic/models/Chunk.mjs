@@ -15,6 +15,7 @@ const distance = (self, target) => {
 };
 
 function curvedMove(chunk, car, umvelt, intersect){
+		//if(typeof intersect !== "undefined") debugger
 		// find center of rotation based on chunk
 		// determine change in x, y, direction, and rotation based on speed and chunk rotation center
 

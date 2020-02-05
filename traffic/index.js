@@ -7,7 +7,7 @@ import App from '../shared/modules/app.mjs';
 import AppDom from '../shared/modules/appDom.mjs';
 import Theme from '../shared/modules/theme.mjs';
 
-//window.DEBUG = true;
+window.DEBUG = true;
 
 const appendStyleSheet = (url, callback) => {
 	var style = document.createElement('link');
