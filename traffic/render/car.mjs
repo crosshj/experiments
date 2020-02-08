@@ -13,8 +13,8 @@ function Car(ctx, center, car){
 	}
 	ctx.save();
 	ctx.translate(
-			car.x + (center.x || 0) + ctx.CLIENT_WIDTH/2,
-			car.y + (center.y || 0) + ctx.CLIENT_HEIGHT/2,
+			car.x+400,
+			car.y + 375,
 	);
 
 	if(car.rotate){

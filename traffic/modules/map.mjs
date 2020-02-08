@@ -2,7 +2,7 @@
 import Sketch from "../../shared/vendor/sketch.min.js";
 import Particle from '../models/Particle.mjs';
 
-import mapDraw, { cacheKill } from '../render/map.mjs';
+import mapDraw, { cacheKill, carsDraw } from '../render/map.mjs';
 import spawnPoints from '../data/spawnPoints.mjs';
 import chunks from '../data/chunks.mjs';
 
@@ -256,15 +256,8 @@ function Map() {
     map.update = () => mapUpdate(map);
 
     map.draw = () => {
-        const center = getCenterSettings();
         mapDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
-
-        map.particles.forEach(p => {
-            p.draw(map, {
-                x: center.x,
-                y: center.y
-            });
-        });
+        carsDraw(map, STAGE_WIDTH, STAGE_HEIGHT);
     };
 
     map.restart = () => {
@@ -288,3 +281,5 @@ function Map() {
 }
 
 export default Map;
+
+

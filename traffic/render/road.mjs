@@ -310,7 +310,7 @@ function drawRoadChunk(ctx, chunk, center){
 }
 
 function MapChunk(ctx, chunk, center, stage){
-	const { x, y, type, size } = chunk;
+	const { x, y, _x, _y, type, size } = chunk;
 	ctx.setLineDash([]);
 	ctx.lineWidth = "1";
 
@@ -330,23 +330,23 @@ function MapChunk(ctx, chunk, center, stage){
 	ctx.textAlign = "center";
 	ctx.font = "12px Monospace";
 	ctx.fillStyle = "#555";
-	ctx.fillText(chunk.index, chunk.x+size/2, chunk.y+size/2);
+	ctx.fillText(chunk.index, _x+size/2, _y+size/2);
 
 	//return;
 	//bottom-right border
-	ctx.strokeStyle = 'red';
+	ctx.strokeStyle = '#990000';
 	ctx.beginPath();
-	ctx.moveTo(x, y+size-1);
-	ctx.lineTo(x+size-1, y+size-1);
-	ctx.lineTo(x+size-1, y);
+	ctx.moveTo(_x, _y+size-2);
+	ctx.lineTo(_x+size-1.5, _y+size-2);
+	ctx.lineTo(_x+size-1.5, _y);
 	ctx.stroke();
 
 	//left-top border
 	ctx.strokeStyle = 'green';
 	ctx.beginPath();
-	ctx.moveTo(x, y+size-1);
-	ctx.lineTo(x, y);
-	ctx.lineTo(x+size-1, y);
+	ctx.moveTo(_x+0.5, _y+size-1);
+	ctx.lineTo(_x+0.5, _y);
+	ctx.lineTo(_x+1+size-1, _y);
 	ctx.stroke();
 
 
