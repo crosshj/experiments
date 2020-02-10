@@ -299,7 +299,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 			return;
 	}
 
-	if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 150){
+	if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 150 && self.prevChunk.index !== 151){
 			//TODO: transform based on chunk should be used for all movements
 			const transform = umvelt.chunk && chunkMove(umvelt.chunk, self, 90);
 
@@ -317,7 +317,25 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 			return;
 	}
 
-	if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 118){
+	if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 150 && self.prevChunk.index === 151){
+		//TODO: transform based on chunk should be used for all movements
+		const transform = umvelt.chunk && chunkMove(umvelt.chunk, self, 180);
+
+		self.x = transform.x;
+		self.y = transform.y;
+		self.rotate = 180 -transform.rotate;
+
+		self.life -= 1;
+		if(self.alive){
+				self.alive = self.life > 0;
+		}
+		self.turning = true;
+		self.reverseCurve = transform.reverseCurve;
+		self.direction = transform.reverseCurve ? 90 : -90; //because all turns are based from 90
+		return;
+}
+
+	if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 118 && self.prevChunk.index !== 134){
 			//TODO: transform based on chunk should be used for all movements
 			const transform = umvelt.chunk && chunkMove(umvelt.chunk, self, 270);
 
@@ -334,6 +352,43 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 			self.direction = transform.reverseCurve ? 90 : -90; //because all turns are based from 90
 			return;
 	}
+
+	if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 118 && self.prevChunk.index === 134){
+		//TODO: transform based on chunk should be used for all movements
+		const transform = umvelt.chunk && chunkMove(umvelt.chunk, self, 0);
+
+		self.x = transform.x;
+		self.y = transform.y;
+		self.rotate = 180 -transform.rotate;
+
+		self.life -= 1;
+		if(self.alive){
+				self.alive = self.life > 0;
+		}
+		self.turning = true;
+		self.reverseCurve = transform.reverseCurve;
+		self.direction = transform.reverseCurve ? 90 : -90; //because all turns are based from 90
+		return;
+	}
+
+	if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 114 && self.prevChunk.index === 115){
+		//TODO: transform based on chunk should be used for all movements
+		const transform = umvelt.chunk && chunkMove(umvelt.chunk, self, 270);
+
+		self.x = transform.x;
+		self.y = transform.y;
+
+		self.rotate = -1 * transform.rotate;
+
+		self.life -= 1;
+		if(self.alive){
+				self.alive = self.life > 0;
+		}
+		self.turning = true;
+		self.reverseCurve = transform.reverseCurve;
+		self.direction = transform.reverseCurve ? 90 : -90; //because all turns are based from 90
+		return;
+}
 
 	if(self.chunk && self.chunk.type === "curved"){
 			if(self.chunk.index === 149){

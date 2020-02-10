@@ -17,7 +17,7 @@ function spawnPoints() {
 					y: 800,
 					// x: 80.5,
 					// y: 425,
-					life: 925, //400,
+					life: 9999, //400,
 					direction: 270
 			},
 			// 3rd column

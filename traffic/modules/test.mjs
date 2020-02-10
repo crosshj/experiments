@@ -38,10 +38,10 @@ const particle = () => {
 		x: 131, y: 210, direction: 270, lane: 1, life, speed,
 		name: "bottom left column"
 	}, {
-		x: 481, y: 420, direction: 270, lane: 1, life: 600, speed,
+		x: 481, y: 420, direction: 270, lane: 1, life, speed,
 		name: "bottom middle column - inner lane"
 	}, {
-		x: 491, y: 450, direction: 270, lane: 2, life: 600, speed,
+		x: 491, y: 450, direction: 270, lane: 2, life, speed,
 		name: "bottom middle column - outer lane"
 	}, {
 		x: 681, y: 800, direction: 270, lane: 1, life, speed,
@@ -69,7 +69,7 @@ const particle = () => {
 		debugger;
 	}
 	console.log(`-- Test run: ${index}`);
-	return testCars[99999] || testCars[index++];
+	return testCars[3] || testCars[index++];
 
 };
 
