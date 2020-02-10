@@ -1,7 +1,9 @@
 import RenderCar from '../render/car.mjs';
 
-function Particle(sketch, x, y, lane, radius, sense, direction, life, margin) {
-    this.init(sketch, x, y, lane, radius, sense, direction, life, margin);
+function Particle(sketch, x, y, lane, radius, sense, direction, life, margin, speed) {
+    this.init({
+        sketch, x, y, lane, radius, sense, direction, life, speed
+    });
 }
 
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -73,24 +75,26 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         //debugger;
     }
 
-    self.prevChunk = self.chunk;
+    self.prevChunk = (self.chunk && umvelt.chunk && self.chunk.index === umvelt.chunk.index)
+        ? self.prevChunk
+        : self.chunk;
     self.chunk = umvelt.chunk;
     const local = worldToLocal(self, neighbors);
 
-    if(self.chunk && ["intersect", "curved"].includes(self.chunk.type)){
-        self.x += self.CLIENT_WIDTH/2;
-        self.y += self.CLIENT_HEIGHT/2;
-    }
+    // if(self.chunk && ["intersect", "curved"].includes(self.chunk.type)){
+    //     self.x += self.CLIENT_WIDTH/2;
+    //     self.y += self.CLIENT_HEIGHT/2;
+    // }
 
     if(
         self.chunk && self.chunk.type === "intersect"
-        && self.chunk.index === 86
+        && [86].includes(self.chunk.index)
         && self.direction === 90
         && self.lane === 1
     ){
         const intersect = 180;
         self.reverseCurve = true;
-        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, intersect);
+        const transform = umvelt.chunk && umvelt.chunk.move(self, intersect);
         self.x = transform.x;
         self.y = transform.y;
 
@@ -107,13 +111,13 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     if(
         self.chunk && self.chunk.type === "intersect"
-        && self.chunk.index === 86
+        && [88, 86].includes(self.chunk.index)
         && self.direction === 90
-        && self.lane === 2
+        //&& self.lane === 2
     ){
         const intersect = 90;
         //self.reverseCurve = true;
-        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, intersect);
+        const transform = umvelt.chunk && umvelt.chunk.move(self, intersect);
         self.x = transform.x;
         self.y = transform.y;
 
@@ -136,7 +140,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
         if(self.lane !== 1){
             self.reverseCurve = true;
         }
-        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, intersect);
+        const transform = umvelt.chunk && umvelt.chunk.move(self, intersect);
         self.x = transform.x;
         self.y = transform.y;
         // console.log({
@@ -160,7 +164,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 150){
         //TODO: transform based on chunk should be used for all movements
-        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, 90);
+        const transform = umvelt.chunk && umvelt.chunk.move(self, 90);
 
         self.x = transform.x;
         self.y = transform.y;
@@ -178,7 +182,7 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 
     if(self.chunk && self.chunk.type === "intersect" && self.chunk.index === 118){
         //TODO: transform based on chunk should be used for all movements
-        const transform = umvelt.chunk && umvelt.chunk.move(self, umvelt, 270);
+        const transform = umvelt.chunk && umvelt.chunk.move(self, 270);
 
         self.x = transform.x;
         self.y = transform.y;
@@ -333,22 +337,20 @@ function move(self, LANES_COUNT, CAR_WIDTH){
 }
 
 Particle.prototype = {
-    init: function (sketch, x, y, lane, radius, sense, direction, life, margin) {
+    init: function ({ sketch, x, y, lane, radius, sense, direction, life, speed }) {
         this.sense = (view) => sense(this, view);
         this.direction = direction || 0;
-        this.margin = margin; //DEPRECATE
         this.sketch = sketch;
         this.alive = true;
         this.radius = radius || 10;
-        this.wander = 0;
         this.lane = lane;
         this.x = x || 0.0;
         this.y = y || 0.0;
-        const speed = random(1, 2);
+        const _speed = speed || random(1, 2);
         this.life = life
-            ? life/speed
-            : (sketch.height / speed);
-        this.speed = speed;
+            ? life/_speed
+            : (sketch.height / _speed);
+        this.speed = _speed;
         this.id = hashCode((new Date()).toString());
         this.CLIENT_WIDTH = sketch.CLIENT_WIDTH;
         this.CLIENT_HEIGHT = sketch.CLIENT_HEIGHT;
@@ -379,13 +381,15 @@ Particle.prototype = {
         // this.y += this.CLIENT_HEIGHT/2;
         const prev = ({x : this.x, y: this.y, type: this.chunk && this.chunk.type });
         move(this, LANES_COUNT, CAR_WIDTH);
-        const isCurveOrIntersect = this.chunk && ["intersect", "curved"].includes(this.chunk.type);
+        //const isCurveOrIntersect = this.chunk && ["intersect", "curved"].includes(this.chunk.type);
+
         // this.x -= this.CLIENT_WIDTH/2;
         // this.y -= this.CLIENT_HEIGHT/2;
-        if(isCurveOrIntersect){
-            this.x -= this.CLIENT_WIDTH/2;
-            this.y -= this.CLIENT_HEIGHT/2;
-        }
+
+        // if(isCurveOrIntersect){
+        //     this.x -= this.CLIENT_WIDTH/2;
+        //     this.y -= this.CLIENT_HEIGHT/2;
+        // }
 
         const change = {x : this.x - prev.x, y: this.y - prev.y };
         if((Math.abs(change.x) > 5 || Math.abs(change.y) > 5)) {

@@ -3,8 +3,11 @@ import Sketch from "../../shared/vendor/sketch.min.js";
 import Particle from '../models/Particle.mjs';
 
 import mapDraw, { cacheKill, carsDraw } from '../render/map.mjs';
+
 import spawnPoints from '../data/spawnPoints.mjs';
 import chunks from '../data/chunks.mjs';
+
+import test from './test.mjs';
 
 /*
 
@@ -32,6 +35,8 @@ https://github.com/pakastin/car
 */
 
 import { distance, debounce } from './utilities.mjs';
+import sense from './sense.mjs';
+
 import {
     set as setCenterSettings,
     get as getCenterSettings
@@ -105,7 +110,7 @@ function mapSpawn(particle, ctx){
 }
 
 function mapUpdate(sketch){
-    var t0 = performance.now();
+    //var t0 = performance.now();
 
     if(sketch.dragging){
         return;
@@ -128,101 +133,16 @@ function mapUpdate(sketch){
             mapSpawn(particle, sketch);
         }
     })
-    var t1 = performance.now();
+    //var t1 = performance.now();
     //console.log("Update: " + (t1 - t0) + " milliseconds.");
 }
 
-function whichChunkContainsObserver(chunks, observer, killObserver){
-    // given observer's current location:
 
-    // if observer is within current chunk, return chunk
-    const prevChunk = observer.chunk;
-    const isContained = !!prevChunk
-        && observer.x >= prevChunk.min.x
-        && observer.y >= prevChunk.min.y
-        && observer.x <= prevChunk.max.x
-        && observer.y <= prevChunk.max.y;
-    if(isContained){
-        return prevChunk;
-    }
-
-    // if observer outside chunk, find which chunk
-    const newChunk = ((chunks, o, p) => {
-        if(!!p){ // previous chunk
-            const cardinal = map(o.direction);
-            if(!cardinal || !p[cardinal]){
-                //debugger;
-            } else {
-                return p[cardinal];
-            }
-        }
-        const foundChunk = chunks.find(c => {
-            const x = o.x;
-            const y = o.y;
-            return x >= c.min.x
-                && y >= c.min.y
-                && x <= c.max.x
-                && y <= c.max.y
-        });
-        if(!foundChunk
-            || !['curved', 'straight', 'intersect'].includes(foundChunk.type)
-        ){
-            //debugger;
-            killObserver();
-        }
-        //console.log(`I am in this chunk: ${foundChunk && foundChunk.index}`);
-
-        return foundChunk;
-    })(chunks, observer, prevChunk);
-
-    return newChunk;
-
-}
-
-function sense(map, observer, view) {
-    const center = getCenterSettings();
-    const { particles = [], chunks } = map;
-    var result = {};
-
-    if(view === 'proximity'){
-        const neighbors = particles.filter(p => {
-            if(observer.id === p.id) {
-                return false;
-            }
-            const obsX = Math.abs(p.x - observer.x);
-            const obsY = Math.abs(p.y - observer.y);
-
-            const near = obsX < 30 || obsY < 30;
-            return near;
-        });
-        result.neighbors = neighbors;
-    }
-    //console.log(map.stage.chunks[0]);
-
-    const chunk = whichChunkContainsObserver(map.stage.chunks, {
-        chunk: observer.chunk,
-        x: observer.x + center.x + map.CLIENT_WIDTH/2,
-        y: observer.y + center.y + map.CLIENT_HEIGHT/2
-    }, () => observer.alive = false);
-    const lane = {};
-    const ahead = {};
-    const direction = 0;
-
-    result.umvelt = {
-        chunk,
-        lane,
-        ahead,
-        center,
-        direction
-    };
-    const observation = {
-        action: view,
-        result
-    };
-    return observation;
-}
 
 function Map() {
+    //return test();
+    //window.DEBUG_CHUNK = true;
+
     const CLIENT_HEIGHT = document.querySelector('.container.canvas.map').clientHeight;
     const CLIENT_WIDTH = document.querySelector('.container.canvas.map').clientWidth;
     const [STAGE_WIDTH, STAGE_HEIGHT, CHUNK_SIZE] = [800, 800, 50];

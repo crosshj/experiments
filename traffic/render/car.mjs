@@ -8,13 +8,44 @@ idealy, we could think of car coordinates without considering these other coordi
 
 
 function Car(ctx, center, car){
+	//console.log({ car });
+	//debugger;
 	if(!car.alive){
 		return;
 	}
+	if(window.DEBUG_CHUNK && car.chunk){
+		ctx.save();
+			ctx.beginPath();
+			ctx.rect(
+				car.chunk.min._x,
+				car.chunk.min._y,
+				car.chunk.max._x - car.chunk.min._x,
+				car.chunk.max._y - car.chunk.min._y,
+			);
+			ctx.fillStyle = "rgba(50, 205, 50, 0.2)";
+			ctx.fill();
+			ctx.closePath();
+		ctx.restore();
+	}
+	if(window.DEBUG_CHUNK && car.prevChunk){
+		ctx.save();
+			ctx.beginPath();
+			ctx.rect(
+				car.prevChunk.min._x,
+				car.prevChunk.min._y,
+				car.prevChunk.max._x - car.prevChunk.min._x,
+				car.prevChunk.max._y - car.prevChunk.min._y,
+			);
+			ctx.fillStyle = "rgba(255, 140, 0, 0.15)";
+			ctx.fill();
+			ctx.closePath();
+		ctx.restore();
+	}
+
 	ctx.save();
 	ctx.translate(
-			car.x+400,
-			car.y + 375,
+			car.x, // - ctx.canvas.width / 2,
+			car.y, // - ctx.canvas.height / 2,
 	);
 
 	if(car.rotate){
@@ -32,9 +63,7 @@ function Car(ctx, center, car){
 	ctx.fillStyle = car.changing && car.changing.length
 			? 'red'
 			: car.color;
-	ctx.strokeStyle = "#888";
 	ctx.fill();
-	//ctx.stroke();
 	ctx.closePath();
 
 
@@ -55,6 +84,8 @@ function Car(ctx, center, car){
 	ctx.closePath();
 
 	ctx.restore();
+
+
 }
 
 export default Car;

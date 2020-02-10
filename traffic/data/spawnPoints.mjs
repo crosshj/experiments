@@ -4,43 +4,65 @@ function spawnPoints() {
 	return [
 			//1st column
 			{
-					x: -270,
-					y: 425,
+					x: 131,
+					y: 800,
+					// x: 270,
+					// y: 425,
 					life: 1200, //400
 					direction: 270
 			},
 			//2nd column
 			{
-					x: 80.5,
-					y: 425,
+					x: 481,
+					y: 800,
+					// x: 80.5,
+					// y: 425,
 					life: 925, //400,
 					direction: 270
 			},
 			// 3rd column
 			{
-					x: 280,
-					y: 425,
+					x: 681,
+					y: 800,
+					// x: 280,
+					// y: 425,
 					life: 1200,
 					direction: 270
 			},
+			// TOP-LEFT column
+			{
+					x: 219,
+					y: 0,
+					life: 1200,//100,
+					direction: 90
+			},
 			// TOP column
 			{
-					x: 19,
-					y: -375,
+					x: 419,
+					y: 0,
 					life: 1200,//100,
 					direction: 90
 			},
 			// LEFT - row
 			{
-					x: -400,
-					y: -95,
+					x: 0,
+					y: 281,
+					life: 2600, //300
+					direction: 0
+			},
+			// LEFT-TOP - row
+			{
+					x: 0,
+					y: 31,
 					life: 2600, //300
 					direction: 0
 			},
 			// RIGHT - row
 			{
-					x: 400,
-					y: -255,
+					x: 800,
+					y: 119,
+					// x: 400,
+					// y: -255,
 					life: 1200,//350,
 					direction: 180
 			}

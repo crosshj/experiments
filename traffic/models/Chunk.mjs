@@ -6,6 +6,7 @@ function rotate(centerX, centerY, x, y, angle) {
 			ny = (cos * (y - centerY)) - (sin * (x - centerX)) + centerY;
 	return [nx, ny];
 }
+
 const distance = (self, target) => {
 	const {x:x1, y:y1} = self;
 	const {x:x2, y:y2} = target;
@@ -14,7 +15,8 @@ const distance = (self, target) => {
 	return distance;
 };
 
-function curvedMove(chunk, car, umvelt, intersect){
+function curvedMove(chunk, car, intersect){
+	//debugger
 		//if(typeof intersect !== "undefined") debugger
 		// find center of rotation based on chunk
 		// determine change in x, y, direction, and rotation based on speed and chunk rotation center
@@ -36,10 +38,14 @@ function curvedMove(chunk, car, umvelt, intersect){
 			reverseCurve = true;
 		}
 
+		if(!car.turning && car.direction === 90 && chunk.rotate === 90){
+			reverseCurve = true;
+		}
+
 		const rotCenter = chunkRotCenter(chunk, intersect);
 		const distanceFromCenter = distance({
-			x: rotCenter.x-umvelt.center.x,
-			y: rotCenter.y-umvelt.center.y,
+			x: rotCenter.x,
+			y: rotCenter.y,
 		},
 			car
 		);
@@ -50,8 +56,8 @@ function curvedMove(chunk, car, umvelt, intersect){
 			angle = -1 * angle;
 		}
 		const newCoords = rotate(
-			rotCenter.x-umvelt.center.x,
-			rotCenter.y-umvelt.center.y,
+			rotCenter.x,
+			rotCenter.y,
 			car.x, car.y,
 			angle
 		);
@@ -60,19 +66,19 @@ function curvedMove(chunk, car, umvelt, intersect){
 		//TODO: turning rotation: this could be done better, but fine for now
 		// also - this is buggier than what is below
 		const distanceFromCenter = distance({
-			x: rotCenter.x-umvelt.center.x,
-			y: rotCenter.y-umvelt.center.y,
+			x: rotCenter.x,
+			y: rotCenter.y,
 		},
 			{ x: newCoords[0], y: newCoords[1] }
 		);
-		const relativeXDistance = newCoords[0] - rotCenter.x + umvelt.center.x;
-		const relativeYDistance = rotCenter.y + umvelt.center.y - newCoords[1];
+		const relativeXDistance = newCoords[0] - rotCenter.x;
+		const relativeYDistance = rotCenter.y - newCoords[1];
 		const xFactor = (1 - (relativeXDistance / distanceFromCenter));
 		const yFactor = relativeYDistance / distanceFromCenter;
 		const averageFactor = (xFactor + yFactor) / 2;
 		*/
 
-		const relativeXDistance = Math.abs(newCoords[0] - rotCenter.x + umvelt.center.x);
+		const relativeXDistance = Math.abs(newCoords[0] - rotCenter.x);
 
 		//TODO: see above, this is hacky and wrong
 		const rot = (() => {
@@ -101,20 +107,20 @@ function chunkRotCenter(chunk, intersect){
 	}
 	const rots = {
 		0: {
-			x: chunk.min.x,
-			y: chunk.max.y
+			x: chunk.min._x,
+			y: chunk.max._y
 		},
 		90: {
-			x: chunk.min.x,
-			y: chunk.min.y
+			x: chunk.min._x,
+			y: chunk.min._y
 		},
 		180: {
-			x: chunk.max.x,
-			y: chunk.min.y
+			x: chunk.max._x,
+			y: chunk.min._y
 		},
 		270: {
-			x: chunk.max.x,
-			y: chunk.max.y
+			x: chunk.max._x,
+			y: chunk.max._y
 		}
 	}
 	return rots[whichRot];
@@ -132,15 +138,14 @@ Chunk.prototype = {
 			this[key] = chunkdef[key];
 		});
 	},
-	move: function (car, umvelt, intersect) {
+	move: function (car, intersect) {
 		let xdiff = 'TODO';
 		let ydiff = 'TODO';
 		let rotate = random(0, 359);
 
 		let curvedTransform;
 		if(this.type === "curved" || this.type === "intersect"){
-			//TODO: should not be using umvelt here
-			curvedTransform = curvedMove(this, car, umvelt, intersect);
+			curvedTransform = curvedMove(this, car, intersect);
 		}
 
 		const transform = {

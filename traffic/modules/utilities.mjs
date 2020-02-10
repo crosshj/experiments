@@ -17,6 +17,17 @@ function debounce(func, time) {
     };
 }
 
+function extendConsole(){
+    let prevArgs;
+    console.unique = function consoleUnique(){
+        if(JSON.stringify(prevArgs) === JSON.stringify(arguments)){
+            return;
+        }
+        prevArgs = arguments;
+        console.log.apply(console, [...arguments]);
+    }
+}
+
 export {
-	hashCode, dateHash, distance, debounce
+	hashCode, dateHash, distance, debounce, extendConsole
 };

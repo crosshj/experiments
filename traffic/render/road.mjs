@@ -318,7 +318,7 @@ function MapChunk(ctx, chunk, center, stage){
 			//console.log(chunk);
 			drawRoadChunk(
 				ctx,
-				{ ...chunk, ...{ width: size, height: size }},
+				{ ...chunk, ...{ width: size, height: size } },
 				center
 			);
 			return;
