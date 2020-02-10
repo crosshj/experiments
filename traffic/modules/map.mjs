@@ -42,6 +42,12 @@ import {
     get as getCenterSettings
 } from '../render/pan.mjs';
 
+const init = () => {
+    //window.DEBUG_TEST = true;
+    //window.DEBUG_CHUNK = true;
+    //window.DEBUG = true;
+};
+
 const MAX_PARTICLES = 100;
 
 const COLOURS = [
@@ -140,9 +146,10 @@ function mapUpdate(sketch){
 
 
 function Map() {
-    //return test();
-    //window.DEBUG_CHUNK = true;
-    //window.DEBUG = true;
+    init();
+    if(window.DEBUG_TEST){
+        return test();
+    }
 
     const CLIENT_HEIGHT = document.querySelector('.container.canvas.map').clientHeight;
     const CLIENT_WIDTH = document.querySelector('.container.canvas.map').clientWidth;
@@ -172,7 +179,6 @@ function Map() {
         map.chunks = chunks(map, STAGE_WIDTH, STAGE_HEIGHT, CHUNK_SIZE);
     };
     map.chunksRefresh();
-
 
     map.update = () => mapUpdate(map);
 

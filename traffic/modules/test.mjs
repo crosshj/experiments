@@ -24,12 +24,18 @@ const COLOURS = [
     '#A37666' //lightbrown
 ];
 
+const init = () => {
+	window.DEBUG_CHUNK = true;
+	window.DEBUG = true;
+	window.DEBUG_CAR = 1;
+};
+
 let index=6;
 const life = 999999;
 const speed= 1;
 const particle = () => {
 	const testCars = [{
-		x:  90, y:  10, direction:   0,	lane: 1, life, speed,
+		x:  90, y:  31, direction:   0,	lane: 1, life, speed,
 		name: "left top row"
 	}, {
 		x: 640, y: 281, direction:   0, lane: 1, life, speed,
@@ -68,8 +74,8 @@ const particle = () => {
 	if(!testCars.length){
 		debugger;
 	}
-	console.log(`-- Test run: ${index}`);
-	return testCars[3] || testCars[index++];
+	console.log(`-- Test run: ${testCars[window.DEBUG_CAR] ? window.DEBUG_CAR : index}`);
+	return testCars[window.DEBUG_CAR] || testCars[index++];
 
 };
 
@@ -148,8 +154,7 @@ function mapTouchMove(width, height){
 }
 
 function Test(){
-	window.DEBUG_CHUNK = true;
-	window.DEBUG = true;
+	init();
 
 	const CLIENT_HEIGHT = document.querySelector('.container.canvas.map').clientHeight;
 	const CLIENT_WIDTH = document.querySelector('.container.canvas.map').clientWidth;
