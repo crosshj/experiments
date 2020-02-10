@@ -10,8 +10,6 @@ import Theme from '../shared/modules/theme.mjs';
 import { extendConsole } from './modules/utilities.mjs';
 extendConsole();
 
-window.DEBUG = true;
-
 const appendStyleSheet = (url, callback) => {
 	var style = document.createElement('link');
 	style.rel = "stylesheet";

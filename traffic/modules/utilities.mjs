@@ -17,6 +17,8 @@ function debounce(func, time) {
     };
 }
 
+const clone = o => JSON.parse(JSON.stringify(o));
+
 function extendConsole(){
     let prevArgs;
     console.unique = function consoleUnique(){
@@ -29,5 +31,5 @@ function extendConsole(){
 }
 
 export {
-	hashCode, dateHash, distance, debounce, extendConsole
+	hashCode, clone, dateHash, distance, debounce, extendConsole
 };

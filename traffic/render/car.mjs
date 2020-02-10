@@ -7,7 +7,7 @@ idealy, we could think of car coordinates without considering these other coordi
 */
 
 
-function Car(ctx, center, car){
+function Car(ctx, car){
 	//console.log({ car });
 	//debugger;
 	if(!car.alive){

@@ -1,6 +1,3 @@
-import {
-	get as getCenterSettings
-} from '../render/pan.mjs';
 
 function whichChunkContainsObserver(chunks, observer, killObserver){
 	// given observer's current location:
@@ -8,14 +5,15 @@ function whichChunkContainsObserver(chunks, observer, killObserver){
 	// if observer is within current chunk, return chunk
 	const prevChunk = observer.chunk;
 	const isContained = !!prevChunk
-			&& observer.x >= prevChunk.min.x
-			&& observer.y >= prevChunk.min.y
-			&& observer.x <= prevChunk.max.x
-			&& observer.y <= prevChunk.max.y;
+			&& observer.x >= prevChunk.min._x
+			&& observer.y >= prevChunk.min._y
+			&& observer.x <= prevChunk.max._x
+			&& observer.y <= prevChunk.max._y;
 	if(isContained){
 			return prevChunk;
 	}
 
+	//console.log('NOT contained');
 	//debugger;
 
 
@@ -56,7 +54,6 @@ function whichChunkContainsObserver(chunks, observer, killObserver){
 }
 
 function sense(map, observer, view) {
-	const center = getCenterSettings();
 	const { particles = [], chunks } = map;
 	var result = {};
 
@@ -88,7 +85,6 @@ function sense(map, observer, view) {
 			chunk,
 			lane,
 			ahead,
-			center,
 			direction
 	};
 	const observation = {

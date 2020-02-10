@@ -149,6 +149,7 @@ function mapTouchMove(width, height){
 
 function Test(){
 	window.DEBUG_CHUNK = true;
+	window.DEBUG = true;
 
 	const CLIENT_HEIGHT = document.querySelector('.container.canvas.map').clientHeight;
 	const CLIENT_WIDTH = document.querySelector('.container.canvas.map').clientWidth;

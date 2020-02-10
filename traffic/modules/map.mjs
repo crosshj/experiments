@@ -142,6 +142,7 @@ function mapUpdate(sketch){
 function Map() {
     //return test();
     //window.DEBUG_CHUNK = true;
+    //window.DEBUG = true;
 
     const CLIENT_HEIGHT = document.querySelector('.container.canvas.map').clientHeight;
     const CLIENT_WIDTH = document.querySelector('.container.canvas.map').clientWidth;

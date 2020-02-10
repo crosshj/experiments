@@ -1,14 +1,20 @@
+/*
+this probably is not used right now!
+*/
+
 function Road(x, y, lanes, laneWidth) {
     this.init(x, y, lanes, laneWidth);
 }
 Road.prototype = {
     init: function (x, y, lanes, laneWidth) {
+        debugger
         this.x = x;
         this.y = y;
         this.lanes = lanes;
         this.laneWidth = laneWidth;
     },
     draw: function (ctx, CLIENT_HEIGHT) {
+        debugger
         // outside lines
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);

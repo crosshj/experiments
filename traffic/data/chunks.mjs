@@ -1,8 +1,4 @@
 import Chunk from '../models/Chunk.mjs';
-import {
-	get as getCenterSettings
-} from '../render/pan.mjs';
-
 /* this is a logical chunk of the map */
 
 function ArrayFromTo(first, last, step=1){
@@ -22,12 +18,12 @@ function linkChunks(chunks){
 		if(stats.height){
 			return stats;
 		}
-		if(one.x < stats.widthCounter){
+		if(one._x < stats.widthCounter){
 			stats.height = chunks.length / stats.width;
 			delete stats.widthCounter;
 		} else {
 			stats.width++;
-			stats.widthCounter = one.x;
+			stats.widthCounter = one._x;
 		}
 		return stats;
 	}, {
@@ -265,7 +261,6 @@ function initChunks(ctx, width, height, chunkSize){
 
 		this also means that chunks must be recomputed when stage changes position on canvas
 	*/
-	const center = getCenterSettings();
 
 	const chunks = [];
 	var index = 0;
@@ -273,8 +268,6 @@ function initChunks(ctx, width, height, chunkSize){
 			for (var x=0; x < width; x += chunkSize){
 					chunks.push({
 							index,
-							x: center.x + ctx.width / 2 + (width * -0.5) + x,
-							y: center.y + ctx.height / 2 +25 + (height * -0.5) + y,
 							_x: x,
 							_y: y
 					});
@@ -284,14 +277,10 @@ function initChunks(ctx, width, height, chunkSize){
 	const _chunks = demoChunks(chunks);
 	_chunks.forEach(ch => {
 		ch.min = {
-				x: ch.x,
-				y: ch.y,
 				_x: ch._x,
 				_y: ch._y,
 		};
 		ch.max = {
-				x: ch.x + chunkSize,
-				y: ch.y + chunkSize,
 				_x: ch._x + chunkSize,
 				_y: ch._y + chunkSize,
 		};
