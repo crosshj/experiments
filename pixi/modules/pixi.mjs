@@ -36,8 +36,17 @@ function loadImage(app){
         id = resources["images/treasureHunter.json"].textures;
 
         //Dungeon
-        dungeon = new Sprite(id["dungeon.png"]);
-        dungeon.position.set(OFFSET_X, OFFSET_Y);
+        function dungeonInteract(){
+          const ignoredEvents = [
+            'mousemove', 'mouseover', 'mouseout',
+            'mouseup', 'touchend'
+          ];
+          if(arguments[0].type && ignoredEvents.includes(arguments[0].type)){
+            return;
+          }
+          console.log(arguments[0].data.global);
+        };
+        const dungeon = makeDungeon(id, OFFSET_X, OFFSET_Y, dungeonInteract);
         gameScene.addChild(dungeon);
 
         //Door
@@ -434,6 +443,24 @@ function loadImage(app){
         ])
         .on("progress", loadProgressHandler)
         .load(setup);
+}
+
+function makeDungeon(id, OFFSET_X, OFFSET_Y, interactCallback) {
+  const dungeon = new Sprite(id["dungeon.png"]);
+  dungeon.position.set(OFFSET_X, OFFSET_Y);
+
+  dungeon
+    .on('mousedown', interactCallback)
+    .on('touchstart', interactCallback)
+    .on('mouseup', interactCallback)
+    .on('touchend', interactCallback)
+    .on('mouseupoutside', interactCallback)
+    .on('touchendoutside', interactCallback)
+    .on('mouseover', interactCallback)
+    .on('mouseout', interactCallback);
+  dungeon.interactive = true;
+
+  return dungeon;
 }
 
 function pixi(){
