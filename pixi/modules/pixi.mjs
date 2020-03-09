@@ -11,58 +11,59 @@ let Application = PIXI.Application,
   TextStyle = PIXI.TextStyle;
 
 let target;
-function Target({ x, y }){
+function Target({ x, y }) {
   this.x = x;
   this.y = y;
 }
-Target.prototype = {
-  cancel: function(){
-    target = undefined;
-  },
-  next: function(player){
-    if(!target || !player){
-      return undefined;
-    }
-    // look at player's speed and current position
-    const diff = {
-      x: Math.floor(this.x - player.x),
-      y: Math.floor(this.y - player.y)
-    };
+Target.prototype.cancel = function () {
+  target = undefined;
+};
 
-    // move towards target at player speed
-    let vx=0, vy=0;
-    if(diff.x > 0){
-      vx = (player.speed || 5);
-    }
-    if(diff.x < 0){
-      vx = -1 * ( player.speed || 5);
-    }
-    if(diff.y > 0){
-      vy = (player.speed || 5);
-    }
-    if(diff.y < 0){
-      vy = -1 * ( player.speed || 5);
-    }
-
-    // sometimes diff is less than player speed
-    if(vx !== 0 && Math.abs(vx) < ( player.speed || 5)){
-      vx = diff.x;
-    }
-    if(vy !== 0 && Math.abs(vy) < ( player.speed || 5)){
-      vy = diff.y;
-    }
-
-    if(vx === 0 && vy === 0){
-      this.cancel();
-      return undefined;
-    }
-
-    // change player's velocity based on speed and distance from target
-    return {
-      vx, vy
-    };
+Target.prototype.next = function (player) {
+  if (!target || !player) {
+    return undefined;
   }
-}
+  // look at player's speed and current position
+  const diff = {
+    x: Math.floor(this.x - player.x),
+    y: Math.floor(this.y - player.y)
+  };
+
+  // move towards target at player speed
+  let vx = 0, vy = 0;
+  if (diff.x > 0) {
+    vx = (player.speed || 5);
+  }
+  if (diff.x < 0) {
+    vx = -1 * (player.speed || 5);
+  }
+  if (diff.y > 0) {
+    vy = (player.speed || 5);
+  }
+  if (diff.y < 0) {
+    vy = -1 * (player.speed || 5);
+  }
+
+  //overshoot problem!
+
+  // sometimes diff is less than player speed
+  if (diff.x !== 0 && Math.abs(diff.x) < (player.speed || 5)) {
+    vx = diff.x;
+  }
+  if (diff.y !== 0 && Math.abs(diff.y) < (player.speed || 5)) {
+    vy = diff.y;
+  }
+
+  if (vx === 0 && vy === 0) {
+    this.cancel();
+    return undefined;
+  }
+
+  // change player's velocity based on speed and distance from target
+  return {
+    vx, vy
+  };
+};
 
 function loadImage(app) {
   function loadProgressHandler(loader, resource) {
@@ -275,14 +276,15 @@ function loadImage(app) {
 
 
   function gameLoop(delta) {
-    if(target){
+    if (target) {
       const next = target.next(explorer);
-      if(!next){
-        target.cancel();
-      } else {
+      if (next) {
         explorer.vy = next.vy;
         explorer.vx = next.vx;
-        console.log(JSON.stringify({ next }));
+        //console.log(JSON.stringify({ next }));
+      } else {
+        explorer.vy = 0;
+        explorer.vx = 0;
       }
     }
     //Update the current game state:
