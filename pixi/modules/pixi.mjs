@@ -1,5 +1,8 @@
 import "../../shared/vendor/pixi.4.5.5.min.js"; //adds PIXI to global scope
 
+const WIDTH = 512;
+const HEIGHT = 512;
+
 let Application = PIXI.Application,
   Container = PIXI.Container,
   loader = PIXI.loader,
@@ -531,6 +534,7 @@ function makeDungeon(id, OFFSET_X, OFFSET_Y, interactCallback) {
   return dungeon;
 }
 
+let app;
 function pixi() {
   //OMG danger!!!
   const backupNodeListForEach = NodeList.prototype.forEach;
@@ -545,9 +549,9 @@ function pixi() {
 
   const pixiSections = document.querySelectorAll('pixi-section');
   pixiSections.forEach((el) => {
-    let app = new Application({
-      width: 512,
-      height: 512,
+    app = new Application({
+      width: WIDTH,
+      height: HEIGHT,
       antialiasing: false,
       transparent: true,
       resolution: 2
@@ -567,5 +571,14 @@ function pixi() {
 
   NodeList.prototype.forEach = backupNodeListForEach;
 }
+
+var resize = function() {
+  app.renderer.view.style.position = "absolute"
+  app.renderer.view.style.width = "100%";
+  app.renderer.view.style.height = "100%";
+  app.renderer.resize(window.innerWidth, window.innerHeight);
+};
+
+ window.addEventListener("resize", resize);
 
 export default pixi;
