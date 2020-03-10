@@ -73,7 +73,8 @@ const defaultMenuItems = {
 			onclick: "window.App.console.hide(event)",
 			icon: "view_agenda"
 	}],
-	"Other Apps": [{
+	"Other Apps": [
+		{
 			text: "Assistant",
 			href: "https://assistant.crosshj.com",
 			icon: "assistant"
@@ -89,7 +90,12 @@ const defaultMenuItems = {
 			text: "Traffic Sim",
 			href: "https://crosshj.com/experiments/traffic",
 			icon: "traffic"
-	}]
+		}, {
+			text: "pixi.js",
+			href: "https://crosshj.com/experiments/pixi",
+			icon: "games"
+		}
+	]
 };
 
 function sideMenu({ menu = {} } = {}) {
