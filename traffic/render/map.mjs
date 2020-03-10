@@ -78,7 +78,7 @@ function carsDraw(ctx, STAGE_WIDTH, STAGE_HEIGHT) {
     const carCanvasContext = carCanvas.getContext("2d");
     //carCanvasContext.fillStyle = "red";
     //ctx.fillRect(mid.x, mid.y, STAGE_WIDTH, STAGE_HEIGHT);
-    //carCanvasContext.clearRect(0, 0, carCanvas.width, carCanvas.height);
+    carCanvasContext.clearRect(0, 0, carCanvas.width, carCanvas.height);
     ctx.particles.forEach(p => {
         p.draw(carCanvasContext, {
             x: 0,
