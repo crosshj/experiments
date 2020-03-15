@@ -94,6 +94,10 @@ const defaultMenuItems = {
 			text: "pixi.js",
 			href: "https://crosshj.com/experiments/pixi",
 			icon: "games"
+		}, {
+			text: "bartok",
+			href: "https://crosshj.com/experiments/bartok",
+			icon: "account_balance"
 		}
 	]
 };

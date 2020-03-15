@@ -1,0 +1,21 @@
+{
+  "name": "bartok",
+  "version": "1.0.0",
+  "description": "api and services composer and host",
+  "main": "index.js",
+  "scripts": {
+    "watch": "browser-sync start --config ../shared/bs-config.js",
+    "watch.server": "nodemon server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "nodemon": "2.0.2"
+  },
+  "dependencies": {
+    "express": "4.17.1",
+    "sqlite3": "4.1.1"
+  }
+}
