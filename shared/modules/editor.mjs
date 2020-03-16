@@ -22,9 +22,11 @@ const appendStyleSheet = (url, callback) => {
 const codeMirrorCss = (callback) => {
 	const codeMirrorCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css";
 	const codeMirrorThemeCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css";
-
+	const cmVSCodeUrl = "../shared/css/vscode.codemirror.css";
 	appendStyleSheet(codeMirrorCssUrl, () => {
-		appendStyleSheet(codeMirrorThemeCssUrl, callback)
+		appendStyleSheet(cmVSCodeUrl, () => {
+			appendStyleSheet(codeMirrorThemeCssUrl, callback)
+		});
 	});
 };
 
@@ -43,7 +45,7 @@ const setupEditor = (text, opts) => {
 	const defaultOptions = {
 		lineNumbers: true,
 		mode: "markdown",
-		theme: darkEnabled ? "bespin" : "",
+		theme: darkEnabled ? "vscode-dark" : "",
 		styleActiveLine: true,
 		matchBrackets: true
 	};
@@ -57,12 +59,22 @@ const setupEditor = (text, opts) => {
 	return editor;
 };
 
+
 const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
+	if(window.Editor){
+		window.Editor.toTextArea();
+		const theEditor = setupEditor(text, opts || {});
+		theEditor.setOption("mode", opts.mode);
+		window.Editor = theEditor;
+		callback(null, theEditor);
+		return;
+	}
 	codeMirrorCss(() => {
 		codeMirrorJs(() => {
 			codeMirrorJavascriptModeJs(() => {
 				const theEditor = setupEditor(text, opts || {});
 				theEditor.setOption("mode", opts.mode);
+				window.Editor = theEditor;
 				callback(null, theEditor);
 			});
 		});

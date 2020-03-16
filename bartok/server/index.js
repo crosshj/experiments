@@ -11,7 +11,7 @@ async function initAPI({ manager }){
 		return async (req, res) => {
 			let result;
 			try {
-				result = await manager[name](req.params);
+				result = await manager[name](req.params, req.body);
 			}catch(e){
 				//console.log(e)
 				process.stdout.write(name + ' - ');
@@ -28,6 +28,8 @@ async function initAPI({ manager }){
 			next();
 	};
 	app.use(allowCrossDomain);
+	app.use(express.json());
+	app.use(express.urlencoded({extended: true}));
 
 	app.get('/', handler('hello'));
 

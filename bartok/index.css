@@ -2,9 +2,13 @@ html.ns-draggable-cursor {
 	cursor: ns-resize;
 }
 
+.no-margin {
+  margin: 0 !important;
+}
+
 :root {
   --sidenav-full-width: 175px;
-  --header-height: 45px;
+  --header-height: 40px;
 }
 
 :root {
@@ -20,14 +24,19 @@ html.ns-draggable-cursor {
 }
 
 :root.dark-enabled {
-  --main-theme-color: #47414a;
-  --main-theme-highlight-color: #f36b99;
-  --main-theme-background-color: #363238;
+  /* --main-theme-color: #47414a; */
+  --main-theme-color: #1d1d1d;
+
+  --main-theme-highlight-color: #40f7ac;
+  /* --main-theme-background-color: #363238; */
+  --main-theme-background-color: #3b3b3b;
   --main-theme-background-dark-color: #29252b;
   --main-theme-text-color-dark: green;
   --main-theme-text-color: #d8d8d8;
-  --main-theme-text-invert-color: #d0c0d8;
-  --theme-subdued-color: #483f48;
+  /* --main-theme-text-invert-color: #d0c0d8; */
+  --main-theme-text-invert-color: #818181;
+  /* --theme-subdued-color: #483f48; */
+  --theme-subdued-color: #262626;
   --theme-text-color: black;
 }
 
@@ -51,6 +60,27 @@ body, label {
   background-color: #dfdfdf2e !important;
 }
 
+.dark-enabled .input-field input {
+  color: var(--main-theme-text-color);
+}
+.dark-enabled .input-field input:disabled {
+  color: var(--main-theme-text-invert-color);
+  border-bottom-color: var(--main-theme-text-invert-color);
+}
+.dark-enabled .input-field input:disabled+label {
+  color: var(--main-theme-text-invert-color);
+  border-bottom-color: var(--main-theme-text-invert-color);
+}
+
+.dark-enabled table.striped>tbody>tr:nth-child(odd) {
+  background-color: var(--theme-subdued-color);
+}
+
+.dark-enabled table.highlight>tbody>tr:hover {
+  background-color: var(--theme-subdued-color);
+  color: var(--main-theme-highlight-color);
+}
+
 .user-sidebar .user-view>a {
   color: var(--main-theme-text-invert-color);
 }
@@ -61,6 +91,11 @@ body, label {
 .sidenav .subheader {
   opacity: 1;
   color: var(--main-theme-text-color);
+}
+
+table i.material-icons {
+  cursor: pointer;
+  float: right;
 }
 
 .user-sidebar .user-view {
@@ -199,6 +234,7 @@ header {
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr 3px 0px;
   grid-template-areas: "header" "main" "gutter" "terminal";
+  height: var(--header-height);
 }
 
 nav,
@@ -276,11 +312,41 @@ ul.editor-controls {
 
 ul.editor-controls li {
   cursor: default;
-  padding: 0px 10px;
+  border: 1px solid;
+  border-radius: 3px;
+  color: #777;
+  padding: 0px 10px 2px 10px;
 }
 
 ul.editor-controls li:hover {
-  background: #888;
+  background: #777;
+  color: #333;
+}
+
+.section.editor {
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  top: 26px;
+  left: 0px;
+  display: flex;
+  pointer-events: none;
+}
+
+.section.editor .editor-space {
+  height: 100%;
+  width: 175px;
+}
+
+.section.editor .contain {
+  flex: 1;
+  background-color: #2e2e2e;
+  pointer-events: all;
+}
+
+.section.editor .CodeMirror {
+  color: #9d9b97;
+  height: calc(100vh - 91px);
 }
 
 

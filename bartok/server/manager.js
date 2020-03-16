@@ -104,10 +104,17 @@ const readServices = async ({ manager, arguments }) => {
 	});
 };
 
+const updateService = async ({ manager, arguments }) => {
+	console.log({ arguments });
+};
+
 function handle({ name, db, manager }) {
 	return async function () {
 		if(name === 'read'){
 			return await readServices({ manager, arguments });
+		}
+		if(name === 'update'){
+			return await updateService({ manager, arguments });
 		}
 		process.stdout.write(name + ' -');
 		return arguments;

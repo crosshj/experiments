@@ -135,7 +135,7 @@ function theme({
 
     if(darkEnabled){
         window.Editor && window.Editor.setOption("theme", "bespin");
-        document.body.style.backgroundColor = "#363238";
+        //document.body.style.backgroundColor = "#363238";
         document.querySelector(":root").classList.add("dark-enabled");
         _themeColor = darkColor;
     } else {
