@@ -259,14 +259,28 @@ nav a.sidenav-trigger i,
 }
 
 .CodeMirror-gutter{
-  background: #e0e0e0;
+  /* background: #e0e0e0; */
 }
 
 .CodeMirror pre.CodeMirror-line { padding-left: 15px }
 
 .simulation {
-  padding-top: 0;
+  /* padding-top: 0; */
   height: 100%;
+}
+
+ul.editor-controls {
+  display: flex;
+  justify-content: space-around;
+}
+
+ul.editor-controls li {
+  cursor: default;
+  padding: 0px 10px;
+}
+
+ul.editor-controls li:hover {
+  background: #888;
 }
 
 

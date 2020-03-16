@@ -18,8 +18,8 @@ var deleteFolderRecursive = function (path) {
 	}
 };
 
-const initService = (serviceDef) => {
-	const { id, name } = serviceDef;
+const initService = (service) => {
+	const { id, name } = service;
 
 	// TODO: be safer, better & wrap this code
 	// jailed - https://github.com/asvd/jailed
@@ -34,23 +34,23 @@ const initService = (serviceDef) => {
 			}
 		});
 	`;
+	service.code = service.code || code;
 	const serviceFilePath = `${dirname}/${name}.service`;
 	if (!fs.existsSync(dirname)) {
 		fs.mkdirSync(dirname);
 	}
-	fs.writeFileSync(serviceFilePath, code);
+	fs.writeFileSync(serviceFilePath, service.code);
 
 	const options = {
-		stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
 		slient:true,
-		detached:true
+		//detached:true
 	};
 
-	service = childProcess.fork(serviceFilePath, [], options)
-	service.on('message', message => {
+	service.instance = childProcess.fork(serviceFilePath, [], options)
+	service.instance.on('message', message => {
 		console.log(`CHILD ${id} : ${message}`);
 	});
-	service.send('PING.')
+	service.instance.send('PING.')
 	return service;
 };
 
@@ -87,9 +87,28 @@ const initManager = async ({ db }) => {
 	return manager;
 };
 
+const readServices = async ({ manager, arguments }) => {
+	//console.log({ arguments });
+	if(arguments[0].id){
+		return manager.services
+			.filter(x => x.id === Number(arguments[0].id))
+			.map(x => {
+				const { id: _id, code, name } = x;
+				return { id: _id, code, name };
+			});
+	}
+	// filter on id if passed
+	return manager.services.map(x => {
+		const { id: _id, name } = x;
+		return { id: _id, name };
+	});
+};
 
 function handle({ name, db, manager }) {
-	return function () {
+	return async function () {
+		if(name === 'read'){
+			return await readServices({ manager, arguments });
+		}
 		process.stdout.write(name + ' -');
 		return arguments;
 	}

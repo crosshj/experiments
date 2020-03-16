@@ -1,4 +1,42 @@
+import Editor from '../../shared/modules/editor.mjs';
+
+const inlineEditor = (text) => {
+	const editorDiv = document.createElement('div');
+	editorDiv.innerHTML = `
+		<ul class="editor-controls">
+			<li>create</li>
+			<li>read</li>
+			<li>update</li>
+			<li>delete</li>
+			<li>manage</li>
+			<li>monitor</li>
+			<li>persist</li>
+		</ul>
+		<textarea class="functionInput"></textarea>
+	`;
+	editorDiv.classList.add('section');
+	editorDiv.classList.add('simulation');
+	document.querySelector('.container')
+		.appendChild(editorDiv);
+
+	Editor({
+			text,
+			lineNumbers: true,
+			mode:  "javascript",
+			styleActiveLine: true,
+			matchBrackets: true
+	}, (error, editor) => {
+			//editor.setOption("theme", "default");
+			window.Editor = editor;
+	});
+}
+
 async function bartok(){
+	const readAfter = ({ result }) => {
+		console.log({ result });
+		inlineEditor(result.result[0].code);
+	};
+
 	const operations = [{
 			url: ''
 		}, {
@@ -11,7 +49,8 @@ async function bartok(){
 				}
 			}
 		}, {
-			url: 'service/read'
+			url: 'service/read/1',
+			after: readAfter
 		}, {
 			url: 'service/update',
 			config: {
@@ -43,8 +82,11 @@ async function bartok(){
 	for(var i=0, len= operations.length; i<len; i++){
 		const operation = operations[i];
 		const response = await fetch(operation.url, operation.config);
-		const data = await response.json();
-		console.log({ operation, data });
+		const result = await response.json();
+		if(operation.after){
+			operation.after({ result })
+		}
+		//console.log({ operation, data });
 	}
 
 }

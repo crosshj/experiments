@@ -11,7 +11,7 @@ async function initAPI({ manager }){
 		return async (req, res) => {
 			let result;
 			try {
-				result = manager[name]();
+				result = await manager[name](req.params);
 			}catch(e){
 				//console.log(e)
 				process.stdout.write(name + ' - ');
@@ -32,7 +32,7 @@ async function initAPI({ manager }){
 	app.get('/', handler('hello'));
 
 	app.post('/service/create', handler('create'));
-	app.get('/service/read', handler('read'));
+	app.get('/service/read/:id*?', handler('read'));
 	app.post('/service/update', handler('update'));
 	app.post('/service/delete', handler('delete'));
 
