@@ -3,16 +3,18 @@ const Persist = require('./persistance');
 const express = require('express');
 const app = express();
 const port = 3080;
+const managerInit = require('./manager').init;
 
-async function initAPI(db){
+async function initAPI({ manager }){
 
 	function handler(name){
 		return async (req, res) => {
 			let result;
-			if(db[name]){
-				result = await db.name();
-			} else {
-				console.log(name);
+			try {
+				result = manager[name]();
+			}catch(e){
+				//console.log(e)
+				process.stdout.write(name + ' - ');
 			}
 			res.json({ message: name, result });
 		}
@@ -29,10 +31,10 @@ async function initAPI(db){
 
 	app.get('/', handler('hello'));
 
-	app.get('/service/create', handler('create'));
+	app.post('/service/create', handler('create'));
 	app.get('/service/read', handler('read'));
-	app.get('/service/update', handler('update'));
-	app.get('/service/delete', handler('delete'));
+	app.post('/service/update', handler('update'));
+	app.post('/service/delete', handler('delete'));
 
 	app.get('/manage', handler('manage'));
 	app.get('/monitor', handler('monitor'));
@@ -46,7 +48,9 @@ async function initAPI(db){
 	try {
 		const dbConfig = {};
 		const db = await Persist.init(dbConfig);
-		await initAPI({ db });
+		const manager = await managerInit({ db });
+		console.log({ keys: Object.keys(manager)})
+		await initAPI({ db, manager });
 	} catch(e) {
 		console.log(e);
 	}

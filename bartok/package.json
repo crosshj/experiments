@@ -6,16 +6,20 @@
   "scripts": {
     "watch": "browser-sync start --config ../shared/bs-config.js",
     "watch.server": "nodemon server",
+    "sql.init": "cd ./server && sequelize init",
+    "sql.service.model.create": "cd ./server && sequelize model:create --name Service --attributes name:string",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "browser-sync": "^2.26.7",
-    "nodemon": "2.0.2"
+    "nodemon": "2.0.2",
+    "sequelize-cli": "5.5.1"
   },
   "dependencies": {
     "express": "4.17.1",
+    "sequelize": "5.21.5",
     "sqlite3": "4.1.1"
   }
 }
