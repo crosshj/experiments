@@ -50,7 +50,13 @@ const List = ({ services }) => {
 	const listDiv = document.createElement('div');
 	const servicesRows = services.map(s => (`
 		<tr>
-			<td>${s.id}</td>
+			<td class="table-checkbox">
+				<label>
+					<input type="checkbox" />
+					<span></span>
+				</label>
+			</td>
+			<td class="table-id">${s.id}</td>
 			<td>${s.name}</td>
 			<td data-id="${s.id}"><i class="material-icons">keyboard_arrow_right</i></td>
 		</tr>
@@ -60,7 +66,13 @@ const List = ({ services }) => {
 		<table class="highlight">
 			<thead>
 				<tr>
-						<th>ID</th>
+						<th class="table-checkbox">
+							<label>
+								<input type="checkbox" />
+								<span></span>
+							</label>
+						</th>
+						<th class="table-id">ID</th>
 						<th>Name</th>
 						<th></th>
 				</tr>

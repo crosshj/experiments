@@ -81,6 +81,10 @@ body, label {
   color: var(--main-theme-highlight-color);
 }
 
+.dark-enabled tr {
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
 .user-sidebar .user-view>a {
   color: var(--main-theme-text-invert-color);
 }
@@ -483,3 +487,14 @@ notes-section.loading:after {
   transition: color 0.5s ease-out, background-color 0.5s ease-out;
 } */
 
+.table-checkbox {
+  width: 50px;
+  padding-top: 8px;
+  padding-bottom: 1px;
+  padding-left: 10px;
+}
+
+.table-id {
+  width: 50px;
+  padding-left: 10px;
+}
