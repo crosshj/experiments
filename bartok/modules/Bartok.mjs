@@ -33,7 +33,7 @@ const inlineEditor = (text) => {
 
 async function bartok(){
 	const readAfter = ({ result }) => {
-		console.log({ result });
+		// console.log({ result });
 		inlineEditor(result.result[0].code);
 	};
 
