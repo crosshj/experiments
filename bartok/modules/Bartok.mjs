@@ -107,7 +107,7 @@ const List = ({ services }) => {
 
 const inlineEditor = ({ code, name, id }={}) => {
 	const containerDiv = Container({
-		operations: ['create', 'cancel', 'delete', 'update']
+		operations: ['create', 'cancel', 'delete', 'persist', 'update']
 	});
 
 	const editorDiv = document.createElement('div');
