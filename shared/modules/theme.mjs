@@ -90,16 +90,18 @@ function toggleDark(){
 
         loadingScreenEl.classList.remove('hidden');
         document.body.style.overflow = "hidden";
-        loadingScreenEl.style.background = !darkEnabled ? "#363238" : "white";
+        loadingScreenEl.style.background = !darkEnabled
+            ? document.querySelector("meta[name=dark-theme-color]").content || "#363238"
+            : "white";
         //loadingScreenEl.style.color = "white";
         //loadingScreenEl.style.fill = "white";
     }
 
     setTimeout(() => {
         if(!darkEnabled){
-            window.Editor && window.Editor.setOption("theme", "bespin");
+            window.Editor && window.Editor.setOption("theme", "vscode-dark");
             window.Editor && window.Editor.setOption("mode", "javascript");
-            document.body.style.backgroundColor = "#363238";
+            document.body.style.backgroundColor = document.querySelector("meta[name=dark-theme-color]").content || "#363238";
             document.querySelector(":root").classList.add("dark-enabled");
             _themeColor = darkColor;
         } else {
@@ -134,20 +136,21 @@ function theme({
     const darkEnabled = window.localStorage.getItem('themeDark') === "true";
 
     if(darkEnabled){
-        window.Editor && window.Editor.setOption("theme", "bespin");
-        //document.body.style.backgroundColor = "#363238";
+        window.Editor && window.Editor.setOption("theme", "vscode-dark");
+        document.body.style.backgroundColor = (document.querySelector("meta[name=dark-page-color]")||{}).content || "#363238";
         document.querySelector(":root").classList.add("dark-enabled");
         _themeColor = darkColor;
     } else {
-        window.Editor && window.Editor.setOption("theme", "");
+        document.body.style.backgroundColor = (document.querySelector("meta[name=light-page-color]")||{}).content || "white";
+        window.Editor && window.Editor.setOption("theme", "default");
         _themeColor = lightColor;
     }
 
     metaThemeColorEl.setAttribute("content", _themeColor);
-    console.log(`--- main color should be: ${_themeColor}`);
+    //console.log(`--- main color should be: ${_themeColor}`);
     //changeStyleVariable('main-theme-color', mainColor);
 
-		setThemeCSS();
+    setThemeCSS();
 
     return {
         toggleDark

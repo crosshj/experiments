@@ -13,7 +13,7 @@ async function initAPI({ manager }){
 			try {
 				result = await manager[name](req.params, req.body);
 			}catch(e){
-				//console.log(e)
+				console.log(e)
 				process.stdout.write(name + ' - ');
 			}
 			res.json({ message: name, result });
@@ -42,7 +42,7 @@ async function initAPI({ manager }){
 	app.get('/monitor', handler('monitor'));
 	app.get('/persist', handler('persist'));
 
-	await app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+	await app.listen(port, () => console.log(`Example app listening on port ${port}!\n`));
 }
 
 
@@ -51,7 +51,7 @@ async function initAPI({ manager }){
 		const dbConfig = {};
 		const db = await Persist.init(dbConfig);
 		const manager = await managerInit({ db });
-		console.log({ keys: Object.keys(manager)})
+		//console.log({ keys: Object.keys(manager)})
 		await initAPI({ db, manager });
 	} catch(e) {
 		console.log(e);

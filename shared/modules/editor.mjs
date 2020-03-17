@@ -64,7 +64,8 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 	if(window.Editor){
 		window.Editor.toTextArea();
 		const theEditor = setupEditor(text, opts || {});
-		theEditor.setOption("mode", opts.mode);
+		opts.mode && theEditor.setOption("mode", opts.mode);
+		theEditor.setOption("theme", "default");
 		window.Editor = theEditor;
 		callback(null, theEditor);
 		return;
@@ -74,6 +75,7 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 			codeMirrorJavascriptModeJs(() => {
 				const theEditor = setupEditor(text, opts || {});
 				theEditor.setOption("mode", opts.mode);
+				theEditor.setOption("theme", "default");
 				window.Editor = theEditor;
 				callback(null, theEditor);
 			});

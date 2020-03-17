@@ -10,6 +10,8 @@ class Persistence {
 	async init(){
 		const db = require('./db').init();
 		Service = db.Service;
+		// creates/overwrites(if force is true)
+		await Service.sync({ force: false });
 		return this;
 	}
 
@@ -22,7 +24,7 @@ class Persistence {
 			console.log();
 
 			 // creates/overwrites(if force is true)
-			await Service.sync({ force: false });
+			//await Service.sync({ force: true });
 			const newService = await Service.create(service);
 			return newService;
 		} catch(e){

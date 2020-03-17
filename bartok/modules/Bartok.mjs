@@ -44,7 +44,7 @@ const Container = ({ operations }) => {
 
 const List = ({ services }) => {
 	const containerDiv = Container({
-		operations: ['create', 'read', 'manage', 'monitor', 'persist']
+		operations: ['read', 'manage', 'monitor', 'persist']
 	});
 
 	const listDiv = document.createElement('div');
@@ -62,29 +62,31 @@ const List = ({ services }) => {
 		</tr>
 	`)).join('\n');
 	listDiv.innerHTML = `
-	<div class="row">
-		<table class="highlight">
-			<thead>
-				<tr>
-						<th class="table-checkbox">
-							<label>
-								<input type="checkbox" />
-								<span></span>
-							</label>
-						</th>
-						<th class="table-id">ID</th>
-						<th>Name</th>
-						<th></th>
-				</tr>
-			</thead>
+	<div class="container">
+		<div class="row">
+			<table class="highlight">
+				<thead>
+					<tr>
+							<th class="table-checkbox">
+								<label>
+									<input type="checkbox" />
+									<span></span>
+								</label>
+							</th>
+							<th class="table-id">ID</th>
+							<th>Name</th>
+							<th></th>
+					</tr>
+				</thead>
 
-			<tbody>
-				${servicesRows}
-			</tbody>
-		</table>
+				<tbody>
+					${servicesRows}
+				</tbody>
+			</table>
+		</div>
 	</div>
 	`;
-	listDiv.classList.add('container', 'services-list');
+	listDiv.classList.add('services-list');
 	listDiv.addEventListener('click', e => {
 			if(e.target.tagName.toLowerCase() !== 'i'){
 				return;
@@ -103,9 +105,9 @@ const List = ({ services }) => {
 	return listDiv;
 };
 
-const inlineEditor = ({ code, name, id }) => {
+const inlineEditor = ({ code, name, id }={}) => {
 	const containerDiv = Container({
-		operations: ['update', 'delete', 'cancel']
+		operations: ['create', 'cancel', 'delete', 'update']
 	});
 
 	const editorDiv = document.createElement('div');
@@ -116,7 +118,7 @@ const inlineEditor = ({ code, name, id }) => {
 					<label for="service_name">Name</label>
 				</div>
 				<div class="input-field col s6">
-					<input disabled id="service_id" type="text" class="" value="${id}">
+					<input id="service_id" type="text" class="" value="${id}">
 					<label for="service_id">ID</label>
 				</div>
 			</div>
@@ -126,6 +128,7 @@ const inlineEditor = ({ code, name, id }) => {
 	containerDiv.querySelector('.contain').appendChild(editorDiv);
 	M.updateTextFields();
 
+	const darkEnabled = window.localStorage.getItem('themeDark') === "true";
 	Editor({
 			text: code,
 			lineNumbers: true,
@@ -133,21 +136,27 @@ const inlineEditor = ({ code, name, id }) => {
 			styleActiveLine: true,
 			matchBrackets: true
 	}, (error, editor) => {
-			//editor.setOption("theme", "default");
+			editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
 			window.Editor = editor;
 	});
 }
 
 async function bartok(){
-	const readAfter = ({ result }) => {
+	const readAfter = ({ result = {} } = {}) => {
 		const services = result.result;
-		if(services.length > 1){
+		if(services.length && !services[0].code){
+			result.listOne = true;
+		}
+		if(services.length > 1 || result.listOne){
 			List({ services });
 		} else {
 			inlineEditor(services[0]);
 		}
 	};
-
+	const updateAfter = ({ result }) => {
+		const services = result.result;
+		inlineEditor(services[0]);
+	};
 	const operations = [{
 			url: ''
 		}, {
@@ -169,13 +178,15 @@ async function bartok(){
 			url: 'service/update',
 			config: {
 				method: 'POST'
-			}
+			},
+			after: updateAfter
 		}, {
 			name: 'delete',
 			url: 'service/delete',
 			config: {
 				method: 'POST'
-			}
+			},
+			after: readAfter
 		}, {
 			name: 'manage',
 			url: 'manage'
@@ -224,7 +235,8 @@ async function bartok(){
 		}
 		const foundOp = operations.find(x => x.name === eventOp)
 		foundOp.config = foundOp.config || {};
-		foundOp.config.body = JSON.stringify({ ...e.detail.body, ...(foundOp.config.body||{})});
+		//foundOp.config.body = foundOp.config.body ? JSON.parse(foundOp.config.body) : undefined;
+		foundOp.config.body = JSON.stringify(e.detail.body);
 		await performOperation(foundOp, e.detail.body);
 	}, false);
 
