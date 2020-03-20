@@ -47,3 +47,9 @@
    background-color: #494d4e !important;
    color: #9c9e9e !important;
  }
+
+ .cm-s-vscode-dark .CodeMirror-gutters {
+  background: #1e1e1e;
+  border-right: 7px solid #1e1e1e;
+  color: #606366;
+}
