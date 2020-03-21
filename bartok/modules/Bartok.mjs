@@ -288,7 +288,7 @@ async function bartok(){
 
 	const foundOp = operations.find(x => x.name === 'read');
 	await performOperation(foundOp, { id: '2' });
-	//Terminal();
+	Terminal();
 }
 
 function splitPanes(){
