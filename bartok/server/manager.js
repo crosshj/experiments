@@ -31,12 +31,6 @@ var deleteFolderRecursive = function (path) {
 const initService = (service) => {
 	const { id, name } = service;
 
-	// TODO: consider cleaner handling of workers
-	// https://www.npmjs.com/package/adios
-
-	// TODO: be safer, better & wrap this code
-	// jailed - https://github.com/asvd/jailed
-	// filtrex - https://github.com/crosshj/experiments/blob/gh-pages/svg/engine-src/expressionEngine.js
 	const code = `
 		process.on('message', parentMsg => {
 			const _message = '${name} : ' + parentMsg + ' PONG.';
