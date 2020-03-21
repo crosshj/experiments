@@ -153,7 +153,11 @@ const inlineEditor = ({ code, name, id }={}) => {
 					<label for="service_id">ID</label>
 				</div>
 			</div>
-			<div id="editor-tabs" class="row no-margin"></div>
+			<div id="editor-tabs" class="row no-margin">
+				<div class="tab">
+					<span>index.js</span>
+				</div>
+			</div>
 			<textarea class="functionInput" id="service_code"></textarea>
 	`;
 
@@ -180,8 +184,12 @@ async function bartok(){
 			result.listOne = true;
 		}
 		if(services.length > 1 || result.listOne){
+			document.querySelector('#project-splitter')
+				.style.display = "none";
 			List({ services });
 		} else {
+			document.querySelector('#project-splitter')
+				.style.display = "";
 			inlineEditor(services[0]);
 		}
 	};
@@ -279,7 +287,7 @@ async function bartok(){
 	// }
 
 	const foundOp = operations.find(x => x.name === 'read');
-	await performOperation(foundOp, { id: '1' });
+	await performOperation(foundOp, { id: '2' });
 	//Terminal();
 }
 

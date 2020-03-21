@@ -29,7 +29,8 @@ html.ns-draggable-cursor {
 
   --main-theme-highlight-color: #40f7ac;
   /* --main-theme-background-color: #363238; */
-  --main-theme-background-color: #3b3b3b;
+  /* --main-theme-background-color: #3b3b3b; */
+  --main-theme-background-color: #2e2e2e;
   --main-theme-background-dark-color: #29252b;
   --main-theme-text-color-dark: green;
   --main-theme-text-color: #d8d8d8;
@@ -364,6 +365,20 @@ ul.editor-controls li:hover {
   background-color: var(--main-theme-background-color);
 }
 
+.tab {
+  position: relative;
+  display: flex;
+  white-space: nowrap;
+  cursor: pointer;
+  height: 35px;
+  box-sizing: border-box;
+  padding: 5px;
+  padding-left: 30px;
+  background: var(--main-theme-color);
+  width: 120px;
+  min-width: fit-content
+}
+
 .services-list {
   overflow: auto;
   height: calc(100vh - 93px);
@@ -530,6 +545,7 @@ notes-section.loading:after {
   font-size: 13px;
   font-weight: 300;
   user-select: none;
+  white-space: nowrap;
 }
 
 #tree-menu {

@@ -64,6 +64,7 @@ function dragElement( element, direction, handler, first, second ){
 
 function Panes(){
 	const splitter = document.createElement('div');
+	splitter.id = "project-splitter";
 	splitter.classList.add('splitter');
 	splitter.innerHTML = `
 		<div id="actionbar"></div>
