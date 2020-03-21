@@ -41,8 +41,8 @@ html.ns-draggable-cursor {
 }
 
 :root.dark-enabled ul#slide-out {
-  background-color: var(--main-theme-background-color);
-  filter: brightness(0.95) contrast(1.2);
+  filter: unset;
+  background-color: var(--theme-subdued-color);
 }
 
 body, label {
@@ -330,32 +330,40 @@ ul.editor-controls li:hover {
 }
 
 .section.editor {
-  position: fixed;
+  /* position: fixed;
   right: 0px;
   bottom: 0px;
   top: 26px;
-  left: 0px;
+  left: 0px; */
+  padding: 0;
   display: flex;
   pointer-events: none;
 }
 
 .section.editor .editor-space {
+  display: none;
   height: 100%;
   width: 175px;
+  min-width: 175px;
 }
 
 .section.editor .contain {
   flex: 1;
+  width: 100%;
   /* background-color: #2e2e2e; */
   pointer-events: all;
 }
 
 .section.editor .CodeMirror {
   color: #9d9b97;
-  height: calc(100vh - 91px);
-  max-height: calc(100vh - 185px);
-  max-width: 100vw;
+  height: calc(100% - 30px);
 }
+
+#editor-tabs{
+  height: 30px;
+  background-color: var(--main-theme-background-color);
+}
+
 .services-list {
   overflow: auto;
   height: calc(100vh - 93px);
@@ -516,11 +524,17 @@ notes-section.loading:after {
 #tree-view {
   font-family: -apple-system,BlinkMacSystemFont,sans-serif;
   padding-left: 3px;
-  padding-top: 15px;
+  height: calc(100% - 30px);
   color: var(--main-theme-text-color);
   background-color: var(--theme-subdued-color);
   font-size: 13px;
   font-weight: 300;
+  user-select: none;
+}
+
+#tree-menu {
+  height: 30px;
+  background-color: var(--theme-subdued-color);
 }
 
 .tree-leaf{position:relative}.tree-leaf .tree-child-leaves{display:block;margin-left:15px}
@@ -564,4 +578,86 @@ notes-section.loading:after {
 
 .tree-leaf .tree-expando.expanded {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E");
+}
+
+#service-fields, .editor-controls {
+  display: none !important;
+}
+
+#editor-container {
+  /* position: absolute;
+  right: 0px;
+  left: 175px;
+  bottom: 0px;
+  top: 13px; */
+  height: 100%;
+}
+
+#xterm-container {
+  min-width: 50%;
+}
+
+
+
+
+.splitter {
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* opacity: .4; */
+  z-index: 99;
+}
+
+.splitter > div:not(.seperator) {
+    position: relative;
+    /* flex-basis: 0; */
+}
+
+.seperator {
+	cursor: col-resize;
+	background: url(https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/vsizegrip.png) center center no-repeat #535353;
+	width: 10px;
+	height: 100%;
+  min-width: 10px;
+  margin-left: -4px;
+  margin-right: -5px;
+  z-index: 999;
+  opacity: 0;
+}
+
+#actionbar {
+	background-color: var(--main-theme-background-color);
+	/* width: 100px; */
+	height: 100%;
+  width: 40px;
+  min-width: 40px;
+}
+
+#explorer {
+	background-color: green;
+	height: 100%;
+  width: 170px;
+}
+
+#second {
+  flex: 1;
+  display: flex;
+}
+
+#editor {
+	background-color: var(--main-theme-color);
+	width: 675px;
+  height: 100%;
+  /* flex: 1; */
+	min-width: 10px;
+}
+#terminal {
+	background-color: var(--main-theme-color);
+	/* width: 390px; */
+	height: 100%;
+  min-width: 10px;
+  flex: 1;
 }

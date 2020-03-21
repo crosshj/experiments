@@ -1,5 +1,8 @@
 import Editor from '../../shared/modules/editor.mjs';
 import TreeView from './TreeView.mjs';
+import Terminal from './Terminal.mjs';
+
+import Panes from './panes.mjs';
 /*
 
 terminal
@@ -62,7 +65,7 @@ const Container = ({ operations }) => {
 		});
 	containerDiv.classList.add('section', 'simulation', 'editor');
 
-	document.querySelector('body')
+	document.querySelector('#editor')
 		.appendChild(containerDiv);
 	return containerDiv;
 };
@@ -138,8 +141,9 @@ const inlineEditor = ({ code, name, id }={}) => {
 	});
 
 	const editorDiv = document.createElement('div');
+	editorDiv.id = "editor-container";
 	editorDiv.innerHTML = `
-			<div class="row no-margin">
+			<div id="service-fields" class="row no-margin">
 				<div class="input-field col s6">
 					<input id="service_name" type="text" class="" value="${name}">
 					<label for="service_name">Name</label>
@@ -149,6 +153,7 @@ const inlineEditor = ({ code, name, id }={}) => {
 					<label for="service_id">ID</label>
 				</div>
 			</div>
+			<div id="editor-tabs" class="row no-margin"></div>
 			<textarea class="functionInput" id="service_code"></textarea>
 	`;
 
@@ -274,8 +279,13 @@ async function bartok(){
 	// }
 
 	const foundOp = operations.find(x => x.name === 'read');
-	await performOperation(foundOp, { id: '' });
-
+	await performOperation(foundOp, { id: '1' });
+	//Terminal();
 }
 
-export default bartok;
+function splitPanes(){
+	Panes();
+	bartok();
+}
+
+export default splitPanes;
