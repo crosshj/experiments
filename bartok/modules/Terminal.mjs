@@ -34,7 +34,7 @@ const motd1 = rainbow(`
 
 const motd1o1 = rainbow(`
 
-  .            .
+  |            .
   |-. ,-. ,-. -|- ,-. . ,
   | | ,-| |    |  | | |/
   '-' '-^ '    |  '-' |\\
@@ -83,6 +83,7 @@ function tryExecCommand(command){
 		if(!ops.includes(command.toLowerCase())){
 			return `COMMAND: ${command} not found!\n`;
 		}
+		//TODO: fire the command!!
 		return `COMMAND:  ${command} running...\n`;
 	};
 
