@@ -31,7 +31,7 @@ function tryExecCommand({ command, loading, done }){
 			if(!id){
 				after = ({ result }) => {
 					loading(`\n
-					${result.result.map(x => `${x.id} - ${x.name}`).join('\n')}
+					${result.result.map(x => `${x.id.toString().padStart(5, ' ')}   ${x.name}`).join('\n')}
 					\n`.replace(/\t/g, ''));
 				};
 			}
