@@ -654,7 +654,7 @@ notes-section.loading:after {
 }
 
 #explorer {
-	background-color: green;
+	background-color: var(--main-theme-color);
 	height: 100%;
   width: 170px;
 }

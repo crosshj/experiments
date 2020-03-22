@@ -6,8 +6,7 @@ import Panes from './panes.mjs';
 const Container = ({ operations }) => {
 	const prevConatiner = document.querySelector("#full-page-container");
 	if(prevConatiner){
-		document.querySelector('body')
-		.removeChild(prevConatiner);
+		prevConatiner.parentNode.removeChild(prevConatiner);
 	}
 	const containerDiv = document.createElement('div');
 	const operationsItems = operations.map(x => `<li>${x}</li>`).join('\n');
@@ -220,9 +219,11 @@ async function bartok(){
 		}
 	});
 
-	async function performOperation(operation, { id } ={}) {
+	async function performOperation(operation, eventData = {}) {
+		const { body={}, after } = eventData;
+		const { id } = body;
 		const op = JSON.parse(JSON.stringify(operation));
-		op.after = operation.after;
+		op.after = after || operation.after;
 		op.url = op.url.replace('{id}', id || '');
 		op.config = op.config || {};
 		op.config.headers = {...{
@@ -241,18 +242,19 @@ async function bartok(){
 	}
 
 	document.body.addEventListener('operations', async function (e) {
-		//console.log(e.detail);
+		console.log(e.detail);
 		const eventOp = e.detail.operation;
 		if(eventOp === 'cancel'){
 			const foundOp = operations.find(x => x.name === 'read');
-			performOperation(foundOp, { id: '' });
+			performOperation(foundOp, { body: { id: '' } });
 			return
 		}
 		const foundOp = operations.find(x => x.name === eventOp)
 		foundOp.config = foundOp.config || {};
 		//foundOp.config.body = foundOp.config.body ? JSON.parse(foundOp.config.body) : undefined;
 		foundOp.config.body = JSON.stringify(e.detail.body);
-		await performOperation(foundOp, e.detail.body);
+		await performOperation(foundOp, e.detail);
+		e.detail.done && e.detail.done('DONE\n')
 	}, false);
 
 	//do everything once the first time
@@ -262,7 +264,7 @@ async function bartok(){
 	// }
 
 	const foundOp = operations.find(x => x.name === 'read');
-	await performOperation(foundOp, { id: '2' });
+	await performOperation(foundOp, { body: { id: '2' } });
 	Terminal();
 }
 
