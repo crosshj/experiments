@@ -1,5 +1,7 @@
-import "https://cdn.jsdelivr.net/npm/xterm@4.4.0/lib/xterm.min.js";
-import "https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.3.0/lib/xterm-addon-fit.js";
+//import "https://cdn.jsdelivr.net/npm/xterm@4.4.0/lib/xterm.min.js";
+//import "https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.3.0/lib/xterm-addon-fit.js";
+import "/shared/vendor/xterm.min.js";
+import "/shared/vendor/xterm-addon-fit.js";
 
 import { motd1, motd1o1, motd2, motd3 } from "./motd.mjs";
 

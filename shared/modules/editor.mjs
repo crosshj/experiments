@@ -2,6 +2,18 @@
 //import "https://dev.jspm.io/codemirror@5.49.0/mode/javascript/javascript.js";
 //import "https://dev.jspm.io/codemirror@5.49.0/mode/markdown/markdown.js";
 
+// const codeMirrorCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css";
+// const codeMirrorBespinThemeCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css";
+// const codeMirrorJsUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js";
+// const codeMirrorJsSyntaxUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js";
+
+const codeMirrorCssUrl = "/shared/css/codemirror.css";
+const codeMirrorBespinThemeCssUrl = "/shared/css/bespin.css";
+const cmVSCodeUrl = "/shared/css/vscode.codemirror.css";
+
+const codeMirrorJsUrl = "/shared/vendor/codemirror.js";
+const codeMirrorJsSyntaxUrl = "/shared/vendor/codemirror-javascript.js";
+
 const appendScript = (url, callback) => {
 	var materializeScript = document.createElement('script');
 	materializeScript.crossOrigin = "anonymous";
@@ -20,24 +32,19 @@ const appendStyleSheet = (url, callback) => {
 };
 
 const codeMirrorCss = (callback) => {
-	const codeMirrorCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.css";
-	const codeMirrorThemeCssUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/theme/bespin.css";
-	const cmVSCodeUrl = "../shared/css/vscode.codemirror.css";
 	appendStyleSheet(codeMirrorCssUrl, () => {
 		appendStyleSheet(cmVSCodeUrl, () => {
-			appendStyleSheet(codeMirrorThemeCssUrl, callback)
+			appendStyleSheet(codeMirrorBespinThemeCssUrl, callback)
 		});
 	});
 };
 
 const codeMirrorJs = (callback) => {
-	const url = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js";
-	appendScript(url, callback);
+	appendScript(codeMirrorJsUrl, callback);
 };
 
 const codeMirrorJavascriptModeJs = (callback) => {
-	const url = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js";
-	appendScript(url, callback);
+	appendScript(codeMirrorJsSyntaxUrl, callback);
 };
 
 const setupEditor = (text, opts) => {

@@ -635,7 +635,7 @@ notes-section.loading:after {
 
 .seperator {
 	cursor: col-resize;
-	background: url(https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/vsizegrip.png) center center no-repeat #535353;
+	/* background: url(/shared/images/vsizegrip.png) center center no-repeat #535353; */
 	width: 10px;
 	height: 100%;
   min-width: 10px;

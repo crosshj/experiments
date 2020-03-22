@@ -5,12 +5,19 @@ import Split from "../vendor/split-grid.js";
 // ^^^ not working ?
 
 let config = {};
+//const materialIconsCssUrl = "https://fonts.googleapis.com/icon?family=Material+Icons";
+//const materializeCssUrl = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css";
+//const materializeJsUrl = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js";
+
+const materialIconsCssUrl = "/shared/css/material-icons.css";
+const materializeCssUrl = "/shared/css/materialize.min.css";
+const materializeJsUrl = "/shared/vendor/materialize.min.js";
 
 const appendScript = (callback) => {
 	var materializeScript = document.createElement('script');
 	materializeScript.crossOrigin = "anonymous";
 	materializeScript.onload = callback;
-	materializeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js";
+	materializeScript.src = materializeJsUrl;
 	document.head.appendChild(materializeScript);
 };
 
@@ -24,9 +31,6 @@ const appendStyleSheet = (url, callback) => {
 };
 
 const addStylesAndFonts = (callback) => {
-	const materialIconsCssUrl = "https://fonts.googleapis.com/icon?family=Material+Icons";
-	const materializeCssUrl = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css";
-
 	appendStyleSheet(materialIconsCssUrl, () => {
 		appendStyleSheet(materializeCssUrl, callback)
 	});
