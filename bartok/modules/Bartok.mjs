@@ -138,6 +138,8 @@ const inlineEditor = ({ code, name, id }={}) => {
 	containerDiv.querySelector('.contain').appendChild(editorDiv);
 	M.updateTextFields();
 
+	const editorPane = document.querySelector('#editor');
+	editorPane.style.width = editorPane.clientWidth + 'px';
 	const darkEnabled = window.localStorage.getItem('themeDark') === "true";
 	Editor({
 			text: code,

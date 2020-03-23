@@ -27,6 +27,8 @@ function dragElement(element, direction, handler, first, second) {
 
 	// function that will be called whenever the down event of the mouse is raised
 	function dragMouseDown(e) {
+		first.style.minWidth = "";
+		second.style.minWidth = "";
 		//console.log("dragMouseDown");
 		drag.x = e.clientX;
 		drag.y = e.clientY;
@@ -38,7 +40,7 @@ function dragElement(element, direction, handler, first, second) {
 
 	// function that will be called whenever the up event of the mouse is raised
 	function onMouseMove(e) {
-		//console.log("dragMouseDown");
+		//console.log("onMouseMove");
 
 		const currentX = e.clientX;
 		const currentY = e.clientY;
@@ -61,8 +63,8 @@ function dragElement(element, direction, handler, first, second) {
 		drag.y = currentY;
 		first.style.width = firstWidth + "px";
 		second.style.width = secondWidth + "px";
-		e.preventDefault();
-		return false;
+		// e.preventDefault();
+		// return false;
 	}
 }
 

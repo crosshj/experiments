@@ -8,15 +8,25 @@ import { motd1, motd1o1, motd2, motd3 } from "./motd.mjs";
 function tryExecCommand({ command, loading, done }){
 		const [ op, ...args] = command.split(' ');
 		const [ id, name, ...other] = args;
-		let after;
+		let after, noDone;
 
 		const ops = [
 			"cancel", "create", "read", "update", "delete",
 			"manage", "monitor", "persist",
-			"fullscreen"
+			"fullscreen", "help"
 		];
 		if(!ops.includes(op.toLowerCase())){
 			done(`${command}:  command not found!\nSupported: ${ops.join(', ')}\n`);
+			return;
+		}
+
+
+		if(['help'].includes(op)){
+			done(`\nThese might work:\n\n\r   ${
+				ops
+					.filter(x => x !== "help")
+					.join('\n\r   ')
+			}\n`);
 			return;
 		}
 
@@ -39,10 +49,13 @@ function tryExecCommand({ command, loading, done }){
 			delete body.code;
 			if(!id){
 				after = ({ result }) => {
+					loading('DONE');
 					loading(`\n
 					${result.result.map(x => `${x.id.toString().padStart(5, ' ')}   ${x.name}`).join('\n')}
 					\n`.replace(/\t/g, ''));
+					done();
 				};
+				noDone = () => {}
 			}
 		}
 
@@ -57,7 +70,8 @@ function tryExecCommand({ command, loading, done }){
 			detail: {
 				operation: op.toLowerCase(),
 				listener: Math.random().toString().replace('0.', ''),
-				done, after,
+				done: noDone || done,
+				after,
 				body
 			}
 		});
@@ -103,7 +117,55 @@ function _Terminal(){
 	term.loadAddon(fitAddon);
 
 	//console.log({ term, Terminal });
-	term.open(document.getElementById('terminal'));
+	const termContainer = document.createElement('div');
+	termContainer.classList.add('term-contain');
+
+	const termMenu = document.createElement('div');
+	termMenu.id = "terminal-menu";
+	termMenu.innerHTML = `
+	<div class="composite-bar panel-switcher-container">
+		 <div class="monaco-action-bar">
+				<ul class="actions-container" role="toolbar" aria-label="Active View Switcher">
+					 <li class="action-item checked" role="tab" draggable="true" tabindex="0" active>
+							<a class="action-label terminal" style="color: rgb(231, 231, 231); border-bottom-color: rgba(128, 128, 128, 0.35);">Terminal</a>
+							<div class="badge" aria-hidden="true" style="display: none;">
+								 <div class="badge-content" style="color: rgb(255, 255, 255); background-color: rgb(77, 77, 77);"></div>
+							</div>
+					 </li>
+					 <li class="action-item" role="button" tabindex="0" aria-label="Additional Views" title="Additional Views">
+							<a class="action-label toggle-more" aria-label="Additional Views" title="Additional Views" style="background-color: rgb(30, 30, 30);"></a>
+							<div class="badge" aria-hidden="true" aria-label="Additional Views" title="Additional Views" style="display: none;">
+								 <div class="badge-content" style="color: rgb(255, 255, 255); background-color: rgb(77, 77, 77);"></div>
+							</div>
+					 </li>
+				</ul>
+		 </div>
+	</div>
+	<div class="title-actions">
+		 <div class="monaco-toolbar">
+				<div class="monaco-action-bar animated">
+					 <ul class="actions-container" role="toolbar" aria-label="Terminal actions">
+							<li class="action-item select-container" role="presentation">
+								 <select class="monaco-select-box" aria-label="Open Terminals." title="1: node, node" style="background-color: rgb(60, 60, 60); color: rgb(240, 240, 240); border-color: rgb(60, 60, 60);">
+										<option value="1: node, node">1: node, node</option>
+								 </select>
+							</li>
+							<li class="action-item" role="presentation"><a class="action-label icon terminal-action new" role="button" tabindex="0" title="New Terminal"></a></li>
+							<li class="action-item" role="presentation"><a class="action-label icon terminal-action split" role="button" tabindex="0" title="Split Terminal (⌘\)"></a></li>
+							<li class="action-item" role="presentation"><a class="action-label icon terminal-action kill" role="button" tabindex="0" title="Kill Terminal"></a></li>
+							<li class="action-item" role="presentation"><a class="action-label icon maximize-panel-action" role="button" tabindex="0" title="Maximize Panel Size"></a></li>
+							<li class="action-item" role="presentation"><a class="action-label icon hide-panel-action" role="button" tabindex="0" title="Close Panel"></a></li>
+					 </ul>
+				</div>
+		 </div>
+	</div>
+	`;
+
+	const terminalPane = document.getElementById('terminal')
+	terminalPane.appendChild(termMenu);
+	terminalPane.appendChild(termContainer);
+
+	term.open(document.querySelector('#terminal .term-contain'));
 
 	// term.prompt = () => {
   //   term.write("\r\n$ ");

@@ -29,13 +29,12 @@ const motd1 = rainbow(`
 `;
 
 const motd1o1 = rainbow(`
-
   |            .
   |-. ,-. ,-. -|- ,-. . ,
   | | ,-| |    |  | | |/
   '-' '-^ '    |  '-' |\\
                       ' \\
-`, 195, 1) + `      let's go!\n\n`;
+`, 196, 1) + `     ✨  let's go! ✨\n\n`;
 
 
 

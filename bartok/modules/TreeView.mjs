@@ -148,7 +148,7 @@ let tree;
 function attachListener(treeView){
 	const listener = async function (e) {
 		const { id, result } = e.detail;
-		console.log(e.detail);
+		//console.log(e.detail);
 		if(result.length > 1){
 			return; // TODO: this is right???
 		}
@@ -157,11 +157,12 @@ function attachListener(treeView){
 		}
 		const currentExplorer = document.querySelector('#explorer');
 		const backupStyle = {
-			minWidth: currentExplorer.minWidth,
-			maxWidth: currentExplorer.maxWidth,
-			width: currentExplorer.width,
+			minWidth: currentExplorer.style.minWidth,
+			maxWidth: currentExplorer.style.maxWidth,
+			width: currentExplorer.style.width,
 			clientWidth: currentExplorer.clientWidth
 		};
+		//currentExplorer.style.width = currentExplorer.clientWidth;
 		currentExplorer.style.minWidth = currentExplorer.clientWidth + 'px';
 
 		if(tree && tree.id !== id){
@@ -181,7 +182,10 @@ function attachListener(treeView){
 				t.classList.add('folder');
 			}
 		});
-		currentExplorer.style.minWidth = backupStyle.minWidth;
+		setTimeout(() => {
+			//currentExplorer.style.width = backupStyle.clientWidth;
+			//currentExplorer.style.minWidth = backupStyle.minWidth;
+		}, 1000)
 	};
 	attach({
 		name: 'TreeView',
