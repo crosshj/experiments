@@ -238,11 +238,20 @@ async function bartok(){
 		if (op.after) {
 			op.after({ result });
 		}
+		const event = new CustomEvent('operationDone', {
+			bubbles: true,
+			detail: {
+				op: operation.name,
+				id,
+				result: result.result
+			}
+		});
+		document.body.dispatchEvent(event);
 		//console.log({ operation, data });
 	}
 
 	document.body.addEventListener('operations', async function (e) {
-		console.log(e.detail);
+		// console.log(e.detail);
 		const eventOp = e.detail.operation;
 		if(eventOp === 'cancel'){
 			const foundOp = operations.find(x => x.name === 'read');
@@ -264,7 +273,7 @@ async function bartok(){
 	// }
 
 	const foundOp = operations.find(x => x.name === 'read');
-	await performOperation(foundOp, { body: { id: '2' } });
+	await performOperation(foundOp, { body: { id: 11 } });
 	Terminal();
 }
 

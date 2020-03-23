@@ -11,11 +11,18 @@ function tryExecCommand({ command, loading, done }){
 		let after;
 
 		const ops = [
-			"cancel", "create", "read", "update", "delete", "manage", "monitor", "persist"
+			"cancel", "create", "read", "update", "delete",
+			"manage", "monitor", "persist",
+			"fullscreen"
 		];
 		if(!ops.includes(op.toLowerCase())){
 			done(`${command}:  command not found!\nSupported: ${ops.join(', ')}\n`);
 			return;
+		}
+
+		if(['fullscreen'].includes(op)){
+			document.documentElement.requestFullscreen();
+			return done();
 		}
 
 		const body = id !== undefined
@@ -112,8 +119,9 @@ function _Terminal(){
 			command,
 			loading: (m) => term.write(m),
 			done: (m) => {
-				term.write(m);
-				callback();
+				m && term.write(m);
+				setTimeout(() => fitAddon.fit(), 10);
+				callback && callback();
 			}
 		});
 		charBuffer = [];
@@ -127,6 +135,14 @@ function _Terminal(){
 	term.onKey((e) => {
 		const printable = !e.domEvent.altKey && !e.domEvent.altGraphKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
 		if (e.domEvent.keyCode === 13) {
+				if(['cls', 'clear'].includes(charBuffer.join(''))){
+					charBuffer = [];
+					term.write('\x1B[2K');
+					term.clear();
+					term.write('\x1B[1;30m \r$ \x1B[0m');
+					//prompt(term);
+					return;
+				}
 				onEnter(() => {
 					prompt(term);
 				});
@@ -144,10 +160,15 @@ function _Terminal(){
 		}
 	});
 
+	term.onResize(() => {
+		fitAddon.fit();
+	});
+
 	fitAddon.fit();
 	term.write(motd1o1)
 
 	prompt(term);
+	window.term = term;
 }
 
 export default _Terminal;

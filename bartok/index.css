@@ -618,14 +618,17 @@ notes-section.loading:after {
 
 
 .splitter {
+  background-color: var(--main-theme-color);
   display: flex;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  /* opacity: .4; */
   z-index: 99;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .splitter > div:not(.seperator) {
@@ -636,7 +639,8 @@ notes-section.loading:after {
 .seperator {
 	cursor: col-resize;
 	/* background: url(/shared/images/vsizegrip.png) center center no-repeat #535353; */
-	width: 10px;
+  background: var(--main-theme-background-color);
+  width: 10px;
 	height: 100%;
   min-width: 10px;
   margin-left: -5px;
@@ -656,26 +660,34 @@ notes-section.loading:after {
 #explorer {
 	background-color: var(--main-theme-color);
 	height: 100%;
-  width: 170px;
+  width: 200px;
 }
 
+/* container for editor and terminal*/
 #second {
-  flex: 1;
+  border-left: 1px solid var(--main-theme-background-color);
   display: flex;
+  width: 100%;
 }
 
 #editor {
 	background-color: var(--main-theme-color);
-	width: 675px;
+	/* width: 550px; */
+  width: 50%;
   height: 100%;
-  /* flex: 1; */
 	min-width: 10px;
 }
+
+#editor textarea {
+  /* display: none; */
+  opacity: 0;
+}
+
 #terminal {
 	background-color: var(--main-theme-color);
-	/* width: 390px; */
-	height: 100%;
+  border-left: 1px solid var(--main-theme-background-color);
+  width: 50%;
+  height: 100%;
   min-width: 10px;
-  flex: 1;
   padding-left: 15px;
 }
