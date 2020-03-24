@@ -1,7 +1,7 @@
-import TreeView from "/shared/vendor/js-treeview.1.1.5.js";
-//import TreeView from "https://dev.jspm.io/js-treeview@1.1.5";
+import JSTreeView from "/shared/vendor/js-treeview.1.1.5.js";
+//import JSTreeView from "https://dev.jspm.io/js-treeview@1.1.5";
 
-import { attach } from './Listeners.mjs';
+import { attachListener } from './events/tree.mjs';
 
 const getTreeViewDOM = ({ contextHandler } = {}) => {
 	const prevTreeView = document.querySelector('#tree-view');
@@ -20,35 +20,6 @@ const getTreeViewDOM = ({ contextHandler } = {}) => {
 	document.body.querySelector('#explorer').appendChild(_treeMenu);
 	document.body.querySelector('#explorer').appendChild(_tree);
 	return _tree;
-}
-
-const exampleTree = {
-	"Server Client Bundle": {
-		server: {
-			routes: {
-				"users.js": {},
-				"company.js": {},
-				"vehicles.js": {},
-			},
-			"index.js": {}
-		},
-		client: {
-			components: {
-				"index.js": {},
-				"menu.js": {},
-				"list.js": {},
-			},
-			images: {
-				"logo.gif": {},
-				"icon-person.png": {},
-				"splash.gif": {},
-			},
-			"index.js": {}
-		},
-		"ReadMe.md": {},
-		"bartok.yml": {},
-		"package.json": {},
-	}
 }
 
 const contextMenuInit = (callback) => {
@@ -120,80 +91,6 @@ const contextMenu = (e) => {
 	return false;
 };
 
-const fileTreeConvert = (input, converted=[]) => {
-	const keys = Object.keys(input);
-	keys.forEach(k => {
-		converted.push({
-			name: k,
-			children: fileTreeConvert(input[k])
-		})
-	});
-	return converted;
-};
-
-const getTree = (result) => {
-	let resultTree = {
-		"index.js": {}
-	};
-	const name = ((result||[])[0]||{}).name || 'no service name';
-	try {
-		resultTree = { [name]: resultTree };
-		resultTree[name] = JSON.parse(result[0].tree);
-	} catch(e){}
-
-	return resultTree;
-};
-
-let tree;
-function attachListener(treeView){
-	const listener = async function (e) {
-		const { id, result } = e.detail;
-		//console.log(e.detail);
-		if(result.length > 1){
-			return; // TODO: this is right???
-		}
-		if(tree && tree.id === id){
-			return;
-		}
-		const currentExplorer = document.querySelector('#explorer');
-		const backupStyle = {
-			minWidth: currentExplorer.style.minWidth,
-			maxWidth: currentExplorer.style.maxWidth,
-			width: currentExplorer.style.width,
-			clientWidth: currentExplorer.clientWidth
-		};
-		//currentExplorer.style.width = currentExplorer.clientWidth;
-		currentExplorer.style.minWidth = currentExplorer.clientWidth + 'px';
-
-		if(tree && tree.id !== id){
-			tree.off();
-			tree = undefined;
-		}
-		const treeFromResult = getTree(result);
-		const converted = fileTreeConvert(treeFromResult);
-		converted[0].expanded = true;
-		const newTree = new TreeView(converted, 'tree-view');
-		newTree.id = id;
-
-
-		Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
-			const item = JSON.parse(t.dataset.item);
-			if(item.children.length){
-				t.classList.add('folder');
-			}
-		});
-		setTimeout(() => {
-			//currentExplorer.style.width = backupStyle.clientWidth;
-			//currentExplorer.style.minWidth = backupStyle.minWidth;
-		}, 1000)
-	};
-	attach({
-		name: 'TreeView',
-		eventName: 'operationDone',
-		listener
-	});
-}
-
 function _TreeView(op){
 	if(op === "hide"){
 		const prevTreeView = document.querySelector('#tree-view');
@@ -207,18 +104,7 @@ function _TreeView(op){
 	});
 	treeView.style.display = "";
 
-	// const converted = fileTreeConvert(exampleTree);
-	// converted[0].expanded = true;
-	// var tree = new TreeView(converted, 'tree-view');
-
-	// Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
-	// 	const item = JSON.parse(t.dataset.item);
-	// 	if(item.children.length){
-	// 		t.classList.add('folder');
-	// 	}
-	// });
-
-	attachListener(treeView);
+	attachListener(treeView, JSTreeView);
 }
 
 export default _TreeView;

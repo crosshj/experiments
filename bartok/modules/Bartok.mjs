@@ -3,6 +3,8 @@ import TreeView from './TreeView.mjs';
 import Terminal from './Terminal.mjs';
 import Panes from './panes.mjs';
 
+import { attachListener } from './events/editor.mjs';
+
 const Container = ({ operations }) => {
 	const prevConatiner = document.querySelector("#full-page-container");
 	if(prevConatiner){
@@ -153,6 +155,29 @@ const inlineEditor = ({ code, name, id }={}) => {
 	});
 }
 
+let currentService;
+function getCodeFromService(service, currentFile = "index.js"){
+	if(!service){
+		service = currentService || {};
+	} else {
+		currentService = service;
+	}
+	const code = Array.isArray(service.code)
+		? (service.code.find(x => x.name === currentFile)||{}).code || ""
+		: service.code;
+	return {
+		code,
+		name: service.name,
+		id: service.id
+	};
+}
+
+attachListener((currentFile) => {
+	console.log('should also switch or add tab');
+	const { code="error", name, id } = getCodeFromService(null, currentFile);
+	inlineEditor({ code, name, id });
+});
+
 async function bartok(){
 	const readAfter = ({ result = {} } = {}) => {
 		const services = result.result;
@@ -166,7 +191,12 @@ async function bartok(){
 		} else {
 			document.querySelector('#project-splitter')
 				.style.display = "";
-			inlineEditor(services[0]);
+			const service = services[0];
+			if(!service){
+				return inlineEditor({ code:"", name:"", id: '' });
+			}
+			const { code, name, id } = getCodeFromService(services[0]);
+			inlineEditor({ code, name, id });
 		}
 	};
 	const updateAfter = ({ result }) => {

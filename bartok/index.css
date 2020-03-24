@@ -26,6 +26,7 @@ html, body {
   --main-theme-text-invert-color: white;
   --theme-subdued-color: #f5f5f5;
   --theme-text-color: #fff;
+  --theme-text-selected: orange;
 }
 
 :root.dark-enabled {
@@ -44,6 +45,7 @@ html, body {
   /* --theme-subdued-color: #483f48; */
   --theme-subdued-color: #262626;
   --theme-text-color: black;
+  --theme-text-selected: #82e3ae;
 }
 
 :root.dark-enabled ul#slide-out {
@@ -618,6 +620,11 @@ notes-section.loading:after {
 
 .tree-leaf .tree-expando.expanded {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E");
+}
+
+.tree-leaf-content.selected {
+  background: var(--main-theme-background-color);
+  color: var(--theme-text-selected);
 }
 
 #service-fields, .editor-controls {
