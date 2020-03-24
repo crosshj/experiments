@@ -1,58 +1,35 @@
-
 const Persist = require('./persistance');
 const express = require('express');
 const app = express();
 const port = 3080;
 const managerInit = require('./manager').init;
+const { handler, cors } = require('./utilities');
 
-async function initAPI({ manager }){
-
-	function handler(name){
-		return async (req, res) => {
-			let result;
-			try {
-				result = await manager[name](req.params, req.body);
-			}catch(e){
-				console.log(e)
-				process.stdout.write(name + ' - ');
-			}
-			res.json({ message: name, result });
-		}
-	}
-
-	var allowCrossDomain = function(req, res, next) {
-			res.header('Access-Control-Allow-Origin', '*');
-			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-			res.header('Access-Control-Allow-Headers', 'Content-Type');
-
-			next();
-	};
-	app.use(allowCrossDomain);
+async function setupExpress({ manager }){
+	app.use(cors);
 	app.use(express.json());
 	app.use(express.urlencoded({extended: true}));
 
-	app.get('/', handler('hello'));
+	app.get('/', handler(manager, 'hello'));
 
-	app.post('/service/create', handler('create'));
-	app.get('/service/read/:id*?', handler('read'));
-	app.post('/service/update', handler('update'));
-	app.post('/service/delete', handler('delete'));
+	app.post('/service/create', handler(manager, 'create'));
+	app.get('/service/read/:id*?', handler(manager, 'read'));
+	app.post('/service/update', handler(manager, 'update'));
+	app.post('/service/delete', handler(manager, 'delete'));
 
-	app.get('/manage', handler('manage'));
-	app.get('/monitor', handler('monitor'));
-	app.get('/persist', handler('persist'));
+	app.get('/manage', handler(manager, 'manage'));
+	app.get('/monitor', handler(manager, 'monitor'));
+	app.get('/persist', handler(manager, 'persist'));
 
 	await app.listen(port, () => console.log(`Example app listening on port ${port}!\n`));
 }
-
 
 (async () => {
 	try {
 		const dbConfig = {};
 		const db = await Persist.init(dbConfig);
 		const manager = await managerInit({ db });
-		//console.log({ keys: Object.keys(manager)})
-		await initAPI({ db, manager });
+		await setupExpress({ manager });
 	} catch(e) {
 		console.log(e);
 	}

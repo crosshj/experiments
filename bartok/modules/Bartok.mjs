@@ -156,14 +156,21 @@ const inlineEditor = ({ code, name, id }={}) => {
 }
 
 let currentService;
-function getCodeFromService(service, currentFile = "index.js"){
+let currentFile;
+function getCodeFromService(service, file){
 	if(!service){
 		service = currentService || {};
 	} else {
 		currentService = service;
 	}
+	if(!file){
+		currentFile = currentFile || "index.js";
+		file = currentFile;
+	} else {
+		currentFile = file;
+	}
 	const code = Array.isArray(service.code)
-		? (service.code.find(x => x.name === currentFile)||{}).code || ""
+		? (service.code.find(x => x.name === file)||{}).code || ""
 		: service.code;
 	return {
 		code,
@@ -173,7 +180,8 @@ function getCodeFromService(service, currentFile = "index.js"){
 }
 
 attachListener((currentFile) => {
-	console.log('should also switch or add tab');
+	console.log('TODO: switch or add tab');
+	console.log('TODO: changes to current file')
 	const { code="error", name, id } = getCodeFromService(null, currentFile);
 	inlineEditor({ code, name, id });
 });
@@ -193,7 +201,7 @@ async function bartok(){
 				.style.display = "";
 			const service = services[0];
 			if(!service){
-				return inlineEditor({ code:"", name:"", id: '' });
+				return inlineEditor({ code:"", name:"", id:"" });
 			}
 			const { code, name, id } = getCodeFromService(services[0]);
 			inlineEditor({ code, name, id });
@@ -201,7 +209,8 @@ async function bartok(){
 	};
 	const updateAfter = ({ result }) => {
 		const services = result.result;
-		inlineEditor(services[0]);
+		const { code, name, id } = getCodeFromService(services[0]);
+		inlineEditor({ code, name, id });
 	};
 	const operations = [{
 			url: ''
@@ -289,6 +298,17 @@ async function bartok(){
 			const foundOp = operations.find(x => x.name === 'read');
 			performOperation(foundOp, { body: { id: '' } });
 			return
+		}
+		if(eventOp === 'update'){
+			console.log({ currentService});
+			const files = JSON.parse(JSON.stringify(currentService.code));
+			//debugger;
+			(files.find(x => x.name === currentFile)||{})
+				.code = e.detail.body.code;
+			e.detail.body.code = JSON.stringify({
+				tree: currentService.tree,
+				files
+			});
 		}
 		const foundOp = operations.find(x => x.name === eventOp)
 		foundOp.config = foundOp.config || {};
