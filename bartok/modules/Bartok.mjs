@@ -223,7 +223,8 @@ async function bartok(){
 				body: {
 					name: 'test-service'
 				}
-			}
+			},
+			after: updateAfter
 		}, {
 			name: 'read',
 			url: 'service/read/{id}',
@@ -241,7 +242,7 @@ async function bartok(){
 			config: {
 				method: 'POST'
 			},
-			after: readAfter
+			// after: readAfter  <<< TODO: should probably figure out what to do here
 		}, {
 			name: 'manage',
 			url: 'manage'
@@ -262,6 +263,11 @@ async function bartok(){
 
 	async function performOperation(operation, eventData = {}) {
 		const { body={}, after } = eventData;
+		if(operation.name !== "read"){
+			body.id = body.id === 0
+				? body.id
+				: body.id || (currentService||{}).id;
+		}
 		const { id } = body;
 		const op = JSON.parse(JSON.stringify(operation));
 		op.after = after || operation.after;
@@ -313,6 +319,11 @@ async function bartok(){
 		const foundOp = operations.find(x => x.name === eventOp)
 		foundOp.config = foundOp.config || {};
 		//foundOp.config.body = foundOp.config.body ? JSON.parse(foundOp.config.body) : undefined;
+		if(foundOp.name !== "read"){
+			e.detail.body.id = e.detail.body.id === 0
+				? e.detail.body.id
+				: e.detail.body.id || (currentService||{}).id;
+		}
 		foundOp.config.body = JSON.stringify(e.detail.body);
 		await performOperation(foundOp, e.detail);
 		e.detail.done && e.detail.done('DONE\n')

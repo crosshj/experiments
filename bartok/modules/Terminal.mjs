@@ -7,7 +7,9 @@ import { motd1, motd1o1, motd2, motd3 } from "./motd.mjs";
 
 function tryExecCommand({ command, loading, done }){
 		const [ op, ...args] = command.split(' ');
-		const [ id, name, ...other] = args;
+		const [ _id, name, ...other] = args;
+		const id = Number(_id);
+
 		let after, noDone;
 
 		const ops = [
@@ -35,7 +37,7 @@ function tryExecCommand({ command, loading, done }){
 			return done();
 		}
 
-		const body = id !== undefined
+		const body = (id === 0 || !!id)
 			? { id }
 			: {
 				name: name || (document.body.querySelector('#service_name')||{}).value,
@@ -84,7 +86,7 @@ function tryExecCommand({ command, loading, done }){
 function _Terminal(){
 	const options = {
 		theme: {
-			foreground: '#ffffff',
+			foreground: '#ccc', // '#ffffff',
 			//background: '#000',
 			background: '#1e1e1e',
 			cursor: '#ffffff',
@@ -107,6 +109,7 @@ function _Terminal(){
 			brightWhite: '#ffffff'
 		},
 		fontSize: 13,
+		fontWeight: 100,
 		convertEol: true
 	};
 

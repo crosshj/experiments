@@ -51,7 +51,7 @@ const initManager = async ({ db }) => {
 function handle({ name, db, manager }) {
 	return async function () {
 		if(name === 'create'){
-			return await createServices({ manager, arguments });
+			return await createServices({ db, manager, arguments });
 		}
 		if(name === 'read'){
 			return await readServices({ manager, arguments });
