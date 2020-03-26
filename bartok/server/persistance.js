@@ -22,11 +22,32 @@ class Persistence {
 				service.name = `${Math.random()}`;
 			}
 			//process.stdout.write('create - ')
-			console.log();
+			let serviceDef = JSON.parse(JSON.stringify(service));
 
 			 // creates/overwrites(if force is true)
 			//await Service.sync({ force: true });
-			const newService = await Service.create(service);
+
+			if(Array.isArray(serviceDef.code) && service.tree){
+				serviceDef.code = JSON.stringify({
+					code: service.code,
+					tree: service.tree
+				}, null, 2);
+			}
+
+			console.log({ code: serviceDef.code })
+
+
+			// if(Array.isArray(serviceDef.code)){
+			// 	console.log(JSON.stringify({
+			// 		code: serviceDef.code,
+			// 		tree: serviceDef.tree
+			// 	}, null, 2))
+			// 	console.trace("looking for tree")
+			// }
+
+			// console.log(`${serviceDef.name} : ${typeof serviceDef.code} ${Array.isArray(serviceDef.code) ? 'ARRAY' : 'OBJECT'}`)
+
+			const newService = await Service.create(serviceDef);
 			return newService;
 		} catch(e){
 			console.log(e.toString().split('\n')[0]);
@@ -37,7 +58,7 @@ class Persistence {
 	async read(id){
 		try {
 			//process.stdout.write('read - ')
-			console.log();
+			// console.log();
 			let services;
 			if(id){
 				let service = await Service.findOne({where: {id}})

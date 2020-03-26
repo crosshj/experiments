@@ -7,6 +7,7 @@ import { motd1, motd1o1, motd2, motd3 } from "./motd.mjs";
 
 function tryExecCommand({ command, loading, done }){
 		const [ op, ...args] = command.split(' ');
+		const [ filename ] = args;
 		const [ _id, name, ...other] = args;
 		const id = Number(_id);
 
@@ -15,13 +16,18 @@ function tryExecCommand({ command, loading, done }){
 		const ops = [
 			"cancel", "create", "read", "update", "delete",
 			"manage", "monitor", "persist",
-			"fullscreen", "help"
+			"fullscreen", "help",
+			"addFile", "renameFile", "deleteFile",
+			"renameProject"
 		];
-		if(!ops.includes(op.toLowerCase())){
+		if(!ops.map(x => x.toLowerCase()).includes(op.toLowerCase())){
 			done(`${command}:  command not found!\nSupported: ${ops.join(', ')}\n`);
 			return;
 		}
 
+		const showLoading = ![
+			"addFile", "renameFile", "deleteFile", "renameProject"
+		].includes(op);
 
 		if(['help'].includes(op)){
 			done(`\nThese might work:\n\n\r   ${
@@ -70,8 +76,9 @@ function tryExecCommand({ command, loading, done }){
 		const event = new CustomEvent('operations', {
 			bubbles: true,
 			detail: {
-				operation: op.toLowerCase(),
+				operation: op,
 				listener: Math.random().toString().replace('0.', ''),
+				filename,
 				done: noDone || done,
 				after,
 				body
@@ -80,7 +87,7 @@ function tryExecCommand({ command, loading, done }){
 		document.body.dispatchEvent(event);
 
 		//TODO: listen for when it's done
-		loading(`${command}: running... `);
+		showLoading && loading(`${command}: running... `);
 	};
 
 function _Terminal(){

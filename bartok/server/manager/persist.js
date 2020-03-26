@@ -3,11 +3,7 @@ const persistServices = async ({ db, manager, arguments }) => {
 	for (var i = 0, len = manager.services.length; i < len; i++) {
 		const service = manager.services[i];
 		if (!dbServices.find(d => Number(d.id) === Number(service.id))) {
-			await db.create({
-				name: service.name,
-				code: service.code,
-				id: service.id
-			});
+			await db.create(service);
 		}
 		else {
 			if(service.tree){

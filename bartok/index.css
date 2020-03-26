@@ -312,8 +312,8 @@ nav a.sidenav-trigger i,
   background: #eee;
 }
 
-.CodeMirror-scrollbar-filler {
-  background: var(--theme-subdued-color);
+.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler  {
+  background: var(--theme-subdued-color) !important;
 }
 
 .CodeMirror .CodeMirror-hscrollbar {

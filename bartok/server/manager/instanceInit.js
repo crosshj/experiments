@@ -1,5 +1,6 @@
 const childProcess = require('child_process');
 const fs = require('fs');
+const path = require('path');
 
 const dirname = `${__dirname}/../__services`;
 
@@ -41,6 +42,7 @@ const createV0Service = function(service){
 
 const createTree = (path, tree, files) => {
 	//console.log({ path, tree, files });
+	//console.log({ path });
 	const thisName = path.split('/')[path.split('/').length-1];
 	const thisFile = files.find(x => x.name === thisName);
 
@@ -64,7 +66,23 @@ const createTree = (path, tree, files) => {
 	}
 };
 
+const deleteFolderRecursive = function(p) {
+  if (!fs.existsSync(p)) {
+		return;
+	}
+	fs.readdirSync(p).forEach((file, index) => {
+		const curP = path.join(p, file);
+		if (fs.lstatSync(curP).isDirectory()) { // recurse
+			deleteFolderRecursive(curP);
+		} else { // delete file
+			fs.unlinkSync(curP);
+		}
+	});
+	fs.rmdirSync(p);
+};
+
 const createV1Service = function(service, codeObject){
+	//console.log('----- CREATE V1 SERVICE');
 	const { name } = service;
 
 	if(!service.tree){
@@ -80,19 +98,27 @@ const createV1Service = function(service, codeObject){
 		fs.mkdirSync(dirname);
 	}
 	const serviceFilePathDir = isDirSync(serviceFilePath);
-	if(fs.existsSync(serviceFilePath) && !serviceFilePathDir){
+	const serviceFilePathExists = fs.existsSync(serviceFilePath);
+	if(serviceFilePathExists && !serviceFilePathDir){
 		fs.unlinkSync(serviceFilePath)
 	}
 
-	if (!fs.existsSync(serviceFilePath)) {
+	// delete folder contents
+	if(serviceFilePathExists && serviceFilePathDir){
+		deleteFolderRecursive(serviceFilePath)
+	}
+
+	if (!serviceFilePathExists) {
 		//console.log(`created: ${serviceFilePath}`)
 		fs.mkdirSync(serviceFilePath);
 	}
 	if(!codeObject.files){
+		//console.log('----- NO FILES ');
 		//console.log(JSON.stringify(codeObject))
 	}
-	createTree(serviceFilePath, service.tree[name], codeObject.files || service.code);
+	createTree(serviceFilePath, codeObject.tree[name], codeObject.files || service.code);
 	service.code = codeObject.files || service.code;
+	service.tree = codeObject.tree || service.tree;
 
 	return serviceFilePath + '/index.js'; //TODO: this might not be the entry point
 };
@@ -108,6 +134,7 @@ const initService = (service) => {
 		// console.log('Parsing service code failed');
 		// console.log(e);
 	}
+	//console.log({ tree: codeObject && codeObject.tree });
 
 	const serviceFilePath = codeObject
 		? createV1Service(service, codeObject)

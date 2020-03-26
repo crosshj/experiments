@@ -280,6 +280,17 @@ async function bartok(){
 		if(op.config.method !== "POST"){
 			delete op.config.body;
 		}
+
+		//
+		if(op.name === "update"){
+				const configBody = JSON.parse(op.config.body);
+				const codeParsed = JSON.parse(configBody.code)
+				// console.log(
+				// 	JSON.stringify(
+				// 		codeParsed
+				// 	, null, 2)
+				// );
+			}
 		const response = await fetch(op.url, op.config);
 		const result = await response.json();
 		if (op.after) {
@@ -297,16 +308,69 @@ async function bartok(){
 		//console.log({ operation, data });
 	}
 
+	function managementOp(e){
+		const {
+			operation,
+			filename
+		} = e.detail;
+		// console.log(JSON.stringify({
+		// 	operation,
+		// 	filename,
+		// 	currentFile,
+		// 	currentService
+		// }, null, 2));
+
+		let manageOp;
+		if(operation === "addFile"){
+			try {
+				currentService.code.push({
+					name: filename,
+					code: "\n"
+				});
+				currentService.tree[
+					Object.keys(currentService.tree)[0]
+				][filename] = {};
+				// inlineEditor({ code: "", name: filename, id: currentService.id });
+				// const event = new CustomEvent('operationDone', {
+				// 	bubbles: true,
+				// 	detail: {
+				// 		operation: "read",
+				// 		id: currentService.id,
+				// 		result: [currentService]
+				// 	}
+				// });
+				// document.body.dispatchEvent(event);
+				manageOp = {
+					operation: "update"
+				};
+			} catch(e) {
+				console.log('could not add file');
+				console.log(e);
+			}
+		}
+		// done && done();
+		return manageOp;
+	}
+
 	document.body.addEventListener('operations', async function (e) {
 		// console.log(e.detail);
-		const eventOp = e.detail.operation;
+		let manageOp;
+		const managementOps = [
+			"addFile", "renameFile", "deleteFile",
+			"renameProject"
+		];
+		if(managementOps.includes(e.detail.operation)){
+			manageOp = managementOp(e);
+		}
+		const eventOp = (manageOp||{}).operation || e.detail.operation;
+
 		if(eventOp === 'cancel'){
 			const foundOp = operations.find(x => x.name === 'read');
 			performOperation(foundOp, { body: { id: '' } });
 			return
 		}
 		if(eventOp === 'update'){
-			console.log({ currentService});
+			//console.log({ currentService});
 			const files = JSON.parse(JSON.stringify(currentService.code));
 			//debugger;
 			(files.find(x => x.name === currentFile)||{})
@@ -336,7 +400,7 @@ async function bartok(){
 	// }
 
 	const foundOp = operations.find(x => x.name === 'read');
-	await performOperation(foundOp, { body: { id: 11 } });
+	await performOperation(foundOp, { body: { id: 999 } });
 	Terminal();
 }
 
