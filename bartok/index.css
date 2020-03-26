@@ -385,10 +385,17 @@ ul.editor-controls li:hover {
   height: calc(100% - 30px);
 }
 
+#editor-tabs-container {
+  height: 30px; /* IMPORTANT */
+}
+
 #editor-tabs{
-  height: 30px;
+  height: calc(17px + 30px);
   user-select: none;
   background-color: var(--theme-subdued-color);
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
 
 .tab {
@@ -400,9 +407,14 @@ ul.editor-controls li:hover {
   box-sizing: border-box;
   padding: 5px;
   padding-left: 30px;
-  background: var(--main-theme-color);
+  padding-right: 30px; /* TODO: maybe remove after adding X button */
+  background: var(--theme-subdued-color);
   width: 120px;
   min-width: fit-content
+}
+
+.tab.active {
+  background: var(--main-theme-color);
 }
 
 .services-list {
@@ -489,6 +501,20 @@ notes-section.loading:after {
 
 .user-sidebar {
   min-height: 125px;
+}
+
+.scrollable {
+  overflow: hidden;
+}
+.scrollable > *{
+  height: calc(100% + 17px);
+}
+.hide-native-scrollbar {
+  scrollbar-width: none !important; /* Firefox 64 */
+  -ms-overflow-style: none !important; /* Internet Explorer 11 */
+}
+.hide-native-scrollbar::-webkit-scrollbar { /** WebKit */
+  display: none !important;
 }
 
 /* ------ DARK SCROLLBAR ----------------------------------------------------------------------- */

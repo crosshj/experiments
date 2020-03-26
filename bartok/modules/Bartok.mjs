@@ -1,6 +1,8 @@
 import Editor from '../../shared/modules/editor.mjs';
 import TreeView from './TreeView.mjs';
 import Terminal from './Terminal.mjs';
+import EditorTabs from './EditorTabs.mjs';
+
 import Panes from './panes.mjs';
 
 import { attachListener } from './events/editor.mjs';
@@ -129,13 +131,22 @@ const inlineEditor = ({ code, name, id }={}) => {
 					<label for="service_id">ID</label>
 				</div>
 			</div>
-			<div id="editor-tabs" class="row no-margin">
-				<div class="tab">
-					<span>index.js</span>
-				</div>
-			</div>
-			<textarea class="functionInput" id="service_code"></textarea>
 	`;
+	// console.log({
+	// 	currentService, currentFile
+	// });
+	editorDiv.appendChild(EditorTabs(currentFile
+		?[{
+			name: currentFile,
+			active: true
+		}]
+		: undefined
+	));
+
+	const editorTextArea = document.createElement('textarea');
+	editorTextArea.id = "service_code";
+	editorTextArea.classList.add('functionInput');
+	editorDiv.appendChild(editorTextArea)
 
 	containerDiv.querySelector('.contain').appendChild(editorDiv);
 	M.updateTextFields();
