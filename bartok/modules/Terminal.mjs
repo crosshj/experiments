@@ -95,7 +95,7 @@ function _Terminal(){
 		theme: {
 			foreground: '#ccc', // '#ffffff',
 			//background: '#000',
-			background: '#1e1e1e',
+			background: 'rgba(255, 255, 255, 0.0)', // '#1e1e1e',
 			cursor: '#ffffff',
 			selection: 'rgba(255, 255, 255, 0.3)',
 			black: '#000000',
@@ -115,6 +115,7 @@ function _Terminal(){
 			brightBlack: '#808080',
 			brightWhite: '#ffffff'
 		},
+		allowTransparency: true,
 		fontSize: 13,
 		fontWeight: 100,
 		convertEol: true

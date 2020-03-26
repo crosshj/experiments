@@ -661,6 +661,22 @@ notes-section.loading:after {
   overflow: hidden;
 }
 
+.splitter {
+  filter: saturate(1.1) contrast(1.1) brightness(1.5);
+  /* filter: hue-rotate(310deg); */
+}
+
+/* LIGHT MODE!!!
+.splitter {
+  filter:
+    invert(1)
+    brightness(.85)
+    hue-rotate(102deg)
+    contrast(2.1)
+  ;
+}
+*/
+
 .splitter > div:not(.seperator) {
     position: relative;
     /* flex-basis: 0; */
