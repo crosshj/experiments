@@ -191,8 +191,6 @@ function getCodeFromService(service, file){
 }
 
 attachListener((currentFile) => {
-	console.log('TODO: switch or add tab');
-	console.log('TODO: changes to current file')
 	const { code="error", name, id } = getCodeFromService(null, currentFile);
 	inlineEditor({ code, name, id });
 });

@@ -12,14 +12,14 @@ const removeTab = (parent) => (tabDef) => {
 		tabDef.parentNode.removeChild(tabDef);
 		return;
 	}
-	const child = parent.querySelector(`#TAB${tabDef.id}`);
+	const child = parent.querySelector(tabDef.id);
 	console.log(child)
 	child && parent.removeChild(child)
 };
 
 const createTab = (parent) => (tabDef) => {
 	const tab = document.createElement('div');
-	tab.id = 'TAB' + Math.random().toString().replace('0.', '');
+	tab.id = tabDef.id;
 	tab.classList.add('tab');
 	if(tabDef.active){
 		tab.classList.add('active');
@@ -28,6 +28,18 @@ const createTab = (parent) => (tabDef) => {
 		<span style="pointer-events: none;">${tabDef.name}</span>
 	`;
 	parent.appendChild(tab);
+	parent.scrollLeft = parent.scrollWidth;
+};
+
+const updateTab = (parent) => (tabDef) => {
+	const child = parent.querySelector('#' + tabDef.id);
+	if(!tabDef.active && child.classList.contains('active')){
+		child.classList.remove('active');
+	}
+	if(tabDef.active && !child.classList.contains('active')){
+		child.classList.add('active');
+	}
+	//scroll parent to put newly active tab in view
 };
 
 const initTabs = (parent) => (tabDefArray=[]) => {
@@ -65,14 +77,15 @@ function EditorTabs(tabsArray /* = [{ name: "index.js", active: true }] */){
 		</div>
 	`;
 
+	tabsList = tabsList || tabsContainer.querySelector('#editor-tabs');
+
 	attachListener(tabsContainer, {
-		initTabs: initTabs(parent),
-		createTab: createTab(tabsContainer),
-		updateTab: () => console.log('updateTab'),
+		initTabs: initTabs(tabsList),
+		createTab: createTab(tabsList),
+		updateTab: updateTab(tabsList),
 		removeTab: () => console.log('removeTab')
 	});
 
-	tabsList = tabsList || tabsContainer.querySelector('#editor-tabs');
 	//should not be doing this, rely on event instead!!!
 	//tabsArray && initTabs(tabsList)(tabsArray);
 	return tabsContainer;
