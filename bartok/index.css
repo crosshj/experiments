@@ -36,7 +36,7 @@ html, body {
   --main-theme-highlight-color: #40f7ac;
   /* --main-theme-background-color: #363238; */
   /* --main-theme-background-color: #3b3b3b; */
-  --main-theme-background-color: #2e2e2e;
+  --main-theme-background-color: #2d2d2d;
   --main-theme-background-dark-color: #29252b;
   --main-theme-text-color-dark: green;
   --main-theme-text-color: #d8d8d8;
@@ -407,14 +407,53 @@ ul.editor-controls li:hover {
   box-sizing: border-box;
   padding: 5px;
   padding-left: 30px;
-  padding-right: 30px; /* TODO: maybe remove after adding X button */
-  background: var(--theme-subdued-color);
+  /* background: var(--theme-subdued-color); */
+  background: var(--main-theme-background-color);
   width: 120px;
-  min-width: fit-content
+  min-width: fit-content;
+  color: #777;
+  font-size: 13px;
 }
 
 .tab.active {
   background: var(--main-theme-color);
+  color: unset;
+}
+
+.tab:hover a.action-label.icon.close-editor-action,
+.tab.active a.action-label.icon.close-editor-action {
+  opacity: 1;
+}
+
+.tab-close li {
+  padding-left: 7px;
+}
+.tab-close {
+  /* pointer-events: none; */
+  user-select: none;
+}
+
+.tab.last .tab-close {
+  display: none;
+  pointer-events: none;
+}
+
+.tab.last {
+  cursor: default;
+  padding-right: 30px;
+}
+
+a.action-label.icon.close-editor-action {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.428 8L12 10.573 10.572 12 8 9.428 5.428 12 4 10.573 6.572 8 4 5.428 5.427 4 8 6.572 10.573 4 12 5.428 9.428 8z' fill='%23E8E8E8'/%3E%3C/svg%3E");
+  display: block;
+  height: 16px;
+  width: 16px;
+  opacity: 0;
+  background-size: 16px;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  margin-right: .5em;
+  margin-top: 2px;
 }
 
 .services-list {
@@ -590,7 +629,7 @@ notes-section.loading:after {
 /* js-treeview */
 #tree-view {
   font-family: -apple-system,BlinkMacSystemFont,sans-serif;
-  padding-left: 3px;
+  /* padding-left: 3px; */
   height: calc(100% - 30px);
   color: var(--main-theme-text-color);
   background-color: var(--theme-subdued-color);
@@ -605,7 +644,11 @@ notes-section.loading:after {
   background-color: var(--theme-subdued-color);
 }
 
-.tree-leaf{position:relative}.tree-leaf .tree-child-leaves{display:block;margin-left:15px}
+.tree-leaf{position:relative}
+.tree-leaf .tree-child-leaves{
+  display:block;
+  /* margin-left:15px */
+}
 /* .tree-leaf .hidden{display:none;visibility:hidden} */
 /* .tree-leaf .tree-expando{background:#ddd;border-radius:3px;cursor:pointer;float:left;height:10px;line-height:10px;position:relative;text-align:center;top:5px;width:10px} */
 /* .tree-leaf .tree-expando:hover{background:#aaa} */
@@ -651,6 +694,10 @@ notes-section.loading:after {
 .tree-leaf-content.selected {
   background: var(--main-theme-background-color);
   color: var(--theme-text-selected);
+}
+
+.tree-child-leaves .tree-leaf-content {
+  padding-left: 15px;
 }
 
 #service-fields, .editor-controls {
@@ -737,7 +784,7 @@ notes-section.loading:after {
 
 /* container for editor and terminal*/
 #second {
-  border-left: 1px solid var(--main-theme-background-color);
+  /* border-left: 1px solid var(--main-theme-background-color); */
   display: flex;
   width: 100%;
 }
@@ -866,23 +913,46 @@ notes-section.loading:after {
   justify-content: flex-end;
 }
 
-.monaco-action-bar .action-item:first-child {
+#terminal-menu > div:first-child .action-item {
+  padding-left: 15px;
+}
+
+#terminal-menu > div:first-child .action-item:first-child {
   padding-left: 12px;
+}
+
+#terminal-menu .action-item:not(.checked) {
+  pointer-events: none;
+  user-select: none;
+}
+
+#terminal-menu li.action-item:not(.checked) a.action-label {
+  color: inherit;
+}
+
+#terminal-menu li.action-item:not(.checked) a {
+  filter: brightness(.3);
 }
 
 .composite-bar.panel-switcher-container .action-item {
   text-transform: uppercase;
   /* padding: 4px 10px 3px; */
-  padding: 4px 0px 0px;
+  /* padding: 4px 0px 0px; */
+  padding-top: 4px;
   font-size: 11px;
   display: flex;
+}
+
+li.action-item.checked a {
+  border-bottom: 1px solid;
+  border-bottom-color: rgba(128, 128, 128, 0.35);
 }
 
 .composite-bar.panel-switcher-container {
   /* display: none; */
   color: rgb(231, 231, 231);
-  border-bottom: 1px solid;
-  border-bottom-color: rgba(128, 128, 128, 0.35);
+  /* border-bottom: 1px solid;
+  border-bottom-color: rgba(128, 128, 128, 0.35); */
 }
 
 .title-actions {

@@ -21,6 +21,44 @@ function getTabsToUpdate(name) {
 	return { foundTab, tabsToUpdate };
 }
 
+function triggerCloseTab(event){
+	let name;
+	try{
+		name = event.target.closest('.tab').innerText.trim()
+	} catch(e) {
+		console.log('error trying to handle close tab click');
+		console.log(e);
+	}
+	if(!name){ return; }
+	const closedTab = tabs.find(x => x.name === name);
+	const nextTabs = tabs.filter(x => x.name !== name);
+	const next = closedTab.active
+		? (nextTabs[nextTabs.length -1]||{}).name
+		: undefined;
+
+	const fileCloseEvent = new CustomEvent('fileClose', {
+		bubbles: true,
+		detail: { name, next }
+	});
+	document.body.dispatchEvent(fileCloseEvent);
+}
+
+const fileCloseHandler = ({
+	event, container, initTabs, createTab, updateTab, removeTab
+}) => {
+	const { name, next } = event.detail;
+
+	const found = tabs.find(x => x.name === name);
+	tabs = tabs.filter(x => x.name !== name);
+
+	removeTab(found);
+
+	if(!next){ return; }
+	const nextTab = tabs.find(x => x.name === next);
+	nextTab.active = true;
+	updateTab(nextTab);
+};
+
 const clickHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
@@ -28,16 +66,36 @@ const clickHandler = ({
 		//console.log('did not click any tab container element');
 		return;
 	}
-	if(!event.target.classList.contains('tab')){
-		//console.log('did not click on a tab element');
+	if(
+		!event.target.classList.contains('tab') &&
+		!event.target.classList.contains('close-editor-action')
+	){
 		return;
 	}
+
+	if(event.target.classList.contains('close-editor-action')){
+		triggerCloseTab(event);
+		event.preventDefault();
+		return;
+	}
+
 	const name = event.target.innerText.trim();
-	const { tabsToUpdate, foundTab } = getTabsToUpdate(name);
-	tabsToUpdate.map(updateTab);
+	if(tabs.filter(x => x.active).map(x => x.name).includes(name)){
+		return;
+	}
+
+	//TODO: keep track of the order which tabs are clicked
+
+	// const { tabsToUpdate, foundTab } = getTabsToUpdate(name);
+	// tabsToUpdate.map(updateTab);
+	const fileSelectEvent = new CustomEvent('fileSelect', {
+		bubbles: true,
+		detail: { name }
+	});
+	document.body.dispatchEvent(fileSelectEvent);
 };
 
-const treeSelectHandler = ({
+const fileSelectHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
 	const { name } = event.detail;
@@ -76,7 +134,8 @@ const operationDoneHandler = ({
 
 const handlers = {
 	click: clickHandler,
-	treeSelect: treeSelectHandler,
+	fileSelect: fileSelectHandler,
+	fileClose: fileCloseHandler,
 	operationDone: operationDoneHandler
 };
 
@@ -99,7 +158,13 @@ function attachListener(
 
 	attach({
 		name: 'EditorTabView',
-		eventName: 'treeSelect',
+		eventName: 'fileSelect',
+		listener
+	});
+
+	attach({
+		name: 'EditorTabView',
+		eventName: 'fileClose',
 		listener
 	});
 

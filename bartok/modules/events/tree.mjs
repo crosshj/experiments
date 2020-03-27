@@ -1,44 +1,27 @@
 import { attach } from '../Listeners.mjs';
+let tree;
 
-// const exampleTree = {
-// 	"Server Client Bundle": {
-// 		server: {
-// 			routes: {
-// 				"users.js": {},
-// 				"company.js": {},
-// 				"vehicles.js": {},
-// 			},
-// 			"index.js": {}
-// 		},
-// 		client: {
-// 			components: {
-// 				"index.js": {},
-// 				"menu.js": {},
-// 				"list.js": {},
-// 			},
-// 			images: {
-// 				"logo.gif": {},
-// 				"icon-person.png": {},
-// 				"splash.gif": {},
-// 			},
-// 			"index.js": {}
-// 		},
-// 		"ReadMe.md": {},
-// 		"bartok.yml": {},
-// 		"package.json": {},
-// 	}
-// };
+const fileSelectHandler = (e) => {
+	const { name, next } = e.detail;
+	if(e.type === "fileClose" && !next){
+		return;
+	}
 
-// const converted = fileTreeConvert(exampleTree);
-// converted[0].expanded = true;
-// var tree = new TreeView(converted, 'tree-view');
+	Array.from(
+		document.querySelectorAll('#tree-view .selected')||[]
+	)
+		.forEach(x => x.classList.remove('selected'));
 
-// Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
-// 	const item = JSON.parse(t.dataset.item);
-// 	if(item.children.length){
-// 		t.classList.add('folder');
-// 	}
-// });
+	const leaves = Array.from(
+		document.querySelectorAll('#tree-view .tree-leaf-content')||[]
+	);
+	const found = leaves.find(x => {
+		return x.innerText.includes(next || name);
+	});
+	if(found){
+		found.classList.add('selected')
+	}
+}
 
 
 const getTree = (result) => {
@@ -73,7 +56,6 @@ const fileTreeConvert = (input, converted=[]) => {
 	return converted;
 };
 
-let tree;
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
 function attachListener(treeView, JSTreeView){
 	const listener = async function (e) {
@@ -106,22 +88,22 @@ function attachListener(treeView, JSTreeView){
 		newTree.id = id;
 
 		newTree.on('select', function (e) {
-			try{
-				const currentParent = e.target.target.parentNode;
-				if(currentParent.classList.contains('selected')){
-					return;
-				}
-				Array.from(document.querySelectorAll('#tree-view .selected')||[])
-					.forEach(x => x.classList.remove('selected'));
-				currentParent.classList.add('selected');
-			} catch(e) {
-				console.error(e);
-				console.error('could not mark leaf as selected');
-			}
+			// try{
+			// 	const currentParent = e.target.target.parentNode;
+			// 	if(currentParent.classList.contains('selected')){
+			// 		return;
+			// 	}
+			// 	Array.from(document.querySelectorAll('#tree-view .selected')||[])
+			// 		.forEach(x => x.classList.remove('selected'));
+			// 	currentParent.classList.add('selected');
+			// } catch(e) {
+			// 	console.error(e);
+			// 	console.error('could not mark leaf as selected');
+			// }
 			if(e.data.children.length > 1){
 				return;
 			}
-			const event = new CustomEvent('treeSelect', {
+			const event = new CustomEvent('fileSelect', {
 				bubbles: true,
 				detail: { name: e.data.name }
 			});
@@ -137,15 +119,27 @@ function attachListener(treeView, JSTreeView){
 				t.classList.add('selected');
 			}
 		});
-		setTimeout(() => {
+
+		tree = newTree;
+		// setTimeout(() => {
 			//currentExplorer.style.width = backupStyle.clientWidth;
 			//currentExplorer.style.minWidth = backupStyle.minWidth;
-		}, 1000)
+		// }, 1000)
 	};
 	attach({
 		name: 'TreeView',
 		eventName: 'operationDone',
 		listener
+	});
+	attach({
+		name: 'TreeView',
+		eventName: 'fileSelect',
+		listener: fileSelectHandler
+	});
+	attach({
+		name: 'TreeView',
+		eventName: 'fileClose',
+		listener: fileSelectHandler
 	});
 }
 

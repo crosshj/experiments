@@ -73,7 +73,72 @@ const motd3 = `\x1b[1;36m
   Falls of my radar!
 `;
 
+const motd4 = `
+;;,,,''''',;o0XXX0xdxOOkxxxkO00KKXXXXXNNNNNNNNNNXXK00Okkxddoollllolccllc,......'
+:;;;,,,,,,,;ckKXKOdlldxxdxxkO0KKXXNNNWWWNNNNWWNNNXXKK0OOkxddooooooollcllc;.....'
+::;;;,,,,,:ldOKXKkolloxxxxkO0KXXNNNWWWWWWWWWWWNNNXXKKK00Okxddooddooooolllc:,...'
+c::;;;,,;;cd0XXX0xl:coxkkkO0KXXNNWWWMMMMMWWWWWWWNNXXKK00OOkxdddxxxooolollc:,...'
+::::;;,,,;:oOKXKOo::cxOOOO0KXXNWWWWWWWWWWWWMMWWWWNXXXKK0OOkkxxkOOkdolllllc:'...'
+::::;;;;;;:lxO00klcox00OOO0KXNNWWWWWWWWWWWMMMMWWWNNXXXK00OOOkkkOOkxolllllc:'...'
+c:::;;;;;;;:ldkkdodxkkkkkkO0KXXNNWWWNNNNWWWMMMMWWWWNNXKK00OOOkkxxxdollcc:;'....'
+c:::;;;;;;;;;coooxxdl:clcccldkOKKXXXXXXXXXNNNNWWWNNXXXKKK0OOkkxdllllolc:,......'
+c:::;;;;;;;;;:::okko;''''....,:oxO00000OOOOkxxkOOO00KKKK00Okxdoc::ccll:,.......'
+::::;;;;;;;;;;;:dkxl::lllcc:,...;dOKK0xl:;,''.',:loddxkOOOOkdlc:::::::;....  ...
+c:::;;;;;;;;;:loxkkxodxkO0K0xo:';xKNNKxc;;,,,,...',;:cldxkkxdc:;;;;;;;,.     ...
+cc:::::::;::;:odxO00kxddxkkOO0kod0NNNXK0Okxxkkocloc,;cldxkkxoc;::::;,'..     ...
+lcccc:::::::;;clokOKK000000OOxooOXNNXXXXX0kkkO0000kooodkkkxdoc::::cc:,.      ...
+llccccc:::::;;;cldxO0KXXXKKOxllxKXNXKXXNNX0xdxkOOOOOOOOOkxdoool::ccc,.       ...
+llcccccc:::::;;:llodxO00KK0kolx0XXXXKKXXXXXKOO0000KK00Okxdollodoooc'.         ..
+lllllccccc::::::cllodkOO00Oxox0KXXK000KKXXNXXKKKKKK0OOkxdlcclodol:.           ..
+lllllcccc::::;;;:llodxkkOkocldkOKK0OO0O00KXXXKK0OOkkkxxdoccclooc,.            ..
+llllccccc:::;,,,:ccllodddl,..';cllccldxkkO0K0000Okkkxdolc:clol;..             ..
+llcc::;;,,''...';ccc:cllc,.....';:::cdkOOkkOOOOOOkkxdolc:;''..                ..
+;,,,''..........';c:::;;;,...',coxOOO0000Okxxkkkkkxdolc:;..                    .
+'''''............';;::,'',;:clddodxkkkkkkkkxddxxxxdocc:;..                     .
+,''''.............';;:,....',;:cccclloooooddoodddolcc:,..                      .
+'''''..............';:;,'..';:ccccccclllllllooooollc:,..                     ...
+,''''...............';:clc,',;:cloddxxxkxxdddddoolc;'......            ..    ..'
+;,,,,'...............';coddoooollloodxxkkkkxddollc;.. .....                  ..'
+`;
+
+const motd5 = rainbow(`
+cllllllcc:;;,,,'.,cllcc;,',,;:cloxkkkO000KKKKKXXXXXXXKKKKK0000KX0xc;,,',,,,,,,,,
+ccccccccc::;,'...,;::;,,'',,;:clodxkkOO000KKKKKKKKKKKKKKK00OOO0XKOdc;,,,,,,,,,,,
+cccccccccc:;'......'''''''',,;:llodxkO0000KKKKKKKKKKKKKK000OO00KKOko;,,,,,,,,,,,
+ccccccccc:::;. ..........'',,;cloodxkOO0KKKKKKKKKKKKKKKKK0OOOO00Okxo;''''',,,,,,
+c:::ccccc:,'..  ...........',;::loodxxkO00KKKK000KKKKKKK00OOkxxxdxd:,''''''',,,,
+c::::cccc;.      .....'..........',;;:lddxkOOOOOOOOkkxxxxxkkxdloolc,''''''','',,
+c:::::c::;.         .',..     ....... ..',cdxkkdl:,...';cc:cxkdoo:,'''''''''''',
+:::::::::;,.        .,;'.      ...,;.     .cxOOo,.....',,;:cxkxl,''...''''''''''
+::::::::;;;...      .',''..   ...'lo,..   .;xOOkl,,;..':,.:xOkxl:,..''''''''''''
+:::;;;;;;;;,...     ....,;::;,,:cllcc,... .,dOOOkdoolldxdodkkkxo;'.''''''''''',,
+:::;;;;;;;;;,..       ...;oxxxxxxxxoc,.....'oO0O00OOOO0000Okkkx:''''''''''''',,,
+::;;;;;;;;;;;,..       ..,lxxkkkkkxo:'.... 'oO0OO0KK0KKKKK0Okkc'''''''''''''',,,
+::::;;;;;;;;;;,.        .,coxxxxxddl:'.    ,dO0OO0KKKKKKK0OOOo,.''..'''''''',,,,
+::::;;;;;;;;;;;;'..     .':loodddddo:.     .lkOOOO0KKKKK00kko;''..'''''''''',,,,
+;;;;;;;;;;;;;;:;;;.      .,clooooool;.      .:lcdO00KKK00Oxc'......'''''''''',,,
+;;;;;;;;;;;;;;;;;:,.      .;cloooooc:;..   .,oxxO0000KK00Oo,...''''....''''''',,
+;;;;;;;;;;;;;;;;;,c,       .;clolcccc:cc::;:xO000000O000Od:'''..'''''..'''''',,,
+;;;;;;;;;;;;;;;' .od;      .':cc;;;;;:cllloxxxkOOOOOOkOOxc''''...''''..''''',,,,
+;;;;;;;;;;;;;,.  .dkxc.    ..,c:;,'......',:::cloodxkkkxl,'''''''''''''''''',,,,
+;;;;;;;;;;;;'.    ;xkkd;.   ..;cc;,.....,;::lodxxxxxkkxo,'''''.''''''''''''',,,,
+;;;;;;;;;;'.       ;xkxxl,.   .,::;,''',;;::codxkkOOkko;''''''''''''''''',,,,,,,
+;;;;;;;;,.          ;xkxxdl,.  .';clllloodxkkOOOOOOOxl,''''''''''''''''''',,,,,,
+;;;;;;,.             ,okkxdlc,.  .':ldxkOO000KKK00kd:,''''''''''''''''''',,,,,,,
+;;;;'.                .,lxkdoc:;'....;oxkkOOkO00Od:,''''''''''''''''''''',,,,,,;
+;,..                     .,cdxdooddlc::::coooxO0O;  ....''',,'''''''',,,,,,,,,,;
+.                           .,ok0KKKX0OxoldkOKXNk.       .....''''''',,,,,,,,,,;
+                             ..,lOXXKKXXXOk0KXXXd.             ..'','''',,,,,,,,
+                              ';''o0KKXXNKkOXXXX0,                ..',,,,,,,,,,,
+                               ';'.;OXXXNX0KNXXNXd.                 .',,,,,,,,,;
+                                ...cO0O000OOOOkkx,                   .',,,,,,,;;
+                              .'.. ..'.',cdxxdoOO'                     .,,,,,;;;
+                               lOkxd:.   .';:co0Xl                      .,,,,;;;
+                               .oKXX0;        ,ONO'                      .,,,;;;
+
+`, 244, 10);
+
 
 export {
-	motd1, motd1o1, motd2, motd3
+	motd1, motd1o1, motd2, motd3, motd4, motd5
 };

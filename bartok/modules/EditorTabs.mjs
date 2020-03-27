@@ -6,17 +6,6 @@ function log(){
 	));
 }
 
-const removeTab = (parent) => (tabDef) => {
-	//console.log(tabDef)
-	if(tabDef.parentNode){
-		tabDef.parentNode.removeChild(tabDef);
-		return;
-	}
-	const child = parent.querySelector(tabDef.id);
-	console.log(child)
-	child && parent.removeChild(child)
-};
-
 const createTab = (parent) => (tabDef) => {
 	const tab = document.createElement('div');
 	tab.id = tabDef.id;
@@ -26,9 +15,24 @@ const createTab = (parent) => (tabDef) => {
 	}
 	tab.innerHTML = `
 		<span style="pointer-events: none;">${tabDef.name}</span>
+		<div class="tab-close"><div class="monaco-action-bar animated">
+			<ul class="actions-container" role="toolbar" aria-label="Tab actions">
+				<li class="action-item" role="presentation">
+					<a class="action-label icon close-editor-action" role="button" title="Close">
+					</a>
+				</li>
+			</ul>
+		</div>
 	`;
 	parent.appendChild(tab);
 	parent.scrollLeft = parent.scrollWidth;
+
+	const remainingTabs = Array.from(parent.querySelectorAll('.tab'));
+	if(remainingTabs.length <= 1){
+		remainingTabs[0].classList.add('last');
+	} else {
+		remainingTabs[0].classList.remove('last');
+	}
 };
 
 const updateTab = (parent) => (tabDef) => {
@@ -41,6 +45,28 @@ const updateTab = (parent) => (tabDef) => {
 	}
 	//scroll parent to put newly active tab in view
 };
+
+const removeTab = (parent) => (tabDef) => {
+	const child = parent.querySelector('#' + tabDef.id);
+	child.parentNode.removeChild(child);
+
+	const remainingTabs = Array.from(parent.querySelectorAll('.tab'));
+	if(remainingTabs.length <= 1){
+		remainingTabs[0].classList.add('last');
+	}
+	//TODO: scroll parent to put newly active tab in view
+};
+
+// const removeTab = (parent) => (tabDef) => {
+// 	//console.log(tabDef)
+// 	if(tabDef.parentNode){
+// 		tabDef.parentNode.removeChild(tabDef);
+// 		return;
+// 	}
+// 	const child = parent.querySelector(tabDef.id);
+// 	console.log(child)
+// 	child && parent.removeChild(child)
+// };
 
 const initTabs = (parent) => (tabDefArray=[]) => {
 	Array.from(parent.querySelectorAll('.tab'))
@@ -83,7 +109,7 @@ function EditorTabs(tabsArray /* = [{ name: "index.js", active: true }] */){
 		initTabs: initTabs(tabsList),
 		createTab: createTab(tabsList),
 		updateTab: updateTab(tabsList),
-		removeTab: () => console.log('removeTab')
+		removeTab: removeTab(tabsList)
 	});
 
 	//should not be doing this, rely on event instead!!!

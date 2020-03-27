@@ -3,17 +3,20 @@ import { attach } from '../Listeners.mjs';
 
 function attachListener(switchEditor){
 	const listener = async function (e) {
-		const fileName = e.detail.name;
-		switchEditor(fileName);
+		const { name, next } = e.detail;
+		if(e.type === "fileClose" && !next){
+			return;
+		}
+		switchEditor(next || name);
 	};
 	attach({
 		name: 'EditorView',
-		eventName: 'treeSelect',
+		eventName: 'fileSelect',
 		listener
 	});
 	attach({
 		name: 'EditorView',
-		eventName: 'tabSelect',
+		eventName: 'fileClose',
 		listener
 	});
 }

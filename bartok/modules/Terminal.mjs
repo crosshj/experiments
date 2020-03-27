@@ -3,7 +3,7 @@
 import "/shared/vendor/xterm.min.js";
 import "/shared/vendor/xterm-addon-fit.js";
 
-import { motd1, motd1o1, motd2, motd3 } from "./motd.mjs";
+import { motd1, motd1o1, motd2, motd3, motd4, motd5 } from "./motd.mjs";
 
 function tryExecCommand({ command, loading, done }){
 		const [ op, ...args] = command.split(' ');
@@ -143,6 +143,9 @@ function _Terminal(){
 								 <div class="badge-content" style="color: rgb(255, 255, 255); background-color: rgb(77, 77, 77);"></div>
 							</div>
 					 </li>
+					 <li class="action-item" role="tab" draggable="true" tabindex="1" active>
+							<a class="action-label logs" style="">Logs</a>
+						</li>
 					 <li class="action-item" role="button" tabindex="0" aria-label="Additional Views" title="Additional Views">
 							<a class="action-label toggle-more" aria-label="Additional Views" title="Additional Views" style="background-color: rgb(30, 30, 30);"></a>
 							<div class="badge" aria-hidden="true" aria-label="Additional Views" title="Additional Views" style="display: none;">
@@ -202,7 +205,7 @@ function _Terminal(){
 	};
 
 	function prompt(term) {
-		term.write('\x1b[1;30m \r\n$ \x1B[0m');
+		term.write('\x1b[1;30m \r\n∑ \x1B[0m');
 	}
 
 	term.onKey((e) => {
@@ -238,7 +241,9 @@ function _Terminal(){
 	});
 
 	fitAddon.fit();
-	term.write(motd1o1)
+	//term.write(motd1o1)
+	term.write(motd5);
+	term.write(`                 RIP: Béla Viktor János Bartók (1881 - 1945)\n`)
 
 	prompt(term);
 	window.term = term;
