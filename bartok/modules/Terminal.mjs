@@ -3,7 +3,7 @@
 import "/shared/vendor/xterm.min.js";
 import "/shared/vendor/xterm-addon-fit.js";
 
-import { motd1, motd1o1, motd2, motd3, motd4, motd5 } from "./motd.mjs";
+import motd from "./motd.mjs";
 
 function tryExecCommand({ command, loading, done }){
 		const [ op, ...args] = command.split(' ');
@@ -215,7 +215,7 @@ function _Terminal(){
 					charBuffer = [];
 					term.write('\x1B[2K');
 					term.clear();
-					term.write('\x1B[1;30m \r$ \x1B[0m');
+					term.write('\x1B[1;30m \r∑ \x1B[0m');
 					//prompt(term);
 					return;
 				}
@@ -241,9 +241,16 @@ function _Terminal(){
 	});
 
 	fitAddon.fit();
-	//term.write(motd1o1)
-	term.write(motd5);
-	term.write(`                 RIP: Béla Viktor János Bartók (1881 - 1945)\n`)
+
+	if(window.FUN){
+		term.write(
+			motd[Math.floor(Math.random() * motd.length)]
+		);
+	} else {
+		term.write(`\x1B[38;5;242m
+			Bartok Service Composer v0.2
+		\x1B[0m`.replace(/\t/g, ''));
+	}
 
 	prompt(term);
 	window.term = term;

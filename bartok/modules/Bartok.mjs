@@ -2,6 +2,8 @@ import Editor from '../../shared/modules/editor.mjs';
 import TreeView from './TreeView.mjs';
 import Terminal from './Terminal.mjs';
 import EditorTabs from './EditorTabs.mjs';
+import ActionBar from './ActionBar.mjs';
+import Services from './Services.mjs';
 
 import Panes from './panes.mjs';
 
@@ -416,6 +418,8 @@ async function bartok(){
 function splitPanes(){
 	Panes();
 	bartok();
+	ActionBar();
+	//Services();
 }
 
 export default splitPanes;

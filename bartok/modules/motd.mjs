@@ -24,7 +24,7 @@ const motd1 = rainbow(`
   jLLLLLLLLL; ;##D.    L##, DWi   ,KK:    fE        t       ,;
               ,,,      .,,                 :
 `, 28) + `
-	Consequences will never be the same!
+	          The consequences. Will never. Be. The SAME!
 
 `;
 
@@ -53,7 +53,7 @@ const motd2 = `\x1B[1;3;36m
     "'       ^Y"   ^Y'                                        ""    ""
 
 \x1B[0m
-	What's getting in your way to success??
+	        What's getting in YOUR way to success??
 `;
 
 const motd3 = `\x1b[1;36m
@@ -70,7 +70,7 @@ const motd3 = `\x1b[1;36m
 :: : ::    :   : :   :   : :     :      : :  :    :   :::
 
 \x1B[0m
-  Falls of my radar!
+                 Falls of my radar!
 `;
 
 const motd4 = `
@@ -102,43 +102,55 @@ llcc::;;,,''...';ccc:cllc,.....';:::cdkOOkkOOOOOOkkxdolc:;''..                ..
 `;
 
 const motd5 = rainbow(`
-cllllllcc:;;,,,'.,cllcc;,',,;:cloxkkkO000KKKKKXXXXXXXKKKKK0000KX0xc;,,',,,,,,,,,
-ccccccccc::;,'...,;::;,,'',,;:clodxkkOO000KKKKKKKKKKKKKKK00OOO0XKOdc;,,,,,,,,,,,
-cccccccccc:;'......'''''''',,;:llodxkO0000KKKKKKKKKKKKKK000OO00KKOko;,,,,,,,,,,,
-ccccccccc:::;. ..........'',,;cloodxkOO0KKKKKKKKKKKKKKKKK0OOOO00Okxo;''''',,,,,,
-c:::ccccc:,'..  ...........',;::loodxxkO00KKKK000KKKKKKK00OOkxxxdxd:,''''''',,,,
-c::::cccc;.      .....'..........',;;:lddxkOOOOOOOOkkxxxxxkkxdloolc,''''''','',,
-c:::::c::;.         .',..     ....... ..',cdxkkdl:,...';cc:cxkdoo:,'''''''''''',
-:::::::::;,.        .,;'.      ...,;.     .cxOOo,.....',,;:cxkxl,''...''''''''''
-::::::::;;;...      .',''..   ...'lo,..   .;xOOkl,,;..':,.:xOkxl:,..''''''''''''
-:::;;;;;;;;,...     ....,;::;,,:cllcc,... .,dOOOkdoolldxdodkkkxo;'.''''''''''',,
-:::;;;;;;;;;,..       ...;oxxxxxxxxoc,.....'oO0O00OOOO0000Okkkx:''''''''''''',,,
-::;;;;;;;;;;;,..       ..,lxxkkkkkxo:'.... 'oO0OO0KK0KKKKK0Okkc'''''''''''''',,,
-::::;;;;;;;;;;,.        .,coxxxxxddl:'.    ,dO0OO0KKKKKKK0OOOo,.''..'''''''',,,,
-::::;;;;;;;;;;;;'..     .':loodddddo:.     .lkOOOO0KKKKK00kko;''..'''''''''',,,,
-;;;;;;;;;;;;;;:;;;.      .,clooooool;.      .:lcdO00KKK00Oxc'......'''''''''',,,
-;;;;;;;;;;;;;;;;;:,.      .;cloooooc:;..   .,oxxO0000KK00Oo,...''''....''''''',,
-;;;;;;;;;;;;;;;;;,c,       .;clolcccc:cc::;:xO000000O000Od:'''..'''''..'''''',,,
-;;;;;;;;;;;;;;;' .od;      .':cc;;;;;:cllloxxxkOOOOOOkOOxc''''...''''..''''',,,,
-;;;;;;;;;;;;;,.  .dkxc.    ..,c:;,'......',:::cloodxkkkxl,'''''''''''''''''',,,,
-;;;;;;;;;;;;'.    ;xkkd;.   ..;cc;,.....,;::lodxxxxxkkxo,'''''.''''''''''''',,,,
-;;;;;;;;;;'.       ;xkxxl,.   .,::;,''',;;::codxkkOOkko;''''''''''''''''',,,,,,,
-;;;;;;;;,.          ;xkxxdl,.  .';clllloodxkkOOOOOOOxl,''''''''''''''''''',,,,,,
-;;;;;;,.             ,okkxdlc,.  .':ldxkOO000KKK00kd:,''''''''''''''''''',,,,,,,
-;;;;'.                .,lxkdoc:;'....;oxkkOOkO00Od:,''''''''''''''''''''',,,,,,;
-;,..                     .,cdxdooddlc::::coooxO0O;  ....''',,'''''''',,,,,,,,,,;
-.                           .,ok0KKKX0OxoldkOKXNk.       .....''''''',,,,,,,,,,;
-                             ..,lOXXKKXXXOk0KXXXd.             ..'','''',,,,,,,,
-                              ';''o0KKXXNKkOXXXX0,                ..',,,,,,,,,,,
-                               ';'.;OXXXNX0KNXXNXd.                 .',,,,,,,,,;
-                                ...cO0O000OOOOkkx,                   .',,,,,,,;;
-                              .'.. ..'.',cdxxdoOO'                     .,,,,,;;;
-                               lOkxd:.   .';:co0Xl                      .,,,,;;;
-                               .oKXX0;        ,ONO'                      .,,,;;;
+░░░░░░░░░░░░░,,'.,cllcc;,',,;:cloxkkkO000KKKKKXXXXXXXKKKKK0000KX0xc;,░░░░░░░░░░░
+░░░░░░░░░░░░,'...,;::;,,'',,;:clodxkkOO000KKKKKKKKKKKKKKK00OOO0XKOdc;░░░░░░░░░░░
+░░░░░░░░░░░;'......'''''''',,;:llodxkO0000KKKKKKKKKKKKKK000OO00KKOko;░░░░░░░░░░░
+░░░░░░░░░░░:;. ..........'',,;cloodxkOO0KKKKKKKKKKKKKKKKK0OOOO00Okxo;░░░░░░░░░░░
+░░░░░░░░░░,'..  ...........',;::loodxxkO00KKKK000KKKKKKK00OOkxxxdxd:,░░░░░░░░░░░
+░░░░░░░░░░.      .....'..........',;;:lddxkOOOOOOOOkkxxxxxkkxdloolc,░░░░░░░░░░░░
+░░░░░░░░░░.         .',... . ........ ..',cdxkkdl:,...';cc:cxkdoo:,░░░░░░░░░░░░░
+░░░░░░░░░░,.        .,;'..     ...,;.     .cxOOo,.....',,;:cxkxl,'░░░░░░░░░░░░░░
+░░░░░░░░░░░...      .',''..   ...'lo,..   .;xOOkl,,;..':,.:xOkxl:,░░░░░░░░░░░░░░
+░░░░░░░░░░░,...     ....,;::;,,:cllcc,... .,dOOOkdoolldxdodkkkxo;░░░░░░░░░░░░░░░
+░░░░░░░░░░░░,..       ...;oxxxxxxxxoc,.....'oO0O00OOOO0000Okkkx:░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░,..       ..,lxxkkkkkxo:'.... 'oO0OO0KK0KKKKK0Okkc░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░,.        .,coxxxxxddl:'.    ,dO0OO0KKKKKKK0OOOo,░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░..     .':loodddddo:.     .lkOOOO0KKKKK00kko;░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░;.      .,clooooool;.      .:lcdO00KKK00Oxc'░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░:,.      .;cloooooc:;..   .,oxxO0000KK00Oo,░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░,c,       .;clolcccc:cc::;:xO000000O000Od:░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░ .od;      .':cc;;;;;:cllloxxxkOOOOOOkOOxc░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░.  .dkxc.    ..,c:;,'......',:::cloodxkkkxl,░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░.    ;xkkd;.   ..;cc;,.....,;::lodxxxxxkkxo,░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░.       ;xkxxl,.   .,::;,::',;;:ocodxkkOOkko;░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░.          ;xkxxdl,.  .';clllloodxkkOOOOOOOxl,░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░.             ,okkxdlc,.  .':ldxkOO000KKK00kd:,░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░.                .,lxkdoc:;'....;oxkkOOkO00Od:,░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░..                     .,cdxdooddlc::::coooxO0O;  ....░░░░░░░░░░░░░░░░░░░░░░░░
+.                           .,ok0KKKX0OxoldkOKXNk.       .....░░░░░░░░░░░░░░░░░░
+                             ..,lOXXKKXXXOk0KXXXd.             ..░░░░░░░░░░░░░░░
+                              ';''o0KKXXNKkOXXXX0,                ..'░░░░░░░░░░░
+                               ';'.;OXXXNX0KNXXNXd.                 .'░░░░░░░░░░
+                                ...cO0O000OOOOkkx,                   .'░░░░░░░░░
+                              .'.. ..'.',cdxxdoOO'                     .░░░░░░░░
+                               lOkxd:.   .';:co0Xl                      .░░░░░░░
+                               .oKXX0;        ,ONO'                      .░░░░░░
 
-`, 244, 10);
+`, 25, 12)
+  .split('\n')
+  .map(l => {
+    const color = l.split('m')[0]+'m';
+    return l.replace(/░/g, '\x1B[38;5;235m▓' + color);
+  })
+  .join('\n') +
+`\x1B[38;5;246m
+                             Béla Viktor János Bartók \x1B[38;5;243m
+                                (1881 - 1945) RIP
+
+\x1B[0m`;
 
 
-export {
-	motd1, motd1o1, motd2, motd3, motd4, motd5
-};
+export default [
+	motd1, motd1o1, motd2, motd3, motd5/*, motd4*/
+];
+

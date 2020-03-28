@@ -74,12 +74,14 @@ function Panes() {
 	splitter.classList.add('splitter');
 	splitter.innerHTML = `
 		<div id="actionbar"></div>
-		<div id="explorer"></div>
+		<div id="explorer" style="min-width: 200px"></div>
 		<div class="seperator" id="seperator1"></div>
 		<div id="second">
 			<div id="editor"></div>
 			<div class="seperator" id="seperator2"></div>
 			<div id="terminal"></div>
+		</div>
+		<div id="services">
 		</div>
 	`;
 	document.body.appendChild(splitter);
