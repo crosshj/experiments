@@ -1,6 +1,19 @@
 import { attach } from '../Listeners.mjs';
 let tree;
 
+function getDefaultFile(service){
+	let defaultFile;
+	try {
+		const packageJson = JSON.parse(
+			service.code.find(x => x.name === "package.json").code
+		);
+		defaultFile = packageJson.main;
+	} catch(e){
+		debugger;
+	}
+	return defaultFile || "index.js";
+}
+
 const fileSelectHandler = (e) => {
 	const { name, next } = e.detail;
 	if(e.type === "fileClose" && !next){
@@ -53,7 +66,11 @@ const fileTreeConvert = (input, converted=[]) => {
 			children: fileTreeConvert(input[k])
 		})
 	});
-	return converted;
+	return converted.sort((a, b) => {
+		if(a.name < b.name) { return -1; }
+    if(a.name > b.name) { return 1; }
+    return 0;
+	});
 };
 
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
@@ -110,12 +127,15 @@ function attachListener(treeView, JSTreeView){
 			document.body.dispatchEvent(event);
 		});
 
+		//console.log('----- TREE');
+		// this happens when: switch/open project, add file, ...
+		const defaultFile = getDefaultFile(result[0]);
 		Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
 			const item = JSON.parse(t.dataset.item);
 			if(item.children.length){
 				t.classList.add('folder');
 			}
-			if(item.name === "index.js"){
+			if(item.name === defaultFile){
 				t.classList.add('selected');
 			}
 		});

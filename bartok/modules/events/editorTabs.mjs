@@ -2,6 +2,19 @@ import { attach } from '../Listeners.mjs';
 
 let tabs = [];
 
+function getDefaultFile(service){
+	let defaultFile;
+	try {
+		const packageJson = JSON.parse(
+			service.code.find(x => x.name === "package.json").code
+		);
+		defaultFile = packageJson.main;
+	} catch(e){
+		debugger;
+	}
+	return defaultFile || "index.js";
+}
+
 function getTabsToUpdate(name) {
 	const tabsToUpdate = [];
 	let foundTab;
@@ -120,12 +133,13 @@ const fileSelectHandler = ({
 const operationDoneHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
-	const { op } = event.detail || '';
+	const { op, result=[] } = event.detail || '';
 	if(op !== 'read'){
 		return;
 	}
+	const defaultFile = getDefaultFile(result[0]);
 	tabs = [{
-		name: 'index.js',
+		name: defaultFile,
 		active: true,
 		id: 'TAB' + Math.random().toString().replace('0.', '')
 	}];

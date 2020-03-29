@@ -116,6 +116,8 @@ const createV1Service = function(service, codeObject){
 		//console.log('----- NO FILES ');
 		//console.log(JSON.stringify(codeObject))
 	}
+	//console.log(JSON.stringify({ codeObject }, null, 2));
+	//console.log({ name });
 	createTree(serviceFilePath, codeObject.tree[name], codeObject.files || service.code);
 	service.code = codeObject.files || service.code;
 	service.tree = codeObject.tree || service.tree;

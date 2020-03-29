@@ -3,7 +3,7 @@ const { initService } = require("./instanceInit");
 const updateService = async ({ manager, arguments }) => {
 	const { id, code, name } = arguments[1];
 	const service = manager.services.find(x => x.id === Number(id));
-	// console.log({ service });
+	// console.log(JSON.stringify({ service }, null, 2 ));
 	// console.log({ arguments });
 	service.name = name || service.name;
 	service.code = code || service.code;

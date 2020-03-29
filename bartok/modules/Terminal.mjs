@@ -7,27 +7,40 @@ import motd from "./motd.mjs";
 
 function tryExecCommand({ command, loading, done }){
 		const [ op, ...args] = command.split(' ');
-		const [ filename ] = args;
-		const [ _id, name, ...other] = args;
-		const id = Number(_id);
-
+		let filename, newName, _id, name, other;
 		let after, noDone;
 
-		const ops = [
-			"cancel", "create", "read", "update", "delete",
-			"manage", "monitor", "persist",
-			"fullscreen", "help",
+		const manageOps = [
 			"addFile", "renameFile", "deleteFile",
 			"renameProject"
 		];
-		if(!ops.map(x => x.toLowerCase()).includes(op.toLowerCase())){
+		const projectOps = [
+			"cancel", "create", "read", "update", "delete",
+			"manage", "monitor", "persist",
+			"fullscreen", "help"
+		];
+
+		const ops = [...manageOps, ...projectOps]
+
+		const isManageOp = manageOps
+			.map(x => x.toLowerCase())
+			.includes(op.toLowerCase());
+		const isProjectOp = projectOps
+			.map(x => x.toLowerCase())
+			.includes(op.toLowerCase());
+
+		if(isManageOp){
+			([ filename, newName ] = args);
+		}
+		if(isProjectOp){
+			([ _id, name, ...other] = args);
+		}
+		const id = Number(_id);
+
+		if(!isManageOp && !isProjectOp){
 			done(`${command}:  command not found!\nSupported: ${ops.join(', ')}\n`);
 			return;
 		}
-
-		const showLoading = ![
-			"addFile", "renameFile", "deleteFile", "renameProject"
-		].includes(op);
 
 		if(['help'].includes(op)){
 			done(`\nThese might work:\n\n\r   ${
@@ -78,7 +91,7 @@ function tryExecCommand({ command, loading, done }){
 			detail: {
 				operation: op,
 				listener: Math.random().toString().replace('0.', ''),
-				filename,
+				filename, newName,
 				done: noDone || done,
 				after,
 				body
@@ -87,7 +100,7 @@ function tryExecCommand({ command, loading, done }){
 		document.body.dispatchEvent(event);
 
 		//TODO: listen for when it's done
-		showLoading && loading(`${command}: running... `);
+		isProjectOp && loading(`${command}: running... `);
 	};
 
 function _Terminal(){
@@ -205,7 +218,7 @@ function _Terminal(){
 	};
 
 	function prompt(term) {
-		term.write('\x1b[1;30m \r\n∑ \x1B[0m');
+		term.write('\x1B[38;5;14m \r\n∑ \x1B[0m');
 	}
 
 	term.onKey((e) => {

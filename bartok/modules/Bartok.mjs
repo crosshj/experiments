@@ -4,6 +4,9 @@ import Terminal from './Terminal.mjs';
 import EditorTabs from './EditorTabs.mjs';
 import ActionBar from './ActionBar.mjs';
 import Services from './Services.mjs';
+import HotKeys from './HotKeys.mjs';
+
+import { managementOp } from './management.mjs';
 
 import Panes from './panes.mjs';
 
@@ -168,6 +171,18 @@ const inlineEditor = ({ code, name, id }={}) => {
 	});
 }
 
+function getDefaultFile(service){
+	let defaultFile;
+	try {
+		const packageJson = JSON.parse(
+			service.code.find(x => x.name === "package.json").code
+		);
+		defaultFile = packageJson.main;
+	} catch(e){
+	}
+	return defaultFile || "index.js";
+}
+
 let currentService;
 let currentFile;
 function getCodeFromService(service, file){
@@ -177,7 +192,7 @@ function getCodeFromService(service, file){
 		currentService = service;
 	}
 	if(!file){
-		currentFile = currentFile || "index.js";
+		currentFile = currentFile || getDefaultFile(service);
 		file = currentFile;
 	} else {
 		currentFile = file;
@@ -292,16 +307,6 @@ async function bartok(){
 			delete op.config.body;
 		}
 
-		//
-		if(op.name === "update"){
-				const configBody = JSON.parse(op.config.body);
-				const codeParsed = JSON.parse(configBody.code)
-				// console.log(
-				// 	JSON.stringify(
-				// 		codeParsed
-				// 	, null, 2)
-				// );
-			}
 		const response = await fetch(op.url, op.config);
 		const result = await response.json();
 		if (op.after) {
@@ -319,69 +324,19 @@ async function bartok(){
 		//console.log({ operation, data });
 	}
 
-	function managementOp(e){
-		const {
-			operation,
-			filename
-		} = e.detail;
-		// console.log(JSON.stringify({
-		// 	operation,
-		// 	filename,
-		// 	currentFile,
-		// 	currentService
-		// }, null, 2));
-
-		let manageOp;
-		if(operation === "addFile"){
-			try {
-				currentService.code.push({
-					name: filename,
-					code: "\n"
-				});
-				currentService.tree[
-					Object.keys(currentService.tree)[0]
-				][filename] = {};
-				// inlineEditor({ code: "", name: filename, id: currentService.id });
-				// const event = new CustomEvent('operationDone', {
-				// 	bubbles: true,
-				// 	detail: {
-				// 		operation: "read",
-				// 		id: currentService.id,
-				// 		result: [currentService]
-				// 	}
-				// });
-				// document.body.dispatchEvent(event);
-				manageOp = {
-					operation: "update"
-				};
-			} catch(e) {
-				console.log('could not add file');
-				console.log(e);
-			}
-		}
-		// done && done();
-		return manageOp;
-	}
-
 	document.body.addEventListener('operations', async function (e) {
 		// console.log(e.detail);
-		let manageOp;
-		const managementOps = [
-			"addFile", "renameFile", "deleteFile",
-			"renameProject"
-		];
-		if(managementOps.includes(e.detail.operation)){
-			manageOp = managementOp(e);
-		}
-		const eventOp = (manageOp||{}).operation || e.detail.operation;
+		const manageOp = managementOp(e, currentService, currentFile);
+		let eventOp = (manageOp||{}).operation || e.detail.operation;
 
 		if(eventOp === 'cancel'){
 			const foundOp = operations.find(x => x.name === 'read');
 			performOperation(foundOp, { body: { id: '' } });
 			return
 		}
+		// this updates project with current editor window's code
 		if(eventOp === 'update'){
-			//console.log({ currentService});
+			// console.log(JSON.stringify({ currentService}, null, 2));
 			const files = JSON.parse(JSON.stringify(currentService.code));
 			//debugger;
 			(files.find(x => x.name === currentFile)||{})
@@ -391,7 +346,22 @@ async function bartok(){
 				files
 			});
 		}
-		const foundOp = operations.find(x => x.name === eventOp)
+		if(eventOp === 'updateProject'){
+			// console.log(JSON.stringify({ currentService}, null, 2));
+			const files = JSON.parse(JSON.stringify(currentService.code));
+			e.detail.body.code = JSON.stringify({
+				tree: currentService.tree,
+				files
+			});
+			eventOp = "update";
+		}
+		const foundOp = operations.find(x => x.name === eventOp);
+		if(!foundOp){
+			console.error('Could not find operation!');
+			console.error({ eventOp, manageOp });
+			e.detail.done && e.detail.done('ERROR\n')
+			return;
+		}
 		foundOp.config = foundOp.config || {};
 		//foundOp.config.body = foundOp.config.body ? JSON.parse(foundOp.config.body) : undefined;
 		if(foundOp.name !== "read"){
@@ -419,6 +389,7 @@ function splitPanes(){
 	Panes();
 	bartok();
 	ActionBar();
+	HotKeys();
 	//Services();
 }
 

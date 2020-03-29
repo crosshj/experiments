@@ -352,9 +352,11 @@ nav a.sidenav-trigger i,
 }
 .cm-s-vscode-dark span.cm-keyword {
   color: var(--main-theme-text-color-dark) !important;
+  font-weight: 100 !important;
 }
 .cm-s-vscode-dark span.cm-def {
   color: var(--main-theme-text-color-dark) !important;
+  font-weight: bold !important;
 }
 .cm-s-vscode-dark span.cm-property {
   color: var(--main-theme-text-invert-color) !important;
