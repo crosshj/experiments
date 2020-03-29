@@ -1,8 +1,9 @@
-const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const dirname = `${__dirname}/../__services`;
+const { createInstance } = require('./instanceCreate');
+
+const dirname = `${__dirname}/../../__services`;
 
 function isDirSync(aPath) {
   try {
@@ -15,7 +16,6 @@ function isDirSync(aPath) {
     }
   }
 }
-
 
 const createV0Service = function(service){
 	const { id, name } = service;
@@ -92,7 +92,7 @@ const createV1Service = function(service, codeObject){
 
 	//console.log(JSON.stringify({ codeObject, service }, null, 2));
 
-	const serviceFilePath = `${dirname}/.${name}.service`;
+	const serviceFilePath = `${dirname}/.${name.replace(/\s/g, '_')}.service`;
 	if (!fs.existsSync(dirname)) {
 		//console.log(`created: ${dirname}`)
 		fs.mkdirSync(dirname);
@@ -122,7 +122,7 @@ const createV1Service = function(service, codeObject){
 	service.code = codeObject.files || service.code;
 	service.tree = codeObject.tree || service.tree;
 
-	return serviceFilePath + '/index.js'; //TODO: this might not be the entry point
+	return path.join(serviceFilePath, '/index.js'); //TODO: this might not be the entry point
 };
 
 
@@ -142,18 +142,7 @@ const initService = (service) => {
 		? createV1Service(service, codeObject)
 		: createV0Service(service);
 
-	const options = {
-		slient: true,
-	};
-	service.instance = childProcess.fork(serviceFilePath, [], options);
-	service.instance.on('message', message => {
-		console.log(`CHILD ${id} : ${message}`);
-	});
-	service.instance.send('PING.');
-
-	// service.id === 11 && console.log(JSON.stringify({
-	// 	code: service.code, tree: service.tree
-	// }, null, 2));
+	service.instance = createInstance(serviceFilePath, id, name);
 
 	return service;
 };

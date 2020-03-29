@@ -1,2 +1,2 @@
-server/__services/*
+__services/
 *.sqlite
