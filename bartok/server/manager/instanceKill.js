@@ -16,13 +16,19 @@ var deleteFolderRecursive = function (path) {
 	}
 };
 
-function instanceKill(services) {
+function instanceKill(services, callback) {
 	// TODO: should also delete file(s) for service
 	// next is a bad way to do that
 	if(services.length > 1){
 		deleteFolderRecursive(dirname);
 	}
-	services.forEach(s => s.instance.kill());
+	(async () => {
+		//console.log({ servicesToKill: services.map(x => x.id) })
+		for(var i=0, len=services.length; i < len; i++){
+			await services[i].instance.kill()
+		}
+		callback && callback();
+	})();
 }
 
 exports.instanceKill = instanceKill;

@@ -24,11 +24,19 @@ const initManager = async ({ db }) => {
 	//console.log(manager.services.filter(x => x.name === 'bartokv0.2').map(x => x.toJSON()));
 	manager.services = manager.services.map(initService);
 
+	let killing = false;
 	function exitHandler(options, exitCode) {
-		instanceKill(manager.services);
-		//if (options.cleanup) console.log('clean');
-		//if (exitCode || exitCode === 0) console.log(exitCode);
-		if (options.exit) process.exit(exitCode);
+		//console.log({exitCode})
+		if(killing){
+			return;
+		}
+		killing = true;
+		instanceKill(manager.services, () => {
+			console.log('All instances cleaned up.')
+			//if (options.cleanup) console.log('clean');
+			//if (exitCode || exitCode === 0) console.log(exitCode);
+			if (options.exit) process.exit(exitCode);
+		});
 	}
 
 	//do something when app is closing
