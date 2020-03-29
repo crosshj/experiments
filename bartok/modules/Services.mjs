@@ -1,4 +1,4 @@
-
+import { attachListener } from './events/services.mjs';
 
 const styles = `
 <style>
@@ -6,8 +6,9 @@ const styles = `
 	#services {
 		position: absolute;
 		left: 50px; top: 0; right: 0; bottom: 0;
-		background: var(--main-theme-color);
-		background: var(--main-theme-background-color);
+		/*background: var(--main-theme-color);*/
+		/*background: var(--main-theme-background-color);*/
+		background: var(--theme-subdued-color);
     z-index: 99;
 	}
 
@@ -65,7 +66,11 @@ function Node({ x, y, scale, label }){
 
 let services;
 function Services(){
-	const services = document.getElementById('services');
+	if(services){
+		return;
+	}
+	services = document.getElementById('services');
+	//services.classList.add('hidden');
 	services.innerHTML = `
 		${styles}
 		<svg id="canvas" class="">
@@ -81,14 +86,15 @@ function Services(){
 		"Worker 2"
 	];
 	const labels2 = [
-    "bartok-server",
-    "Simple Server",
-    "Express Server",
-  	"NOTES"
+    "template server",
+    "http basic",
+		"express",
+		"fastify"
 	];
+	const LEFT_OFFSET = 230;
 	let j = 1;
 	for(var i=0, len=labels.length; i < len; i++){
-		const x = (j===2 ? 150 : 0) + 150 + i%4 * 150;
+		const x = (j===2 ? 150 : 0) + LEFT_OFFSET + i%4 * 150;
 		const y = 50 +  j * 100;
 		if(i%4 === 3){
 			j++;
@@ -97,7 +103,7 @@ function Services(){
 		canvas.appendChild(node1);
 	}
 	for(var i=0, len=labels2.length; i < len; i++){
-		const x = 150 + i%4 * 150;
+		const x = LEFT_OFFSET + i%4 * 150;
 		const y = 350 +  j * 100;
 		if(i%4 === 3){
 			j++;
@@ -105,6 +111,10 @@ function Services(){
 		const node1 = Node({ x, y, scale: 1, label: labels2[i] });
 		canvas.appendChild(node1);
 	}
+	attachListener({
+		showServiceMap: () => services.classList.remove('hidden'),
+		hideServiceMap: () => services.classList.add('hidden')
+	})
 }
 
 export default Services;

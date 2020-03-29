@@ -28,7 +28,10 @@ const createTab = (parent) => (tabDef) => {
 	parent.scrollLeft = parent.scrollWidth;
 
 	const remainingTabs = Array.from(parent.querySelectorAll('.tab'));
-	if(remainingTabs.length <= 1){
+	if(!remainingTabs.length){
+		return;
+	}
+	if(remainingTabs.length === 1){
 		remainingTabs[0].classList.add('last');
 	} else {
 		remainingTabs[0].classList.remove('last');
@@ -51,6 +54,9 @@ const removeTab = (parent) => (tabDef) => {
 	child.parentNode.removeChild(child);
 
 	const remainingTabs = Array.from(parent.querySelectorAll('.tab'));
+	if(!remainingTabs.length){
+		return;
+	}
 	if(remainingTabs.length <= 1){
 		remainingTabs[0].classList.add('last');
 	}

@@ -178,8 +178,7 @@ function getDefaultFile(service){
 			service.code.find(x => x.name === "package.json").code
 		);
 		defaultFile = packageJson.main;
-	} catch(e){
-	}
+	} catch(e){}
 	return defaultFile || "index.js";
 }
 
@@ -390,7 +389,7 @@ function splitPanes(){
 	bartok();
 	ActionBar();
 	HotKeys();
-	//Services();
+	Services();
 }
 
 export default splitPanes;

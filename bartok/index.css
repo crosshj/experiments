@@ -11,6 +11,10 @@ html, body {
   margin: 0 !important;
 }
 
+.hidden {
+  display: none;
+}
+
 :root {
   --sidenav-full-width: 175px;
   --header-height: 40px;

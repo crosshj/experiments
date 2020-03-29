@@ -9,7 +9,7 @@ function getDefaultFile(service){
 		);
 		defaultFile = packageJson.main;
 	} catch(e){
-		debugger;
+		//debugger;
 	}
 	return defaultFile || "index.js";
 }

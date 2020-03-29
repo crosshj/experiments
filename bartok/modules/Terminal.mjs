@@ -228,7 +228,7 @@ function _Terminal(){
 					charBuffer = [];
 					term.write('\x1B[2K');
 					term.clear();
-					term.write('\x1B[1;30m \r∑ \x1B[0m');
+					term.write('\x1B[38;5;14m \r∑ \x1B[0m');
 					//prompt(term);
 					return;
 				}

@@ -76,7 +76,7 @@ function ActionBar(){
 	*/''}
 	<div class="action-bar-top">
 		<ul role="toolbar" class="">
-				<li class="explorer checked" role="button" title="Code">
+				<li class="explorer" role="button" title="Code">
 					<!-- a></a -->
 					<i class="material-icons">code</i>
 				</li>
@@ -84,7 +84,7 @@ function ActionBar(){
 					<i class="material-icons">search</i>
 					<!-- a></a -->
 				</li>
-				<li class="services" role="button" title="Services">
+				<li class="services checked" role="button" title="Services">
 					<i class="material-icons">device_hub</i>
 				</li>
 				<!-- li class="services" role="button" title="">
@@ -118,6 +118,42 @@ function ActionBar(){
 		actionBar.querySelector('.full-screen-exit').classList.add('hidden');
 		document.exitFullscreen();
 	});
+
+	const events = [{
+		query: 'li.explorer',
+		action: 'showServiceCode'
+	}, {
+		query: 'li.search ',
+		action: 'showSearch'
+	}, {
+		query: 'li.services',
+		action: 'showServicesMap'
+	}];
+
+	events.forEach(event => {
+		actionBar
+			.querySelector(event.query)
+			.addEventListener("click", (e) => {
+				if(event.action === "showSearch"){
+					return;
+				}
+				//debugger;
+				let target = e.target;
+				if(target.tagName == 'I'){
+					target = target.parentNode;
+				}
+				actionBar.querySelector('.checked')
+					.classList.remove('checked');
+				target.classList.add('checked');
+
+				const actionBarEvent = new CustomEvent(event.action, {
+					bubbles: true,
+					detail: { }
+				});
+				document.body.dispatchEvent(actionBarEvent);
+			});
+	});
+
 }
 
 export default ActionBar;

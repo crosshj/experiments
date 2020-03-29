@@ -10,7 +10,7 @@ function getDefaultFile(service){
 		);
 		defaultFile = packageJson.main;
 	} catch(e){
-		debugger;
+		//debugger;
 	}
 	return defaultFile || "index.js";
 }
@@ -133,8 +133,8 @@ const fileSelectHandler = ({
 const operationDoneHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
-	const { op, result=[] } = event.detail || '';
-	if(op !== 'read'){
+	const { op, id, result=[] } = event.detail || '';
+	if(op !== 'read' || !id){
 		return;
 	}
 	const defaultFile = getDefaultFile(result[0]);
@@ -159,6 +159,7 @@ function attachListener(
 ){
 	const listener = async function (event) {
 		//console.log(event.type)
+		// await something here??
 		handlers[event.type] && handlers[event.type]({
 			event, container, initTabs, createTab, updateTab, removeTab
 		});
