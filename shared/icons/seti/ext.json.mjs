@@ -1,4 +1,4 @@
-{
+export default {
     "mp3": "audio",
     "wav": "audio",
     "ogg": "audio",
@@ -148,5 +148,8 @@
     "r": "r",
     "lock": "lock",
     "asp": "asp",
-    "flowconfig": "flow"
+    "flowconfig": "flow",
+
+    "scratch": "smarty",
+    "bugs": "platformio"
 }

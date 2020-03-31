@@ -26,7 +26,7 @@ const initManager = async ({ db }) => {
 
 	let killing = false;
 	function exitHandler(options, exitCode) {
-		//console.log({exitCode})
+		console.log({exitCode})
 		if(killing){
 			return;
 		}

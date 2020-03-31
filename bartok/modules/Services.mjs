@@ -70,7 +70,7 @@ function Services(){
 		return;
 	}
 	services = document.getElementById('services');
-	//services.classList.add('hidden');
+	services.classList.add('hidden');
 	services.innerHTML = `
 		${styles}
 		<svg id="canvas" class="">

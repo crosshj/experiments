@@ -435,7 +435,7 @@ ul.editor-controls li:hover {
   height: 35px;
   box-sizing: border-box;
   padding: 5px;
-  padding-left: 30px;
+  padding-left: 13px;
   /* background: var(--theme-subdued-color); */
   background: var(--main-theme-background-color);
   width: 120px;
@@ -684,7 +684,11 @@ notes-section.loading:after {
 /* .tree-leaf .hidden{display:none;visibility:hidden} */
 /* .tree-leaf .tree-expando{background:#ddd;border-radius:3px;cursor:pointer;float:left;height:10px;line-height:10px;position:relative;text-align:center;top:5px;width:10px} */
 /* .tree-leaf .tree-expando:hover{background:#aaa} */
-.tree-leaf .tree-leaf-text{cursor:pointer;float:left;margin-left:5px}
+.tree-leaf .tree-leaf-text{
+  cursor:pointer;
+  float:left;
+  /* margin-left:5px; */
+}
 .tree-leaf .tree-leaf-text:hover{
   /* color:#00f */
   background-color: var(--theme-subdued-color);
@@ -708,6 +712,7 @@ notes-section.loading:after {
 
 .tree-leaf-content:not(.folder) .tree-expando{
   visibility:hidden;
+  display: none;
 }
 
 .tree-leaf-text {

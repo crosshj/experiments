@@ -15,6 +15,7 @@ const appendStyleSheet = (url, callback) => {
 };
 
 window.Theme = Theme({});
+window.FUN = false;  // no terminal MOTD
 
 AppDom((domErrors, appDom) => {
 	App((err, app) => {

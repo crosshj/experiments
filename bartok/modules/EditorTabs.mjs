@@ -1,9 +1,24 @@
 import { attachListener } from './events/editorTabs.mjs';
+import ext from '/shared/icons/seti/ext.json.mjs'
 
 function log(){
 	return console.log.call(null, arguments.map(x =>
 		JSON.stringify(x, null, 2)
 	));
+}
+
+function getFileType(fileName=''){
+	let type = 'default';
+	const extension = ((
+			fileName.match(/\.[0-9a-z]+$/i) || []
+		)[0] ||''
+	).replace(/^\./, '');
+
+	//console.log(extension)
+	if(ext[extension]){
+		type=ext[extension];
+	}
+	return type;
 }
 
 const createTab = (parent) => (tabDef) => {
@@ -13,8 +28,9 @@ const createTab = (parent) => (tabDef) => {
 	if(tabDef.active){
 		tab.classList.add('active');
 	}
+	const fileType = getFileType(tabDef.name);
 	tab.innerHTML = `
-		<span style="pointer-events: none;">${tabDef.name}</span>
+		<span style="pointer-events: none;" class="icon-${fileType}">${tabDef.name}</span>
 		<div class="tab-close"><div class="monaco-action-bar animated">
 			<ul class="actions-container" role="toolbar" aria-label="Tab actions">
 				<li class="action-item" role="presentation">

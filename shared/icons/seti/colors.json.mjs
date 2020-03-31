@@ -1,4 +1,4 @@
-{
+export default {
     "apache": {
         "light": "#f7d97c",
         "dark": "#dd1d59"

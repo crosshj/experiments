@@ -1,4 +1,8 @@
 import { attach } from '../Listeners.mjs';
+
+import ext from '/shared/icons/seti/ext.json.mjs';
+
+
 let tree;
 
 function getDefaultFile(service){
@@ -12,6 +16,20 @@ function getDefaultFile(service){
 		//debugger;
 	}
 	return defaultFile || "index.js";
+}
+
+function getFileType(fileName=''){
+	let type = 'default';
+	const extension = ((
+			fileName.match(/\.[0-9a-z]+$/i) || []
+		)[0] ||''
+	).replace(/^\./, '');
+
+	//console.log(extension)
+	if(ext[extension]){
+		type=ext[extension];
+	}
+	return type;
 }
 
 const fileSelectHandler = (e) => {
@@ -134,6 +152,9 @@ function attachListener(treeView, JSTreeView){
 			const item = JSON.parse(t.dataset.item);
 			if(item.children.length){
 				t.classList.add('folder');
+			} else {
+				const textNode = t.querySelector('.tree-leaf-text');
+				textNode.classList.add(`icon-${getFileType(textNode.innerText)}`);
 			}
 			if(item.name === defaultFile){
 				t.classList.add('selected');
