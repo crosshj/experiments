@@ -8,7 +8,7 @@ import HotKeys from './HotKeys.mjs';
 
 import { managementOp } from './management.mjs';
 
-import Panes from './panes.mjs';
+import Panes from './Panes.mjs';
 
 import { attachListener } from './events/editor.mjs';
 
