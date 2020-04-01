@@ -306,8 +306,27 @@ async function bartok(){
 			delete op.config.body;
 		}
 
-		const response = await fetch(op.url, op.config);
-		const result = await response.json();
+		let result;
+		try {
+			const response = await fetch(op.url, op.config);
+			result = await response.json();
+		} catch(e) {
+			result = {
+				result: [{
+					name: 'Local Storage',
+					tree: {
+						"Local Storage": {
+							"index.js": {}
+						}
+					},
+					code: [{
+						name: "index.js",
+						code: "\n\n/*\n\nCould not find a server!\n\nWorking in Local Storage mode!\n\n*/"
+					}]
+				}]
+			};
+			console.log('read from localStorage instead');
+		}
 		if (op.after) {
 			op.after({ result });
 		}

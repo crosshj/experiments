@@ -32,13 +32,17 @@
  .cm-s-vscode-dark div.CodeMirror-selected {background: #1e496c}
  .cm-s-vscode-dark .CodeMirror-gutters {background: #252526; border-right: 7px solid #252526; color: #606366}
  .cm-s-vscode-dark span.cm-builtin {color: #A9B7C6;}
- .cm-s-vscode-dark {font-family: Consolas, 'Courier New', monospace, serif;}
+ .cm-s-vscode-dark {
+   /* font-family: Consolas, 'Courier New', monospace, serif; */
+   /* font-family: inherit; */
+   /* font-family: Menlo, Monaco, "Courier New", monospace; */
+  }
  .cm-s-vscode-dark .CodeMirror-matchingbracket {background-color: #3b514d; color: yellow !important;}
 
  .CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like { padding-left: 10px !important;}
 
  .CodeMirror-hints.vscode-dark {
-   font-family: Consolas, 'Courier New', monospace;
+   /* font-family: Consolas, 'Courier New', monospace; */
    color: #9c9e9e;
    background-color: #3b3e3f !important;
  }

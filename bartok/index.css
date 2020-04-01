@@ -1,10 +1,25 @@
 html.ns-draggable-cursor {
-	cursor: ns-resize;
+  cursor: ns-resize;
 }
 
-/* disable mac navigating forward or back */
 html, body {
+  /* disable mac navigating forward or back */
   overscroll-behavior-x: none;
+
+  /* font-family: Consolas, 'Courier New', monospace; */
+  font-family: -apple-system,BlinkMacSystemFont,sans-serif;
+  font-size: 13px;
+}
+.CodeMirror {
+  padding-top: 5px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05px;
+  line-height: 16px;
+}
+
+.CodeMirror-sizer {
+  padding-bottom: 500px !important;
 }
 
 .no-margin {
@@ -319,7 +334,7 @@ nav a.sidenav-trigger i,
 
 .CodeMirror {
   /* height: 100%; */
-  font-size: 13px;
+  /* font-size: 12px; */
   background: #eee;
 }
 
@@ -657,12 +672,11 @@ notes-section.loading:after {
 
 /* js-treeview */
 #tree-view {
-  font-family: -apple-system,BlinkMacSystemFont,sans-serif;
   /* padding-left: 3px; */
   height: calc(100% - 30px);
   color: var(--main-theme-text-color);
   background-color: var(--theme-subdued-color);
-  font-size: 13px;
+  /* font-size: 13px; */
   font-weight: 300;
   user-select: none;
   white-space: nowrap;
