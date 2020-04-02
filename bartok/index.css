@@ -426,7 +426,9 @@ ul.editor-controls li:hover {
 
 .section.editor .CodeMirror {
   color: #9d9b97;
+  /* height: 100%; */
   height: calc(100% - 30px);
+  background: transparent;
 }
 
 #editor-tabs-container {

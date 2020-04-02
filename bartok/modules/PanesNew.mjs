@@ -4,8 +4,8 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 	const firstRightX = document.documentElement.clientWidth - second.style.left.replace("px", "");
 	const secondWidthX = second.style.width.replace("px", "");
 
-	first.style.right = 100 * firstRightX/document.documentElement.clientWidth + "%";
-	second.style.right = 100 * (firstRightX - secondWidthX)/document.documentElement.clientWidth + "%";
+	first.style.right = 100 * firstRightX / document.documentElement.clientWidth + "%";
+	second.style.right = 100 * (firstRightX - secondWidthX) / document.documentElement.clientWidth + "%";
 
 
 	first.style.width = "";
@@ -49,7 +49,7 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		return false;
 	}
 
-	function onMouseUp(e){
+	function onMouseUp(e) {
 		console.log("mouseUp! resize!")
 
 		element.style.position = "absolute";
@@ -68,19 +68,51 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		window.termResize()
 	}
 
+	let timeout;
 	function onMouseMove(e) {
-		//TODO: debounce/change the width of under elements!?!?
-
-		//console.log("onMouseMove");
 
 		const currentX = e.clientX;
-		// secondEdge = currentX + "px";
-		const firstRightPercent = 100 * (1 - (currentX / document.documentElement.clientWidth));
-		const secondStyleLeft = 100 * (currentX/document.documentElement.clientWidth);
 
-		//TODO: set min and max sizing bounds
-		first.style.right = firstRightPercent + "%";
-		second.style.left = secondStyleLeft + "%";
+		// If there's a timer, cancel it
+		if (timeout) {
+			window.cancelAnimationFrame(timeout);
+		}
+
+		//TODO: pause codemirror rendering while resizing
+
+		// Setup the new requestAnimationFrame()
+		timeout = window.requestAnimationFrame(function () {
+			//TODO: debounce/change the width of under elements!?!?
+
+			//console.log("onMouseMove");
+
+
+			// secondEdge = currentX + "px";
+			const firstRightPercent = 100 * (1 - (currentX / document.documentElement.clientWidth));
+			const secondStyleLeft = 100 * (currentX / document.documentElement.clientWidth);
+
+			//TODO: set min and max sizing bounds
+			first.style.right = firstRightPercent + "%";
+			second.style.left = secondStyleLeft + "%";
+
+			element.style.position = "absolute";
+			element.style.left = second.style.left;
+
+			firstUnder.style.position = "absolute";
+			firstUnder.style.width = first.style.width;
+			firstUnder.style.left = first.style.left;
+			firstUnder.style.right = first.style.right;
+
+			secondUnder.style.position = "absolute";
+			secondUnder.style.width = second.style.width;
+			secondUnder.style.left = second.style.left;
+			secondUnder.style.right = second.style.right;
+
+			//window.termResize()
+
+			timeout = undefined;
+		});
+
 
 		e.preventDefault();
 		return false;
@@ -110,7 +142,7 @@ function attachListeners() {
 // TODO: should also be listening to window.resize event and adjusting panes!!!
 let panes;
 function Panes() {
-	if(panes){
+	if (panes) {
 		return panes;
 	}
 	const splitter = document.createElement('div');
@@ -141,7 +173,7 @@ function Panes() {
 				transition: opacity .25s ease-in;
 			}
 			div.pane-cover.active-pane-guide {
-				opacity: 0.8;
+				opacity: 0;
 			}
 		</style>
 		<div id="actionbar"></div>
@@ -166,13 +198,13 @@ function Panes() {
 
 	const explorer = splitter.querySelector("#explorer");
 	const explorerCover = splitter.querySelector("#explorer-cover")
-	explorerCover.style.left = "50px"; explorer.offsetLeft +  "px";
-	explorerCover.style.width = explorer.offsetWidth - 2 +  "px";
+	explorerCover.style.left = "50px"; explorer.offsetLeft + "px";
+	explorerCover.style.width = explorer.offsetWidth - 2 + "px";
 
 	const editor = splitter.querySelector("#editor")
 	const editorCover = splitter.querySelector("#editor-cover");
-	editorCover.style.left = 50 + explorer.offsetWidth + 2 +  "px";
-	editorCover.style.width = editor.offsetWidth - 10 +  "px";
+	editorCover.style.left = 50 + explorer.offsetWidth + 2 + "px";
+	editorCover.style.width = editor.offsetWidth - 10 + "px";
 
 	const terminal = splitter.querySelector("#terminal");
 	const terminalCover = splitter.querySelector("#terminal-cover")
