@@ -1,0 +1,214 @@
+function getOperations(updateAfter, readAfter) {
+	const operations = [{
+		url: ''
+	}, {
+		name: 'create',
+		url: 'service/create',
+		config: {
+			method: 'POST',
+			name: 'test-service',
+			body: {
+				name: 'test-service'
+			}
+		},
+		after: updateAfter
+	}, {
+		name: 'read',
+		url: 'service/read/{id}',
+		after: readAfter
+	}, {
+		name: 'update',
+		url: 'service/update',
+		config: {
+			method: 'POST'
+		},
+		after: updateAfter
+	}, {
+		name: 'delete',
+		url: 'service/delete',
+		config: {
+			method: 'POST'
+		},
+	}, {
+		name: 'manage',
+		url: 'manage'
+	}, {
+		name: 'monitor',
+		url: 'monitor'
+	}, {
+		name: 'persist',
+		url: 'persist'
+	}];
+	operations.forEach(x => {
+		x.url = `http://localhost:3080/${x.url}`;
+		if (x.config && x.config.body) {
+			x.config.body = JSON.stringify(x.config.body);
+		}
+	});
+	return operations;
+}
+
+function getReadAfter(List, inlineEditor, getCodeFromService) {
+	return ({ result = {} } = {}) => {
+		const services = result.result;
+		if (services.length && !services[0].code) {
+			result.listOne = true;
+		}
+		if (services.length > 1 || result.listOne) {
+			document.querySelector('#project-splitter')
+				.style.display = "none";
+			List({ services });
+		}
+		else {
+			document.querySelector('#project-splitter')
+				.style.display = "";
+			const service = services[0];
+			if (!service) {
+				return inlineEditor({ code: "", name: "", id: "" });
+			}
+			const { code, name, id } = getCodeFromService(services[0]);
+			inlineEditor({ code, name, id });
+		}
+	};
+}
+
+function getUpdateAfter(getCodeFromService, inlineEditor) {
+	return ({ result }) => {
+		const services = result.result;
+		const { code, name, id } = getCodeFromService(services[0]);
+		inlineEditor({ code, name, id });
+	};
+}
+
+async function performOperation(operation, eventData = {}) {
+	const { body = {}, after } = eventData;
+	if (operation.name !== "read") {
+		body.id = body.id === 0
+			? body.id
+			: body.id || (currentService || {}).id;
+	}
+	const { id } = body;
+	const op = JSON.parse(JSON.stringify(operation));
+	op.after = after || operation.after;
+	op.url = op.url.replace('{id}', id || '');
+	op.config = op.config || {};
+	op.config.headers = {
+		...{
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}, ...((op.config || {}).headers || {})
+	};
+	if (op.config.method !== "POST") {
+		delete op.config.body;
+	}
+	let result;
+	try {
+		const response = await fetch(op.url, op.config);
+		result = await response.json();
+	}
+	catch (e) {
+		result = {
+			result: [{
+				name: 'Local Storage',
+				tree: {
+					"Local Storage": {
+						"index.js": {}
+					}
+				},
+				code: [{
+					name: "index.js",
+					code: "\n\n/*\n\nCould not find a server!\n\nWorking in Local Storage mode!\n\n*/"
+				}]
+			}]
+		};
+		console.log('read from localStorage instead');
+	}
+	if (op.after) {
+		op.after({ result });
+	}
+	const event = new CustomEvent('operationDone', {
+		bubbles: true,
+		detail: {
+			op: operation.name,
+			id,
+			result: result.result
+		}
+	});
+	document.body.dispatchEvent(event);
+	//console.log({ operation, data });
+}
+
+const operationsListener = async (
+	e, {
+		operations, managementOp, performOperation
+	}) => {
+	// console.log(e.detail);
+	const manageOp = managementOp(e, currentService, currentFile);
+	let eventOp = (manageOp || {}).operation || e.detail.operation;
+	if (eventOp === 'cancel') {
+		const foundOp = operations.find(x => x.name === 'read');
+		performOperation(foundOp, { body: { id: '' } });
+		return;
+	}
+	// this updates project with current editor window's code
+	if (eventOp === 'update') {
+		// console.log(JSON.stringify({ currentService}, null, 2));
+		const files = JSON.parse(JSON.stringify(currentService.code));
+		//debugger;
+		(files.find(x => x.name === currentFile) || {})
+			.code = e.detail.body.code;
+		e.detail.body.code = JSON.stringify({
+			tree: currentService.tree,
+			files
+		});
+	}
+	if (eventOp === 'updateProject') {
+		// console.log(JSON.stringify({ currentService}, null, 2));
+		const files = JSON.parse(JSON.stringify(currentService.code));
+		e.detail.body.code = JSON.stringify({
+			tree: currentService.tree,
+			files
+		});
+		eventOp = "update";
+	}
+	const foundOp = operations.find(x => x.name === eventOp);
+	if (!foundOp) {
+		console.error('Could not find operation!');
+		console.error({ eventOp, manageOp });
+		e.detail.done && e.detail.done('ERROR\n');
+		return;
+	}
+	foundOp.config = foundOp.config || {};
+	//foundOp.config.body = foundOp.config.body ? JSON.parse(foundOp.config.body) : undefined;
+	if (foundOp.name !== "read") {
+		e.detail.body.id = e.detail.body.id === 0
+			? e.detail.body.id
+			: e.detail.body.id || (currentService || {}).id;
+	}
+	foundOp.config.body = JSON.stringify(e.detail.body);
+	await performOperation(foundOp, e.detail);
+	e.detail.done && e.detail.done('DONE\n');
+};
+
+async function Operations({
+	getCodeFromService, managementOp,
+	inlineEditor, List
+}) {
+	const readAfter = getReadAfter(List, inlineEditor, getCodeFromService);
+	const updateAfter = getUpdateAfter(getCodeFromService, inlineEditor);
+	const operations = getOperations(updateAfter, readAfter);
+
+	document.body.addEventListener(
+		'operations',
+		(e) => operationsListener(e, {
+			operations, managementOp, performOperation
+		}),
+		false);
+
+	const foundOp = operations.find(x => x.name === 'read');
+	await performOperation(foundOp, { body: { id: 999 } });
+}
+
+export default Operations;
+
+

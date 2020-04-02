@@ -228,7 +228,7 @@ function _Terminal(){
 					charBuffer = [];
 					term.write('\x1B[2K');
 					term.clear();
-					term.write('\x1B[38;5;14m \r∑ \x1B[0m');
+					term.write('\n\x1B[38;5;14m \r∑ \x1B[0m');
 					//prompt(term);
 					return;
 				}
@@ -250,6 +250,15 @@ function _Terminal(){
 	});
 
 	term.onResize(() => {
+		fitAddon.fit();
+	});
+
+	// not sure if this is really needed
+	window.termResize = () => {
+		fitAddon.fit();
+	};
+
+	window.addEventListener('resize', function() {
 		fitAddon.fit();
 	});
 

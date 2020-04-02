@@ -33,7 +33,10 @@ function dragElement(element, direction, handler, first, second) {
 		drag.x = e.clientX;
 		drag.y = e.clientY;
 		document.onmousemove = onMouseMove;
-		document.onmouseup = () => { document.onmousemove = document.onmouseup = null; }
+		document.onmouseup = () => {
+			document.onmousemove = document.onmouseup = null;
+			window.termResize();
+		}
 		e.preventDefault();
 		return false;
 	}

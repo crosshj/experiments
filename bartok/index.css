@@ -830,7 +830,7 @@ notes-section.loading:after {
 #explorer {
 	background-color: var(--main-theme-color);
 	height: 100%;
-  width: 200px;
+  /* width: 200px; */
 }
 
 /* container for editor and terminal*/
@@ -856,8 +856,10 @@ notes-section.loading:after {
 #terminal {
 	background-color: var(--main-theme-color);
   border-left: 1px solid var(--main-theme-background-color);
-  width: 50%;
+  /* width: 50%; */
+  right: 0 !important;
   height: 100%;
+  bottom: 0px;
   min-width: 10px;
   padding-left: 15px;
   display: flex;
@@ -877,7 +879,7 @@ notes-section.loading:after {
 }
 
 .term-contain {
-  padding-top: 15px;
+  /* padding-top: 15px; */
   flex:1;
   height: calc(100vh - 30px);
 }
