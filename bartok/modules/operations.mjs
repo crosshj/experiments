@@ -80,7 +80,7 @@ function getUpdateAfter(getCodeFromService, inlineEditor) {
 	};
 }
 
-async function performOperation(operation, eventData = {}) {
+async function performOperation(operation, eventData = {}, externalStateRequest) {
 	const { body = {}, after } = eventData;
 	if (operation.name !== "read") {
 		body.id = body.id === 0
@@ -101,28 +101,10 @@ async function performOperation(operation, eventData = {}) {
 	if (op.config.method !== "POST") {
 		delete op.config.body;
 	}
-	let result;
-	try {
-		const response = await fetch(op.url, op.config);
-		result = await response.json();
-	}
-	catch (e) {
-		result = {
-			result: [{
-				name: 'Local Storage',
-				tree: {
-					"Local Storage": {
-						"index.js": {}
-					}
-				},
-				code: [{
-					name: "index.js",
-					code: "\n\n/*\n\nCould not find a server!\n\nWorking in Local Storage mode!\n\n*/"
-				}]
-			}]
-		};
-		console.log('read from localStorage instead');
-	}
+
+	//, externalStateRequest
+	const result = await externalStateRequest(op);
+
 	if (op.after) {
 		op.after({ result });
 	}
@@ -140,14 +122,18 @@ async function performOperation(operation, eventData = {}) {
 
 const operationsListener = async (
 	e, {
-		operations, managementOp, performOperation
+		operations, managementOp, performOperation, externalStateRequest,
+		getCurrentFile, getCurrentService
 	}) => {
+	const currentFile = getCurrentFile();
+	const currentService = getCurrentService();
+
 	// console.log(e.detail);
 	const manageOp = managementOp(e, currentService, currentFile);
 	let eventOp = (manageOp || {}).operation || e.detail.operation;
 	if (eventOp === 'cancel') {
 		const foundOp = operations.find(x => x.name === 'read');
-		performOperation(foundOp, { body: { id: '' } });
+		performOperation(foundOp, { body: { id: '' } }, externalStateRequest);
 		return;
 	}
 	// this updates project with current editor window's code
@@ -186,12 +172,13 @@ const operationsListener = async (
 			: e.detail.body.id || (currentService || {}).id;
 	}
 	foundOp.config.body = JSON.stringify(e.detail.body);
-	await performOperation(foundOp, e.detail);
+	await performOperation(foundOp, e.detail, externalStateRequest);
 	e.detail.done && e.detail.done('DONE\n');
 };
 
 async function Operations({
-	getCodeFromService, managementOp,
+	getCodeFromService, managementOp, externalStateRequest,
+	getCurrentFile, getCurrentService,
 	inlineEditor, List
 }) {
 	const readAfter = getReadAfter(List, inlineEditor, getCodeFromService);
@@ -201,12 +188,13 @@ async function Operations({
 	document.body.addEventListener(
 		'operations',
 		(e) => operationsListener(e, {
-			operations, managementOp, performOperation
+			operations, managementOp, performOperation, externalStateRequest,
+			getCurrentFile, getCurrentService
 		}),
 		false);
 
 	const foundOp = operations.find(x => x.name === 'read');
-	await performOperation(foundOp, { body: { id: 999 } });
+	await performOperation(foundOp, { body: { id: 999 } }, externalStateRequest);
 }
 
 export default Operations;

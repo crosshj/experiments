@@ -34,7 +34,8 @@ function getCodeFromService(service, file){
 }
 
 const getCurrentFile = () => currentFile;
+const getCurrentService = () => currentService;
 
 export {
-  getCodeFromService, getCurrentFile
+	getCodeFromService, getCurrentFile, getCurrentService
 };

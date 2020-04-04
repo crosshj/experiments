@@ -19,11 +19,13 @@ function getTabsToUpdate(name) {
 	const tabsToUpdate = [];
 	let foundTab;
 	for (var i = 0, len = tabs.length; i < len; i++) {
+		if (name === tabs[i].name){
+			foundTab = tabs[i];
+		}
 		// update: if tab exists and not active, activate it
 		if (name === tabs[i].name && !tabs[i].active) {
 			tabs[i].active = true;
 			tabsToUpdate.push(tabs[i]);
-			foundTab = tabs[i];
 		}
 		// update: remove active state from active tab
 		if (name !== tabs[i].name && tabs[i].active) {

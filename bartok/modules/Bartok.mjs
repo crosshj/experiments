@@ -7,8 +7,12 @@ import Services from './Services.mjs';
 import HotKeys from './HotKeys.mjs';
 import Panes from './PanesNew.mjs';
 
+import { externalStateRequest } from './ExternalState.mjs';
+
 import Operations from './operations.mjs';
-import { getCodeFromService } from './state.mjs';
+import {
+	getCodeFromService, getCurrentFile, getCurrentService
+} from './state.mjs';
 import { managementOp } from './management.mjs';
 
 async function Bartok(){
@@ -23,7 +27,8 @@ async function Bartok(){
 	} = Editor({ getCodeFromService, TreeView });
 
 	await Operations({
-		getCodeFromService, managementOp,
+		getCodeFromService, managementOp, externalStateRequest,
+		getCurrentFile, getCurrentService,
 		inlineEditor, List  // instead of passing these here, Editor should be listening
 	});
 }

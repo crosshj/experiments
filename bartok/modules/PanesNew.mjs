@@ -1,11 +1,19 @@
+/*
+
+
+https://iamakulov.com/notes/resize-scroll/
+
+
+*/
+
 // function is used for dragging and moving
 function dragElement(element, direction, handler, first, second, firstUnder, secondUnder) {
 
-	const firstRightX = document.documentElement.clientWidth - second.style.left.replace("px", "");
-	const secondWidthX = second.style.width.replace("px", "");
+	//const firstRightX = document.documentElement.clientWidth * second.style.left.replace("%", "");
+	// const secondWidthX = second.style.width.replace("px", "");
 
-	first.style.right = 100 * firstRightX / document.documentElement.clientWidth + "%";
-	second.style.right = 100 * (firstRightX - secondWidthX) / document.documentElement.clientWidth + "%";
+	//first.style.right = 100 * firstRightX / document.documentElement.clientWidth + "%";
+	//second.style.right = 100 * (firstRightX - secondWidthX) / document.documentElement.clientWidth + "%";
 
 
 	first.style.width = "";
@@ -25,15 +33,25 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		: (element.onmousedown = dragMouseDown);
 
 	// function that will be called whenever the down event of the mouse is raised
+	let dragging;
 	function dragMouseDown(e) {
+		if(dragging){
+			return false;
+		}
+		dragging = true;
+
 		//console.log("dragMouseDown");
 		first.style.minWidth = "";
 		second.style.minWidth = "";
 
 		first.classList.add('active-pane-guide');
 		second.classList.add('active-pane-guide');
-		first.style.borderRight = "2px solid #333";
-		second.style.borderLeft = "2px solid #333";
+		first.style.borderRight = "1px solid #555";
+		second.style.borderLeft = "1px solid #555";
+		console.log(`Change right border for:`)
+		console.log(first);
+		console.log(`Change left border for:`)
+		console.log(second);
 
 		// drag.x = e.clientX;
 		// drag.y = e.clientY;
@@ -65,7 +83,11 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		secondUnder.style.left = second.style.left;
 		secondUnder.style.right = second.style.right;
 
-		window.termResize()
+		first.style.borderRight = "";
+		second.style.borderLeft = "";
+
+		window.termResize();
+		dragging = false;
 	}
 
 	let timeout;
@@ -79,6 +101,7 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		}
 
 		//TODO: pause codemirror rendering while resizing
+		//https://discuss.codemirror.net/t/force-repaint-of-entire-cm-instance/498/2
 
 		// Setup the new requestAnimationFrame()
 		timeout = window.requestAnimationFrame(function () {
@@ -148,6 +171,9 @@ function Panes() {
 	const splitter = document.createElement('div');
 	splitter.id = "project-splitter";
 	splitter.classList.add('splitter');
+
+	const explorerRight = 100 * (1 - (250 / document.documentElement.clientWidth));
+
 	splitter.innerHTML = `
 		<style>
 			#cover-container{
@@ -165,6 +191,7 @@ function Panes() {
 				right: 0 !important;
 			}
 			div.pane-cover {
+				background: transparent;
 				height: 100%;
 				opacity: 0;
 				position: absolute;
@@ -173,43 +200,45 @@ function Panes() {
 				transition: opacity .25s ease-in;
 			}
 			div.pane-cover.active-pane-guide {
-				opacity: 0;
+				opacity: 1;
 			}
 		</style>
 		<div id="actionbar"></div>
-		<div id="explorer" style="min-width: 200px"></div>
-		<div class="seperator" id="seperator1"></div>
-		<div id="editor"></div>
-		<div class="seperator" id="seperator2"></div>
-		<div id="terminal" style="width: 50%"></div>
+
+		<div id="explorer" style="position: absolute; left: 50px; right: ${explorerRight}%;"></div>
+		<div class="seperator" id="seperator1" style="position: absolute; left: ${100-explorerRight}%;"></div>
+		<div id="editor" style="position: absolute; left: ${100-explorerRight}%; right: 38%;"></div>
+		<div class="seperator" id="seperator2" style="position: absolute; left: 62%;"></div>
+		<div id="terminal" style="position: absolute; left: 62%; right: 0;"></div>
+
 		<div id="cover-container">
 			<div id="actionbar-cover" class="pane-cover" style="background: transparent;"></div>
-			<div id="explorer-cover" class="pane-cover" style="background: var(--theme-subdued-color);"></div>
-			<div id="editor-cover" class="pane-cover" style="background: #181818"></div>
-			<div id="terminal-cover" class="pane-cover" style="background: #222;"></div>
+			<div id="explorer-cover" class="pane-cover" style="position: absolute; left: 50px; right: ${explorerRight}%;"></div>
+			<div id="editor-cover" class="pane-cover" style="position: absolute; left: ${100-explorerRight}%; right: 38%;"></div>
+			<div id="terminal-cover" class="pane-cover"style="position: absolute; left: 62%; right: 0;"></div>
 		</div>
-		<div id="services">
-		</div>
+
+		<div id="services"></div>
 	`;
 
 	//TODO: panes should be remembered (and percentages in the first place)
 
 	document.body.appendChild(splitter);
 
-	const explorer = splitter.querySelector("#explorer");
-	const explorerCover = splitter.querySelector("#explorer-cover")
-	explorerCover.style.left = "50px"; explorer.offsetLeft + "px";
-	explorerCover.style.width = explorer.offsetWidth - 2 + "px";
+	// const explorer = splitter.querySelector("#explorer");
+	// const explorerCover = splitter.querySelector("#explorer-cover")
+	// explorerCover.style.left = "50px"; explorer.offsetLeft + "px";
+	// explorerCover.style.width = explorer.offsetWidth - 2 + "px";
 
-	const editor = splitter.querySelector("#editor")
-	const editorCover = splitter.querySelector("#editor-cover");
-	editorCover.style.left = 50 + explorer.offsetWidth + 2 + "px";
-	editorCover.style.width = editor.offsetWidth - 10 + "px";
+	// const editor = splitter.querySelector("#editor")
+	// const editorCover = splitter.querySelector("#editor-cover");
+	// editorCover.style.left = "22%";
+	// editorCover.style.right = "38%";
 
-	const terminal = splitter.querySelector("#terminal");
-	const terminalCover = splitter.querySelector("#terminal-cover")
-	terminalCover.style.left = 50 + explorer.offsetWidth + editor.offsetWidth - 4 + "px";
-	terminalCover.style.width = terminal.offsetWidth + "px";
+	// const terminal = splitter.querySelector("#terminal");
+	// const terminalCover = splitter.querySelector("#terminal-cover")
+	// terminalCover.style.left = 50 + explorer.offsetWidth + editor.offsetWidth - 4 + "px";
+	// terminalCover.style.width = terminal.offsetWidth + "px";
 
 
 	attachListeners()

@@ -7,6 +7,116 @@ function log(){
 	));
 }
 
+function scrollToChild(child){
+	window.parent = child.parentNode;
+	const parentWindowMin = parent.scrollLeft;
+	const parentWindowMax = parent.scrollLeft + parent.clientWidth;
+	const parentMaxScrollLeft = parent.scrollWidth - parent.clientWidth;
+
+	const childMin = child.offsetLeft;
+	const childMax = child.offsetLeft + child.clientWidth;
+	const childCenter = (childMin + childMax)/2;
+	const idealScrollLeft = childCenter - (parent.clientWidth/2);
+
+	const idealScrollMin = childMax > parentWindowMin
+		&& childMin < parentWindowMin
+		? parent.scrollLeft - (parentWindowMin - childMin) - 20
+		: undefined;
+
+	const idealScrollMax = childMax > parentWindowMax
+		&& childMin < parentWindowMax
+		? parent.scrollLeft + (childMax - parentWindowMax) + 20
+		: undefined;
+
+
+	// console.log({
+	// 	childMin, childMax, parentWindowMin, parentWindowMax, parentMaxScrollLeft
+	// });
+
+
+	if(childMin === 0){
+		//parent.scrollLeft = 0;
+		parent.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: 'smooth'
+		});
+		return;
+	}
+
+	if(childMax === parent.scrollWidth){
+		//parent.scrollLeft = parentMaxScrollLeft;
+		parent.scrollTo({
+			top: 0,
+			left: parentMaxScrollLeft,
+			behavior: 'smooth'
+		});
+		return;
+	}
+
+	const childVisible = childMin >= parentWindowMin
+		&& childMax <= parentWindowMax;
+
+	if(childVisible) return;
+
+	if(idealScrollMin){
+		console.log({ idealScrollMin });
+		parent.scrollTo({
+			top: 0,
+			left: idealScrollMin,
+			behavior: 'smooth'
+		});
+		return;
+	}
+
+	if(idealScrollMax){
+		console.log({ idealScrollMax });
+		parent.scrollTo({
+			top: 0,
+			left: idealScrollMax,
+			behavior: 'smooth'
+		});
+		return;
+	}
+
+	// console.log({
+	// 	childCenter, idealScrollLeft, parentMaxScrollLeft
+	// });
+
+	if(idealScrollLeft <= 0){
+		//parent.scrollLeft = 0;
+		parent.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: 'smooth'
+		});
+		return;
+	}
+	if(idealScrollLeft <= parentMaxScrollLeft){
+		//parent.scrollLeft = idealScrollLeft;
+		parent.scrollTo({
+			top: 0,
+			left: idealScrollLeft,
+			behavior: 'smooth'
+		});
+		return;
+	}
+	//parent.scrollLeft = parentMaxScrollLeft;
+	parent.scrollTo({
+		top: 0,
+		left: parentMaxScrollLeft,
+		behavior: 'smooth'
+	});
+
+	///window.child = child;
+	//parent.scrollLeft = child.offsetLeft; // - child.clientWidth/2;
+	// console.log({
+	// 	left: parent.scrollLeft,
+	// 	width: parent.clientWidth,
+	// 	scroll: parent.scrollWidth
+	// })
+}
+
 function getFileType(fileName=''){
 	let type = 'default';
 	const extension = ((
@@ -25,9 +135,8 @@ const createTab = (parent) => (tabDef) => {
 	const tab = document.createElement('div');
 	tab.id = tabDef.id;
 	tab.classList.add('tab');
-	if(tabDef.active){
-		tab.classList.add('active');
-	}
+	tab.classList.add('new');
+
 	const fileType = getFileType(tabDef.name);
 	tab.innerHTML = `
 		<span style="pointer-events: none;" class="icon-${fileType}">${tabDef.name}</span>
@@ -40,8 +149,18 @@ const createTab = (parent) => (tabDef) => {
 			</ul>
 		</div>
 	`;
+//	const oldScroll = parent.scrollLeft;
 	parent.appendChild(tab);
-	parent.scrollLeft = parent.scrollWidth;
+	//parent.scrollLeft = oldScroll;
+	//parent.scrollLeft = parent.scrollWidth;
+	//setTimeout(() => scrollToChild(tab), 100);
+	scrollToChild(tab)
+	if(tabDef.active){
+		setTimeout(() => {
+			tab.classList.add('active');
+			tab.classList.remove('new');
+		}, 1)
+	}
 
 	const remainingTabs = Array.from(parent.querySelectorAll('.tab'));
 	if(!remainingTabs.length){
@@ -55,14 +174,16 @@ const createTab = (parent) => (tabDef) => {
 };
 
 const updateTab = (parent) => (tabDef) => {
+	//const oldScroll = parent.scrollLeft;
 	const child = parent.querySelector('#' + tabDef.id);
 	if(!tabDef.active && child.classList.contains('active')){
 		child.classList.remove('active');
 	}
 	if(tabDef.active && !child.classList.contains('active')){
 		child.classList.add('active');
+		scrollToChild(child);
 	}
-	//scroll parent to put newly active tab in view
+	//parent.scrollLeft = oldScroll;
 };
 
 const removeTab = (parent) => (tabDef) => {
