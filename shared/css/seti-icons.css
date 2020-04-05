@@ -1,5 +1,6 @@
 @font-face {
   font-family: 'seti';
+  /* src: url(/shared/fonts/seti.woff2) format('woff2'); */
   src: url(/shared/fonts/seti.woff2) format('woff2');
   font-weight: normal;
   font-style: normal;
@@ -11,6 +12,7 @@
 .icon-asm:before,
 .icon-audio:before,
 .icon-babel:before,
+.icon-bat:before,
 .icon-bower:before,
 .icon-bsl:before,
 .icon-c-sharp:before,
@@ -209,6 +211,10 @@
 .icon-bower:before {
   content: '\E007';
   color: white;
+}
+.icon-bat:before {
+  content: '\E017';
+  color: #519aba;
 }
 .icon-bsl:before {
   content: '\E008';

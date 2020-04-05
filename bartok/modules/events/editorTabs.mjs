@@ -113,7 +113,7 @@ const clickHandler = ({
 const fileSelectHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
-	const { name } = event.detail;
+	const { name, changed } = event.detail;
 	let id;
 
 	const { tabsToUpdate, foundTab } = getTabsToUpdate(name);
@@ -125,11 +125,25 @@ const fileSelectHandler = ({
 
 	id = 'TAB' + Math.random().toString().replace('0.', '');
 	createTab({
-		name, active: true, id
+		name, active: true, id, changed
 	});
 	tabs.push({
-		name, active: true, id
+		name, active: true, id, changed
 	});
+};
+
+
+const fileChangeHandler = ({
+	event, container, initTabs, createTab, updateTab, removeTab
+}) => {
+	const { file } = event.detail;
+	const { foundTab } = getTabsToUpdate(file);
+	if(!foundTab){
+		console.error(`Could not find a tab named ${file} to update`);
+		return;
+	}
+	foundTab.changed = true;
+	[foundTab].map(updateTab);
 };
 
 const operationDoneHandler = ({
@@ -152,6 +166,7 @@ const handlers = {
 	click: clickHandler,
 	fileSelect: fileSelectHandler,
 	fileClose: fileCloseHandler,
+	fileChange: fileChangeHandler,
 	operationDone: operationDoneHandler
 };
 
@@ -185,15 +200,11 @@ function attachListener(
 		listener
 	});
 
-	// TODO: probably should be doing this instead of listening to click
-	// attach({
-	// 	name: 'EditorTabView',
-	// 	eventName: 'tabSelect',
-	// 	listener
-	// });
-
-	// TODO: ACTUALLY!!!!  should make both tree and tab select be fileSelect!!!
-	// AND!!! should be listening for fileUpdate, fileRename, fileDelete events!
+	attach({
+		name: 'EditorTabView',
+		eventName: 'fileChange',
+		listener
+	});
 
 	attach({
 		name: 'EditorTabView',

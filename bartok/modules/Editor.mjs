@@ -1,6 +1,6 @@
 import Editor from '../../shared/modules/editor.mjs';
 import EditorTabs from './EditorTabs.mjs';
-import { attachListener } from './events/editor.mjs';
+import { attachListener, ChangeHandler } from './events/editor.mjs';
 
 
 //This is used by both List and inlineEditor
@@ -109,7 +109,7 @@ const List = (TreeView) => ({ services }) => {
 	return listDiv;
 };
 
-const inlineEditor = (TreeView) => ({ code, name, id }={}) => {
+const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id }={}) => {
 	TreeView();
 
 	const prevEditor = document.querySelector('#editor-container');
@@ -150,26 +150,56 @@ const inlineEditor = (TreeView) => ({ code, name, id }={}) => {
 	//const editorPane = document.querySelector('#editor');
 	//editorPane.style.width = editorPane.clientWidth + 'px';
 	const darkEnabled = window.localStorage.getItem('themeDark') === "true";
+	const handlerBoundToDoc = ChangeHandler({ code, name, id });
+
+	var currentHandle = null, currentLine;
+	function updateLineInfo(cm, line) {
+		var handle = cm.getLineHandle(line-1);
+		if (handle == currentHandle && line == currentLine) return;
+		if (currentHandle) {
+			cm.removeLineClass(currentHandle, null, null);
+			//cm.clearGutterMarker(currentHandle);
+		}
+		currentHandle = handle;
+		currentLine = line;
+		cm.addLineClass(currentHandle, null, "activeline");
+		//cm.setGutterMarker(currentHandle, String(line + 1));
+	}
+
+	const onCursorActivity = (instance) => {
+		const cursor = instance.getCursor();
+		const line = cursor.line + 1;
+		const col = cursor.ch + 1;
+		updateLineInfo(instance, line);
+		//console.log({ line, col });
+		// STATUS_CURRENT_LINE.textContent = cursor.line + 1;
+	};
+	//TODO: code should come from changeHandler if it exists
+
 	Editor({
 			text: code,
 			lineNumbers: true,
 			mode:  "javascript",
 			styleActiveLine: true,
+			styleActiveSelected: true,
 			matchBrackets: true
 	}, (error, editor) => {
 			editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
 			window.Editor = editor;
+			editor.on('change', handlerBoundToDoc);
+			editor.on("cursorActivity", onCursorActivity);
+			editor.setOption("styleActiveLine", {nonEmpty: true})
 	});
 }
 
 function getEditor({ getCodeFromService, TreeView }){
 	attachListener((filename) => {
 		const { code="error", name, id } = getCodeFromService(null, filename);
-		inlineEditor(TreeView)({ code, name, id });
+		inlineEditor(TreeView, ChangeHandler)({ code, name, id });
 	});
 
 	return {
-		inlineEditor: inlineEditor(TreeView),
+		inlineEditor: inlineEditor(TreeView, ChangeHandler),
 		List: List(TreeView)
 	}
 }

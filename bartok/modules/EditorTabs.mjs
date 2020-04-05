@@ -136,6 +136,7 @@ const createTab = (parent) => (tabDef) => {
 	tab.id = tabDef.id;
 	tab.classList.add('tab');
 	tab.classList.add('new');
+	tabDef.changed && tab.classList.add('changed');
 
 	const fileType = getFileType(tabDef.name);
 	tab.innerHTML = `
@@ -174,7 +175,6 @@ const createTab = (parent) => (tabDef) => {
 };
 
 const updateTab = (parent) => (tabDef) => {
-	//const oldScroll = parent.scrollLeft;
 	const child = parent.querySelector('#' + tabDef.id);
 	if(!tabDef.active && child.classList.contains('active')){
 		child.classList.remove('active');
@@ -183,7 +183,10 @@ const updateTab = (parent) => (tabDef) => {
 		child.classList.add('active');
 		scrollToChild(child);
 	}
-	//parent.scrollLeft = oldScroll;
+	if(tabDef.changed && !child.classList.contains('changed')){
+		child.classList.add('changed');
+		scrollToChild(child);
+	}
 };
 
 const removeTab = (parent) => (tabDef) => {

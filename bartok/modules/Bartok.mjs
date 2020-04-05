@@ -6,6 +6,7 @@ import ActionBar from './ActionBar.mjs';
 import Services from './Services.mjs';
 import HotKeys from './HotKeys.mjs';
 import Panes from './PanesNew.mjs';
+import StatusBar from './StatusBar.mjs';
 
 import { externalStateRequest } from './ExternalState.mjs';
 
@@ -16,6 +17,7 @@ import {
 import { managementOp } from './management.mjs';
 
 async function Bartok(){
+	StatusBar();
 	Panes();
 	ActionBar();
 	HotKeys();

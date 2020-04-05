@@ -26,6 +26,11 @@ html, body {
   margin: 0 !important;
 }
 
+.blur {
+  filter: blur(1px);
+  transition: filter 0.25s;
+}
+
 .hidden {
   display: none;
 }
@@ -55,7 +60,7 @@ html, body {
   --main-theme-highlight-color: #40f7ac;
   /* --main-theme-background-color: #363238; */
   /* --main-theme-background-color: #3b3b3b; */
-  --main-theme-background-color: #2d2d2d;
+  --main-theme-background-color: #363636; /* #2d2d2d */
   --main-theme-background-dark-color: #29252b;
   --main-theme-text-color-dark: green;
   --main-theme-text-color: #d8d8d8;
@@ -363,24 +368,6 @@ nav a.sidenav-trigger i,
   height: 100%;
 }
 
-.cm-s-vscode-dark span.cm-string {
-  color: var(--theme-text-selected) !important;
-}
-.cm-s-vscode-dark span.cm-comment {
-  color: var(--main-theme-text-invert-color) !important;
-}
-.cm-s-vscode-dark span.cm-keyword {
-  color: var(--main-theme-text-color-dark) !important;
-  font-weight: 100 !important;
-}
-.cm-s-vscode-dark span.cm-def {
-  color: var(--main-theme-text-color-dark) !important;
-  font-weight: bold !important;
-}
-.cm-s-vscode-dark span.cm-property {
-  color: var(--main-theme-text-invert-color) !important;
-}
-
 ul.editor-controls {
   display: flex;
   justify-content: space-around;
@@ -446,6 +433,7 @@ ul.editor-controls li:hover {
 }
 
 .tab {
+  border-top: 1px solid transparent; /* blank status bar */
   position: relative;
   display: flex;
   white-space: nowrap;
@@ -458,8 +446,15 @@ ul.editor-controls li:hover {
   background: var(--main-theme-background-color);
   width: 120px;
   min-width: fit-content;
-  color: #777;
+  color: #999;
   font-size: 13px;
+}
+
+.tab.changed.active {
+  border-top: 1px solid orange;
+}
+.tab.changed {
+  border-top: 1px solid rgba(255, 165, 0, 0.3);
 }
 
 .tab.active {
@@ -760,6 +755,20 @@ notes-section.loading:after {
   padding-left: 15px;
 }
 
+.tree-leaf-content.changed:after {
+  content: '';
+  display: inline-block;
+  float: right;
+  border-radius: 20px;
+  background: orange;
+  height: 7px;
+  width: 7px;
+  margin-top: 6px;
+  margin-right: 5px;
+  border: 0px;
+  opacity: 0.4;
+}
+
 #service-fields, .editor-controls {
   display: none !important;
 }
@@ -771,6 +780,19 @@ notes-section.loading:after {
   bottom: 0px;
   top: 13px; */
   height: 100%;
+}
+
+.activeline {
+  outline: 1px solid #444;
+  background: #222;
+}
+
+.CodeMirror-linenumber {
+  color: #555 !important;
+}
+
+.activeline .CodeMirror-linenumber {
+  color: #ccc !important;
 }
 
 #xterm-container {
@@ -787,20 +809,41 @@ notes-section.loading:after {
   left: 0;
   right: 0;
   top: 0;
-  bottom: 0;
+  bottom: 22px;
   z-index: 99;
   width: 100vw;
-  height: 100vh;
+  /* height: 100vh; */
   overflow: hidden;
 }
 
 .splitter {
-  filter: saturate(1.1) contrast(1.1) brightness(1.5);
+  /* filter: saturate(1.1) contrast(1.1) brightness(1.5); */
   /* filter: hue-rotate(310deg); */
 }
 
-/* LIGHT MODE!!!
-.splitter {
+/* EDITOR THEME */
+/*
+.cm-s-vscode-dark span.cm-string {
+  color: var(--theme-text-selected) !important;
+}
+.cm-s-vscode-dark span.cm-comment {
+  color: var(--main-theme-text-invert-color) !important;
+}
+.cm-s-vscode-dark span.cm-keyword {
+  color: var(--main-theme-text-color-dark) !important;
+  font-weight: 100 !important;
+}
+.cm-s-vscode-dark span.cm-def {
+  color: var(--main-theme-text-color-dark) !important;
+  font-weight: bold !important;
+}
+.cm-s-vscode-dark span.cm-property {
+  color: var(--main-theme-text-invert-color) !important;
+} */
+
+
+/* LIGHT MODE!!! */
+.splitter.light {
   filter:
     invert(1)
     brightness(.85)
@@ -808,7 +851,7 @@ notes-section.loading:after {
     contrast(2.1)
   ;
 }
-*/
+
 
 .splitter > div:not(.seperator) {
     position: relative;
@@ -836,6 +879,7 @@ notes-section.loading:after {
 	background-color: var(--main-theme-color);
 	height: 100%;
   /* width: 200px; */
+  min-width: 200px;
 }
 
 /* container for editor and terminal*/

@@ -7,7 +7,7 @@ https://iamakulov.com/notes/resize-scroll/
 */
 
 // function is used for dragging and moving
-function dragElement(element, direction, handler, first, second, firstUnder, secondUnder) {
+function dragElement(element, direction, handler, first, second, firstUnder, secondUnder, all) {
 
 	//const firstRightX = document.documentElement.clientWidth * second.style.left.replace("%", "");
 	// const secondWidthX = second.style.width.replace("px", "");
@@ -39,6 +39,7 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 			return false;
 		}
 		dragging = true;
+		//all.forEach(e => e.classList.add('blur'));
 
 		//console.log("dragMouseDown");
 		first.style.minWidth = "";
@@ -48,10 +49,10 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		second.classList.add('active-pane-guide');
 		first.style.borderRight = "1px solid #555";
 		second.style.borderLeft = "1px solid #555";
-		console.log(`Change right border for:`)
-		console.log(first);
-		console.log(`Change left border for:`)
-		console.log(second);
+		// console.log(`Change right border for:`)
+		// console.log(first);
+		// console.log(`Change left border for:`)
+		// console.log(second);
 
 		// drag.x = e.clientX;
 		// drag.y = e.clientY;
@@ -68,7 +69,7 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 	}
 
 	function onMouseUp(e) {
-		console.log("mouseUp! resize!")
+		//all.forEach(e => e.classList.remove('blur'));
 
 		element.style.position = "absolute";
 		element.style.left = second.style.left;
@@ -93,7 +94,15 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 	let timeout;
 	function onMouseMove(e) {
 
-		const currentX = e.clientX;
+		let currentX = e.clientX;
+
+		// min-width for explorer and snap to zero to completely hide
+		if(currentX < 250 && currentX > 150){
+			return;
+		}
+		if(currentX <= 150){
+			currentX = 50;
+		}
 
 		// If there's a timer, cancel it
 		if (timeout) {
@@ -143,21 +152,36 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 }
 
 function attachListeners() {
+	const explorerPane = document.getElementById("explorer");
+	const explorerCover = document.getElementById("explorer-cover");
+
+	const editorPane = document.getElementById("editor");
+	const editorCover = document.getElementById("editor-cover");
+
+	const terminalPane = document.getElementById("terminal");
+	const terminalCover = document.getElementById("terminal-cover");
+
+	const allPanes = [
+		explorerPane, editorPane, terminalPane
+	];
+
 	dragElement(
 		document.getElementById("seperator1"),
 		"H", null,
-		document.getElementById("explorer-cover"),
-		document.getElementById("editor-cover"),
-		document.getElementById("explorer"),
-		document.getElementById("editor")
+		explorerCover,
+		editorCover,
+		explorerPane,
+		editorPane,
+		allPanes
 	);
 	dragElement(
 		document.getElementById("seperator2"),
 		"H", null,
-		document.getElementById("editor-cover"),
-		document.getElementById("terminal-cover"),
-		document.getElementById("editor"),
-		document.getElementById("terminal")
+		editorCover,
+		terminalCover,
+		editorPane,
+		terminalPane,
+		allPanes
 	);
 }
 

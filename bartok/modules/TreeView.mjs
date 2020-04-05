@@ -91,6 +91,18 @@ const contextMenu = (e) => {
 	return false;
 };
 
+const updateTree = (treeView) => (change, { name, id, file }) => {
+	if(change === "dirty"){
+		console.log(`Need to mark ${file} from ${name} ${id} as dirty`);
+		Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
+			const item = JSON.parse(t.dataset.item);
+			if(item.name === file){
+				t.classList.add('changed');
+			}
+		});
+	}
+}
+
 function _TreeView(op){
 	if(op === "hide"){
 		const prevTreeView = document.querySelector('#tree-view');
@@ -104,7 +116,7 @@ function _TreeView(op){
 	});
 	treeView.style.display = "";
 
-	attachListener(treeView, JSTreeView);
+	attachListener(treeView, JSTreeView, updateTree(treeView));
 }
 
 export default _TreeView;

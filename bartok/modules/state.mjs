@@ -33,9 +33,31 @@ function getCodeFromService(service, file){
 	};
 }
 
+const state = {
+	changedFiles: {}
+};
+
+function getState(){
+	//TODO: should probably pull only latest state change
+	return JSON.parse(JSON.stringify(state));
+}
+
+function setState(change){
+	//TODO: this could be expensive
+	const { name, id, code, prevCode } = change;
+	if(!state.changedFiles[id+name]){
+		state.changedFiles[id+name] = [{
+			name, id, code: prevCode
+		}];
+	}
+	state.changedFiles[id+name]
+		.push({ name, id, code });
+	return currentFile;
+}
+
 const getCurrentFile = () => currentFile;
 const getCurrentService = () => currentService;
 
 export {
-	getCodeFromService, getCurrentFile, getCurrentService
+	getCodeFromService, getCurrentFile, getCurrentService, getState, setState
 };

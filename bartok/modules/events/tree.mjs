@@ -54,6 +54,11 @@ const fileSelectHandler = (e) => {
 	}
 }
 
+const fileChangeHandler = (updateTree) => (event) => {
+	const { name, id, file } = event.detail;
+	updateTree('dirty', {name, id, file});
+};
+
 
 const getTree = (result) => {
 	let resultTree = {
@@ -92,7 +97,7 @@ const fileTreeConvert = (input, converted=[]) => {
 };
 
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
-function attachListener(treeView, JSTreeView){
+function attachListener(treeView, JSTreeView, updateTree){
 	const listener = async function (e) {
 		const { id, result } = e.detail;
 		//console.log(e.detail);
@@ -138,9 +143,17 @@ function attachListener(treeView, JSTreeView){
 			if(e.data.children.length > 1){
 				return;
 			}
+			let changed;
+			try {
+				changed = e.target.target.parentNode.classList.contains('changed')
+			} catch(e){}
+
 			const event = new CustomEvent('fileSelect', {
 				bubbles: true,
-				detail: { name: e.data.name }
+				detail: {
+					name: e.data.name,
+					changed
+				}
 			});
 			document.body.dispatchEvent(event);
 		});
@@ -181,6 +194,11 @@ function attachListener(treeView, JSTreeView){
 		name: 'TreeView',
 		eventName: 'fileClose',
 		listener: fileSelectHandler
+	});
+	attach({
+		name: 'TreeView',
+		eventName: 'fileChange',
+		listener: fileChangeHandler(updateTree)
 	});
 }
 
