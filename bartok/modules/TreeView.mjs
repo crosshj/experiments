@@ -4,10 +4,14 @@ import JSTreeView from "/shared/vendor/js-treeview.1.1.5.js";
 import { attachListener } from './events/tree.mjs';
 
 const getTreeViewDOM = ({ contextHandler } = {}) => {
+	const explorerPane = document.body.querySelector('#explorer');
 	const prevTreeView = document.querySelector('#tree-view');
 	if(prevTreeView){
+		explorerPane.classList.remove('pane-loading');
 		return prevTreeView;
 	}
+
+	explorerPane.classList.add('pane-loading');
 	const _tree = document.createElement('div');
 	_tree.id = 'tree-view';
 	// _tree.classList.add(
@@ -17,8 +21,9 @@ const getTreeViewDOM = ({ contextHandler } = {}) => {
 	const _treeMenu = document.createElement('div');
 	_treeMenu.id="tree-menu";
 	_treeMenu.classList.add("row", "no-margin");
-	document.body.querySelector('#explorer').appendChild(_treeMenu);
-	document.body.querySelector('#explorer').appendChild(_tree);
+	explorerPane.appendChild(_treeMenu);
+	explorerPane.appendChild(_tree);
+
 	return _tree;
 }
 

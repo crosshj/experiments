@@ -1,40 +1,73 @@
-const startLoad = performance.now();
+//const startLoad = performance.now();
 
-import App from '../shared/modules/app.mjs';
 import Theme from '../shared/modules/theme.mjs';
-import AppDom from '../shared/modules/appDom.mjs';
-import Bartok from './modules/Bartok.mjs';
 
-const appendStyleSheet = (url, callback) => {
-	var style = document.createElement('link');
-	style.rel = "stylesheet";
-	style.crossOrigin = "anonymous";
-	style.onload = callback;
-	style.href = url;
-	document.head.appendChild(style);
-};
+import Panes from './modules/PanesNew.mjs';
+import Editor from './modules/Editor.mjs';
 
-window.Theme = Theme({});
-window.FUN = false;  // no terminal MOTD
+import TreeView from './modules/TreeView.mjs';
+import ActionBar from './modules/ActionBar.mjs';
+import Terminal from './modules/Terminal.mjs';
+import HotKeys from './modules/HotKeys.mjs';
+import StatusBar from './modules/StatusBar.mjs';
+import Services from './modules/Services.mjs';
 
-AppDom((domErrors, appDom) => {
-	App((err, app) => {
-		app.dom = appDom;
-		window.App = app;
-		appendStyleSheet("./index.css", () => {
-			const doneLoad = performance.now();
-			const totalTime = doneLoad - startLoad;
-			var timeToDelay = 1000;
-			timeToDelay = (totalTime < timeToDelay)
-				? timeToDelay - totalTime
-				: 0;
+import { externalStateRequest } from './modules/ExternalState.mjs';
+import Operations from './modules/operations.mjs';
+import {
+	getCodeFromService, getCurrentFile, getCurrentService
+} from './modules/state.mjs';
 
-			const loadingEl = document.querySelector('#loading-screen');
-			setTimeout(async () => {
-				loadingEl.classList.add('hidden');
-				await Bartok();
-				document.body.classList.remove('loading');
-			}, timeToDelay);
-		});
-	});
+import { managementOp } from './modules/management.mjs';
+
+
+// const appendStyleSheet = (url, callback) => {
+// 	var style = document.createElement('link');
+// 	style.rel = "stylesheet";
+// 	style.crossOrigin = "anonymous";
+// 	style.onload = callback;
+// 	style.href = url;
+// 	document.head.appendChild(style);
+// };
+
+const appendScript = (url) => new Promise((resolve, reject) => {
+	var newScript = document.createElement('script');
+	newScript.crossOrigin = "anonymous";
+	newScript.onload = () => {
+		resolve();
+	};
+	newScript.src = url;
+	document.head.appendChild(newScript);
 });
+
+(async () => {
+	window.Theme = Theme({});
+	window.FUN = false;  // no terminal MOTD
+
+	await appendScript("/shared/vendor/materialize.min.js");
+
+	Panes();
+	const loadingEl = document.querySelector('#loading-screen');
+	loadingEl.classList.add('hidden');
+	document.body.classList.remove('loading');
+
+	const {
+		inlineEditor, List
+	} = Editor({ getCodeFromService, TreeView });
+	inlineEditor(); //cache resources
+
+	TreeView();
+	StatusBar();
+	ActionBar();
+	HotKeys();
+	Services();
+	Terminal();
+
+	await Operations({
+		getCodeFromService, managementOp, externalStateRequest,
+		getCurrentFile, getCurrentService,
+		inlineEditor, List  // instead of passing these here, Editor should be listening
+	});
+
+
+})();

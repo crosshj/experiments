@@ -221,7 +221,7 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }=
 	});
 }
 
-function getEditor({ getCodeFromService, TreeView }){
+function getEditor({ getCodeFromService, TreeView } = {}){
 	attachListener((filename) => {
 		const { code="error", name, id } = getCodeFromService(null, filename);
 		inlineEditor(TreeView, ChangeHandler)({ code, name, id, filename });

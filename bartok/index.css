@@ -81,6 +81,34 @@ body, label {
   color: var(--main-theme-text-color);
 }
 
+.pane-loading {
+  background: linear-gradient(90deg, var(--main-theme-color), transparent);
+  background-color: var(--theme-main-color);
+  background-size: 200% 200%;
+  -webkit-animation: PaneLoadingAnim 3s ease infinite;
+  -moz-animation: PaneLoadingAnim 3s ease infinite;
+  animation: PaneLoadingAnim 2s ease-in infinite;
+  transition: background-color 2s ease-in;
+}
+
+@-webkit-keyframes PaneLoadingAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes PaneLoadingAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes PaneLoadingAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+
+
 @media only screen and (min-width: 993px){
   body #toast-container {
     top: unset;
@@ -679,8 +707,6 @@ notes-section.loading:after {
   /* padding-left: 3px; */
   height: calc(100% - 30px);
   color: var(--main-theme-text-color);
-  background-color: var(--theme-subdued-color);
-  /* font-size: 13px; */
   font-weight: 300;
   user-select: none;
   white-space: nowrap;
@@ -688,7 +714,6 @@ notes-section.loading:after {
 
 #tree-menu {
   height: 30px;
-  background-color: var(--theme-subdued-color);
 }
 
 .tree-leaf{
@@ -876,10 +901,13 @@ notes-section.loading:after {
 }
 
 #explorer {
-	background-color: var(--main-theme-color);
+  /* background-color: var(--main-theme-color); */
+  background-color: var(--theme-subdued-color);
+
 	height: 100%;
   /* width: 200px; */
   min-width: 200px;
+  transition: background-color 2s ease-in;
 }
 
 /* container for editor and terminal*/
