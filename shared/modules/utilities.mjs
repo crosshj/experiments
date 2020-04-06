@@ -17,7 +17,7 @@ function codemirrorModeFromFileType(fileType){
 		bat: { name: 'default' },
 		json: { name: 'javascript', json: true }
 	};
-	//console.log({ fileType });
+	console.log({ fileType, conversions: conversions[fileType] });
 	return conversions[fileType] || fileType;
 }
 

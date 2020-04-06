@@ -111,19 +111,19 @@ const treeMenu = ({ title }) => {
 					<div class="monaco-action-bar animated">
 						<ul class="actions-container">
 								<li class="action-item">
-									<a class="action-label icon explorer-action new-file" role="button" tabindex="0" title="New File">
+									<a class="action-label icon explorer-action new-file" role="button" title="New File">
 									</a>
 								</li>
 								<li class="action-item">
-									<a class="action-label icon explorer-action new-folder" role="button" tabindex="0" title="New Folder">
+									<a class="action-label icon explorer-action new-folder" role="button" title="New Folder">
 									</a>
 								</li>
-								<li class="action-item">
-									<a class="action-label icon explorer-action refresh-explorer" role="button" tabindex="0" title="Refresh Explorer">
+								<li class="action-item hidden">
+									<a class="action-label icon explorer-action refresh-explorer" role="button" title="Refresh Explorer">
 									</a>
 								</li>
-								<li class="action-item">
-									<a class="action-label icon explorer-action collapse-explorer" role="button" tabindex="0" title="Collapse Folders in Explorer">
+								<li class="action-item hidden">
+									<a class="action-label icon explorer-action collapse-explorer" role="button" title="Collapse Folders in Explorer">
 									</a>
 								</li>
 						</ul>

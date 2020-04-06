@@ -90,7 +90,7 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 			mode = opts.mode.name || mode;
 		} catch(e){}
 		codeMirrorModeJs(mode, () => {
-			opts.mode = opts.mode.mimeType || mode;
+			opts.mode = opts.mode.mimeType || opts.mode || mode;
 			window.Editor.toTextArea();
 			const theEditor = setupEditor(text, opts || {});
 			//theEditor.setOption("mode", mode);

@@ -294,7 +294,7 @@
 }
 .icon-css:before {
   content: '\E01B';
-  color: white;
+  color: #519aba;
 }
 .icon-csv:before {
   content: '\E01C';
@@ -398,7 +398,7 @@
 }
 .icon-go:before {
   content: '\E035';
-  color: white;
+  color: #68d8e1;
 }
 .icon-go2:before {
   content: '\E036';
@@ -454,7 +454,7 @@
 }
 .icon-html:before {
   content: '\E043';
-  color: white;
+  color: #e37933;
 }
 .icon-html_erb:before {
   content: '\E044';
@@ -470,11 +470,11 @@
 }
 .icon-image:before {
   content: '\E047';
-  color: white;
+  color: #a074c4;
 }
 .icon-info:before {
   content: '\E048';
-  color: white;
+  color: #519aba;
 }
 .icon-ionic:before {
   content: '\E049';
@@ -522,7 +522,7 @@
 }
 .icon-less:before {
   content: '\E054';
-  color: white;
+  color: #519aba;
 }
 .icon-license:before {
   content: '\E055';
@@ -598,7 +598,7 @@
 }
 .icon-perl:before {
   content: '\E067';
-  color: white;
+  color: #519aba;
 }
 .icon-photoshop:before {
   content: '\E068';
@@ -606,7 +606,7 @@
 }
 .icon-php:before {
   content: '\E069';
-  color: white;
+  color: #8892bf;
 }
 .icon-plan:before {
   content: '\E06A';
@@ -638,7 +638,7 @@
 }
 .icon-python:before {
   content: '\E071';
-  color: white;
+  color: #fede59;
 }
 .icon-rails:before {
   content: '\E072';
@@ -646,7 +646,7 @@
 }
 .icon-react:before {
   content: '\E073';
-  color: white;
+  color: #61dafb;
 }
 .icon-reasonml:before {
   content: '\E074';
@@ -658,7 +658,7 @@
 }
 .icon-ruby:before {
   content: '\E076';
-  color: white;
+  color: #cc3e44;
 }
 .icon-rust:before {
   content: '\E077';
@@ -670,7 +670,7 @@
 }
 .icon-sass:before {
   content: '\E079';
-  color: white;
+  color: #f55385;
 }
 .icon-sbt:before {
   content: '\E07A';
@@ -690,7 +690,7 @@
 }
 .icon-shell:before {
   content: '\E07E';
-  color: white;
+  color: #4d5a5e;
 }
 .icon-slim:before {
   content: '\E07F';
@@ -718,7 +718,7 @@
 }
 .icon-svg:before {
   content: '\E085';
-  color: white;
+  color: #a074c4;
 }
 .icon-swift:before {
   content: '\E086';
@@ -750,7 +750,7 @@
 }
 .icon-typescript:before {
   content: '\E08D';
-  color: white;
+  color: #519aba;
 }
 .icon-vala:before {
   content: '\E08E';

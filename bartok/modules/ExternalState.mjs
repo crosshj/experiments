@@ -1,5 +1,5 @@
 const defaultTree = {
-	"DEFAULT LOCAL": {
+	"LOCAL": {
 		"index.js": {}
 	}
 };
@@ -11,7 +11,7 @@ const defaultCode = [{
 
 const defaultServices = [{
 	id: 999,
-	name: 'DEFAULT LOCAL',
+	name: 'LOCAL',
 	tree: defaultTree,
 	code: defaultCode
 }];

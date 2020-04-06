@@ -32,7 +32,7 @@ html, body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 :root {
@@ -704,7 +704,7 @@ notes-section.loading:after {
 
 /* js-treeview */
 #tree-view {
-  padding-left: 10px;
+  /* padding-left: 12px; */
   height: calc(100% - 30px);
   color: var(--main-theme-text-color);
   font-weight: 300;
@@ -731,7 +731,7 @@ notes-section.loading:after {
   opacity: 0.6;
 }
 #tree-menu h2 {
-  font-size: 12px;
+  font-size: 11px;
   cursor: default;
   font-weight: 400;
   -webkit-margin-before: 0;
@@ -746,6 +746,9 @@ notes-section.loading:after {
   position:relative;
   min-width: 200px;
 }
+.tree-leaf > div:first-child {
+  padding-left: 12px;
+}
 .tree-leaf .tree-child-leaves{
   display:block;
   /* margin-left:15px */
@@ -758,10 +761,10 @@ notes-section.loading:after {
   float:left;
   /* margin-left:5px; */
 }
-.tree-leaf .tree-leaf-text:hover{
+.tree-leaf:hover{
   /* color:#00f */
-  background-color: var(--theme-subdued-color);
-  color: var(--main-theme-highlight-color);
+  background-color: #333;
+  /* color: var(--main-theme-highlight-color); */
 }
 .tree-leaf .tree-leaf-content:after,
 .tree-leaf .tree-leaf-content:before{content:" ";display:table}
@@ -787,6 +790,7 @@ notes-section.loading:after {
 .tree-leaf-text {
   float: none !important;
   display: inline-block;
+  width: 100%;
 }
 
 .tree-leaf .tree-expando:not(.expanded) {
@@ -798,8 +802,9 @@ notes-section.loading:after {
 }
 
 .tree-leaf-content.selected {
-  background: var(--main-theme-background-color);
-  color: var(--theme-text-selected);
+  /* background: var(--main-theme-background-color); */
+  background: #094771;
+  /* color: var(--theme-text-selected); */
 }
 
 .tree-child-leaves .tree-leaf-content {
@@ -1074,6 +1079,14 @@ notes-section.loading:after {
 
 .terminal-action.new {
   background: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.714 2H6.286v12h3.428V2z' fill='%23C5C5C5'/%3E%3Cpath d='M14 6.286H2v3.428h12V6.286z' fill='%23C5C5C5'/%3E%3C/svg%3E") 50% no-repeat
+}
+
+.explorer-action.new-file {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23C5C5C5' d='M12 3H8v1h3v3h3v7H6V8H5v7h10V6z'/%3E%3Cpath fill='%2389D185' d='M7 3.018H5V1H3.019v2.018H1V5h2.019v2H5V5h2V3.018z'/%3E%3C/svg%3E") 50% no-repeat
+}
+
+.explorer-action.new-folder {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23C5C5C5' d='M14 4H9.618l-1 2H6v2H3v6h12V4h-1zm0 2h-3.882l.5-1H14v1z'/%3E%3Cpath fill='%2389D185' d='M7 3.018H5V1H3.019v2.018H1V5h2.019v2H5V5h2z'/%3E%3C/svg%3E") 50% no-repeat
 }
 
 .monaco-action-bar {
