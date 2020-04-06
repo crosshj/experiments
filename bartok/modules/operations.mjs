@@ -171,6 +171,8 @@ const operationsListener = async (
 			? e.detail.body.id
 			: e.detail.body.id || (currentService || {}).id;
 	}
+	e.detail.body.id = e.detail.body.id || currentService.id;
+	e.detail.body.name = e.detail.body.name || currentService.name;
 	foundOp.config.body = JSON.stringify(e.detail.body);
 	await performOperation(foundOp, e.detail, externalStateRequest);
 	e.detail.done && e.detail.done('DONE\n');
@@ -193,6 +195,7 @@ async function Operations({
 		}),
 		false);
 
+	//TODO: this should go away at some point!!!
 	const foundOp = operations.find(x => x.name === 'read');
 	await performOperation(foundOp, { body: { id: 999 } }, externalStateRequest);
 }

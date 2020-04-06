@@ -10,8 +10,8 @@ function triggerEvent(name){
 		console.log(`after: ${name}`);
 	};
 	const body = {
-		name: (document.body.querySelector('#service_name')||{}).value,
-		id: (document.body.querySelector('#service_id')||{}).value,
+		// name: (document.body.querySelector('#service_name')||{}).value,
+		// id: (document.body.querySelector('#service_id')||{}).value,
 		code: (window.Editor||{ getValue: ()=>{}}).getValue()
 	};
 

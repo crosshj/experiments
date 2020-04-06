@@ -35,6 +35,7 @@ function getFileType(fileName=''){
 	return type;
 }
 
+
 const fileSelectHandler = (e) => {
 	const { name, next } = e.detail;
 	if(e.type === "fileClose" && !next){
@@ -99,6 +100,40 @@ const fileTreeConvert = (input, converted=[]) => {
 	});
 };
 
+const treeMenu = ({ title }) => {
+	const treeMenu = document.querySelector('#explorer #tree-menu');
+	const menuInnerHTML = `
+		<div class="title-label">
+			<h2 title="${title}">${title}</h2>
+		</div>
+		<div class="title-actions">
+			<div class="monaco-toolbar">
+					<div class="monaco-action-bar animated">
+						<ul class="actions-container">
+								<li class="action-item">
+									<a class="action-label icon explorer-action new-file" role="button" tabindex="0" title="New File">
+									</a>
+								</li>
+								<li class="action-item">
+									<a class="action-label icon explorer-action new-folder" role="button" tabindex="0" title="New Folder">
+									</a>
+								</li>
+								<li class="action-item">
+									<a class="action-label icon explorer-action refresh-explorer" role="button" tabindex="0" title="Refresh Explorer">
+									</a>
+								</li>
+								<li class="action-item">
+									<a class="action-label icon explorer-action collapse-explorer" role="button" tabindex="0" title="Collapse Folders in Explorer">
+									</a>
+								</li>
+						</ul>
+					</div>
+			</div>
+		</div>
+	`;
+	treeMenu.innerHTML = menuInnerHTML;
+}
+
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
 function attachListener(treeView, JSTreeView, updateTree){
 	const listener = async function (e) {
@@ -127,7 +162,13 @@ function attachListener(treeView, JSTreeView, updateTree){
 		const treeFromResult = getTree(result);
 		const converted = fileTreeConvert(treeFromResult);
 		converted[0].expanded = true;
-		const newTree = new JSTreeView(converted, 'tree-view');
+
+		const projectName = converted[0].name;
+		treeMenu({ title: projectName });
+
+		const children = converted[0].children;
+
+		const newTree = new JSTreeView(children, 'tree-view');
 		newTree.id = id;
 
 		newTree.on('select', function (e) {

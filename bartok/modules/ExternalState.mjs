@@ -68,6 +68,10 @@ async function externalStateRequest(op){
 				console.error("when updating, operation body should be service to update");
 				return;
 			}
+			if(!serviceToUpdate.name || !serviceToUpdate.id){
+				console.error("service to update is malformed!");
+				return;
+			}
 			saveServiceToLS(lsServices, serviceToUpdate);
 			lsServices = getServicesFromLS() || [];
 			//console.log(JSON.stringify(op, null, 2));

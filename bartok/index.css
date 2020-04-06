@@ -704,7 +704,7 @@ notes-section.loading:after {
 
 /* js-treeview */
 #tree-view {
-  /* padding-left: 3px; */
+  padding-left: 10px;
   height: calc(100% - 30px);
   color: var(--main-theme-text-color);
   font-weight: 300;
@@ -713,7 +713,33 @@ notes-section.loading:after {
 }
 
 #tree-menu {
-  height: 30px;
+  height: 35px;
+  display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding-left: 8px;
+  padding-right: 8px;
+
+  align-items: center; /* ??? */
+}
+#tree-menu .title-label {
+  line-height: 35px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 8px;
+  opacity: 0.6;
+}
+#tree-menu h2 {
+  font-size: 12px;
+  cursor: default;
+  font-weight: 400;
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
 }
 
 .tree-leaf{
@@ -845,6 +871,27 @@ notes-section.loading:after {
   /* filter: saturate(1.1) contrast(1.1) brightness(1.5); */
   /* filter: hue-rotate(310deg); */
 }
+
+.cm-header {
+  color: #6e8fab;
+}
+.cm-header.cm-header-1 {
+  color: #00cbe6;
+}
+.cm-header.cm-header-2 {
+  color: #59b4ff;
+}
+
+.cm-quote {
+  color: #b5975e;
+}
+
+/* Left area near gutters annoys me */
+/*
+.CodeMirror-sizer > div:first-child {
+  border-left: 1px solid #e6e6e61a;
+}
+*/
 
 /* EDITOR THEME */
 /*
