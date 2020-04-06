@@ -199,6 +199,12 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }=
 		//console.log({ line, col });
 		// STATUS_CURRENT_LINE.textContent = cursor.line + 1;
 	};
+
+	const onScrollCursor = (instance, event) => {
+		//TODO: use this to recall scroll positions?
+		//event.preventDefault();
+	};
+
 	//TODO: code should come from changeHandler if it exists
 
 	const fileType = getFileType(filename);
@@ -209,14 +215,22 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }=
 			text: code,
 			lineNumbers: true,
 			mode,
+			addModeClass: true,
+			autocorrect: true,
+			// scrollbarStyle: 'native',
+			tabSize: 2,
+			//indentWithTabs: true,
+			showInvisibles: true,
 			styleActiveLine: true,
 			styleActiveSelected: true,
-			matchBrackets: true
+			matchBrackets: true,
+			scrollPastEnd: true
 	}, (error, editor) => {
 			editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
 			window.Editor = editor;
 			editor.on('change', handlerBoundToDoc);
 			editor.on("cursorActivity", onCursorActivity);
+			editor.on("scrollCursorIntoView", onScrollCursor)
 			editor.setOption("styleActiveLine", {nonEmpty: true})
 	});
 }

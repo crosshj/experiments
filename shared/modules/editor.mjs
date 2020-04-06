@@ -12,6 +12,9 @@ const codeMirrorBespinThemeCssUrl = "/shared/css/bespin.css";
 const cmVSCodeUrl = "/shared/css/vscode.codemirror.css";
 
 const codeMirrorJsUrl = "/shared/vendor/codemirror.js";
+const codeMirrorScrollPastUrl = "/shared/vendor/codemirror-scrollpastend.js";
+const codeMirrorShowInvisibles = "/shared/vendor/codemirror-show-invisibles.js"
+
 const codeMirrorJsSyntaxUrl = "/shared/vendor/codemirror/mode/javascript.js";
 
 const appendScript = (url, callback) => {
@@ -41,7 +44,11 @@ const codeMirrorCss = (callback) => {
 };
 
 const codeMirrorJs = (callback) => {
-	appendScript(codeMirrorJsUrl, callback);
+	appendScript(codeMirrorJsUrl, () => {
+		appendScript(codeMirrorScrollPastUrl, () => {
+			appendScript(codeMirrorShowInvisibles, callback);
+		});
+	});
 };
 
 const codeMirrorModeJs = (mode, callback) => {

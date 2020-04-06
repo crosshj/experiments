@@ -140,7 +140,6 @@ const operationsListener = async (
 	if (eventOp === 'update') {
 		// console.log(JSON.stringify({ currentService}, null, 2));
 		const files = JSON.parse(JSON.stringify(currentService.code));
-		//debugger;
 		(files.find(x => x.name === currentFile) || {})
 			.code = e.detail.body.code;
 		e.detail.body.code = JSON.stringify({
@@ -155,6 +154,8 @@ const operationsListener = async (
 			tree: currentService.tree,
 			files
 		});
+		e.detail.body.id = currentService.id;
+		e.detail.body.name = currentService.name;
 		eventOp = "update";
 	}
 	const foundOp = operations.find(x => x.name === eventOp);
