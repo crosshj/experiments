@@ -29,7 +29,8 @@ function getCodeFromService(service, file){
 	return {
 		code,
 		name: service.name,
-		id: service.id
+		id: service.id,
+		filename: file
 	};
 }
 

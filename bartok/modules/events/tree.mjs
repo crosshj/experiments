@@ -1,6 +1,6 @@
 import { attach } from '../Listeners.mjs';
 
-import ext from '/shared/icons/seti/ext.json.mjs';
+import ext from '../../../shared/icons/seti/ext.json.mjs';
 
 
 let tree;
@@ -28,6 +28,9 @@ function getFileType(fileName=''){
 	//console.log(extension)
 	if(ext[extension]){
 		type=ext[extension];
+	}
+	if(extension === 'md'){
+		type = 'info';
 	}
 	return type;
 }

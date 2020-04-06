@@ -1,7 +1,32 @@
 import Editor from '../../shared/modules/editor.mjs';
 import EditorTabs from './EditorTabs.mjs';
 import { attachListener, ChangeHandler } from './events/editor.mjs';
+import ext from '../../shared/icons/seti/ext.json.mjs'
 
+import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
+
+function getFileType(fileName=''){
+	let type = 'default';
+	const extension = ((
+			fileName.match(/\.[0-9a-z]+$/i) || []
+		)[0] ||''
+	).replace(/^\./, '');
+
+	//console.log(extension)
+	if(ext[extension]){
+		type=ext[extension];
+	}
+	if(extension === 'bat'){
+		type = "bat";
+	}
+	if(extension === 'scratch'){
+		type = "markdown";
+	}
+	if(extension === 'bugs'){
+		type = "markdown";
+	}
+	return type;
+}
 
 //This is used by both List and inlineEditor
 const Container = ({ operations }) => {
@@ -109,7 +134,7 @@ const List = (TreeView) => ({ services }) => {
 	return listDiv;
 };
 
-const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id }={}) => {
+const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }={}) => {
 	TreeView();
 
 	const prevEditor = document.querySelector('#editor-container');
@@ -176,10 +201,14 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id }={}) => {
 	};
 	//TODO: code should come from changeHandler if it exists
 
+	const fileType = getFileType(filename);
+	const mode = codemirrorModeFromFileType(fileType);
+	//console.log({ mode });
+
 	Editor({
 			text: code,
 			lineNumbers: true,
-			mode:  "javascript",
+			mode,
 			styleActiveLine: true,
 			styleActiveSelected: true,
 			matchBrackets: true
@@ -195,7 +224,7 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id }={}) => {
 function getEditor({ getCodeFromService, TreeView }){
 	attachListener((filename) => {
 		const { code="error", name, id } = getCodeFromService(null, filename);
-		inlineEditor(TreeView, ChangeHandler)({ code, name, id });
+		inlineEditor(TreeView, ChangeHandler)({ code, name, id, filename });
 	});
 
 	return {

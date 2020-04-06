@@ -64,10 +64,10 @@ function getReadAfter(List, inlineEditor, getCodeFromService) {
 				.style.display = "";
 			const service = services[0];
 			if (!service) {
-				return inlineEditor({ code: "", name: "", id: "" });
+				return inlineEditor({ code: "", name: "", id: "", filename: "" });
 			}
-			const { code, name, id } = getCodeFromService(services[0]);
-			inlineEditor({ code, name, id });
+			const { code, name, id, filename } = getCodeFromService(services[0]);
+			inlineEditor({ code, name, id, filename });
 		}
 	};
 }
@@ -75,8 +75,8 @@ function getReadAfter(List, inlineEditor, getCodeFromService) {
 function getUpdateAfter(getCodeFromService, inlineEditor) {
 	return ({ result }) => {
 		const services = result.result;
-		const { code, name, id } = getCodeFromService(services[0]);
-		inlineEditor({ code, name, id });
+		const { code, name, id, filename } = getCodeFromService(services[0]);
+		inlineEditor({ code, name, id, filename });
 	};
 }
 

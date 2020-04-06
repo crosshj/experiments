@@ -128,6 +128,9 @@ function getFileType(fileName=''){
 	if(ext[extension]){
 		type=ext[extension];
 	}
+	if(extension === 'md'){
+		type = 'info';
+	}
 	return type;
 }
 

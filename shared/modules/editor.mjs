@@ -12,14 +12,15 @@ const codeMirrorBespinThemeCssUrl = "/shared/css/bespin.css";
 const cmVSCodeUrl = "/shared/css/vscode.codemirror.css";
 
 const codeMirrorJsUrl = "/shared/vendor/codemirror.js";
-const codeMirrorJsSyntaxUrl = "/shared/vendor/codemirror-javascript.js";
+const codeMirrorJsSyntaxUrl = "/shared/vendor/codemirror/mode/javascript.js";
 
 const appendScript = (url, callback) => {
-	var materializeScript = document.createElement('script');
-	materializeScript.crossOrigin = "anonymous";
-	materializeScript.onload = callback;
-	materializeScript.src = url;
-	document.head.appendChild(materializeScript);
+	var script = document.createElement('script');
+	script.crossOrigin = "anonymous";
+	script.onload = callback;
+	script.src = url;
+	document.head.appendChild(script);
+	return script;
 };
 
 const appendStyleSheet = (url, callback) => {
@@ -43,21 +44,36 @@ const codeMirrorJs = (callback) => {
 	appendScript(codeMirrorJsUrl, callback);
 };
 
-const codeMirrorJavascriptModeJs = (callback) => {
-	appendScript(codeMirrorJsSyntaxUrl, callback);
+const codeMirrorModeJs = (mode, callback) => {
+	if(mode === "default"){
+		callback();
+		return;
+	}
+	const scriptId = `cm-syntax-${mode}`;
+	const scriptExists = !!document.getElementById(scriptId);
+	if(scriptExists){
+		callback();
+		return;
+	}
+	const modeUrl = codeMirrorJsSyntaxUrl.replace('javascript', mode);
+	const script = appendScript(modeUrl, callback);
+	script.id = scriptId;
 };
 
 const setupEditor = (text, opts) => {
 	const darkEnabled = window.localStorage.getItem('themeDark') === "true";
 	const defaultOptions = {
 		lineNumbers: true,
-		mode: "markdown",
+		mode: opts.mode,
 		theme: darkEnabled ? "vscode-dark" : "",
 		styleActiveLine: true,
 		matchBrackets: true
 	};
 	const options = { ...defaultOptions, ...opts };
+
+	//console.log({ mimeModes: CodeMirror.mimeModes, modes: CodeMirror.modes })
 	const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .functionInput'), options);
+
 	//console.log({ options });
 	CodeMirror.keyMap.default["Shift-Tab"] = "indentLess";
 	CodeMirror.keyMap.default["Tab"] = "indentMore";
@@ -69,22 +85,35 @@ const setupEditor = (text, opts) => {
 
 const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 	if(window.Editor){
-		window.Editor.toTextArea();
-		const theEditor = setupEditor(text, opts || {});
-		opts.mode && theEditor.setOption("mode", opts.mode);
-		theEditor.setOption("theme", "default");
-		window.Editor = theEditor;
-		callback(null, theEditor);
+		let mode = opts.mode || "javascript";
+		try {
+			mode = opts.mode.name || mode;
+		} catch(e){}
+		codeMirrorModeJs(mode, () => {
+			opts.mode = opts.mode.mimeType || mode;
+			window.Editor.toTextArea();
+			const theEditor = setupEditor(text, opts || {});
+			//theEditor.setOption("mode", mode);
+			//theEditor.setOption("theme", "default");
+			window.Editor = theEditor;
+			callback(null, theEditor);
+		})
 		return;
 	}
 	codeMirrorCss(() => {
 		codeMirrorJs(() => {
-			codeMirrorJavascriptModeJs(() => {
-				const theEditor = setupEditor(text, opts || {});
-				theEditor.setOption("mode", opts.mode);
-				theEditor.setOption("theme", "default");
-				window.Editor = theEditor;
-				callback(null, theEditor);
+			codeMirrorModeJs("css", () => {
+				codeMirrorModeJs("clike", () => {
+					codeMirrorModeJs("xml", () => {
+						codeMirrorModeJs(opts.mode, () => {
+							const theEditor = setupEditor(text, opts || {});
+							//theEditor.setOption("mode", opts.mode);
+							//theEditor.setOption("theme", "default");
+							window.Editor = theEditor;
+							callback(null, theEditor);
+						});
+					});
+				});
 			});
 		});
 	});

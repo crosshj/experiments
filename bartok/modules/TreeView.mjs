@@ -59,7 +59,7 @@ const contextMenuInit = (callback) => {
 };
 
 const contextMenu = (e) => {
-	console.log(e.target);
+	//console.log(e.target);
 	e.target.dataset.target = 'dropdown1';
 
 	contextMenuInit(() => {
@@ -93,7 +93,7 @@ const contextMenu = (e) => {
 
 const updateTree = (treeView) => (change, { name, id, file }) => {
 	if(change === "dirty"){
-		console.log(`Need to mark ${file} from ${name} ${id} as dirty`);
+		//console.log(`Need to mark ${file} from ${name} ${id} as dirty`);
 		Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
 			const item = JSON.parse(t.dataset.item);
 			if(item.name === file){

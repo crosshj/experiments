@@ -40,7 +40,7 @@ const ChangeHandler = (doc, changeObj) => {
 
 	return (editor, changeObj) => {
 		//console.log('editor changed');
-		console.log(changeObj);
+		//console.log(changeObj);
 		changeThis(editor.getValue());
 	};
 };
