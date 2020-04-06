@@ -814,15 +814,15 @@ notes-section.loading:after {
 .tree-leaf-content.changed:after {
   content: '';
   display: inline-block;
-  float: right;
   border-radius: 20px;
   background: orange;
   height: 7px;
   width: 7px;
   margin-top: 6px;
-  margin-right: 5px;
   border: 0px;
   opacity: 0.4;
+  position: absolute;
+  right: 6px;
 }
 
 #service-fields, .editor-controls {
