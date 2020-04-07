@@ -4,6 +4,9 @@ import "../../shared/vendor/xterm.min.js";
 import "../../shared/vendor/xterm-addon-fit.js";
 
 import motd from "./motd.mjs";
+import { attachEvents } from './events/terminal.mjs';
+
+let EventTrigger;
 
 function tryExecCommand({ command, loading, done }){
 		const [ op, ...args] = command.split(' ');
@@ -35,7 +38,7 @@ function tryExecCommand({ command, loading, done }){
 		if(isProjectOp){
 			([ _id, name, ...other] = args);
 		}
-		const id = Number(_id);
+		let id = Number(_id);
 
 		if(!isManageOp && !isProjectOp){
 			done(`${command}:  command not found!\nSupported: ${ops.join(', ')}\n`);
@@ -68,7 +71,8 @@ function tryExecCommand({ command, loading, done }){
 			body.id = id;
 			delete body.name;
 			delete body.code;
-			if(!id){
+			if(!id || id === NaN){
+				body.id = "*";
 				after = ({ result }) => {
 					loading('DONE');
 					loading(`\n
@@ -136,7 +140,6 @@ function _Terminal(){
 
 	const term = new Terminal(options);
 
-
 	const fitAddon = new (FitAddon.FitAddon)();
 	term.loadAddon(fitAddon);
 
@@ -203,6 +206,17 @@ function _Terminal(){
 			return;
 		}
 		const command = charBuffer.join('');
+
+		let preventDefault;
+		try {
+			preventDefault = EventTrigger(command, callback);
+		}catch(e){}
+		if(preventDefault){
+			charBuffer = [];
+			return;
+		}
+
+
 		term.write('\n');
 		tryExecCommand({
 			command,
@@ -276,6 +290,8 @@ function _Terminal(){
 
 	prompt(term);
 	window.term = term;
+
+	EventTrigger = attachEvents({ write: (x) => term.write(x) });
 }
 
 export default _Terminal;

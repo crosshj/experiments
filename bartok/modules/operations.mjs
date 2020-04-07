@@ -1,3 +1,5 @@
+import { attachListeners } from './events/operations.mjs';
+
 function getOperations(updateAfter, readAfter) {
 	const operations = [{
 		url: ''
@@ -87,7 +89,10 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 			? body.id
 			: body.id || (currentService || {}).id;
 	}
-	const { id } = body;
+	let { id } = body;
+	if(id === "*"){
+		id = '';
+	}
 	const op = JSON.parse(JSON.stringify(operation));
 	op.after = after || operation.after;
 	op.url = op.url.replace('{id}', id || '');
@@ -188,6 +193,7 @@ async function Operations({
 	const updateAfter = getUpdateAfter(getCodeFromService, inlineEditor);
 	const operations = getOperations(updateAfter, readAfter);
 
+	// handles operation events, mainly service events
 	document.body.addEventListener(
 		'operations',
 		(e) => operationsListener(e, {
@@ -195,6 +201,13 @@ async function Operations({
 			getCurrentFile, getCurrentService
 		}),
 		false);
+
+	// handles only file/folder management ops fired using new event pattern
+	// will modify state, will fire events
+	attachListeners({
+		managementOp, performOperation, externalStateRequest,
+		getCurrentFile, getCurrentService
+	});
 
 	//TODO: this should go away at some point!!!
 	const foundOp = operations.find(x => x.name === 'read');

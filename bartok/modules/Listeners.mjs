@@ -23,6 +23,14 @@ function list(){
 	return Object.keys(listeners);
 }
 
+function trigger({ type, params, source }){
+	const event = new CustomEvent(type, {
+		bubbles: true,
+		detail: { ...params, ...{ source }}
+	});
+	document.body.dispatchEvent(event);
+}
+
 export {
-	attach, remove, list
+	attach, remove, list, trigger
 };
