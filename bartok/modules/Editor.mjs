@@ -5,24 +5,24 @@ import ext from '../../shared/icons/seti/ext.json.mjs'
 
 import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
 
-function getFileType(fileName=''){
+function getFileType(fileName = '') {
 	let type = 'default';
 	const extension = ((
-			fileName.match(/\.[0-9a-z]+$/i) || []
-		)[0] ||''
+		fileName.match(/\.[0-9a-z]+$/i) || []
+	)[0] || ''
 	).replace(/^\./, '');
 
 	//console.log(extension)
-	if(ext[extension]){
-		type=ext[extension];
+	if (ext[extension]) {
+		type = ext[extension];
 	}
-	if(extension === 'bat'){
+	if (extension === 'bat') {
 		type = "bat";
 	}
-	if(extension === 'scratch'){
+	if (extension === 'scratch') {
 		type = "markdown";
 	}
-	if(extension === 'bugs'){
+	if (extension === 'bugs') {
 		type = "markdown";
 	}
 	return type;
@@ -31,7 +31,7 @@ function getFileType(fileName=''){
 //This is used by both List and inlineEditor
 const Container = ({ operations }) => {
 	const prevConatiner = document.querySelector("#full-page-container");
-	if(prevConatiner){
+	if (prevConatiner) {
 		prevConatiner.parentNode.removeChild(prevConatiner);
 	}
 	const containerDiv = document.createElement('div');
@@ -55,9 +55,9 @@ const Container = ({ operations }) => {
 				detail: {
 					operation,
 					body: {
-						name: (containerDiv.querySelector('#service_name')||{}).value,
-						id: (containerDiv.querySelector('#service_id')||{}).value,
-						code: (window.Editor||{ getValue: ()=>{}}).getValue()
+						name: (containerDiv.querySelector('#service_name') || {}).value,
+						id: (containerDiv.querySelector('#service_id') || {}).value,
+						code: (window.Editor || { getValue: () => { } }).getValue()
 					}
 				}
 			});
@@ -117,29 +117,29 @@ const List = (TreeView) => ({ services }) => {
 	`;
 	listDiv.classList.add('services-list');
 	listDiv.addEventListener('click', e => {
-			if(e.target.tagName.toLowerCase() !== 'i'){
-				return;
+		if (e.target.tagName.toLowerCase() !== 'i') {
+			return;
+		}
+		const parent = e.target.parentNode;
+		const event = new CustomEvent('operations', {
+			bubbles: true,
+			detail: {
+				operation: 'read',
+				body: parent.dataset
 			}
-			const parent = e.target.parentNode;
-			const event = new CustomEvent('operations', {
-				bubbles: true,
-				detail: {
-					operation: 'read',
-					body: parent.dataset
-				}
-			});
-			document.body.dispatchEvent(event);
 		});
+		document.body.dispatchEvent(event);
+	});
 	containerDiv.querySelector('.contain').appendChild(listDiv);
 	return listDiv;
 };
 
-const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }={}) => {
+const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename } = {}) => {
 	TreeView();
 
 	const prevEditor = document.querySelector('#editor-container');
 	let editorDiv = prevEditor;
-	if(!editorDiv){
+	if (!editorDiv) {
 		const containerDiv = Container({
 			operations: ['create', 'cancel', 'delete', 'persist', 'update']
 		});
@@ -159,7 +159,7 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }=
 		`;
 
 		editorDiv.appendChild(EditorTabs(name
-			?[{ name, active: true }]
+			? [{ name, active: true }]
 			: undefined
 		));
 
@@ -179,7 +179,7 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }=
 
 	var currentHandle = null, currentLine;
 	function updateLineInfo(cm, line) {
-		var handle = cm.getLineHandle(line-1);
+		var handle = cm.getLineHandle(line - 1);
 		if (handle == currentHandle && line == currentLine) return;
 		if (currentHandle) {
 			cm.removeLineClass(currentHandle, null, null);
@@ -211,33 +211,74 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename }=
 	const mode = codemirrorModeFromFileType(fileType);
 	//console.log({ mode });
 
+
+	function isSelectedRange(ranges, from, to) {
+		for (var i = 0; i < ranges.length; i++)
+			if (CodeMirror.cmpPos(ranges[i].from(), from) == 0 &&
+				CodeMirror.cmpPos(ranges[i].to(), to) == 0) return true
+		return false
+	}
+	function selectNextOccurrence(cm) {
+		var Pos = CodeMirror.Pos;
+
+		var from = cm.getCursor("from"), to = cm.getCursor("to");
+		var fullWord = cm.state.sublimeFindFullWord == cm.doc.sel;
+		if (CodeMirror.cmpPos(from, to) == 0) {
+			var word = wordAt(cm, from);
+			if (!word.word) return;
+			cm.setSelection(word.from, word.to);
+			fullWord = true;
+		} else {
+			var text = cm.getRange(from, to);
+			var query = fullWord ? new RegExp("\\b" + text + "\\b") : text;
+			var cur = cm.getSearchCursor(query, to);
+			var found = cur.findNext();
+			if (!found) {
+				cur = cm.getSearchCursor(query, Pos(cm.firstLine(), 0));
+				found = cur.findNext();
+			}
+			if (!found || isSelectedRange(cm.listSelections(), cur.from(), cur.to())) return
+			cm.addSelection(cur.from(), cur.to());
+		}
+		if (fullWord) {
+			cm.state.sublimeFindFullWord = cm.doc.sel;
+		}
+		console.log('this should have happneed');
+		return false;
+	}
+	const extraKeys = {
+		"Cmd-D": selectNextOccurrence,
+		"Ctrl-D": selectNextOccurrence
+	};
+
 	Editor({
-			text: code,
-			lineNumbers: true,
-			mode,
-			addModeClass: true,
-			autocorrect: true,
-			// scrollbarStyle: 'native',
-			tabSize: 2,
-			//indentWithTabs: true,
-			showInvisibles: true,
-			styleActiveLine: true,
-			styleActiveSelected: true,
-			matchBrackets: true,
-			scrollPastEnd: true
+		text: code,
+		lineNumbers: true,
+		mode,
+		addModeClass: true,
+		autocorrect: true,
+		// scrollbarStyle: 'native',
+		tabSize: 2,
+		//indentWithTabs: true,
+		showInvisibles: true,
+		styleActiveLine: true,
+		styleActiveSelected: true,
+		matchBrackets: true,
+		scrollPastEnd: true
 	}, (error, editor) => {
-			editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
-			window.Editor = editor;
-			editor.on('change', handlerBoundToDoc);
-			editor.on("cursorActivity", onCursorActivity);
-			editor.on("scrollCursorIntoView", onScrollCursor)
-			editor.setOption("styleActiveLine", {nonEmpty: true})
+		editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
+		window.Editor = editor;
+		editor.on('change', handlerBoundToDoc);
+		editor.on("cursorActivity", onCursorActivity);
+		editor.on("scrollCursorIntoView", onScrollCursor)
+		editor.setOption("styleActiveLine", { nonEmpty: true });
+		editor.setOption("extraKeys", extraKeys);
 	});
 }
 
-function getEditor({ getCodeFromService, TreeView } = {}){
+function getEditor({ getCodeFromService, TreeView } = {}) {
 	attachListener((filename) => {
-		const { code="error", name, id } = getCodeFromService(null, filename);
+		const { code = "error", name, id } = getCodeFromService(null, filename);
 		inlineEditor(TreeView, ChangeHandler)({ code, name, id, filename });
 	});
 
