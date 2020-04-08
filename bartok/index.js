@@ -44,7 +44,7 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 	window.Theme = Theme({});
 	window.FUN = false;  // no terminal MOTD
 
-	await appendScript("/shared/vendor/materialize.min.js");
+	await appendScript("../shared/vendor/materialize.min.js");
 
 	Panes();
 	const loadingEl = document.querySelector('#loading-screen');
