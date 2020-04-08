@@ -17,5 +17,5 @@
   ],
   "start_url": "./?source=pwa",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "any"
 }
