@@ -1,4 +1,4 @@
-import JSTreeView from "/shared/vendor/js-treeview.1.1.5.js";
+import JSTreeView from "../../shared/vendor/js-treeview.1.1.5.js";
 //import JSTreeView from "https://dev.jspm.io/js-treeview@1.1.5";
 
 import { attachListener } from './events/tree.mjs';

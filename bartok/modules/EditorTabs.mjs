@@ -1,5 +1,5 @@
 import { attachListener } from './events/editorTabs.mjs';
-import ext from '/shared/icons/seti/ext.json.mjs'
+import ext from '../../shared/icons/seti/ext.json.mjs'
 
 function log(){
 	return console.log.call(null, arguments.map(x =>
