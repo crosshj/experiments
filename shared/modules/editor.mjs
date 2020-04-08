@@ -7,16 +7,16 @@
 // const codeMirrorJsUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js";
 // const codeMirrorJsSyntaxUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js";
 
-const codeMirrorCssUrl = "/shared/css/codemirror.css";
-const codeMirrorBespinThemeCssUrl = "/shared/css/bespin.css";
-const cmVSCodeUrl = "/shared/css/vscode.codemirror.css";
+const codeMirrorCssUrl = "../shared/css/codemirror.css";
+const codeMirrorBespinThemeCssUrl = "../shared/css/bespin.css";
+const cmVSCodeUrl = "../shared/css/vscode.codemirror.css";
 
-const codeMirrorJsUrl = "/shared/vendor/codemirror.js";
-const codeMirrorScrollPastUrl = "/shared/vendor/codemirror-scrollpastend.js";
-const codeMirrorShowInvisibles = "/shared/vendor/codemirror-show-invisibles.js"
-const codeMirrorSearchCursor = "/shared/vendor/codemirror-searchcursor.js";
+const codeMirrorJsUrl = "../shared/vendor/codemirror.js";
+const codeMirrorScrollPastUrl = "../shared/vendor/codemirror-scrollpastend.js";
+const codeMirrorShowInvisibles = "../shared/vendor/codemirror-show-invisibles.js"
+const codeMirrorSearchCursor = "../shared/vendor/codemirror-searchcursor.js";
 
-const codeMirrorJsSyntaxUrl = "/shared/vendor/codemirror/mode/javascript.js";
+const codeMirrorJsSyntaxUrl = "../shared/vendor/codemirror/mode/javascript.js";
 
 const appendScript = (url, callback) => {
 	var script = document.createElement('script');
