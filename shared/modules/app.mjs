@@ -9,9 +9,9 @@ let config = {};
 //const materializeCssUrl = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css";
 //const materializeJsUrl = "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js";
 
-const materialIconsCssUrl = "/shared/css/material-icons.css";
-const materializeCssUrl = "/shared/css/materialize.min.css";
-const materializeJsUrl = "/shared/vendor/materialize.min.js";
+const materialIconsCssUrl = "../../shared/css/material-icons.css";
+const materializeCssUrl = "../../shared/css/materialize.min.css";
+const materializeJsUrl = "../../shared/vendor/materialize.min.js";
 
 const appendScript = (callback) => {
 	var materializeScript = document.createElement('script');
