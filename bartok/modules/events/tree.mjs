@@ -58,6 +58,25 @@ const fileSelectHandler = (e) => {
 	}
 }
 
+const folderSelectHandler = (e) => {
+	const { name, next } = e.detail;
+
+	Array.from(
+		document.querySelectorAll('#tree-view .selected')||[]
+	)
+		.forEach(x => x.classList.remove('selected'));
+
+	const leaves = Array.from(
+		document.querySelectorAll('#tree-view .tree-leaf-content')||[]
+	);
+	const found = leaves.find(x => {
+		return x.innerText.includes(next || name);
+	});
+	if(found){
+		found.classList.add('selected')
+	}
+}
+
 const fileChangeHandler = (updateTree) => (event) => {
 	const { name, id, file } = event.detail;
 	updateTree('dirty', {name, id, file});
@@ -135,6 +154,7 @@ const treeMenu = ({ title }) => {
 }
 
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
+// new tree is created when: switch/open project, add file, ...
 function attachListener(treeView, JSTreeView, updateTree){
 	const listener = async function (e) {
 		const { id, result } = e.detail;
@@ -161,35 +181,62 @@ function attachListener(treeView, JSTreeView, updateTree){
 		}
 		const treeFromResult = getTree(result);
 		const converted = fileTreeConvert(treeFromResult);
-		converted[0].expanded = true;
+		//converted[0].expanded = true;
 
 		const projectName = converted[0].name;
 		treeMenu({ title: projectName });
 
-		const children = converted[0].children;
+		const children = converted[0].children; // don't use "tree trunk" folder
 
-		const newTree = new JSTreeView(children, 'tree-view');
+		const files = children
+			.filter(x => result[0].code.find(y => y.name === x.name));
+		const folders = children
+			.filter(x => !result[0].code.find(y => y.name === x.name));
+
+		const childrenSorted = [...folders, ...files];
+
+		const newTree = new JSTreeView(childrenSorted, 'tree-view');
 		newTree.id = id;
 
+		function triggerFolderSelect(e) {
+			const event = new CustomEvent('folderSelect', {
+				bubbles: true,
+				detail: {
+					name: e.target.querySelector('.tree-leaf-text').innerText
+				}
+			});
+			document.body.dispatchEvent(event);
+		}
+
+		newTree.on('expand', function(e){
+			triggerFolderSelect(e);
+		});
+
+		newTree.on('collapse', function(e){
+			triggerFolderSelect(e);
+		});
+
 		newTree.on('select', function (e) {
-			// try{
-			// 	const currentParent = e.target.target.parentNode;
-			// 	if(currentParent.classList.contains('selected')){
-			// 		return;
-			// 	}
-			// 	Array.from(document.querySelectorAll('#tree-view .selected')||[])
-			// 		.forEach(x => x.classList.remove('selected'));
-			// 	currentParent.classList.add('selected');
-			// } catch(e) {
-			// 	console.error(e);
-			// 	console.error('could not mark leaf as selected');
-			// }
-			if(e.data.children.length > 1){
+			const parent = e.target.target.parentNode;
+			const isFolder = parent.classList.contains('folder');
+			if(isFolder){
+				const expando = parent.querySelector('.tree-expando');
+				const isOpen = expando.classList.contains('open');
+				if(isOpen){
+					expando.classList.remove('expanded', 'open');
+					expando.classList.add('closed');
+				} else {
+					expando.classList.remove('closed');
+					expando.classList.add('expanded', 'open');
+				}
+				triggerFolderSelect({ target: parent });
 				return;
 			}
+
+			//TODO: what is the purpose of this?
 			let changed;
 			try {
-				changed = e.target.target.parentNode.classList.contains('changed')
+				changed = parent.classList.contains('changed')
 			} catch(e){}
 
 			const event = new CustomEvent('fileSelect', {
@@ -202,28 +249,49 @@ function attachListener(treeView, JSTreeView, updateTree){
 			document.body.dispatchEvent(event);
 		});
 
-		//console.log('----- TREE');
-		// this happens when: switch/open project, add file, ...
 		const defaultFile = getDefaultFile(result[0]);
-		Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
-			const item = JSON.parse(t.dataset.item);
-			if(item.children.length){
-				t.classList.add('folder');
-			} else {
-				const textNode = t.querySelector('.tree-leaf-text');
-				textNode.classList.add(`icon-${getFileType(textNode.innerText)}`);
-			}
-			if(item.name === defaultFile){
-				t.classList.add('selected');
-			}
-		});
+		Array.from(treeView.querySelectorAll('.tree-leaf-content'))
+			.forEach(t => {
+				const item = JSON.parse(t.dataset.item);
+				const foundFile = result[0].code.find(x => x.name === item.name);
+
+				//TODO: this is where nested padding should be set
+
+				if(item.children.length || !foundFile){
+					t.classList.add('folder');
+					t.querySelector('.tree-expando').classList.remove('hidden');
+				} else {
+					const textNode = t.querySelector('.tree-leaf-text');
+					textNode.classList.add(`icon-${getFileType(textNode.innerText)}`);
+				}
+
+				if(item.name === defaultFile){
+					t.classList.add('selected');
+				}
+			});
+		const rootNode = document.getElementById('tree-view');
+
+		// set path attribute and padding on child nodes
+		function traverseTree(node, path){
+			const children = Array.from(node.children)
+			children.forEach(c => {
+				const leafContentNode = c.querySelector('.tree-leaf-content');
+				leafContentNode.setAttribute('data-path', path);
+				leafContentNode.style.paddingLeft = (path.split('/').length-1)*9 + 'px';
+
+				const leavesNode = c.querySelector('.tree-child-leaves');
+				if(!leavesNode){
+					return;
+				}
+				const name = JSON.parse(leafContentNode.dataset.item).name;
+				traverseTree(leavesNode, `${path}${name}/`);
+			});
+		}
+		traverseTree(rootNode, '/');
 
 		tree = newTree;
-		// setTimeout(() => {
-			//currentExplorer.style.width = backupStyle.clientWidth;
-			//currentExplorer.style.minWidth = backupStyle.minWidth;
-		// }, 1000)
 	};
+
 	attach({
 		name: 'TreeView',
 		eventName: 'operationDone',
@@ -236,6 +304,11 @@ function attachListener(treeView, JSTreeView, updateTree){
 	});
 	attach({
 		name: 'TreeView',
+		eventName: 'folderSelect',
+		listener: folderSelectHandler
+	});
+	attach({
+		name: 'TreeView',
 		eventName: 'fileClose',
 		listener: fileSelectHandler
 	});
@@ -244,6 +317,8 @@ function attachListener(treeView, JSTreeView, updateTree){
 		eventName: 'fileChange',
 		listener: fileChangeHandler(updateTree)
 	});
+
+
 }
 
 

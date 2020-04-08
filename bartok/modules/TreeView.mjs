@@ -98,13 +98,27 @@ const contextMenu = (e) => {
 
 const updateTree = (treeView) => (change, { name, id, file }) => {
 	if(change === "dirty"){
+		let dirtyParents;
+
 		//console.log(`Need to mark ${file} from ${name} ${id} as dirty`);
-		Array.from(treeView.querySelectorAll('.tree-leaf-content')).forEach(t => {
-			const item = JSON.parse(t.dataset.item);
-			if(item.name === file){
-				t.classList.add('changed');
-			}
-		});
+		Array.from(treeView.querySelectorAll('.tree-leaf-content'))
+			.forEach(t => {
+				const item = JSON.parse(t.dataset.item);
+				if(item.name === file){
+					t.classList.add('changed');
+					dirtyParents = t.dataset.path.split('/').filter(x => !!x);
+				}
+			});
+		if(!dirtyParents){
+			return
+		}
+		Array.from(treeView.querySelectorAll('.tree-leaf-content'))
+			.forEach(t => {
+				const item = JSON.parse(t.dataset.item);
+				if(dirtyParents.includes(item.name)){
+					t.classList.add('changed');
+				}
+			});
 	}
 }
 

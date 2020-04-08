@@ -206,7 +206,8 @@ async function Operations({
 	// will modify state, will fire events
 	attachListeners({
 		managementOp, performOperation, externalStateRequest,
-		getCurrentFile, getCurrentService
+		getCurrentFile, getCurrentService,
+		operations
 	});
 
 	//TODO: this should go away at some point!!!

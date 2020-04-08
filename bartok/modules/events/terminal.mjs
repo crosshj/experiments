@@ -44,8 +44,8 @@ const commands = [{
 	name: 'move',
 	about: 'Moves file or folder to destination',
 	alias: ['mv'],
-	required: ['source', 'destination'],
-	args: ['source', 'destination']
+	required: ['target', 'destination'],
+	args: ['target', 'destination']
 }];
 
 //NOTE: these are mostly already handled in ../Terminal.mjs
@@ -142,7 +142,7 @@ const terminalTrigger = (write, command, callback) => {
 	trigger({
 		type: currentCommand.name,
 		params: { ...eventArgs, ...{ callback: cb }},
-		eventSource: 'Terminal'
+		source: 'Terminal'
 	});
 	return preventDefault;
 };

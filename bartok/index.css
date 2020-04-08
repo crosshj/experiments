@@ -756,6 +756,10 @@ notes-section.loading:after {
   display:block;
   /* margin-left:15px */
 }
+/* .tree-child-leaves .tree-leaf .tree-leaf-content:before {
+  display: inline-block;
+  min-width: 9px;
+} */
 /* .tree-leaf .hidden{display:none;visibility:hidden} */
 /* .tree-leaf .tree-expando{background:#ddd;border-radius:3px;cursor:pointer;float:left;height:10px;line-height:10px;position:relative;text-align:center;top:5px;width:10px} */
 /* .tree-leaf .tree-expando:hover{background:#aaa} */
@@ -764,7 +768,7 @@ notes-section.loading:after {
   float:left;
   /* margin-left:5px; */
 }
-.tree-leaf:hover{
+.tree-leaf-content:hover{
   /* color:#00f */
   background-color: #333;
   /* color: var(--main-theme-highlight-color); */
@@ -776,14 +780,6 @@ notes-section.loading:after {
 
 .tree-leaf .tree-child-leaves.hidden{display:none;visibility:hidden}
 
-.tree-leaf .tree-expando {
-  color: transparent;
-  background-size: 16px;
-  width: 16px;
-  background-position: 3px 50%;
-  background-repeat: no-repeat;
-  display: inline-block;
-}
 
 .tree-leaf-content:not(.folder) .tree-expando{
   visibility:hidden;
@@ -796,12 +792,65 @@ notes-section.loading:after {
   width: 100%;
 }
 
+/* fat arrows
 .tree-leaf .tree-expando:not(.expanded) {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M6 4v8l4-4-4-4zm1 2.414L8.586 8 7 9.586V6.414z'/%3E%3C/svg%3E");
 }
 
 .tree-leaf .tree-expando.expanded {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E");
+}
+*/
+
+
+.tree-leaf .tree-expando {
+  color: transparent;
+  background-size: 16px;
+  width: 16px;
+  background-position: 5px 50%;
+  background-repeat: no-repeat;
+  display: inline-block;
+  padding-right: 21px;
+  padding-left: 4px;
+}
+
+
+.tree-leaf .tree-expando:before {
+  color: #ccc;
+}
+
+/* https://microsoft.github.io/vscode-codicons/dist/codicon.html */
+@font-face {
+  font-family: codicon;
+  src: url(/shared/fonts/codicon.ttf) format("truetype")
+}
+
+.codicon[class*=codicon-],
+.tree-expando:before {
+  font: normal normal normal 16px/1 codicon;
+  display: inline-block;
+  text-decoration: none;
+  text-rendering: auto;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none
+}
+
+.tree-leaf .tree-expando:not(.expanded):before {
+  content: "\eab4";
+  transform: rotate(-90deg) translateX(-3px);
+}
+
+.tree-leaf .tree-expando.expanded:before {
+  content: "\eab4";
+  transform: translateY(2px);
+}
+
+.tree-leaf-content.changed:not(.selected) {
+  color: #e2c08d;
 }
 
 .tree-leaf-content.selected {
