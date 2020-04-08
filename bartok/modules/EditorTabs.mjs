@@ -190,6 +190,9 @@ const updateTab = (parent) => (tabDef) => {
 		child.classList.add('changed');
 		scrollToChild(child);
 	}
+	if(!tabDef.changed && child.classList.contains('changed')){
+		child.classList.remove('changed');
+	}
 };
 
 const removeTab = (parent) => (tabDef) => {

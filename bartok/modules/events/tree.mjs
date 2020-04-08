@@ -54,6 +54,7 @@ const fileSelectHandler = (e) => {
 		return x.innerText.includes(next || name);
 	});
 	if(found){
+		tree.selected = name || next;
 		found.classList.add('selected')
 	}
 }
@@ -73,6 +74,7 @@ const folderSelectHandler = (e) => {
 		return x.innerText.includes(next || name);
 	});
 	if(found){
+		tree.selected = name || next;
 		found.classList.add('selected')
 	}
 }
@@ -157,8 +159,25 @@ const treeMenu = ({ title }) => {
 // new tree is created when: switch/open project, add file, ...
 function attachListener(treeView, JSTreeView, updateTree){
 	const listener = async function (e) {
-		const { id, result } = e.detail;
+		const { id, result, op } = e.detail;
+
+		let selected, expanded=[];
+
+		if(!id){
+			console.log(`No ID for: ${e.type} - ${op}`);
+			return;
+		}
+
 		//console.log(e.detail);
+		if(e.type === "operationDone" && op ===  "update"){
+			//TODO: maybe pay attention to what branches are expanded/selected?
+			selected = tree.selected;
+			expanded = tree.expanded || expanded;
+			//debugger;
+			tree.off();
+			tree = undefined;
+		}
+
 		if(result.length > 1){
 			return; // TODO: this is right???
 		}
@@ -197,6 +216,8 @@ function attachListener(treeView, JSTreeView, updateTree){
 
 		const newTree = new JSTreeView(childrenSorted, 'tree-view');
 		newTree.id = id;
+		newTree.selected = selected;
+		newTree.expanded = expanded;
 
 		function triggerFolderSelect(e) {
 			const event = new CustomEvent('folderSelect', {
@@ -209,10 +230,18 @@ function attachListener(treeView, JSTreeView, updateTree){
 		}
 
 		newTree.on('expand', function(e){
+			tree.expanded = tree.expanded || [];
+			const folderName = JSON.parse(e.target.dataset.item).name;
+			//const folderPath = e.target.dataset.path + folderName;
+			tree.expanded.push(folderName);
 			triggerFolderSelect(e);
 		});
 
 		newTree.on('collapse', function(e){
+			tree.expanded = tree.expanded || [];
+			const folderName = JSON.parse(e.target.dataset.item).name;
+			//const folderPath = e.target.dataset.path + folderName;
+			tree.expanded = tree.expanded.filter(x => x === folderName);
 			triggerFolderSelect(e);
 		});
 
@@ -265,7 +294,19 @@ function attachListener(treeView, JSTreeView, updateTree){
 					textNode.classList.add(`icon-${getFileType(textNode.innerText)}`);
 				}
 
-				if(item.name === defaultFile){
+				if(expanded.includes(item.name)){
+					const expando = t.querySelector('.tree-expando');
+					expando && expando.classList.remove('closed');
+					expando && expando.classList.add('expanded', 'open');
+
+					const childLeaves = t.parentNode.querySelector('.tree-child-leaves');
+					childLeaves && childLeaves.classList.remove('hidden');
+				}
+
+				if(item.name === defaultFile && !selected){
+					t.classList.add('selected');
+				}
+				if(selected && item.name === selected){
 					t.classList.add('selected');
 				}
 			});

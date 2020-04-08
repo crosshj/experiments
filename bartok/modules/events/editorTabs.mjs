@@ -150,6 +150,12 @@ const operationDoneHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
 	const { op, id, result=[] } = event.detail || '';
+	if(op === "update"){
+		tabs.forEach(t => delete t.changed);
+		tabs.map(updateTab);
+		return;
+	}
+
 	if(op !== 'read' || !id){
 		return;
 	}
@@ -209,6 +215,12 @@ function attachListener(
 	attach({
 		name: 'EditorTabView',
 		eventName: 'click',
+		listener
+	});
+
+	attach({
+		name: 'EditorTabView',
+		eventName: 'operationDone',
 		listener
 	});
 }

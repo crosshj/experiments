@@ -6,9 +6,6 @@ function triggerEvent(name){
 			triggerEvent("persist");
 		}
 	};
-	const after = () => {
-		console.log(`after: ${name}`);
-	};
 	const body = {
 		// name: (document.body.querySelector('#service_name')||{}).value,
 		// id: (document.body.querySelector('#service_id')||{}).value,
@@ -20,7 +17,6 @@ function triggerEvent(name){
 		detail: {
 			operation: name,
 			done,
-			after,
 			body
 		}
 	});

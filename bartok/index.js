@@ -15,7 +15,7 @@ import Services from './modules/Services.mjs';
 import { externalStateRequest } from './modules/ExternalState.mjs';
 import Operations from './modules/operations.mjs';
 import {
-	getCodeFromService, getCurrentFile, getCurrentService
+	getCodeFromService, getCurrentFile, getCurrentService, resetState
 } from './modules/state.mjs';
 
 import { managementOp } from './modules/management.mjs';
@@ -65,7 +65,7 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 
 	await Operations({
 		getCodeFromService, managementOp, externalStateRequest,
-		getCurrentFile, getCurrentService,
+		getCurrentFile, getCurrentService,  resetState,
 		inlineEditor, List  // instead of passing these here, Editor should be listening
 	});
 

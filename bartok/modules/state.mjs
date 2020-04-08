@@ -59,6 +59,12 @@ function setState(change){
 const getCurrentFile = () => currentFile;
 const getCurrentService = () => currentService;
 
+const resetState = () => {
+	currentFile = currentService = null;
+	state.changedFiles = {};
+};
+
 export {
-	getCodeFromService, getCurrentFile, getCurrentService, getState, setState
+	getCodeFromService, getCurrentFile, getCurrentService,
+	getState, setState, resetState
 };

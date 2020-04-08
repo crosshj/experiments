@@ -78,7 +78,7 @@ function getUpdateAfter(getCodeFromService, inlineEditor) {
 	return ({ result }) => {
 		const services = result.result;
 		const { code, name, id, filename } = getCodeFromService(services[0]);
-		inlineEditor({ code, name, id, filename });
+		//inlineEditor({ code, name, id, filename });
 	};
 }
 
@@ -94,7 +94,14 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 		id = '';
 	}
 	const op = JSON.parse(JSON.stringify(operation));
-	op.after = after || operation.after;
+	op.after = operation.after;
+
+	if(after){
+		op.after = (...args) => {
+			after(...args);
+			op.after(...args);
+		};
+	}
 	op.url = op.url.replace('{id}', id || '');
 	op.config = op.config || {};
 	op.config.headers = {
@@ -128,8 +135,15 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 const operationsListener = async (
 	e, {
 		operations, managementOp, performOperation, externalStateRequest,
-		getCurrentFile, getCurrentService
+		getCurrentFile, getCurrentService, resetState
 	}) => {
+	if(e.detail.body.id === "undefined"){
+		e.detail.body.id = undefined;
+	}
+	if(e.detail.body.name === "undefined"){
+		e.detail.body.name = undefined;
+	}
+
 	const currentFile = getCurrentFile();
 	const currentService = getCurrentService();
 
@@ -180,13 +194,21 @@ const operationsListener = async (
 	e.detail.body.id = e.detail.body.id || currentService.id;
 	e.detail.body.name = e.detail.body.name || currentService.name;
 	foundOp.config.body = JSON.stringify(e.detail.body);
+
+	const opsWhichResetState = ["read"];
+	if (
+		e.type === "operations" &&  opsWhichResetState.includes(e.detail.operation) && e.detail.body.id !== "*"
+	) {
+		//console.log("id: " + e.detail.body.id);
+		resetState();
+	}
 	await performOperation(foundOp, e.detail, externalStateRequest);
 	e.detail.done && e.detail.done('DONE\n');
 };
 
 async function Operations({
 	getCodeFromService, managementOp, externalStateRequest,
-	getCurrentFile, getCurrentService,
+	getCurrentFile, getCurrentService, resetState,
 	inlineEditor, List
 }) {
 	const readAfter = getReadAfter(List, inlineEditor, getCodeFromService);
@@ -198,7 +220,7 @@ async function Operations({
 		'operations',
 		(e) => operationsListener(e, {
 			operations, managementOp, performOperation, externalStateRequest,
-			getCurrentFile, getCurrentService
+			getCurrentFile, getCurrentService, resetState
 		}),
 		false);
 
