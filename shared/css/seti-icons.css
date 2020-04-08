@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'seti';
   /* src: url(/shared/fonts/seti.woff2) format('woff2'); */
-  src: url(../shared/fonts/seti.woff2) format('woff2');
+  src: url(../../shared/fonts/seti.woff2) format('woff2');
   font-weight: normal;
   font-style: normal;
 }
