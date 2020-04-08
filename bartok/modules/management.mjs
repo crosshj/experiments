@@ -1,3 +1,73 @@
+const manageOp = {
+	operation: "updateProject"
+};
+
+function getContextFromPath(root, folderPath){
+	const split = folderPath.split('/').filter(x => !!x);
+	const folderName = split.pop();
+	const parentObject = split
+		.reduce((all, one) => {
+			all[one] = all[one] || {};
+			return all[one];
+		}, root);
+	return { folderName, parentObject};
+}
+
+function uberManageOp({
+	currentFolder="/",
+	currentService,
+	oldName, newName,
+	createNewTree, deleteOldTree,
+	createNewFile, deleteOldFile
+}){
+	let operationComplete;
+	try {
+		//TODO: guard against empty/improper filename
+
+		//TODO: if path not included or relative to current
+		//      add currentFolder to oldName/newName
+
+		const rootFolderName = Object.keys(currentService.tree)[0];
+		const root = currentService.tree[rootFolderName];
+
+		let { folderName, parentObject} = getContextFromPath(root, oldName);
+		const oldFolderParent = parentObject;
+		const oldFolderName = folderName;
+
+		if(createNewTree){
+			// this clone causes problems with JSX and HTML files
+			// TODO: fix probably deals with < being escaped properly
+			const clonedOldFolderContents = JSON.parse(JSON.stringify(
+				oldFolderParent[oldFolderName]
+			));
+
+			({ folderName, parentObject} = getContextFromPath(root, newName));
+			const newFolderParent = parentObject;
+			const newFolderName = folderName;
+
+			newFolderParent[newFolderName] = clonedOldFolderContents;
+		}
+
+		if(deleteOldTree){
+			delete oldFolderParent[oldFolderName];
+		}
+
+		if(createNewFile){
+			//TODO: create the file
+		}
+
+		if(deleteOldFile){
+			//TODO: delete the file
+		}
+
+		operationComplete = true;
+	} catch(e) {
+
+	}
+	return operationComplete;
+}
+
+
 function addFile(e, currentService, currentFile) {
 	const { filename } = e.detail;
 	let manageOp, currentServiceCode, treeEntryAdded;
@@ -90,17 +160,6 @@ function renameProject(e, currentService, currentFile){
 	return;
 }
 
-function getContextFromPath(root, folderPath){
-	const split = folderPath.split('/').filter(x => !!x);
-	const folderName = split.pop();
-	const parentObject = split
-		.reduce((all, one) => {
-			all[one] = all[one] || {};
-			return all[one];
-		}, root);
-	return { folderName, parentObject};
-}
-
 function addFolder(e, currentService, currentFile){
 	console.log('addFolder');
 	let { folderName, parent } = e.detail;
@@ -132,36 +191,24 @@ function addFolder(e, currentService, currentFile){
 
 function renameFolder(e, currentService, currentFile){
 	console.log('renameFolder');
-	let { oldName, newName } = e.detail;
-	let manageOp, currentServiceCode, folderRenamed;
-	try {
-		//TODO: guard against empty/improper filename
-		const rootFolderName = Object.keys(currentService.tree)[0];
-		let root = currentService.tree[rootFolderName];
+	const { oldName, newName } = e.detail;
 
-		let { folderName, parentObject} = getContextFromPath(root, oldName);
-		const oldFolderParent = parentObject;
-		const oldFolderName = folderName;
+	//TODO: is either current selected folder or parent of currentFile
+	const currentFolder = "/";
 
-		// this clone causes problems with JSX and HTML files
-		const clonedOldFolderContents = JSON.parse(JSON.stringify(
-			oldFolderParent[oldFolderName]
-		));
+	const folderRenamed = uberManageOp({
+		currentFolder,
+		currentService,
+		oldName, newName,
+		createNewTree: true,
+		deleteOldTree: true,
+		createNewFile: false,
+		deleteOldFile: false
+	});
 
-		({ folderName, parentObject} = getContextFromPath(root, newName));
-		const newFolderParent = parentObject;
-		const newFolderName = folderName;
-
-		newFolderParent[newFolderName] = clonedOldFolderContents;
-		delete oldFolderParent[oldFolderName];
-	} catch (e) {
-		console.log('could not rename folder');
-		console.log(e);
-	}
-	if(manageOp && currentServiceCode && treeEntryDeleted){
-		currentService.code = currentServiceCode;
-	}
-	return manageOp;
+	return folderRenamed
+		? manageOp
+		: undefined;
 }
 
 const ops = {

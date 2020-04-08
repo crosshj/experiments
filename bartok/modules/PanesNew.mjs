@@ -6,6 +6,8 @@ https://iamakulov.com/notes/resize-scroll/
 
 */
 
+
+
 // function is used for dragging and moving
 function dragElement(element, direction, handler, first, second, firstUnder, secondUnder, all) {
 
@@ -26,11 +28,18 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 	// Two variables for tracking positions of the cursor
 	const drag = { x: 0, y: 0 };
 	const delta = { x: 0, y: 0 };
-  /* if present, the handler is where you move the DIV from
-     otherwise, move the DIV from anywhere inside the DIV */
-	handler
-		? (handler.onmousedown = dragMouseDown)
-		: (element.onmousedown = dragMouseDown);
+
+	/* if present, the handler is where you move the DIV from
+		 otherwise, move the DIV from anywhere inside the DIV */
+	if (window.PointerEvent) {
+		handler
+			? (handler.onpointerdown = dragMouseDown)
+			: (element.onpointerdown = dragMouseDown);
+	} else {
+		handler
+			? (handler.onmousedown = dragMouseDown)
+			: (element.onmousedown = dragMouseDown);
+	}
 
 	// function that will be called whenever the down event of the mouse is raised
 	let dragging;
@@ -56,12 +65,20 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 
 		// drag.x = e.clientX;
 		// drag.y = e.clientY;
-		document.onmousemove = onMouseMove;
-		document.onmouseup = (e) => {
+		const detachListeners = (e) => {
 			onMouseUp(e);
 			first.classList.remove('active-pane-guide');
 			second.classList.remove('active-pane-guide')
+			document.onpointermove = document.onpointerup = null;
 			document.onmousemove = document.onmouseup = null;
+		}
+
+		if (window.PointerEvent) {
+			document.onpointermove = onMouseMove;
+			document.onpointerup = detachListeners;
+		} else {
+			document.onmousemove = onMouseMove;
+			document.onmouseup = detachListeners;
 		}
 
 		e.preventDefault();

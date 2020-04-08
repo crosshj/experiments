@@ -9,6 +9,8 @@ html, body {
   /* font-family: Consolas, 'Courier New', monospace; */
   font-family: -apple-system,BlinkMacSystemFont,sans-serif;
   font-size: 13px;
+  /* otherwise browser causes pane resizing to fail */
+  touch-action: none;
 }
 .CodeMirror {
   padding-top: 5px;
