@@ -2,6 +2,7 @@
 
 import Theme from '../shared/modules/theme.mjs';
 
+import LoaderBar from './modules/LoaderBar.mjs';
 import Panes from './modules/PanesNew.mjs';
 import Editor from './modules/Editor.mjs';
 
@@ -50,6 +51,7 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 	const loadingEl = document.querySelector('#loading-screen');
 	loadingEl.classList.add('hidden');
 	document.body.classList.remove('loading');
+	LoaderBar();
 
 	const {
 		inlineEditor, List
