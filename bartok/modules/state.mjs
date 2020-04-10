@@ -12,6 +12,9 @@ function getDefaultFile(service){
 let currentService;
 let currentFile;
 function getCodeFromService(service, file){
+	debugger;
+	getCurrentService(); //this caues service status to update?
+
 	if(!service){
 		service = currentService || {};
 	} else {
@@ -45,19 +48,33 @@ function getState(){
 
 function setState(change){
 	//TODO: this could be expensive
-	const { name, id, code, prevCode } = change;
-	if(!state.changedFiles[id+name]){
-		state.changedFiles[id+name] = [{
+	const { name, id, code, prevCode, filename } = change;
+	//console.log(change);
+	const stateKey = `${id}|${name}|${filename}`;
+
+	if(!state.changedFiles[stateKey]){
+		state.changedFiles[stateKey] = [{
 			name, id, code: prevCode
 		}];
 	}
-	state.changedFiles[id+name]
-		.push({ name, id, code });
+	state.changedFiles[stateKey]
+		.push({ name, id, code, filename });
 	return currentFile;
 }
 
 const getCurrentFile = () => currentFile;
-const getCurrentService = () => currentService;
+const getCurrentService = () => {
+	const changedArray = Object.keys(state.changedFiles)
+		.map(k => state.changedFiles[k]);
+	const mostRecent = changedArray.map(x => x[x.length-1]);
+
+	mostRecent.forEach(m => {
+		const found = currentService.code.find(x => x.name === m.filename);
+		if(!found){ debugger; }
+		found.code = m.code;
+	});
+	return currentService;
+}
 
 const resetState = () => {
 	currentFile = currentService = null;

@@ -3,11 +3,11 @@ import { setState, getState } from '../state.mjs';
 
 
 const ChangeHandler = (doc, changeObj) => {
-	const { code, name, id } = doc;
+	const { code, name, id, filename } = doc;
 	// TODO: if handler already exists, return it
 	const changeThis = (contents) => {
 		const file = setState({
-			name, id,
+			name, id, filename,
 			code: contents,
 			prevCode: code
 		});

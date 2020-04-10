@@ -71,6 +71,7 @@ function Services(){
 	}
 	services = document.getElementById('services');
 	services.classList.add('hidden');
+	//document.querySelector('#terminal').style.visibility = "hidden";
 	services.innerHTML = `
 		${styles}
 		<svg id="canvas" class="">
@@ -114,7 +115,46 @@ function Services(){
 	attachListener({
 		showServiceMap: () => services.classList.remove('hidden'),
 		hideServiceMap: () => services.classList.add('hidden')
-	})
+	});
+
+	const _canvas = services.querySelector('#canvas')
+
+	let transX=0, transY=0, offsetX=0, offsetY=0;
+	_canvas.onpointerdown = (pointerDownEvent) => {
+		let firstX = pointerDownEvent.clientX - transX;
+		let firstY = pointerDownEvent.clientY - transY;
+
+		const detachListeners = (detachEvent) => {
+			transX = offsetX;
+			transY = offsetY;
+			document.onpointermove = document.onpointerup = null;
+			detachEvent.preventDefault();
+			return false;
+		};
+
+		document.onpointermove = (pointerMoveEvent) => {
+			let currentX = pointerMoveEvent.clientX;
+			let currentY = pointerMoveEvent.clientY;
+			offsetX = currentX - firstX;
+			offsetY = currentY - firstY;
+
+			_canvas.style.transform = `translate(${offsetX}px,${offsetY}px)`;
+
+			pointerMoveEvent.preventDefault();
+			return false;
+		};
+		document.onpointerup = detachListeners;
+
+		pointerDownEvent.preventDefault();
+		return false;
+	}
+
+	canvas.onpointerup = function(e){
+
+	}
+
+	//transform: translate(184px,150px);
+
 }
 
 export default Services;

@@ -108,9 +108,6 @@ const addFolderHandler = ({
 	);
 };
 
-
-////// ------------------------------------------------------------------------
-
 const renameFolderHandler = ({
 	managementOp, performOperation, externalStateRequest,
 	getCurrentFile, getCurrentService, operations
@@ -128,6 +125,42 @@ const renameFolderHandler = ({
 	);
 };
 
+const deleteFolderHandler = ({
+	managementOp, performOperation, externalStateRequest,
+	getCurrentFile, getCurrentService, operations
+}) => async (event) => {
+	const { detail } = event;
+	const { callback } = detail;
+	const currentService = getCurrentService();
+	const currentFile = getCurrentFile();
+	event.detail.operation = event.detail.operation || event.type;
+	const manageOp = managementOp(event, currentService, currentFile);
+
+	await performOp(
+		currentService, operations, performOperation, externalStateRequest, callback
+	);
+};
+
+const moveFolderHandler = ({
+	managementOp, performOperation, externalStateRequest,
+	getCurrentFile, getCurrentService, operations
+}) => async (event) => {
+	//console.log('OPERATIONS: move');
+	const { detail } = event;
+	const { callback } = detail;
+	const currentService = getCurrentService();
+	const currentFile = getCurrentFile();
+	event.detail.operation = event.detail.operation || event.type;
+	const manageOp = managementOp(event, currentService, currentFile);
+
+	await performOp(
+		currentService, operations, performOperation, externalStateRequest, callback
+	);
+};
+
+////// ------------------------------------------------------------------------
+
+
 const readFolderHandler = ({
 	managementOp, performOperation, externalStateRequest,
 	getCurrentFile, getCurrentService
@@ -139,27 +172,6 @@ const readFolderHandler = ({
 	callback && callback(null, 'TODO: read contents of folder');
 };
 
-const moveHandler = ({
-	managementOp, performOperation, externalStateRequest,
-	getCurrentFile, getCurrentService
-}) => (event) => {
-	// console.log('OPERATIONS: move');
-	const { detail } = event;
-	const { callback } = detail;
-	console.log({ detail });
-	callback && callback(null, 'TODO: move file or folder');
-};
-
-const deleteFolderHandler = ({
-	managementOp, performOperation, externalStateRequest,
-	getCurrentFile, getCurrentService
-}) => (event) => {
-	// console.log('OPERATIONS: deleteFolder');
-	const { detail } = event;
-	const { callback } = detail;
-	console.log({ detail });
-	callback && callback(null, 'TODO: delete folder');
-};
 
 
 const handlers = {
@@ -169,7 +181,7 @@ const handlers = {
 	readFolderHandler,
 	deleteFolderHandler,
 	renameFolderHandler,
-	moveHandler
+	moveFolderHandler
 };
 
 function attachListeners({

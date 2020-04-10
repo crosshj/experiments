@@ -135,7 +135,7 @@ const List = (TreeView) => ({ services }) => {
 };
 
 const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename } = {}) => {
-	TreeView();
+	TreeView(); //<<< this should go away
 
 	const prevEditor = document.querySelector('#editor-container');
 	let editorDiv = prevEditor;
@@ -175,7 +175,7 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename } 
 	//const editorPane = document.querySelector('#editor');
 	//editorPane.style.width = editorPane.clientWidth + 'px';
 	const darkEnabled = window.localStorage.getItem('themeDark') === "true";
-	const handlerBoundToDoc = ChangeHandler({ code, name, id });
+	const handlerBoundToDoc = ChangeHandler({ code, name, id, filename });
 
 	var currentHandle = null, currentLine;
 	function updateLineInfo(cm, line) {

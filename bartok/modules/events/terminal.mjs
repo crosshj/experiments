@@ -41,8 +41,8 @@ const commands = [{
 	required: ['oldName', 'newName'],
 	args: ['oldName', 'newName']
 }, {
-	name: 'move',
-	about: 'Moves file or folder to destination',
+	name: 'moveFolder',
+	about: 'Moves folder to destination',
 	alias: ['mv'],
 	required: ['target', 'destination'],
 	args: ['target', 'destination']

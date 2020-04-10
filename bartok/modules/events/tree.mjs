@@ -171,10 +171,10 @@ function attachListener(treeView, JSTreeView, updateTree){
 		//console.log(e.detail);
 		if(e.type === "operationDone" && op ===  "update"){
 			//TODO: maybe pay attention to what branches are expanded/selected?
-			selected = tree.selected;
-			expanded = tree.expanded || expanded;
+			selected = tree ? tree.selected : undefined;
+			expanded = (tree ? tree.expanded : undefined) || expanded;
 			//debugger;
-			tree.off();
+			tree && tree.off();
 			tree = undefined;
 		}
 
@@ -195,7 +195,7 @@ function attachListener(treeView, JSTreeView, updateTree){
 		currentExplorer.style.minWidth = currentExplorer.clientWidth + 'px';
 
 		if(tree && tree.id !== id){
-			tree.off();
+			tree && tree.off();
 			tree = undefined;
 		}
 		const treeFromResult = getTree(result);

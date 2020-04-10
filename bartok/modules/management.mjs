@@ -2,6 +2,21 @@ const manageOp = {
 	operation: "updateProject"
 };
 
+const flattenTree = (tree) => {
+	const results = [];
+	const recurse = (branch, parent='/') => {
+		const leaves = Object.keys(branch);
+		leaves.map(x => {
+			results.push({
+				name: x, parent
+			})
+			recurse(branch[x], x);
+		});
+	};
+	recurse(tree);
+	return results;
+};
+
 function getContextFromPath(root, folderPath){
 	const split = folderPath.split('/').filter(x => !!x);
 	const folderName = split.pop();
@@ -211,9 +226,71 @@ function renameFolder(e, currentService, currentFile){
 		: undefined;
 }
 
+function deleteFolder(e, currentService, currentFile){
+	// console.log('deleteFolder');
+	// console.log(e.detail);
+	const { folderName } = e.detail;
+
+	//TODO: is either current selected folder or parent of currentFile
+	const currentFolder = "/";
+
+	// delete all child files
+	const rootFolderName = Object.keys(currentService.tree)[0];
+	const root = currentService.tree[rootFolderName];
+	const { parentObject} = getContextFromPath(root, folderName);
+	const children = flattenTree(parentObject[folderName])
+		.map(x => x.name);
+	// console.log({ children });
+	// console.log(currentService.code.map(x => x.name))
+	const currentServiceCode = currentService.code
+		.filter(c => !children.includes(c.name));
+	// console.log(currentServiceCode.map(x => x.name))
+	currentService.code = currentServiceCode;
+
+	const folderdeleted = uberManageOp({
+		currentFolder,
+		currentService,
+		oldName: folderName,
+		newName: '',
+		createNewTree: false,
+		deleteOldTree: true,
+		createNewFile: false,
+		deleteOldFile: false
+	});
+
+	return folderdeleted
+		? manageOp
+		: undefined;
+}
+
+function moveFolder(e, currentService, currentFile){
+	console.log('moveFolder');
+	const { target, destination } = e.detail;
+
+	//TODO: is either current selected folder or parent of currentFile
+	const currentFolder = "/";
+
+	//TODO: may want to keep same target name but move to diff folder
+
+	const folderRenamed = uberManageOp({
+		currentFolder,
+		currentService,
+		oldName: target,
+		newName: destination,
+		createNewTree: true,
+		deleteOldTree: true,
+		createNewFile: false,
+		deleteOldFile: false
+	});
+
+	return folderRenamed
+		? manageOp
+		: undefined;
+}
+
 const ops = {
 	addFile, renameFile, deleteFile, moveFile,
-	addFolder, renameFolder,
+	addFolder, renameFolder, deleteFolder, moveFolder,
 	renameProject
 };
 function managementOp(e, currentService, currentFile) {

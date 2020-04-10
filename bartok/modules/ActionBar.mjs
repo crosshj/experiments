@@ -76,7 +76,7 @@ function ActionBar(){
 	*/''}
 	<div class="action-bar-top">
 		<ul role="toolbar" class="">
-				<li class="explorer" role="button" title="Code">
+				<li class="explorer checked" role="button" title="Code">
 					<!-- a></a -->
 					<i class="material-icons">code</i>
 				</li>
@@ -84,7 +84,7 @@ function ActionBar(){
 					<i class="material-icons">search</i>
 					<!-- a></a -->
 				</li>
-				<li class="services checked" role="button" title="Services">
+				<li class="services" role="button" title="Services">
 					<i class="material-icons">device_hub</i>
 				</li>
 				<!-- li class="services" role="button" title="">

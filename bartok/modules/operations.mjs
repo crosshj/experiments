@@ -90,17 +90,21 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 			: body.id || (currentService || {}).id;
 	}
 	let { id } = body;
-	if(id === "*"){
-		id = '';
-	}
+
 	const op = JSON.parse(JSON.stringify(operation));
 	op.after = operation.after;
 
-	if(after){
+	if(after && op.name !== "read"){
 		op.after = (...args) => {
 			after(...args);
 			op.after(...args);
 		};
+	} else {
+		op.after = after || op.after;
+	}
+
+	if(id === "*"){
+		id = '';
 	}
 	op.url = op.url.replace('{id}', id || '');
 	op.config = op.config || {};
