@@ -1,3 +1,7 @@
+let currentService;
+let currentFile;
+let currentFolder;
+
 function getDefaultFile(service){
 	let defaultFile;
 	try {
@@ -9,10 +13,9 @@ function getDefaultFile(service){
 	return defaultFile || "index.js";
 }
 
-let currentService;
-let currentFile;
+// has side-effects of setting currentService and currentFile
 function getCodeFromService(service, file){
-	debugger;
+	//debugger;
 	getCurrentService(); //this caues service status to update?
 
 	if(!service){
@@ -63,6 +66,12 @@ function setState(change){
 }
 
 const getCurrentFile = () => currentFile;
+const getCurrentFolder = () => currentFolder;
+const setCurrentFolder = (path) => {
+	currentFolder = path;
+};
+
+// has side effects of setting current code
 const getCurrentService = () => {
 	const changedArray = Object.keys(state.changedFiles)
 		.map(k => state.changedFiles[k]);
@@ -83,5 +92,6 @@ const resetState = () => {
 
 export {
 	getCodeFromService, getCurrentFile, getCurrentService,
+	getCurrentFolder, setCurrentFolder,
 	getState, setState, resetState
 };

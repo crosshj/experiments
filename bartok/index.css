@@ -24,6 +24,10 @@ html, body {
   padding-bottom: 500px !important;
 } */
 
+.CodeMirror-selected {
+  background: #b5007b !important;
+}
+
 .no-margin {
   margin: 0 !important;
 }
@@ -1014,7 +1018,7 @@ notes-section.loading:after {
 #explorer {
   /* background-color: var(--main-theme-color); */
   background-color: var(--theme-subdued-color);
-
+  overflow: auto;
 	height: 100%;
   /* width: 200px; */
   min-width: 200px;

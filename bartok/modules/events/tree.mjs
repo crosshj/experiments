@@ -60,7 +60,22 @@ const fileSelectHandler = (e) => {
 }
 
 const folderSelectHandler = (e) => {
-	const { name, next } = e.detail;
+	let { name, next, collapse } = e.detail;
+
+	if(collapse){
+		return;
+	}
+
+	let split;
+
+	if((name || next).includes('/')){
+		console.log(`tree path: ${name || next}`)
+		console.error('should be opening all parent folders');
+		split = (name||next).split('/').filter(x => !!x);
+		//name = split[split.length-1];
+	} else {
+		split = [name||next]
+	}
 
 	Array.from(
 		document.querySelectorAll('#tree-view .selected')||[]
@@ -70,13 +85,24 @@ const folderSelectHandler = (e) => {
 	const leaves = Array.from(
 		document.querySelectorAll('#tree-view .tree-leaf-content')||[]
 	);
-	const found = leaves.find(x => {
-		return x.innerText.includes(next || name);
+
+
+
+	split.forEach((spl, i) => {
+		const found = leaves.find(x => {
+			return x.innerText.includes(spl);
+		});
+		if(!found){ return; }
+		if(i === split.length-1){
+				tree.selected = spl;
+				found.classList.add('selected');
+		}
+		const expando = found.querySelector('.tree-expando');
+		expando && expando.classList.remove('closed');
+		expando && expando.classList.add('expanded', 'open');
+		const childLeaves = found.parentNode.querySelector('.tree-child-leaves');
+		childLeaves && childLeaves.classList.remove('hidden');
 	});
-	if(found){
-		tree.selected = name || next;
-		found.classList.add('selected')
-	}
 }
 
 const fileChangeHandler = (updateTree) => (event) => {
@@ -219,10 +245,11 @@ function attachListener(treeView, JSTreeView, updateTree){
 		newTree.selected = selected;
 		newTree.expanded = expanded;
 
-		function triggerFolderSelect(e) {
+		function triggerFolderSelect(e, collapse) {
 			const event = new CustomEvent('folderSelect', {
 				bubbles: true,
 				detail: {
+					collapse,
 					name: e.target.querySelector('.tree-leaf-text').innerText
 				}
 			});
@@ -242,7 +269,8 @@ function attachListener(treeView, JSTreeView, updateTree){
 			const folderName = JSON.parse(e.target.dataset.item).name;
 			//const folderPath = e.target.dataset.path + folderName;
 			tree.expanded = tree.expanded.filter(x => x === folderName);
-			triggerFolderSelect(e);
+			const collapse = true;
+			triggerFolderSelect(e, collapse);
 		});
 
 		newTree.on('select', function (e) {

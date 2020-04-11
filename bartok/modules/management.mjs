@@ -186,7 +186,7 @@ function addFolder(e, currentService, currentFile){
 
 		if(folderName.includes('/')){
 			({ folderName, parentObject} = getContextFromPath(
-				parentObject, folderPath
+				parentObject, folderName
 			));
 		}
 		parentObject[folderName] = {};
@@ -288,19 +288,40 @@ function moveFolder(e, currentService, currentFile){
 		: undefined;
 }
 
+function readFolder(e, currentService, currentFile, currentFolder){
+	const rootFolderName = Object.keys(currentService.tree)[0];
+	const root = currentService.tree[rootFolderName];
+	const { folderName, parentObject } = getContextFromPath(root, currentFolder);
+	const context = parentObject[folderName] || parentObject;
+
+	const children = Object.keys(context)
+		.map(c => {
+			const isFolder = !currentService.code.find(x=>x.name===c);
+			return isFolder
+				? `...${c}/`
+				: c;
+		})
+		.sort()
+		.map(x => x.replace('...', ''));
+
+	return children;
+}
+
 const ops = {
 	addFile, renameFile, deleteFile, moveFile,
 	addFolder, renameFolder, deleteFolder, moveFolder,
-	renameProject
+	renameProject, readFolder
 };
-function managementOp(e, currentService, currentFile) {
+function managementOp(e, currentService, currentFile, currentFolder) {
 	const thisOps = Object.keys(ops);
 	const { operation="" } = (e && e.detail) || {};
+
+	console.log({ operation, e });
 	if (!thisOps.includes(operation)) {
 		return;
 	}
 	const manageOp = ops[operation]
-		? ops[operation](e, currentService, currentFile)
+		? ops[operation](e, currentService, currentFile, currentFolder)
 		: undefined;
 	return manageOp;
 }

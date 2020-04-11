@@ -15,7 +15,7 @@ const flattenTree = (tree) => {
 	return results;
 };
 
-const currentFolder = (currentFile, currentService) => {
+const guessCurrentFolder = (currentFile, currentService) => {
 	let parent;
 	try {
 		const flat = flattenTree(currentService.tree[Object.keys(currentService.tree)[0]]);
@@ -66,14 +66,17 @@ async function performOp(
 
 const showCurrentFolderHandler = ({
 	managementOp, performOperation, externalStateRequest,
-	getCurrentFile, getCurrentService
+	getCurrentFile, getCurrentService, getCurrentFolder,
 }) => (event) => {
 	// this should move to management.mjs
 	const { detail } = event;
 	const { callback } = detail;
 	const currentFile = getCurrentFile();
 	const currentService = getCurrentService();
-	const parent = currentFolder(currentFile, currentService);
+	const currentFolder = getCurrentFolder();
+	const parent = currentFolder
+		? currentFolder
+		: guessCurrentFolder(currentFile, currentService);
 
 	callback && callback(
 		!parent ? 'trouble finding current path' : false,
@@ -83,13 +86,39 @@ const showCurrentFolderHandler = ({
 
 const changeCurrentFolderHandler = ({
 	managementOp, performOperation, externalStateRequest,
-	getCurrentFile, getCurrentService
+	getCurrentFile, getCurrentService, getCurrentFolder, setCurrentFolder,
 }) => (event) => {
-	// console.log('OPERATIONS: changeCurrentFolder');
+	console.log('OPERATIONS: changeCurrentFolder');
 	const { detail } = event;
-	const { callback } = detail;
-	console.log({ detail });
-	callback && callback(null, 'TODO: change current folder');
+	const { callback, folderPath } = detail;
+
+	const currentFile = getCurrentFile();
+	const currentService = getCurrentService();
+	//const currentFolder = getCurrentFolder();
+	const parent = guessCurrentFolder(folderPath, currentService);
+
+	const firsChar = folderPath[0];
+	const currentPath = (
+		firsChar === "/"
+			? folderPath
+			: (parent||"") + '/' + folderPath
+	).replace(/\/\//g, '/')
+
+	if(parent !== '/'){
+		console.error(`Should be looking for folder in current parent! : ${parent}`);
+	}
+	//TODO: look for folder in current folder
+	//debugger;
+	setCurrentFolder(currentPath);
+
+	const fileSelectEvent = new CustomEvent('folderSelect', {
+		bubbles: true,
+		detail: { name: currentPath }
+	});
+	document.body.dispatchEvent(fileSelectEvent);
+
+	//console.log({ detail });
+	callback && callback(null, ' ');
 };
 
 const addFolderHandler = ({
@@ -163,16 +192,27 @@ const moveFolderHandler = ({
 
 const readFolderHandler = ({
 	managementOp, performOperation, externalStateRequest,
-	getCurrentFile, getCurrentService
+	getCurrentFile, getCurrentService, getCurrentFolder,
 }) => (event) => {
-	// console.log('OPERATIONS: readFolder');
+	// this should move to management.mjs
 	const { detail } = event;
 	const { callback } = detail;
-	console.log({ detail });
-	callback && callback(null, 'TODO: read contents of folder');
+	const currentFile = getCurrentFile();
+	const currentService = getCurrentService();
+	const currentFolder = getCurrentFolder();
+	const parent = currentFolder
+		? currentFolder
+		: guessCurrentFolder(currentFile, currentService);
+
+	event.detail.operation = 'readFolder';
+	const children = managementOp(event, currentService, currentFile, parent);
+
+	console.log({ children });
+	callback && callback(
+		!parent || !children ? 'trouble finding current path or children' : false,
+		children && children.length  ? children.join('\n') : '<empty>'
+	);
 };
-
-
 
 const handlers = {
 	showCurrentFolderHandler,
@@ -184,21 +224,13 @@ const handlers = {
 	moveFolderHandler
 };
 
-function attachListeners({
-	managementOp, performOperation, externalStateRequest,
-	getCurrentFile, getCurrentService,
-	operations
-}){
+function attachListeners(...args){
 	const mapListeners = (handlerName) => {
 		const eventName = handlerName.replace('Handler', '');
 		attach({
 			name: 'Operations',
 			eventName,
-			listener: handlers[handlerName]({
-				managementOp, performOperation, externalStateRequest,
-				getCurrentFile, getCurrentService,
-				operations
-			})
+			listener: handlers[handlerName](...args)
 		});
 	};
 	Object.keys(handlers).map(mapListeners);

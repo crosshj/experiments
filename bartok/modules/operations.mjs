@@ -213,6 +213,7 @@ const operationsListener = async (
 async function Operations({
 	getCodeFromService, managementOp, externalStateRequest,
 	getCurrentFile, getCurrentService, resetState,
+	getCurrentFolder, setCurrentFolder,
 	inlineEditor, List
 }) {
 	const readAfter = getReadAfter(List, inlineEditor, getCodeFromService);
@@ -233,6 +234,7 @@ async function Operations({
 	attachListeners({
 		managementOp, performOperation, externalStateRequest,
 		getCurrentFile, getCurrentService,
+		getCurrentFolder, setCurrentFolder,
 		operations
 	});
 
