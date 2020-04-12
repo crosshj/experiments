@@ -15,6 +15,7 @@ const styles = `
 	svg#canvas {
 		width: 100%;
 		height: 100%;
+		zoom: 1.1;
 		min-width: 2000px;
 		min-height: 2000px;
 ${/* FOR VISUAL DEBUGGING */''}
