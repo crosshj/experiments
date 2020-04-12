@@ -68,11 +68,15 @@ function uberManageOp({
 		}
 
 		if(createNewFile){
-			//TODO: create the file
+			const oldContents = (currentService.code.find(x => x.name === oldFolderName)||{}).code;
+			currentService.code.push({
+				name: folderName,
+				code: oldContents
+			});
 		}
 
 		if(deleteOldFile){
-			//TODO: delete the file
+			currentService.code = currentService.code.filter(x => x.name !== oldFolderName)
 		}
 
 		operationComplete = true;
@@ -201,6 +205,27 @@ function deleteFile(e, currentService, currentFile){
 
 function moveFile(e, currentService, currentFile){
 	console.log('moveFile');
+	const { target, destination } = e.detail;
+
+	//TODO: is either current selected folder or parent of currentFile
+	const currentFolder = "/";
+
+	//TODO: may want to keep same target name but move to diff folder
+
+	const fileRenamed = uberManageOp({
+		currentFolder,
+		currentService,
+		oldName: target,
+		newName: destination,
+		createNewTree: true,
+		deleteOldTree: true,
+		createNewFile: true,
+		deleteOldFile: true
+	});
+
+	return fileRenamed
+		? manageOp
+		: undefined;
 	return;
 }
 
@@ -271,8 +296,8 @@ function deleteFolder(e, currentService, currentFile){
 	// delete all child files
 	const rootFolderName = Object.keys(currentService.tree)[0];
 	const root = currentService.tree[rootFolderName];
-	const { parentObject} = getContextFromPath(root, folderName);
-	const children = flattenTree(parentObject[folderName])
+	const { folderName: folder, parentObject} = getContextFromPath(root, folderName);
+	const children = flattenTree(parentObject[folder])
 		.map(x => x.name);
 	// console.log({ children });
 	// console.log(currentService.code.map(x => x.name))

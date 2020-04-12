@@ -187,8 +187,22 @@ const moveFolderHandler = ({
 	);
 };
 
-////// ------------------------------------------------------------------------
+const moveFileHandler = ({
+	managementOp, performOperation, externalStateRequest,
+	getCurrentFile, getCurrentService, operations
+}) => async (event) => {
+	//console.log('OPERATIONS: move');
+	const { detail } = event;
+	const { callback } = detail;
+	const currentService = getCurrentService();
+	const currentFile = getCurrentFile();
+	event.detail.operation = event.detail.operation || event.type;
+	const manageOp = managementOp(event, currentService, currentFile);
 
+	await performOp(
+		currentService, operations, performOperation, externalStateRequest, callback
+	);
+};
 
 const readFolderHandler = ({
 	managementOp, performOperation, externalStateRequest,
@@ -221,7 +235,8 @@ const handlers = {
 	readFolderHandler,
 	deleteFolderHandler,
 	renameFolderHandler,
-	moveFolderHandler
+	moveFolderHandler,
+	moveFileHandler
 };
 
 function attachListeners(...args){

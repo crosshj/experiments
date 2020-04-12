@@ -721,6 +721,10 @@ notes-section.loading:after {
   white-space: nowrap;
 }
 
+#tree-view > .tree-leaf:last-child {
+  margin-bottom: 50px;
+}
+
 #tree-menu {
   height: 35px;
   display: flex;
@@ -728,6 +732,10 @@ notes-section.loading:after {
   overflow: hidden;
   padding-left: 8px;
   padding-right: 8px;
+  position: sticky;
+  top: 0;
+  background: inherit;
+  z-index: 1;
 
   align-items: center; /* ??? */
 }

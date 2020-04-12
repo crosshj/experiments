@@ -46,6 +46,12 @@ const commands = [{
 	alias: ['mv'],
 	required: ['target', 'destination'],
 	args: ['target', 'destination']
+}, {
+	name: 'moveFile',
+	about: 'Moves file to destination',
+	alias: ['mf'],
+	required: ['target', 'destination'],
+	args: ['target', 'destination']
 }];
 
 //NOTE: these are mostly already handled in ../Terminal.mjs
