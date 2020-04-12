@@ -91,6 +91,7 @@
 
 <body class="loading">
   <script>
+    localStorage.setItem('themeDark', true);
     const darkEnabled = window.localStorage.getItem('themeDark') === "true";
     document.body.style.backgroundColor = darkEnabled
       ? document.body.style.backgroundColor = (document.querySelector("meta[name=dark-page-color]")||{}).content

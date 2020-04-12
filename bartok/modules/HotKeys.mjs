@@ -32,6 +32,12 @@ function HotKeys(){
 			event.preventDefault();
 			return false;
 		}
+		if (event.ctrlKey && event.which === 9) {
+			// this will only work with electron
+			triggerEvent("nextTab");
+			event.preventDefault();
+			return false;
+		}
 	});
 
 }
