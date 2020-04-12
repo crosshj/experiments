@@ -13,6 +13,8 @@ import HotKeys from './modules/HotKeys.mjs';
 import StatusBar from './modules/StatusBar.mjs';
 import Services from './modules/Services.mjs';
 
+import { list } from './modules/Listeners.mjs';
+
 import { externalStateRequest } from './modules/ExternalState.mjs';
 import Operations from './modules/operations.mjs';
 import {
@@ -64,7 +66,7 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 	StatusBar();
 	ActionBar();
 	HotKeys();
-	Services();
+	Services({ list });
 	Terminal();
 
 	await Operations({

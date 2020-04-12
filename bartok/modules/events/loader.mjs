@@ -5,12 +5,12 @@ function attachListener({
 	showBar
 }){
 	attach({
-		name: 'LoaderBar',
+		name: 'Loading Indicator',
 		eventName: 'operations',
 		listener: showBar
 	});
 	attach({
-		name: 'LoaderBar',
+		name: 'Loading Indicator',
 		eventName: 'operationDone',
 		listener: hideBar
 	});

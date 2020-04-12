@@ -189,37 +189,37 @@ function attachListener(
 	};
 
 	attach({
-		name: 'EditorTabView',
+		name: 'Tab Bar',
 		eventName: 'operationDone',
 		listener
 	});
 
 	attach({
-		name: 'EditorTabView',
+		name: 'Tab Bar',
 		eventName: 'fileSelect',
 		listener
 	});
 
 	attach({
-		name: 'EditorTabView',
+		name: 'Tab Bar',
 		eventName: 'fileClose',
 		listener
 	});
 
 	attach({
-		name: 'EditorTabView',
+		name: 'Tab Bar',
 		eventName: 'fileChange',
 		listener
 	});
 
 	attach({
-		name: 'EditorTabView',
+		name: 'Tab Bar',
 		eventName: 'click',
 		listener
 	});
 
 	attach({
-		name: 'EditorTabView',
+		name: 'Tab Bar',
 		eventName: 'operationDone',
 		listener
 	});

@@ -1021,6 +1021,7 @@ notes-section.loading:after {
 	height: 100%;
   width: 40px;
   min-width: 40px;
+  z-index: 999999;
 }
 
 #explorer {

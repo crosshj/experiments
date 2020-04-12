@@ -35,12 +35,12 @@ function attachListener(switchEditor){
 		switchEditor(next || name);
 	};
 	attach({
-		name: 'EditorView',
+		name: 'Editor',
 		eventName: 'fileSelect',
 		listener
 	});
 	attach({
-		name: 'EditorView',
+		name: 'Editor',
 		eventName: 'fileClose',
 		listener
 	});

@@ -15,12 +15,12 @@ function attachListener({
 	hideServiceMap
 }){
 	attach({
-		name: 'ServicesView',
+		name: 'Service Map',
 		eventName: 'showServicesMap',
 		listener: showServiceMapHandler(showServiceMap)
 	});
 	attach({
-		name: 'ServicesView',
+		name: 'Service Map',
 		eventName: 'showServiceCode',
 		listener: hideServiceMapHandler(hideServiceMap)
 	});

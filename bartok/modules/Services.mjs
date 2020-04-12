@@ -9,28 +9,82 @@ const styles = `
 		/*background: var(--main-theme-color);*/
 		/*background: var(--main-theme-background-color);*/
 		background: var(--theme-subdued-color);
-    z-index: 99;
+    z-index: 99999;
 	}
 
 	svg#canvas {
 		width: 100%;
 		height: 100%;
+		min-width: 2000px;
+		min-height: 2000px;
+${/* FOR VISUAL DEBUGGING */''}
+		/* background: #292929; */
 	}
 
-	.node-bg, .node-border-1 {
-		fill: none;
-		/*fill: rgba(255, 255, 255, 0.2);*/
+	.node-bg {
+		fill: #8a663d;
+	}
+
+	.node-border-1 {
+		stroke: #00000050;
+		stroke-width: 4px;
+		fill: #000000f0;
 	}
 	.node-border-2 {
 		stroke: #999;
 	}
 	.node-center-dot {
-		fill: #555;
+		fill: #00000070;
+	}
+	.node-label {
+		font-size: 15px;
+    font-family: inherit;
+    text-transform: uppercase;
+    color: #1dafa9;
 	}
 
 
 </style>
 `;
+
+function attachPan(_canvas){
+	let transX=0, transY=0, offsetX=0, offsetY=0;
+	const serviceMapTransform = localStorage.getItem('serviceMapTransform');
+	if(serviceMapTransform){
+		transX = serviceMapTransform.split(',')[0];
+		transY = serviceMapTransform.split(',')[1];
+		_canvas.style.transform = `translate(${transX}px,${transY}px)`;
+	}
+	_canvas.onpointerdown = (pointerDownEvent) => {
+		let firstX = pointerDownEvent.clientX - transX;
+		let firstY = pointerDownEvent.clientY - transY;
+
+		const detachListeners = (detachEvent) => {
+			transX = offsetX;
+			transY = offsetY;
+			localStorage.setItem('serviceMapTransform',`${transX},${transY}`)
+			document.onpointermove = document.onpointerup = null;
+			detachEvent.preventDefault();
+			return false;
+		};
+
+		document.onpointermove = (pointerMoveEvent) => {
+			let currentX = pointerMoveEvent.clientX;
+			let currentY = pointerMoveEvent.clientY;
+			offsetX = currentX - firstX;
+			offsetY = currentY - firstY;
+
+			_canvas.style.transform = `translate(${offsetX}px,${offsetY}px)`;
+
+			pointerMoveEvent.preventDefault();
+			return false;
+		};
+		document.onpointerup = detachListeners;
+
+		pointerDownEvent.preventDefault();
+		return false;
+	}
+}
 
 const createSVGElement = (type) =>
 	document.createElementNS("http://www.w3.org/2000/svg", type);
@@ -41,14 +95,11 @@ function Node({ x, y, scale, label }){
 	node.innerHTML = `
 		<g transform="translate(${x},${y}) scale(${scale})" draggable="true">
 			<g class="_GraphNodeStatic__GraphNodeWrapper-xnsael-0 cNyCOA">
-				<foreignObject y="27.5" x="-68.75" width="137.5" height="200px" style="pointer-events: none; text-align: center;">
+				<foreignObject y="160" x="-68.75" width="137.5" height="200px" style="pointer-events: none; text-align: center;">
 					<div class="r">
-						<div class="">
+						<div class="node-label">
 							<span title="${label}">${label}</span>
 						</div>
-						<!-- div class="_GraphNodeStatic__LabelMinorStandard-xnsael-7 djKDkA _GraphNodeStatic__LabelTemplate-xnsael-5 haMutc">
-							<span title="ubuntu">ubuntu</span>
-						</div -->
 						<div class="matched-results"></div>
 					</div>
 				</foreignObject>
@@ -64,20 +115,52 @@ function Node({ x, y, scale, label }){
 	return node;
 }
 
-let services;
-function Services(){
-	if(services){
-		return;
-	}
-	services = document.getElementById('services');
-	services.classList.add('hidden');
-	//document.querySelector('#terminal').style.visibility = "hidden";
-	services.innerHTML = `
-		${styles}
-		<svg id="canvas" class="">
-		</svg>
+function EventNode({ x, y, scale, label }){
+	const node = 	createSVGElement('g');
+	node.classList.add('node');
+	node.innerHTML = `
+		<g transform="translate(${x},${y}) scale(${scale})" draggable="true">
+			<circle cx="5" cy="5" r="5" fill="#999" />
+			<text fill="#ccc" font-size="12" font-family="Sans-serif" text-anchor="middle" x="5" y="30" xml:space="preserve" >${label}</text>
+		</g>
 	`;
-	const canvas = services.querySelector('svg');
+	return node;
+}
+
+function addNodes(canvas, {x, y}, nodes=[]){
+	const width = x;
+	const height = y;
+	const nodeWidth = 50;
+	const nodeHeight = 0;
+
+	const radius = 100;
+	let angle = Math.PI/-2;
+	const step = (2*Math.PI) / nodes.length;
+
+	for(var i=0, len=nodes.length; i<len; i++){
+		var x1 = Math.round(width/2 + radius * Math.cos(angle) - nodeWidth/2);
+		var y1 = Math.round(height/2 + radius * Math.sin(angle) - nodeHeight/2);
+		//add node
+		//const node = Node({ x, y, scale: 1, label: nodes[i]});
+		const line = createSVGElement('g');
+		line.innerHTML = `
+			<line
+				stroke="#888"
+				stroke-width="1"
+				stroke-dasharray="2,2"
+				x1="${x1+5}" x2="${x/2-20}"
+				y1="${y1+5}" y2="${y/2+5}"
+			/>
+		`;
+		canvas.appendChild(line);
+
+		const node = EventNode({ x: x1, y: y1, scale: 1, label: nodes[i]});
+	 	canvas.appendChild(node);
+		angle += step;
+	}
+}
+
+function dummyNodes(canvas){
 	const labels = [
 		"API Server",
     "Scheduler",
@@ -112,48 +195,76 @@ function Services(){
 		const node1 = Node({ x, y, scale: 1, label: labels2[i] });
 		canvas.appendChild(node1);
 	}
+}
+
+let services;
+function Services({ list } = {}){
+	if(services){
+		return;
+	}
+	services = document.getElementById('services');
+	services.classList.add('hidden');
+	//document.querySelector('#terminal').style.visibility = "hidden";
+	services.style.width="100%";
+	services.style.height="100%";
+	services.innerHTML = `
+		${styles}
+		<svg id="canvas" class="">
+			<!-- circle cx="${services.offsetWidth/2}" cy="${services.offsetHeight/2}" r="2.5" fill="red"
+			/ -->
+		</svg>
+	`;
+	const canvas = services.querySelector('svg');
+
 	attachListener({
 		showServiceMap: () => services.classList.remove('hidden'),
 		hideServiceMap: () => services.classList.add('hidden')
 	});
 
-	const _canvas = services.querySelector('#canvas')
 
-	let transX=0, transY=0, offsetX=0, offsetY=0;
-	_canvas.onpointerdown = (pointerDownEvent) => {
-		let firstX = pointerDownEvent.clientX - transX;
-		let firstY = pointerDownEvent.clientY - transY;
+	setTimeout(() => {
+		const listeners = list();
+		const mappedListeners = listeners.reduce((all, one) => {
+			const eventName = one.split('-')[0];
+			const name = one.split('-')[1];
+			all[name] = all[name] || [];
+			all[name].push(eventName);
+			return all;
+		}, {});
+		console.log(mappedListeners);
 
-		const detachListeners = (detachEvent) => {
-			transX = offsetX;
-			transY = offsetY;
-			document.onpointermove = document.onpointerup = null;
-			detachEvent.preventDefault();
-			return false;
-		};
+		const keys = Object.keys(mappedListeners);
+		const spacingX = [
+			250, 800, 1350,
+			250, 800, 1350,
+			250, 800, 1350
+		];
+		const spacingY = [
+			150, 150, 150,
+			600, 600, 600,
+			1200, 1200, 1200
+		];
+		for(var i=0, len=keys.length; i<len; i++){
+			const x = 1.5*(spacingX[i] || 0);
+			const y = 2*(spacingY[i] || 1500);
+			addNodes(canvas, {
+				x, y
+			}, mappedListeners[keys[i]]);
 
-		document.onpointermove = (pointerMoveEvent) => {
-			let currentX = pointerMoveEvent.clientX;
-			let currentY = pointerMoveEvent.clientY;
-			offsetX = currentX - firstX;
-			offsetY = currentY - firstY;
+			const node = Node({ x: x/2 -20, y:y/2+5, scale: 1, label: keys[i]});
+			canvas.appendChild(node);
+		}
 
-			_canvas.style.transform = `translate(${offsetX}px,${offsetY}px)`;
+		// dummyNodes(canvas);
+		// addNodes(canvas, {
+		// 	x: services.offsetWidth,
+		// 	y: services.offsetHeight
+		// });
+	}, 1000);
 
-			pointerMoveEvent.preventDefault();
-			return false;
-		};
-		document.onpointerup = detachListeners;
 
-		pointerDownEvent.preventDefault();
-		return false;
-	}
+	attachPan(canvas);
 
-	canvas.onpointerup = function(e){
-
-	}
-
-	//transform: translate(184px,150px);
 
 }
 

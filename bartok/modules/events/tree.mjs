@@ -362,27 +362,27 @@ function attachListener(treeView, JSTreeView, updateTree){
 	};
 
 	attach({
-		name: 'TreeView',
+		name: 'Explorer',
 		eventName: 'operationDone',
 		listener
 	});
 	attach({
-		name: 'TreeView',
+		name: 'Explorer',
 		eventName: 'fileSelect',
 		listener: fileSelectHandler
 	});
 	attach({
-		name: 'TreeView',
+		name: 'Explorer',
 		eventName: 'folderSelect',
 		listener: folderSelectHandler
 	});
 	attach({
-		name: 'TreeView',
+		name: 'Explorer',
 		eventName: 'fileClose',
 		listener: fileSelectHandler
 	});
 	attach({
-		name: 'TreeView',
+		name: 'Explorer',
 		eventName: 'fileChange',
 		listener: fileChangeHandler(updateTree)
 	});
