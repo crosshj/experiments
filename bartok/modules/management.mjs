@@ -88,14 +88,30 @@ function addFile(e, currentService, currentFile) {
 	let manageOp, currentServiceCode, treeEntryAdded;
 
 	try {
+		const split = filename.split('/');
+		const file = split.length > 1 ? split[split.length-1] : undefined;
+
 		//TODO: guard against empty/improper filename
 		currentServiceCode = JSON.parse(JSON.stringify(currentService.code));
 		currentServiceCode.push({
-			name: filename,
+			name: file || filename,
 			code: ""
 		});
-		//TODO: only handles root level files!!!
-		currentService.tree[Object.keys(currentService.tree)[0]][filename] = {};
+
+		let alreadyPlaced;
+		if(file){
+			const parentPath = split.filter(x => x !== file ).join('/');
+			const rootFolderName = Object.keys(currentService.tree)[0];
+			const root = currentService.tree[rootFolderName];
+			const { parentObject } = getContextFromPath(root, parentPath);
+			const context = parentObject[parentPath];
+			context[file] = {}
+			alreadyPlaced = true;
+		}
+		!alreadyPlaced && (
+			currentService.tree[Object.keys(currentService.tree)[0]][filename] = {}
+		);
+
 		treeEntryAdded = true;
 		manageOp = {
 			operation: "updateProject"
