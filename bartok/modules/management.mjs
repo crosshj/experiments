@@ -88,7 +88,7 @@ function addFile(e, currentService, currentFile) {
 	let manageOp, currentServiceCode, treeEntryAdded;
 
 	try {
-		const split = filename.split('/');
+		const split = filename.split('/').filter(x => !!x);
 		const file = split.length > 1 ? split[split.length-1] : undefined;
 
 		//TODO: guard against empty/improper filename
@@ -162,12 +162,30 @@ function deleteFile(e, currentService, currentFile){
 	console.log('deleteFile');
 	const { filename=currentFile } = e.detail;
 	let manageOp, currentServiceCode, treeEntryDeleted;
+
+
 	try {
-		//TODO: guard against empty/improper filename
-		currentServiceCode = currentService.code.filter(x => x.name !== filename);
-		//TODO: only handles root level files!!!
-		delete currentService.tree[Object.keys(currentService.tree)[0]][filename]
+		const split = filename.split('/').filter(x => !!x);
+		const file = split.length > 1 ? split[split.length-1] : undefined;
+
+		let alreadyDeleted;
+		if(file){
+			const parentPath = split.filter(x => x !== file ).join('/');
+			const rootFolderName = Object.keys(currentService.tree)[0];
+			const root = currentService.tree[rootFolderName];
+			const { parentObject } = getContextFromPath(root, parentPath);
+			const context = parentObject[parentPath];
+			delete context[file];
+			alreadyDeleted = true;
+		}
+		!alreadyDeleted && (
+			delete currentService.tree[Object.keys(currentService.tree)[0]][filename]
+		);
 		treeEntryDeleted = true;
+
+		//TODO: guard against empty/improper filename
+		currentServiceCode = currentService.code.filter(x => x.name !== (file || filename));
+
 		manageOp = {
 			operation: "updateProject"
 		};
