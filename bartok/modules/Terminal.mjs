@@ -284,7 +284,7 @@ function _Terminal(){
 		);
 	} else {
 		term.write(`\x1B[38;5;242m
-			Bartok Service Composer v0.3
+			Bartok Service Composer v0.4
 		\x1B[0m`.replace(/\t/g, ''));
 	}
 

@@ -28,7 +28,7 @@ function StatusBar(){
 	</style>
 
 	<div class="statusbar-item statusbar-entry left" statusbar-entry-priority="10000" statusbar-entry-alignment="0">
-		<a title="">bartok v0.3</a>
+		<a title="">bartok v0.4</a>
 	</div>
 
 	<div class="statusbar-item right">
