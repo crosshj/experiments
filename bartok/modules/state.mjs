@@ -1,3 +1,5 @@
+import { isString } from './Types.mjs';
+
 let currentService;
 let currentFile;
 let currentFolder;
@@ -31,7 +33,10 @@ function getCodeFromService(service, file){
 	}
 	const code = Array.isArray(service.code)
 		? (service.code.find(x => x.name === file)||{}).code || ""
-		: service.code;
+		: isString(() => service.code)
+			? service.code
+			: "";
+
 	return {
 		code,
 		name: service.name,

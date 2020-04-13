@@ -44,6 +44,7 @@ const saveServiceToLS = (currentServices=[], service) => {
 let lsServices = [];
 
 async function externalStateRequest(op){
+	//debugger
 	//console.log(op.name);
 
 	let result;
@@ -51,7 +52,6 @@ async function externalStateRequest(op){
 		const response = await fetch(op.url, op.config);
 		result = await response.json();
 	} catch (e) {
-
 		lsServices = getServicesFromLS() || defaultServices;
 
 		if(op.name === "update"){
@@ -72,9 +72,61 @@ async function externalStateRequest(op){
 				console.error("service to update is malformed!");
 				return;
 			}
+			debugger
 			saveServiceToLS(lsServices, serviceToUpdate);
 			lsServices = getServicesFromLS() || [];
 			//console.log(JSON.stringify(op, null, 2));
+		}
+
+		if(op.name === "create"){
+			const { id, name, code } = JSON.parse(op.config.body);
+			saveServiceToLS(lsServices, {
+				id: id+"",
+				name,
+				code: [{
+					name: "index.js",
+					code:
+`const serviceName = '${name}';
+const send = (message) => {
+	if (process.send) {
+		process.send(\`\${serviceName}: \${message}\`);
+	} else {
+		console.log(message);
+	}
+};
+
+process.on('message', parentMsg => {
+	const _message = parentMsg + ' PONG.';
+	send(_message);
+});
+`
+				}, {
+					name: "package.json",
+					code: JSON.stringify({
+						name,
+						main: "index.js",
+						description: "",
+						template: "",
+						port: ""
+					}, null, '\t')
+				}],
+				tree: {
+					[name]: {
+						"index.js": {},
+						"package.json": {}
+					}
+				}
+			});
+			lsServices = getServicesFromLS() || [];
+			debugger
+		}
+
+		if(op.name === "delete"){
+			const { id } = JSON.parse(op.config.body);
+			lsServices = getServicesFromLS() || [];
+			lsServices = lsServices
+				.filter(x => Number(x.id) !== Number(id));
+			localStorage.setItem('localServices', JSON.stringify(lsServices));
 		}
 
 		var readId = op.name === "read" && op.url.split('read/')[1];
@@ -85,7 +137,7 @@ async function externalStateRequest(op){
 		}
 
 		result = {
-			result: lsServices
+			result: lsServices //.sort((a, b) => Number(a.id)-Number(b.id))
 		};
 	}
 	return result;

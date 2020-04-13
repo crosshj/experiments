@@ -197,6 +197,9 @@ const operationsListener = async (
 	}
 	e.detail.body.id = e.detail.body.id || currentService.id;
 	e.detail.body.name = e.detail.body.name || currentService.name;
+	if(foundOp.name === "create"){
+		e.detail.body.code="";
+	}
 	foundOp.config.body = JSON.stringify(e.detail.body);
 
 	const opsWhichResetState = ["read"];
