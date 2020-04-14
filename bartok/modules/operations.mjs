@@ -244,7 +244,7 @@ async function Operations({
 	//TODO: this should go away at some point!!!
 	const foundOp = operations.find(x => x.name === 'read');
 	await performOperation(foundOp, { body: { id: '' } }, externalStateRequest);
-	await performOperation(foundOp, { body: { id: 999 } }, externalStateRequest);
+	await performOperation(foundOp, { body: { id: 90 } }, externalStateRequest);
 }
 
 export default Operations;

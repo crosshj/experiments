@@ -295,8 +295,12 @@ const handleSelect = (selection, canvas, {
 		const services = getCurrentServices();
 		console.log({services});
 		services && services.forEach((s, i) => {
-			const x = i > 5 ? (i-5)*200 - 150 : i*200 + 50;
-			const y = i > 5 ? 500 : 200;
+			const x = i > 5
+				? (i-5)*200 - 100
+				: i*200 + 100;
+			const y = i > 5
+				? 500
+				: 200;
 			const node = Node({ x, y, scale: 1, label: s.name});
 			canvas.appendChild(node);
 		});

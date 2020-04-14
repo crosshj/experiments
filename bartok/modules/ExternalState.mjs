@@ -1,20 +1,62 @@
-const defaultTree = {
-	"LOCAL": {
-		"index.js": {}
-	}
+const defaultCode = (_name) => [{
+	name: "index.js",
+	code:
+`const serviceName = '${_name}';
+
+const send = (message) => {
+	const serviceMessage = \`\${serviceName}: \${message}\`;
+	(process.send || console.log)
+		.call(null, \`\${serviceName}: \${message}\`);
 };
 
-const defaultCode = [{
-	name: "index.js",
-	code: "/*\n\nCould not find a server!\n\nWorking in Local Storage mode!\n\n*/"
+process.on('message', parentMsg => {
+	const _message = parentMsg + ' PONG.';
+	send(_message);
+});
+`
+}, {
+	name: "package.json",
+	code: JSON.stringify({
+		name: _name,
+		main: "index.js",
+		description: "",
+		template: "",
+		port: ""
+	}, null, '\t')
 }];
 
+const defaultTree = (_name) => ({
+	[_name]: {
+		"index.js": {},
+		"package.json": {}
+	}
+});
+
+
+
 const defaultServices = [{
-	id: 999,
-	name: 'LOCAL',
-	tree: defaultTree,
-	code: defaultCode
+	id: 1,
+	name: 'API Server',
+	tree: defaultTree('API Server'),
+	code: defaultCode('API Server')
+}, {
+	id: 10,
+	name: 'UI Service',
+	tree: defaultTree('UI Service'),
+	code: defaultCode('UI Service')
+}, {
+	id: 90,
+	name: 'Local Storage Service',
+	tree: defaultTree('Local Storage Service'),
+	code: defaultCode('Local Storage Service')
 }];
+
+const dummyService = (_id, _name) => ({
+	id: _id+"",
+	name: _name,
+	code: defaultCode(_name),
+	tree: defaultTree(_name)
+});
 
 const getServicesFromLS = () => {
 	try{
@@ -80,43 +122,8 @@ async function externalStateRequest(op){
 
 		if(op.name === "create"){
 			const { id, name, code } = JSON.parse(op.config.body);
-			saveServiceToLS(lsServices, {
-				id: id+"",
-				name,
-				code: [{
-					name: "index.js",
-					code:
-`const serviceName = '${name}';
-const send = (message) => {
-	if (process.send) {
-		process.send(\`\${serviceName}: \${message}\`);
-	} else {
-		console.log(message);
-	}
-};
 
-process.on('message', parentMsg => {
-	const _message = parentMsg + ' PONG.';
-	send(_message);
-});
-`
-				}, {
-					name: "package.json",
-					code: JSON.stringify({
-						name,
-						main: "index.js",
-						description: "",
-						template: "",
-						port: ""
-					}, null, '\t')
-				}],
-				tree: {
-					[name]: {
-						"index.js": {},
-						"package.json": {}
-					}
-				}
-			});
+			saveServiceToLS(lsServices, dummyService(id, name));
 			lsServices = getServicesFromLS() || [];
 			debugger
 		}
