@@ -294,6 +294,12 @@ const handleSelect = (selection, canvas, {
 	const showSystemServices = () => {
 		const services = getCurrentServices();
 		console.log({services});
+		services && services.forEach((s, i) => {
+			const x = i > 5 ? (i-5)*200 - 150 : i*200 + 50;
+			const y = i > 5 ? 500 : 200;
+			const node = Node({ x, y, scale: 1, label: s.name});
+			canvas.appendChild(node);
+		});
 		console.log('showSystemServices');
 	};
 
@@ -317,12 +323,13 @@ const handleSelect = (selection, canvas, {
 };
 
 let services;
+let currentServices;
 function Services({ list } = {}){
 	if(services){
 		return;
 	}
 	const getCurrentServices = () => {
-		return ['TODO'];
+		return currentServices;
 	};
 	services = document.getElementById('services');
 	//services.classList.add('hidden');
@@ -342,7 +349,8 @@ function Services({ list } = {}){
 
 	attachListener({
 		showServiceMap: () => services.classList.remove('hidden'),
-		hideServiceMap: () => services.classList.add('hidden')
+		hideServiceMap: () => services.classList.add('hidden'),
+		receiveServices: (services) => currentServices = services
 	});
 	if(!canvas){ return; }
 
@@ -354,7 +362,7 @@ function Services({ list } = {}){
 	};
 	getServiceSelector(selector, onSelect);
 	setTimeout(x => {
-		onSelect('ui-service');
+		onSelect('system-services');
 	}, 300);
 
 	attachPan(canvas);

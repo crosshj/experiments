@@ -10,9 +10,21 @@ const showServiceMapHandler = (showServiceMap) => async (event) => {
 	showServiceMap();
 };
 
+const operationDoneHandler = (receiveServices) => async (event) => {
+	const { type, detail } = event;
+	const { op, id } = detail;
+	console.log('receive services');
+	console.log({ type, op, detail })
+	if(op === "read" && !id){
+		const services = detail.result;
+		receiveServices(services);
+	}
+};
+
 function attachListener({
 	showServiceMap,
-	hideServiceMap
+	hideServiceMap,
+	receiveServices
 }){
 	attach({
 		name: 'Service Map',
@@ -23,6 +35,11 @@ function attachListener({
 		name: 'Service Map',
 		eventName: 'showServiceCode',
 		listener: hideServiceMapHandler(hideServiceMap)
+	});
+	attach({
+		name: 'Service Map',
+		eventName: 'operationDone',
+		listener: operationDoneHandler(receiveServices)
 	});
 }
 
