@@ -198,32 +198,60 @@ function dummyNodes(canvas){
 	}
 }
 
-let services;
-function Services({ list } = {}){
-	if(services){
-		return;
-	}
-	services = document.getElementById('services');
-	services.classList.add('hidden');
-	//document.querySelector('#terminal').style.visibility = "hidden";
-	services.style.width="100%";
-	services.style.height="100%";
-	services.innerHTML = `
-		${styles}
-		<svg id="canvas" class="">
-			<!-- circle cx="${services.offsetWidth/2}" cy="${services.offsetHeight/2}" r="2.5" fill="red"
-			/ -->
-		</svg>
+function getServiceSelector(el, onSelect){
+	el.innerHTML = `
+		<style>
+			.row.selector {
+					position: absolute;
+					left: 0;
+					right: 0;
+			}
+			.selector input.select-dropdown.dropdown-trigger{
+				padding-left: 15px;
+				box-sizing: border-box;
+			}
+			input.select-dropdown.dropdown-trigger, .dropdown-content li span {
+					font-size: small;
+			}
+			.dropdown-content {
+					background-color: #555;
+			}
+			.dropdown-content li span {
+				/*background: var(--main-theme-text-invert-color);*/
+				/*color: var(--theme-subdued-color);*/
+				background: var(--main-theme-background-light-color);
+				/*color: white;*/
+				color: var(--theme-subdued-color);
+			}
+			.dropdown-content span:hover {
+				background: var(--main-theme-text-invert-color);
+				color: white;
+			}
+		</style>
+		<div class="input-field col s2">
+			<select>
+				<option value="ui-service">UI Service Map</option>
+				<option value="system-services">System Service Map</option>
+			</select>
+		</div>
 	`;
-	const canvas = services.querySelector('svg');
-
-	attachListener({
-		showServiceMap: () => services.classList.remove('hidden'),
-		hideServiceMap: () => services.classList.add('hidden')
+	const select = el.querySelector('select');
+	const selectInstance = M.FormSelect.init(select, {
+		classes: 'grey darken-3',
+		dropdownOptions: {
+			inDuration: 0, outDuration: 0,
+			onCloseEnd: (e) => {
+				onSelect(select.value);
+			}
+		}
 	});
+	return selectInstance;
+}
 
-
-	setTimeout(() => {
+const handleSelect = (selection, canvas, {
+	list, getCurrentServices
+}) => {
+	const showUIServices = () => {
 		const listeners = list();
 		const mappedListeners = listeners.reduce((all, one) => {
 			const eventName = one.split('-')[0];
@@ -232,7 +260,7 @@ function Services({ list } = {}){
 			all[name].push(eventName);
 			return all;
 		}, {});
-		console.log(mappedListeners);
+		//console.log(mappedListeners);
 
 		const keys = Object.keys(mappedListeners);
 		const spacingX = [
@@ -261,11 +289,75 @@ function Services({ list } = {}){
 		// 	x: services.offsetWidth,
 		// 	y: services.offsetHeight
 		// });
-	}, 1000);
+	}
 
+	const showSystemServices = () => {
+		const services = getCurrentServices();
+		console.log({services});
+		console.log('showSystemServices');
+	};
+
+	const cleanCanvas = () => {
+		const allGroups = Array.from(canvas.querySelectorAll('g'))
+			.forEach(g => {
+				g.parentNode.removeChild(g);
+			})
+		console.log('cleanupCanvas');
+	};
+
+	if(selection === 'ui-service'){
+		cleanCanvas();
+		showUIServices();
+	}
+	if(selection === 'system-services'){
+		cleanCanvas();
+		showSystemServices();
+	}
+	console.log({ selection });
+};
+
+let services;
+function Services({ list } = {}){
+	if(services){
+		return;
+	}
+	const getCurrentServices = () => {
+		return ['TODO'];
+	};
+	services = document.getElementById('services');
+	//services.classList.add('hidden');
+	//document.querySelector('#terminal').style.visibility = "hidden";
+	services.style.width="100%";
+	services.style.height="100%";
+	services.innerHTML = `
+		${styles}
+		<div class="row selector"></div>
+
+		<svg id="canvas" class="">
+			<!-- circle cx="${services.offsetWidth/2}" cy="${services.offsetHeight/2}" r="2.5" fill="red"
+			/ -->
+		</svg>
+	`;
+	const canvas = services.querySelector('svg#canvas');
+
+	attachListener({
+		showServiceMap: () => services.classList.remove('hidden'),
+		hideServiceMap: () => services.classList.add('hidden')
+	});
+	if(!canvas){ return; }
+
+	const selector = services.querySelector('.selector');
+	const onSelect = (val) => {
+		handleSelect(val, canvas, {
+			list, getCurrentServices
+		});
+	};
+	getServiceSelector(selector, onSelect);
+	setTimeout(x => {
+		onSelect('ui-service');
+	}, 300);
 
 	attachPan(canvas);
-
 
 }
 
