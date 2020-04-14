@@ -205,30 +205,48 @@ function getServiceSelector(el, onSelect){
 					position: absolute;
 					left: 0;
 					right: 0;
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
 			}
-			.selector input.select-dropdown.dropdown-trigger{
+			.selector .select-wrapper {
+				background: var(--theme-subdued-color);
+				border-radius: 5px;
+				z-index: 1;
+			}
+			.selector input.select-dropdown.dropdown-trigger {
 				padding-left: 15px;
+				padding-right: 30px;
 				box-sizing: border-box;
+				border: 1px solid;
+				border-radius: 5px;
+				color: var(--main-theme-text-invert-color);
+				height: 2.5rem;
+			}
+			.selector .select-wrapper .caret {
+				fill: var(--main-theme-text-invert-color);
+				right: 7px;
 			}
 			input.select-dropdown.dropdown-trigger, .dropdown-content li span {
 					font-size: small;
 			}
 			.dropdown-content {
-					background-color: #555;
+				background-color: var(--theme-subdued-color);
+				border: 1px solid var(--main-theme-text-invert-color);
+				border-radius: 5px;
+				color: var(--main-theme-text-color);
 			}
 			.dropdown-content li span {
-				/*background: var(--main-theme-text-invert-color);*/
-				/*color: var(--theme-subdued-color);*/
-				background: var(--main-theme-background-light-color);
-				/*color: white;*/
-				color: var(--theme-subdued-color);
+				background: transparent;
+				color: var(--main-theme-text-invert-color);
 			}
 			.dropdown-content span:hover {
-				background: var(--main-theme-text-invert-color);
+				background: transparent;
 				color: white;
 			}
 		</style>
-		<div class="input-field col s2">
+		<div class="input-field s3">
 			<select>
 				<option value="ui-service">UI Service Map</option>
 				<option value="system-services">System Service Map</option>
@@ -237,7 +255,7 @@ function getServiceSelector(el, onSelect){
 	`;
 	const select = el.querySelector('select');
 	const selectInstance = M.FormSelect.init(select, {
-		classes: 'grey darken-3',
+		//classes: 'grey darken-3',
 		dropdownOptions: {
 			inDuration: 0, outDuration: 0,
 			onCloseEnd: (e) => {
@@ -295,9 +313,11 @@ const handleSelect = (selection, canvas, {
 		const services = getCurrentServices();
 		console.log({services});
 		services && services.forEach((s, i) => {
+			const leftOffset = 175;
+			const spacing = 150;
 			const x = i > 5
-				? (i-5)*200 - 100
-				: i*200 + 100;
+				? (i-5)*spacing + (leftOffset-spacing)
+				: i*spacing + leftOffset;
 			const y = i > 5
 				? 500
 				: 200;
@@ -336,7 +356,7 @@ function Services({ list } = {}){
 		return currentServices;
 	};
 	services = document.getElementById('services');
-	//services.classList.add('hidden');
+	services.classList.add('hidden');
 	//document.querySelector('#terminal').style.visibility = "hidden";
 	services.style.width="100%";
 	services.style.height="100%";

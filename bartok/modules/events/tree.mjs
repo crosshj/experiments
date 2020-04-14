@@ -233,6 +233,10 @@ function attachListener(treeView, JSTreeView, updateTree){
 
 		const children = converted[0].children; // don't use "tree trunk" folder
 
+		if(!result[0]){
+			return;
+		}
+
 		const files = children
 			.filter(x => result[0].code.find(y => y.name === x.name));
 		const folders = children

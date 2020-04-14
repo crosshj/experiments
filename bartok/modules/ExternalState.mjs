@@ -91,6 +91,11 @@ async function externalStateRequest(op){
 
 	let result;
 	try {
+		var readId = op.name === "read" && op.url.split('read/')[1];
+		if(readId){
+			localStorage.setItem('lastService', readId);
+			console.log(`should set: ${readId}`);
+		}
 		const response = await fetch(op.url, op.config);
 		result = await response.json();
 	} catch (e) {
@@ -136,7 +141,6 @@ async function externalStateRequest(op){
 			localStorage.setItem('localServices', JSON.stringify(lsServices));
 		}
 
-		var readId = op.name === "read" && op.url.split('read/')[1];
 		if(readId){
 			return {
 				result: lsServices.filter(x => Number(x.id) === Number(readId))

@@ -195,8 +195,10 @@ const operationsListener = async (
 			? e.detail.body.id
 			: e.detail.body.id || (currentService || {}).id;
 	}
-	e.detail.body.id = e.detail.body.id || currentService.id;
-	e.detail.body.name = e.detail.body.name || currentService.name;
+	try{
+		e.detail.body.id = e.detail.body.id || currentService.id;
+		e.detail.body.name = e.detail.body.name || currentService.name;
+	} catch(e){}
 	if(foundOp.name === "create"){
 		e.detail.body.code="";
 	}
@@ -244,7 +246,10 @@ async function Operations({
 	//TODO: this should go away at some point!!!
 	const foundOp = operations.find(x => x.name === 'read');
 	await performOperation(foundOp, { body: { id: '' } }, externalStateRequest);
-	await performOperation(foundOp, { body: { id: 90 } }, externalStateRequest);
+
+	const lastService = localStorage.getItem('lastService');
+	console.log({ lastService });
+	await performOperation(foundOp, { body: { id: lastService ? Number(lastService) : 90 } }, externalStateRequest);
 }
 
 export default Operations;
