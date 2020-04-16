@@ -203,7 +203,7 @@ function getServiceSelector(el, onSelect){
 		<style>
 			.row.selector {
 					position: absolute;
-					left: 0;
+					left: -60px; /* because contents don't feel centered otherwise*/
 					right: 0;
 					display: flex;
 					flex-wrap: wrap;
@@ -282,18 +282,18 @@ const handleSelect = (selection, canvas, {
 
 		const keys = Object.keys(mappedListeners);
 		const spacingX = [
-			250, 800, 1350,
-			250, 800, 1350,
-			250, 800, 1350
+			300, 850, 1400, 1950,
+			300, 850, 1400, 1950,
+			300, 850, 1400, 1950
 		];
 		const spacingY = [
-			150, 150, 150,
-			600, 600, 600,
-			1200, 1200, 1200
+			200, 200, 200, 200,
+			900, 900, 900, 900,
+			1200, 1200
 		];
 		for(var i=0, len=keys.length; i<len; i++){
-			const x = 1.5*(spacingX[i] || 0);
-			const y = 2*(spacingY[i] || 1500);
+			const x = spacingX[i];
+			const y = spacingY[i];
 			addNodes(canvas, {
 				x, y
 			}, mappedListeners[keys[i]]);
@@ -386,7 +386,7 @@ function Services({ list } = {}){
 	};
 	getServiceSelector(selector, onSelect);
 	setTimeout(x => {
-		onSelect('system-services');
+		onSelect('ui-service');
 	}, 300);
 
 	attachPan(canvas);

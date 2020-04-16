@@ -52,9 +52,7 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 	await appendScript("../shared/vendor/materialize.min.js");
 
 	Panes();
-	const loadingEl = document.querySelector('#loading-screen');
-	loadingEl.classList.add('hidden');
-	document.body.classList.remove('loading');
+	Terminal({ getCurrentService });
 	LoaderBar();
 
 	const {
@@ -67,7 +65,6 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 	ActionBar();
 	HotKeys();
 	Services({ list });
-	Terminal();
 
 	await Operations({
 		getCodeFromService, managementOp, externalStateRequest,
@@ -77,5 +74,8 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 		inlineEditor, List  // instead of passing these here, Editor should be listening
 	});
 
+	const loadingEl = document.querySelector('#loading-screen');
+	loadingEl.classList.add('dismissed');
+	document.body.classList.remove('loading');
 
 })();

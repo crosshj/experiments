@@ -1,0 +1,14 @@
+{
+  "name": "foo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harrison Cross <code@crosshj.com> (https://crosshj.com)",
+  "license": "ISC",
+  "dependencies": {
+    "@adp-mkpl/auth": "1.2.4-1"
+  }
+}

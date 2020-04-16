@@ -23,6 +23,12 @@ function list(){
 	return Object.keys(listeners);
 }
 
+//TODO: should bind triggers the same way that listeners are bound
+
+// triggerAttach
+// triggerRemove
+// triggersList
+
 function trigger({ type, params, source }){
 	const event = new CustomEvent(type, {
 		bubbles: true,

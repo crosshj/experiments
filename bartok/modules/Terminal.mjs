@@ -4,7 +4,7 @@ import "../../shared/vendor/xterm.min.js";
 import "../../shared/vendor/xterm-addon-fit.js";
 
 import motd from "./motd.mjs";
-import { attachEvents } from './events/terminal.mjs';
+import { attachEvents, attachTrigger } from './events/terminal.mjs';
 
 let EventTrigger;
 
@@ -107,7 +107,7 @@ function tryExecCommand({ command, loading, done }){
 		isProjectOp && loading(`${command}: running... `);
 	};
 
-function _Terminal(){
+function _Terminal({ getCurrentService }){
 	const options = {
 		theme: {
 			foreground: '#ccc', // '#ffffff',
@@ -147,20 +147,35 @@ function _Terminal(){
 	const termContainer = document.createElement('div');
 	termContainer.classList.add('term-contain');
 
+	const selected = localStorage.getItem('rightPaneSelected') || "terminal";
+
 	const termMenu = document.createElement('div');
 	termMenu.id = "terminal-menu";
 	termMenu.innerHTML = `
+	<style>
+		#terminal-menu > div:nth-child(2) ul li {
+			padding-left: 15px;
+		}
+		#terminal-menu li.action-item:hover a.action-label {
+			filter: none;
+			color: rgb(231, 231, 231);
+		}
+		#terminal-menu li.action-item.checked a {
+			color: rgb(231, 231, 231);
+			border-bottom-color: rgba(128, 128, 128, 0.8);
+		}
+	</style>
 	<div class="composite-bar panel-switcher-container">
 		 <div class="monaco-action-bar">
-				<ul class="actions-container" role="toolbar" aria-label="Active View Switcher">
-					 <li class="action-item checked" role="tab" draggable="true" tabindex="0" active>
-							<a class="action-label terminal" style="color: rgb(231, 231, 231); border-bottom-color: rgba(128, 128, 128, 0.35);">Terminal</a>
-							<div class="badge" aria-hidden="true" style="display: none;">
-								 <div class="badge-content" style="color: rgb(255, 255, 255); background-color: rgb(77, 77, 77);"></div>
-							</div>
+				<ul class="actions-container view-switcher" role="toolbar" aria-label="Active View Switcher">
+					 <li class="action-item ${selected==="terminal" ? "checked" : ""}" role="tab" draggable="true" active>
+							<a class="action-label terminal" data-type="terminal">Terminal</a>
 					 </li>
-					 <li class="action-item" role="tab" draggable="true" tabindex="1" active>
-							<a class="action-label logs" style="">Logs</a>
+					 <li class="action-item ${selected==="preview" ? "checked" : ""}" role="tab" draggable="true">
+							<a class="action-label preview" data-type="preview">Preview</a>
+						</li>
+						<li class="action-item ${selected==="logs" ? "checked" : ""}" role="tab" draggable="true">
+							<a class="action-label logs" data-type="logs">Logs</a>
 						</li>
 					 <li class="action-item" role="button" tabindex="0" aria-label="Additional Views" title="Additional Views">
 							<a class="action-label toggle-more" aria-label="Additional Views" title="Additional Views" style="background-color: rgb(30, 30, 30);"></a>
@@ -191,9 +206,45 @@ function _Terminal(){
 	</div>
 	`;
 
+	const previewContainer = document.createElement('div');
+	previewContainer.classList.add('preview-contain');
+	const showIframe = selected === "preview";
+	!showIframe && previewContainer.classList.add('hidden');
+	const iframeUrl = showIframe
+		? "./reveal.html"
+		: "";
+	previewContainer.innerHTML = `
+		<style>
+			.preview-contain {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0px;
+				bottom: 0px;
+				background: #1d1d1d;
+				z-index: 9;
+			}
+			#terminal iframe {
+				position: relative;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 100;
+				border: 0px;
+			}
+		</style>
+		<iframe src="${iframeUrl}"></iframe>
+	`;
+
 	const terminalPane = document.getElementById('terminal')
 	terminalPane.appendChild(termMenu);
 	terminalPane.appendChild(termContainer);
+	terminalPane.appendChild(previewContainer);
+
+	const previewIframe = previewContainer.querySelector('iframe');
 
 	term.open(document.querySelector('#terminal .term-contain'));
 
@@ -291,7 +342,61 @@ function _Terminal(){
 	prompt(term);
 	window.term = term;
 
-	EventTrigger = attachEvents({ write: (x) => term.write(x) });
+	function viewUpdate({ view, type, doc, locked }){
+		if(type === "viewSelect"){
+			localStorage.setItem('rightPaneSelected', view);
+			const switcher = document.querySelector("#terminal-menu .panel-switcher-container");
+
+			Array.from(switcher.querySelectorAll(".action-item.checked"))
+				.forEach(el => el.classList.remove('checked'));
+
+			const newCheckedItem = switcher.querySelector(`.action-label[data-type=${view}]`);
+			newCheckedItem.parentNode.classList.add('checked');
+
+			if(view !== 'preview'){
+				previewContainer.classList.add('hidden');
+			} else {
+				if(!locked) {
+					const iframeDoc = previewIframe.contentWindow.document
+					previewIframe.contentWindow.location.href="about:blank";
+
+					iframeDoc.open("text/html", "replace");
+					iframeDoc.write(doc);
+					iframeDoc.close();
+
+					// another way of doing it
+					//iframeDoc.src="javascript:'"+doc+"'";
+
+					// yet another way of doing it
+					//iframeDoc.srcdoc = doc;
+				}
+
+				previewContainer.classList.remove('hidden');
+			}
+		}
+		if(type === "fileSelect" || type === "fileClose" || type === "fileChange"){
+			const iframeDoc = previewIframe.contentWindow.document
+			previewIframe.contentWindow.location.href="about:blank";
+			iframeDoc.open("text/html", "replace");
+			iframeDoc.write(doc);
+			iframeDoc.close();
+			//iframeDoc.srcdoc = doc;
+		}
+	}
+
+	attachTrigger({
+		target: termMenu,
+		domEvents: ['click'],
+		type: 'viewSelect',
+		selector: (e) => e.target.tagName === 'A',
+		handler: (e) => ({ view: e.target.dataset.type })
+	});
+
+	EventTrigger = attachEvents({
+		getCurrentService,
+		write: (x) => term.write(x),
+		viewUpdate
+	});
 }
 
 export default _Terminal;

@@ -153,15 +153,127 @@ const terminalTrigger = (write, command, callback) => {
 	return preventDefault;
 };
 
-function attachEvents({ write }){
+let currentFile;
+let currentView = localStorage.getItem('rightPaneSelected');
+
+const viewSelectHandler = ({ viewUpdate }) => (event) => {
+	const { type, detail } = event;
+	const { op, id } = detail;
+	// TODO: bind and conditionally trigger render
+	// console.log({ type, op, id });
+	const doc = currentFile || `<html>
+		<body style="margin: 20%; color: white;">Hello world</body>
+	</html>`;
+	viewUpdate({ type, doc, ...event.detail });
+};
+
+const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
+	const { type, detail } = event;
+	const { op, id, name, next } = detail;
+	if(type==="fileClose" && !next){
+		return;
+	}
+	const service = getCurrentService();
+	const selectedFile = service.code.find(x => x.name === (next || name));
+
+	// bind and conditionally trigger render
+	// for instance, should not render some files
+	const isHTML = selectedFile.code.includes('<html>');
+	const isSVG = selectedFile.code.includes('</svg>');
+	if(!isSVG && !isHTML){
+		return;
+	}
+	const doc = isHTML
+		? selectedFile.code
+		: `
+		<html>
+			<body style="margin-top: 40px; color: white;">
+				<pre>${selectedFile.code}</pre>
+			</body>
+		</html>
+	`;
+	currentFile = doc;
+	if(doc && currentView === "preview"){
+		viewUpdate({ type, doc, ...event.detail });
+	}
+};
+
+const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
+	const { type, detail } = event;
+	const { name, id, file, code } = detail;
+	const isHTML = code.includes('<html>');
+	const isSVG = code.includes('</svg>');
+	if(!isSVG && !isHTML){
+		return;
+	}
+	const doc = isHTML
+	? code
+	: `
+	<html>
+		<body style="margin-top: 40px; color: white;">
+			<pre>${code}</pre>
+		</body>
+	</html>
+`;
+	currentFile = doc;
+	if(doc && currentView === "preview"){
+		viewUpdate({ type, doc, ...event.detail });
+	}
+};
+
+function attachEvents({ write, viewUpdate, getCurrentService }){
 	// write('\x1B[2K');
 	// write('\rEvent system attached.\n');
 	// write(`\n${PROMPT}`);
 
+	attach({
+		name: 'Terminal',
+		eventName: 'viewSelect',
+		listener: viewSelectHandler({ viewUpdate })
+	});
+
+	attach({
+		name: 'Terminal',
+		eventName: 'fileSelect',
+		listener: fileSelectHandler({ viewUpdate, getCurrentService })
+	});
+	attach({
+		name: 'Terminal',
+		eventName: 'fileClose',
+		listener: fileSelectHandler({ viewUpdate, getCurrentService })
+	});
+	attach({
+		name: 'Terminal',
+		eventName: 'fileChange',
+		listener: fileChangeHandler({ viewUpdate, getCurrentService })
+	});
+
+	// TODO: listen for file changes
+	// attach({
+	// 	name: 'Terminal',
+	// 	eventName: 'viewSelect',
+	// 	listener: viewSelectHandler({ viewUpdate })
+	// });
+
 	return (command, callback) => terminalTrigger(write, command, callback);
 }
 
+function attachTrigger({ target, domEvents, type, selector, handler }){
+	domEvents.forEach(de => {
+		target.addEventListener(de, (event) => {
+			if(!selector(event)){ return; }
+			const params = handler(event);
+			trigger({
+				type,
+				params,
+				source: 'Terminal'
+			});
+		});
+	});
+}
+
 export {
-	attachEvents
+	attachEvents,
+	attachTrigger
 };
 

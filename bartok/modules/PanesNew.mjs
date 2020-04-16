@@ -54,6 +54,10 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		first.style.minWidth = "";
 		second.style.minWidth = "";
 
+		all.forEach(el => {
+			el.style.pointerEvents = "none";
+		});
+
 		first.classList.add('active-pane-guide');
 		second.classList.add('active-pane-guide');
 		first.style.borderRight = "1px solid #555";
@@ -67,6 +71,9 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		// drag.y = e.clientY;
 		const detachListeners = (e) => {
 			onMouseUp(e);
+			all.forEach(el => {
+				el.style.pointerEvents = "initial";
+			});
 			first.classList.remove('active-pane-guide');
 			second.classList.remove('active-pane-guide')
 			document.onpointermove = document.onpointerup = null;

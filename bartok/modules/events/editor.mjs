@@ -2,10 +2,10 @@ import { attach } from '../Listeners.mjs';
 import { setState, getState } from '../state.mjs';
 
 
-const ChangeHandler = (doc, changeObj) => {
+const ChangeHandler = (doc) => {
 	const { code, name, id, filename } = doc;
 	// TODO: if handler already exists, return it
-	const changeThis = (contents) => {
+	const changeThis = (contents, changeObj) => {
 		const file = setState({
 			name, id, filename,
 			code: contents,
@@ -14,7 +14,7 @@ const ChangeHandler = (doc, changeObj) => {
 
 		const event = new CustomEvent('fileChange', {
 			bubbles: true,
-			detail: { name, id, file, code }
+			detail: { name, id, file, code: contents }
 		});
 		document.body.dispatchEvent(event);
 	};
@@ -22,7 +22,7 @@ const ChangeHandler = (doc, changeObj) => {
 	return (editor, changeObj) => {
 		//console.log('editor changed');
 		//console.log(changeObj);
-		changeThis(editor.getValue());
+		changeThis(editor.getValue(), changeObj);
 	};
 };
 

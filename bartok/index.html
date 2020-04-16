@@ -69,7 +69,22 @@
       color: #03A9F4;
       fill: #00BCD4;
       padding-bottom: 200px;
-      transition: background-color 0.4s, color 0.4s, fill 0.4s;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 1s, color 0.4s, fill 0.4s;
+  }
+
+  #loading-screen {
+    background-color: white;
+  }
+  .dark-enabled #loading-screen {
+    background-color: #1e1e1e;
+  }
+
+  #loading-screen.dismissed {
+    /* background-color: transparent; */
+    opacity: 0;
+    visibility: none;
   }
 
   #loading-screen p {
