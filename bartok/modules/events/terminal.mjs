@@ -154,17 +154,41 @@ const terminalTrigger = (write, command, callback) => {
 };
 
 let currentFile;
+let currentFileName;
 let currentView = localStorage.getItem('rightPaneSelected');
 
 const viewSelectHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
 	const { op, id } = detail;
+
+	if(currentFile){
+		const code = currentFile;
+		const name = currentFileName;
+		const isHTML = code.includes('<html>');
+		const isSVG = code.includes('</svg>');
+		const isJSX = (name).includes('jsx');
+		if(!isSVG && !isHTML && !isJSX){
+			return;
+		}
+		const doc = isHTML || isJSX
+			? code
+			: `
+			<html>
+				<body style="margin-top: 40px; color: white;">
+					<pre>${code}</pre>
+				</body>
+			</html>
+		`;
+		viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
+		return;
+	}
+
 	// TODO: bind and conditionally trigger render
 	// console.log({ type, op, id });
 	const doc = currentFile || `<html>
 		<body style="margin: 20%; color: white;">Hello world</body>
 	</html>`;
-	viewUpdate({ type, doc, ...event.detail });
+	viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
 };
 
 const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
@@ -175,26 +199,29 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	}
 	const service = getCurrentService();
 	const selectedFile = service.code.find(x => x.name === (next || name));
+	const { code } = selectedFile;
 
 	// bind and conditionally trigger render
 	// for instance, should not render some files
-	const isHTML = selectedFile.code.includes('<html>');
-	const isSVG = selectedFile.code.includes('</svg>');
-	if(!isSVG && !isHTML){
+	const isHTML = code.includes('<html>');
+	const isSVG = code.includes('</svg>');
+	const isJSX = (name||next).includes('jsx');
+	if(!isSVG && !isHTML && !isJSX){
 		return;
 	}
-	const doc = isHTML
-		? selectedFile.code
+	const doc = isHTML || isJSX
+		? code
 		: `
 		<html>
 			<body style="margin-top: 40px; color: white;">
-				<pre>${selectedFile.code}</pre>
+				<pre>${code}</pre>
 			</body>
 		</html>
 	`;
 	currentFile = doc;
+	currentFileName = name||next;
 	if(doc && currentView === "preview"){
-		viewUpdate({ type, doc, ...event.detail });
+		viewUpdate({ type, doc, docName: next || name, ...event.detail });
 	}
 };
 
@@ -203,10 +230,12 @@ const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const { name, id, file, code } = detail;
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');
-	if(!isSVG && !isHTML){
+	const isJSX = file.includes('jsx');
+	if(!isSVG && !isHTML && !isJSX){
+		debugger;
 		return;
 	}
-	const doc = isHTML
+	const doc = isHTML || isJSX
 	? code
 	: `
 	<html>
@@ -216,8 +245,9 @@ const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	</html>
 `;
 	currentFile = doc;
+	currentFileName = file;
 	if(doc && currentView === "preview"){
-		viewUpdate({ type, doc, ...event.detail });
+		viewUpdate({ type, doc, docName: file, ...event.detail });
 	}
 };
 

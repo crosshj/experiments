@@ -2,9 +2,11 @@
 //import "https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.3.0/lib/xterm-addon-fit.js";
 import "../../shared/vendor/xterm.min.js";
 import "../../shared/vendor/xterm-addon-fit.js";
+import { debounce } from "../../shared/modules/utilities.mjs";
 
 import motd from "./motd.mjs";
 import { attachEvents, attachTrigger } from './events/terminal.mjs';
+import { templateJSX } from './Templates.mjs';
 
 let EventTrigger;
 
@@ -210,9 +212,10 @@ function _Terminal({ getCurrentService }){
 	previewContainer.classList.add('preview-contain');
 	const showIframe = selected === "preview";
 	!showIframe && previewContainer.classList.add('hidden');
-	const iframeUrl = showIframe
-		? "./reveal.html"
-		: "";
+	// const iframeUrl = showIframe
+	// 	? "./reveal.html"
+	// 	: "";
+	const iframeUrl=""
 	previewContainer.innerHTML = `
 		<style>
 			.preview-contain {
@@ -244,7 +247,7 @@ function _Terminal({ getCurrentService }){
 	terminalPane.appendChild(termContainer);
 	terminalPane.appendChild(previewContainer);
 
-	const previewIframe = previewContainer.querySelector('iframe');
+	let previewIframe = previewContainer.querySelector('iframe');
 
 	term.open(document.querySelector('#terminal .term-contain'));
 
@@ -342,7 +345,33 @@ function _Terminal({ getCurrentService }){
 	prompt(term);
 	window.term = term;
 
-	function viewUpdate({ view, type, doc, locked }){
+	function updateIframeRaw({ url, src}){
+		previewContainer.removeChild(previewIframe);
+		previewIframe = document.createElement('iframe');
+		previewContainer.appendChild(previewIframe);
+
+		const iframeDoc = previewIframe.contentWindow.document
+		//previewIframe.contentWindow.location.href="about:blank";
+
+		iframeDoc.open("text/html", "replace");
+		iframeDoc.write(src);
+		iframeDoc.close();
+
+		// another way of doing it
+		//iframeDoc.src="javascript:'"+doc+"'";
+
+		// yet another way of doing it
+		//iframeDoc.srcdoc = doc;
+
+	}
+
+	const updateIframe = debounce(updateIframeRaw, 300);
+
+	function viewUpdate({ view, type, doc, docName, locked }){
+		const src = (docName||'').includes('jsx')
+			? templateJSX(doc)
+			: doc;
+
 		if(type === "viewSelect"){
 			localStorage.setItem('rightPaneSelected', view);
 			const switcher = document.querySelector("#terminal-menu .panel-switcher-container");
@@ -353,34 +382,19 @@ function _Terminal({ getCurrentService }){
 			const newCheckedItem = switcher.querySelector(`.action-label[data-type=${view}]`);
 			newCheckedItem.parentNode.classList.add('checked');
 
+			console.log({ docName, foo:''});
 			if(view !== 'preview'){
 				previewContainer.classList.add('hidden');
 			} else {
 				if(!locked) {
-					const iframeDoc = previewIframe.contentWindow.document
-					previewIframe.contentWindow.location.href="about:blank";
-
-					iframeDoc.open("text/html", "replace");
-					iframeDoc.write(doc);
-					iframeDoc.close();
-
-					// another way of doing it
-					//iframeDoc.src="javascript:'"+doc+"'";
-
-					// yet another way of doing it
-					//iframeDoc.srcdoc = doc;
+					updateIframe({ src });
 				}
 
 				previewContainer.classList.remove('hidden');
 			}
 		}
 		if(type === "fileSelect" || type === "fileClose" || type === "fileChange"){
-			const iframeDoc = previewIframe.contentWindow.document
-			previewIframe.contentWindow.location.href="about:blank";
-			iframeDoc.open("text/html", "replace");
-			iframeDoc.write(doc);
-			iframeDoc.close();
-			//iframeDoc.srcdoc = doc;
+			updateIframe({ src });
 		}
 	}
 

@@ -99,6 +99,7 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		try {
 			mode = opts.mode.name || mode;
 		} catch(e){}
+		debugger;
 		codeMirrorModeJs(mode, () => {
 			opts.mode = opts.mode.mimeType || opts.mode || mode;
 			window.Editor.toTextArea();
@@ -112,15 +113,21 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 	}
 	codeMirrorCss(() => {
 		codeMirrorJs(() => {
-			codeMirrorModeJs("css", () => {
-				codeMirrorModeJs("clike", () => {
-					codeMirrorModeJs("xml", () => {
-						codeMirrorModeJs(opts.mode, () => {
-							const theEditor = setupEditor(text, opts || {});
-							//theEditor.setOption("mode", opts.mode);
-							//theEditor.setOption("theme", "default");
-							window.Editor = theEditor;
-							callback(null, theEditor);
+			codeMirrorModeJs("xml", () => {
+				codeMirrorModeJs("javascript", () => {
+					codeMirrorModeJs("css", () => {
+						codeMirrorModeJs("clike", () => {
+							codeMirrorModeJs("htmlmixed", () => {
+								codeMirrorModeJs("htmlembedded", () => {
+									codeMirrorModeJs(opts.mode, () => {
+										const theEditor = setupEditor(text, opts || {});
+										//theEditor.setOption("mode", opts.mode);
+										//theEditor.setOption("theme", "default");
+										window.Editor = theEditor;
+										callback(null, theEditor);
+									});
+								});
+							});
 						});
 					});
 				});

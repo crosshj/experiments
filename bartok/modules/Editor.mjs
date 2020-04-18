@@ -25,6 +25,12 @@ function getFileType(fileName = '') {
 	if (extension === 'bugs') {
 		type = "markdown";
 	}
+	if (extension === 'htm' || extension === 'html') {
+		type = {
+			name: "htmlmixed",
+			mimeType: "application/x-ejs"
+		};
+	}
 	return type;
 }
 

@@ -1,5 +1,16 @@
 import { attachListeners } from './events/operations.mjs';
 
+function getDefaultFile(service){
+	let defaultFile;
+	try {
+		const packageJson = JSON.parse(
+			service.code.find(x => x.name === "package.json").code
+		);
+		defaultFile = packageJson.main;
+	} catch(e){}
+	return defaultFile || "index.js";
+}
+
 function getOperations(updateAfter, readAfter) {
 	const operations = [{
 		url: ''
@@ -70,6 +81,13 @@ function getReadAfter(List, inlineEditor, getCodeFromService) {
 			}
 			const { code, name, id, filename } = getCodeFromService(services[0]);
 			inlineEditor({ code, name, id, filename });
+			const event = new CustomEvent('fileSelect', {
+				bubbles: true,
+				detail: {
+					name: filename
+				}
+			});
+			document.body.dispatchEvent(event);
 		}
 	};
 }
@@ -248,8 +266,9 @@ async function Operations({
 	await performOperation(foundOp, { body: { id: '' } }, externalStateRequest);
 
 	const lastService = localStorage.getItem('lastService');
-	console.log({ lastService });
+	//console.log({ lastService });
 	await performOperation(foundOp, { body: { id: lastService ? Number(lastService) : 90 } }, externalStateRequest);
+
 }
 
 export default Operations;

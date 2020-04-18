@@ -65,17 +65,26 @@
 		line-height: 0px;
 		font-size: 0px;
 	}
-	input:before {
+
+	input[type="checkbox"] {
+		/*position: absolute;*/
+		/*opacity: 0;*/
+		visibility: hidden !important;
+		opacity: 1 !important;
+		cursor: pointer;
+		position: relative;
+		/*height: 0;*/
+		/*width: 0;*/
+	}
+	input[type="checkbox"]:before {
 		visibility: visible;
 		position: absolute;
 		font-size: 48px;
 		top: -35px;
 		left: -28px;
-
 		content: '☐';
 	}
-
-	input:checked:before {
+	input[type="checkbox"]:checked:before {
 		content: '✓';
 		color: #8BC34A;
 	}
@@ -142,6 +151,9 @@ https://www.google.com/search?q=dark%20animated%20gif&tbm=isch&tbs=rimg%3ACWW2oc
 			</svg>
 		</section>
 
+		<section data-background="https://s3.amazonaws.com/ganbreederpublic/imgs/65d75503c6d4ed375d336261.jpeg"></section>
+
+
 			<section data-markdown class="checklist">
 				<textarea data-template>
 <!-- .slide: style="text-align: left; top: 1%;"> -->
@@ -206,6 +218,7 @@ https://www.google.com/search?q=dark%20animated%20gif&tbm=isch&tbs=rimg%3ACWW2oc
 - [ ] https://www.weave.works/oss/scope/
 				</textarea>
 			</section>
+
 
 			<section data-background="https://cdna.artstation.com/p/assets/images/images/002/190/202/large/teun-van-der-zalm-ncu001-2a.jpg?1458468286"></section>
 
