@@ -44,7 +44,7 @@ function ActionBar(){
 		}
 		#actionbar a:before {
 			content: '■';
-			font-size: 50px;
+			font-size: 62px;
 			position: relative;
 			left: -45px;
 		}

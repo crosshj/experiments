@@ -12,6 +12,70 @@ html, body {
   /* otherwise browser causes pane resizing to fail */
   touch-action: none;
 }
+
+.CodeMirror-scrollbar-filler,
+.CodeMirror-gutter-filler  {
+  background: transparent !important;
+}
+
+#explorer,
+.CodeMirror .CodeMirror-hscrollbar,
+.CodeMirror .CodeMirror-vscrollbar {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+.CodeMirror-hscrollbar, .CodeMirror-vscrollbar {
+  user-select: none;
+  outline: none;
+}
+
+#explorer:hover,
+.CodeMirror:hover .CodeMirror-hscrollbar {
+  overflow-x: auto !important;
+}
+#explorer:hover,
+.CodeMirror:hover .CodeMirror-vscrollbar {
+  overflow-y: auto !important;
+}
+
+
+#explorer::-webkit-scrollbar,
+.CodeMirror-vscrollbar::-webkit-scrollbar,
+.CodeMirror-hscrollbar::-webkit-scrollbar,
+body::-webkit-scrollbar,
+iframe::-webkit-scrollbar,
+.CodeMirror-scrollbar-filler {
+  width:0.5em !important;
+  height:0.5em !important;
+}
+
+.CodeMirror-hscrollbar {
+  right: 0.5em !important;
+}
+.CodeMirror-vscrollbar {
+  bottom: 0.5em !important;
+}
+
+#explorer::-webkit-scrollbar-thumb,
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb,
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+iframe::-webkit-scrollbar-thumb{
+  background: #ffffff10;
+}
+#explorer::-webkit-scrollbar-track,
+.CodeMirror-vscrollbar::-webkit-scrollbar-track,
+.CodeMirror-hscrollbar::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+iframe::-webkit-scrollbar-track{
+  background:none !important;
+}
+
+
+
+
+
 .CodeMirror {
   padding-top: 5px;
   font-family: Consolas, 'Courier New', monospace;
@@ -377,17 +441,7 @@ nav a.sidenav-trigger i,
   background: #eee;
 }
 
-.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler  {
-  background: var(--theme-subdued-color) !important;
-}
 
-.CodeMirror .CodeMirror-hscrollbar {
-  overflow-x: hidden;
-}
-
-.CodeMirror:hover .CodeMirror-hscrollbar {
-  overflow-x: auto;
-}
 
 /*
 .CodeMirror-gutter{
@@ -714,7 +768,7 @@ notes-section.loading:after {
 /* js-treeview */
 #tree-view {
   /* padding-left: 12px; */
-  height: calc(100% - 30px);
+  height: calc(100% - 36px);
   color: var(--main-theme-text-color);
   font-weight: 300;
   user-select: none;
@@ -1097,7 +1151,7 @@ notes-section.loading:after {
 }
 
 .lock-panel-action {
-  background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect height='5.3' width='8' fill='%23C5C5C5' x='4' y='7.6'/%3E%3Cpath fill='none' stroke-width='2' stroke='%23C5C5C5' d='m5,7c0,-5 6,-5 6,0'/%3E%3C/svg%3E") 50% no-repeat;
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E %3Crect height='5.3' width='8' fill='%23C5C5C5' x='4' y='7.6'/%3E %3Cpath fill='none' stroke-width='2' stroke='%23C5C5C5' d='m5,7c0,-5 6,-5 6,0' /%3E %3C/svg%3E") 50% no-repeat;
 }
 
 .hide-panel-action {
