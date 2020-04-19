@@ -259,6 +259,14 @@ function getServiceSelector(el, onSelect){
 		dropdownOptions: {
 			inDuration: 0, outDuration: 0,
 			onCloseEnd: (e) => {
+				const parent = document.querySelector('.selector ul.select-dropdown');
+				const selected = parent && document.querySelector('.selector ul.select-dropdown li.selected');
+				const items = selected && Array.from(
+					document.querySelectorAll('.selector ul.select-dropdown li')
+				);
+				if(items && items.length > 1 & items[0].id !== selected.id){
+					parent.insertBefore(selected, items[0]);
+				}
 				onSelect(select.value);
 			}
 		}
