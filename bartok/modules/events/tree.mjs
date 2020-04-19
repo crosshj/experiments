@@ -190,7 +190,7 @@ function attachListener(treeView, JSTreeView, updateTree){
 		let selected, expanded=[];
 
 		if(!id){
-			console.log(`No ID for: ${e.type} - ${op}`);
+			//console.log(`No ID for: ${e.type} - ${op}`);
 			return;
 		}
 

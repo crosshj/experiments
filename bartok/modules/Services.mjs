@@ -311,7 +311,7 @@ const handleSelect = (selection, canvas, {
 
 	const showSystemServices = () => {
 		const services = getCurrentServices();
-		console.log({services});
+		//console.log({services});
 		services && services.forEach((s, i) => {
 			const leftOffset = 175;
 			const spacing = 150;
@@ -324,7 +324,7 @@ const handleSelect = (selection, canvas, {
 			const node = Node({ x, y, scale: 1, label: s.name});
 			canvas.appendChild(node);
 		});
-		console.log('showSystemServices');
+		//console.log('showSystemServices');
 	};
 
 	const cleanCanvas = () => {
@@ -332,7 +332,7 @@ const handleSelect = (selection, canvas, {
 			.forEach(g => {
 				g.parentNode.removeChild(g);
 			})
-		console.log('cleanupCanvas');
+		//console.log('cleanupCanvas');
 	};
 
 	if(selection === 'ui-service'){
@@ -343,7 +343,7 @@ const handleSelect = (selection, canvas, {
 		cleanCanvas();
 		showSystemServices();
 	}
-	console.log({ selection });
+	//console.log({ selection });
 };
 
 let services;

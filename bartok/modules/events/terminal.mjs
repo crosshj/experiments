@@ -2,6 +2,14 @@ import {
 	attach, trigger
 } from '../Listeners.mjs';
 
+let locked;
+let lsLocked = localStorage.getItem("previewLocked");
+if(lsLocked === null){
+	lsLocked = "true"
+	localStorage.setItem("previewLocked", "true");
+}
+locked = lsLocked === "true";
+
 const PROMPT = '\x1B[38;5;14m \r∑ \x1B[0m';
 
 const commands = [{
@@ -179,7 +187,7 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 				</body>
 			</html>
 		`;
-		viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
+		viewUpdate({ type, doc, docName: currentFileName, locked, ...event.detail });
 		return;
 	}
 
@@ -195,11 +203,18 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const { type, detail } = event;
 	const { op, id, name, next } = detail;
 	if(type==="fileClose" && !next){
+		//TODO: this should be a bit more nuanced
 		return;
 	}
-	const service = getCurrentService();
-	const selectedFile = service.code.find(x => x.name === (next || name));
-	const { code } = selectedFile;
+	let code;
+	try {
+		const service = getCurrentService();
+		const selectedFile = service.code.find(x => x.name === (next || name));
+		({ code } = selectedFile);
+	} catch(e) {
+		console.error('could not find the file!');
+		return;
+	}
 
 	// bind and conditionally trigger render
 	// for instance, should not render some files
@@ -221,7 +236,7 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	currentFile = doc;
 	currentFileName = name||next;
 	if(doc && currentView === "preview"){
-		viewUpdate({ type, doc, docName: next || name, ...event.detail });
+		viewUpdate({ type, locked, doc, docName: next || name, ...event.detail });
 	}
 };
 
@@ -247,11 +262,29 @@ const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	currentFile = doc;
 	currentFileName = file;
 	if(doc && currentView === "preview"){
-		viewUpdate({ type, doc, docName: file, ...event.detail });
+		viewUpdate({ type, locked, doc, docName: file, ...event.detail });
 	}
 };
 
-function attachEvents({ write, viewUpdate, getCurrentService }){
+const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
+	const { type, detail } = event;
+	const { action } = detail;
+	if(type==="termMenuAction" && action === "lock"){
+		localStorage.setItem("previewLocked", !locked);
+		locked = !locked;
+	}
+	terminalActions({ type, detail, locked, ...event.detail });
+	if(!locked && currentFile){
+		viewUpdate({
+			type, locked,
+			doc: currentFile,
+			docName: currentFileName,
+			...event.detail
+		});
+	}
+};
+
+function attachEvents({ write, viewUpdate, getCurrentService, terminalActions }){
 	// write('\x1B[2K');
 	// write('\rEvent system attached.\n');
 	// write(`\n${PROMPT}`);
@@ -277,13 +310,25 @@ function attachEvents({ write, viewUpdate, getCurrentService }){
 		eventName: 'fileChange',
 		listener: fileChangeHandler({ viewUpdate, getCurrentService })
 	});
-
-	// TODO: listen for file changes
-	// attach({
-	// 	name: 'Terminal',
-	// 	eventName: 'viewSelect',
-	// 	listener: viewSelectHandler({ viewUpdate })
-	// });
+	attach({
+		name: 'Terminal',
+		eventName: 'termMenuAction',
+		listener: terminalActionHandler({ terminalActions, viewUpdate })
+	});
+	attach({
+		name: 'Terminal',
+		eventName: 'operations',
+		listener: (event) => {
+			if(event.detail.operation !== "persist"){ return; }
+			viewUpdate({
+				type: 'forceRefreshOnPersist',
+				locked: false,
+				doc: currentFile,
+				docName: currentFileName,
+				...event.detail
+			});
+		}
+	});
 
 	return (command, callback) => terminalTrigger(write, command, callback);
 }
@@ -291,7 +336,7 @@ function attachEvents({ write, viewUpdate, getCurrentService }){
 function attachTrigger({ target, domEvents, type, selector, handler }){
 	domEvents.forEach(de => {
 		target.addEventListener(de, (event) => {
-			if(!selector(event)){ return; }
+			if(!selector(event)){ return true; }
 			const params = handler(event);
 			trigger({
 				type,

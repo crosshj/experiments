@@ -1,7 +1,7 @@
 
 function triggerEvent(name){
 	const done = () => {
-		console.log(`done: ${name}`);
+		//console.log(`done: ${name}`);
 		if(name === "update"){
 			triggerEvent("persist");
 		}

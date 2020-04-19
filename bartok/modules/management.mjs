@@ -163,7 +163,7 @@ function renameFile(e, currentService, currentFile){
 }
 
 function deleteFile(e, currentService, currentFile){
-	console.log('deleteFile');
+	//console.log('deleteFile');
 	const { filename=currentFile } = e.detail;
 	let manageOp, currentServiceCode, treeEntryDeleted;
 
@@ -204,7 +204,7 @@ function deleteFile(e, currentService, currentFile){
 }
 
 function moveFile(e, currentService, currentFile){
-	console.log('moveFile');
+	//console.log('moveFile');
 	const { target, destination } = e.detail;
 
 	//TODO: is either current selected folder or parent of currentFile
@@ -235,7 +235,7 @@ function renameProject(e, currentService, currentFile){
 }
 
 function addFolder(e, currentService, currentFile){
-	console.log('addFolder');
+	//console.log('addFolder');
 	let { folderName, parent } = e.detail;
 	let manageOp, currentServiceCode, folderAdded;
 	try {
@@ -264,7 +264,7 @@ function addFolder(e, currentService, currentFile){
 }
 
 function renameFolder(e, currentService, currentFile){
-	console.log('renameFolder');
+	//console.log('renameFolder');
 	const { oldName, newName } = e.detail;
 
 	//TODO: is either current selected folder or parent of currentFile
@@ -323,7 +323,7 @@ function deleteFolder(e, currentService, currentFile){
 }
 
 function moveFolder(e, currentService, currentFile){
-	console.log('moveFolder');
+	//console.log('moveFolder');
 	const { target, destination } = e.detail;
 
 	//TODO: is either current selected folder or parent of currentFile
@@ -375,7 +375,7 @@ function managementOp(e, currentService, currentFile, currentFolder) {
 	const thisOps = Object.keys(ops);
 	const { operation="" } = (e && e.detail) || {};
 
-	console.log({ operation, e });
+	//console.log({ operation, e });
 	if (!thisOps.includes(operation)) {
 		return;
 	}

@@ -23,12 +23,16 @@ process.on('message', parentMsg => {
 		template: "",
 		port: ""
 	}, null, '\t')
+}, {
+	name: 'react-example.jsx',
+	code: exampleReact()
 }];
 
 const defaultTree = (_name) => ({
 	[_name]: {
 		"index.js": {},
-		"package.json": {}
+		"package.json": {},
+		"react-example.jsx": {}
 	}
 });
 
@@ -90,12 +94,20 @@ async function externalStateRequest(op){
 	//console.log(op.name);
 
 	let result;
+	let readId, updateId;
 	try {
-		var readId = op.name === "read" && op.url.split('read/')[1];
+		readId = op.name === "read" && op.url.split('read/')[1];
 		if(readId){
 			localStorage.setItem('lastService', readId);
-			console.log(`should set: ${readId}`);
+			//console.log(`should set: ${readId}`);
 		}
+		updateId = op.name === "update" && ((o) => {
+			try{
+				return JSON.parse(o.config.body).id;
+		  }catch(e){
+				return;
+			}
+		})(op);
 		const response = await fetch(op.url, op.config);
 		result = await response.json();
 	} catch (e) {
@@ -146,6 +158,11 @@ async function externalStateRequest(op){
 				result: lsServices.filter(x => Number(x.id) === Number(readId))
 			};
 		}
+		if(updateId){
+			return {
+				result: lsServices.filter(x => Number(x.id) === Number(updateId))
+			};
+		}
 
 		result = {
 			result: lsServices //.sort((a, b) => Number(a.id)-Number(b.id))
@@ -153,5 +170,53 @@ async function externalStateRequest(op){
 	}
 	return result;
 }
+
+function exampleReact(){ return `
+// (p)react hooks
+function useStore() {
+  let [value, setValue] = useState(1);
+
+  const add = useCallback(
+    () => setValue(value+2),
+    [value]
+  );
+
+  return { value, add };
+}
+
+const Style = () => (
+<style dangerouslySetInnerHTML={{__html: \`
+  body { display: flex; font-size: 3em; }
+  body > * { margin: auto; }
+  #clicker {
+    cursor: pointer;
+    background: url("data:image/svg+xml,%3Csvg width='100%' height='100%' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Cpath d='m11.61724,2.39725c0,0.78044 -0.39092,1.94771 -0.92661,2.95967c0.00514,0.00382 0.01027,0.00764 0.01538,0.01151c0.73296,-0.83424 0.95997,-2.34561 2.82973,-2.46949c1.86977,-0.12388 4.76668,5.72251 1.72228,6.863c-0.72347,0.27102 -0.16185,0.31797 -1.28384,0.14343c0.99502,0.4928 0.39169,0.19741 0.83213,0.81656c1.90904,2.68368 -4.33675,7.09457 -6.24582,4.41089c-0.44902,-0.63121 -0.30316,-0.19483 -0.45163,-1.33693l-0.00042,0.00003l-0.00624,0c-0.1,1 0.1,0.65 -0.4,1.3c-1.9,2.7 -7.9,-2.6 -6,-5.3c0.4,-0.6 0.9,-0.2 1.9,-0.7c-1.1,0.2 -1.4,-0.1 -2,-0.3c-3,-1.1 -0.3,-6.7 2.7,-5.6c0.7,0.3 0.8,0 1.5,1l0,0c-0.5,-1 -0.6,-0.9 -0.6,-1.7c0,-3.3 6.5,-3.2 6.5,0z' fill='%238f0047' stroke-miterlimit='23' stroke-width='0' transform='rotate(118.8 8.3,8)'/%3E%3C/svg%3E") 50% no-repeat;
+    text-align: center;
+    padding: 45px;
+    padding-top: 150px;
+    user-select: none;
+    height: 200px;
+    width: 280px;
+    background-color: #002e00;
+  }
+  #clicker p { margin-top: 2px; margin-left: -50px }
+  #clicker * { filter: drop-shadow(3px 13px 4px #006600); }
+\`}} />);
+
+
+//(p)react
+const App = () => {
+  const { value, add } = useStore();
+
+  return (
+    <div onClick={add} id="clicker" title="just click the flower already...">
+      <Style />
+      <span>kiliki aʻu</span>
+      <p>{value}</p>
+    </div>
+  );
+};`;}
+
+
 
 export { externalStateRequest };

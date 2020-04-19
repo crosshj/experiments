@@ -28,12 +28,15 @@ const jsxFirst = `
     window.render = render;
     window.useState = useState;
     window.useCallback = useCallback;
-    window.React = { createElement: h, createClass: h };
+		window.React = { createElement: h, createClass: h };
+		window.h = h;
   </script>
 
 	<script id="jsxScript" type="text/jsx">
 	const React = window.React;
 	const render = window.render;
+	const h = window.h;
+	//console.log(window.h);
 	`;
 
 	const jsxSecond = `
@@ -41,6 +44,10 @@ const jsxFirst = `
 	</script>
 
 	<script>
+		const input = document.getElementById('jsxScript').innerText;
+		const xfrmScript = document.createElement('script');
+		xfrmScript.id = 'jsxScriptXfrm';
+
 		const appendScript = (url, callback) => {
 			var script = document.createElement('script');
 			script.crossOrigin = "anonymous";
@@ -48,19 +55,45 @@ const jsxFirst = `
 			script.src = url;
 			document.head.appendChild(script);
 		};
-		setTimeout(() => {
+
+		const appendBabel = () => {
 			const babelUrl = "https://unpkg.com/@babel/standalone/babel.min.js";
 			const babelAppendCallback = () => {
-				var input = document.getElementById('jsxScript').innerText;
-				var output = Babel.transform(input, { presets: ['es2015','react'] }).code;
-				//console.log({ output });
-				const babeledScript = document.createElement('script');
-				babeledScript.id = 'jsxScriptBabeled';
-				babeledScript.innerHTML = output;
-				document.head.appendChild(babeledScript);
+				const output = Babel.transform(input, { presets: ['es2015','react'] }).code;
 				//console.log('BABELFY!');
+				//console.log({ output });
+				xfrmScript.innerHTML = output;
+				document.head.appendChild(xfrmScript);
 			};
-			appendScript(babelUrl, babelAppendCallback)
+			appendScript(babelUrl, babelAppendCallback);
+		};
+
+		const appendHscript = () => {
+			const hscriptUrl = "https://rawgit.com/NerdGGuy/html2hscript/master/browser.js"
+			const hscriptAppendCallback = () => {
+				hscript(input, function(err, output) {
+					console.log('HSCRIPTFY!');
+					console.log({ output });
+					xfrmScript.innerHTML = output;
+					document.head.appendChild(xfrmScript);
+				});
+			};
+			appendScript(hscriptUrl, hscriptAppendCallback);
+		};
+
+		const appendPlain = () => {
+			xfrmScript.innerHTML = input;
+			document.head.appendChild(xfrmScript);
+		};
+
+		setTimeout(() => {
+			appendBabel();
+
+			// this will require hyperscript -> react code (and maybe more)
+			// https://github.com/mlmorg/react-hyperscript
+			//appendHscript();
+
+			//appendPlain();
 		}, 1);
 	</script>
 

@@ -151,6 +151,14 @@ function _Terminal({ getCurrentService }){
 
 	const selected = localStorage.getItem('rightPaneSelected') || "terminal";
 
+	const pvActive = [];
+	const pvControlsClass = (type) => `
+		${type}-action
+		preview-control
+		${selected==="preview" ? "" : "hidden"}
+		${pvActive.includes(type) ? "checked" : ""}
+	`.split('\n').filter(x => !!x).join('');
+
 	const termMenu = document.createElement('div');
 	termMenu.id = "terminal-menu";
 	termMenu.innerHTML = `
@@ -166,6 +174,12 @@ function _Terminal({ getCurrentService }){
 			color: rgb(231, 231, 231);
 			border-bottom-color: rgba(128, 128, 128, 0.8);
 		}
+		#terminal-menu .terminal-actions li.action-item.checked a {
+			border-bottom: 0;
+		}
+		li.action-item.preview-control.checked a.lock-panel-action {
+			filter: brightness(.55) sepia(1) contrast(5);
+		}
 	</style>
 	<div class="composite-bar panel-switcher-container">
 		 <div class="monaco-action-bar">
@@ -179,7 +193,7 @@ function _Terminal({ getCurrentService }){
 						<li class="action-item ${selected==="logs" ? "checked" : ""}" role="tab" draggable="true">
 							<a class="action-label logs" data-type="logs">Logs</a>
 						</li>
-					 <li class="action-item" role="button" tabindex="0" aria-label="Additional Views" title="Additional Views">
+					 <li class="action-item" role="button" aria-label="Additional Views" title="Additional Views">
 							<a class="action-label toggle-more" aria-label="Additional Views" title="Additional Views" style="background-color: rgb(30, 30, 30);"></a>
 							<div class="badge" aria-hidden="true" aria-label="Additional Views" title="Additional Views" style="display: none;">
 								 <div class="badge-content" style="color: rgb(255, 255, 255); background-color: rgb(77, 77, 77);"></div>
@@ -188,7 +202,7 @@ function _Terminal({ getCurrentService }){
 				</ul>
 		 </div>
 	</div>
-	<div class="title-actions">
+	<div class="title-actions terminal-actions">
 		 <div class="monaco-toolbar">
 				<div class="monaco-action-bar animated">
 					 <ul class="actions-container" role="toolbar" aria-label="Terminal actions">
@@ -197,16 +211,25 @@ function _Terminal({ getCurrentService }){
 										<option value="1: node, node">1: node, node</option>
 								 </select>
 							</li>
-							<li class="action-item" role="presentation"><a class="action-label icon terminal-action new" role="button" tabindex="0" title="New Terminal"></a></li>
-							<li class="action-item" role="presentation"><a class="action-label icon terminal-action split" role="button" tabindex="0" title="Split Terminal (⌘\)"></a></li>
-							<li class="action-item" role="presentation"><a class="action-label icon terminal-action kill" role="button" tabindex="0" title="Kill Terminal"></a></li>
-							<li class="action-item" role="presentation"><a class="action-label icon maximize-panel-action" role="button" tabindex="0" title="Maximize Panel Size"></a></li>
-							<li class="action-item" role="presentation"><a class="action-label icon hide-panel-action" role="button" tabindex="0" title="Close Panel"></a></li>
+							<li class="action-item" role="presentation"><a class="hidden action-label icon terminal-action new" role="button" title="New Terminal"></a></li>
+							<li class="action-item" role="presentation"><a class="hidden action-label icon terminal-action split" role="button" title="Split Terminal (⌘\)"></a></li>
+							<li class="action-item" role="presentation"><a class="hidden action-label icon terminal-action kill" role="button" title="Kill Terminal"></a></li>
+							<li class="action-item" role="presentation"><a class="hidden action-label icon maximize-panel-action" role="button" title="Maximize Panel Size"></a></li>
+
+							<li class="action-item ${pvControlsClass("lock")}"
+								role="presentation"
+								data-type="lock"
+							>
+								<a class="action-label icon lock-panel-action" data-type="lock" role="button" title="Lock Preview"></a>
+							</li>
+
+							<li class="action-item" role="presentation"><a class="disabled action-label icon hide-panel-action" role="button" title="Close Panel"></a></li>
 					 </ul>
 				</div>
 		 </div>
 	</div>
 	`;
+	const termMenuActions = termMenu.querySelector('.terminal-actions');
 
 	const previewContainer = document.createElement('div');
 	previewContainer.classList.add('preview-contain');
@@ -345,6 +368,16 @@ function _Terminal({ getCurrentService }){
 	prompt(term);
 	window.term = term;
 
+	const updateLockIcon = (locked) => {
+		const lockIconLi = termMenuActions.querySelector('.lock-action');
+		if(locked){
+			lockIconLi.classList.add('checked');
+		} else {
+			lockIconLi.classList.remove('checked');
+		}
+	};
+
+	let alreadyUpdatedOnce;
 	function updateIframeRaw({ url, src}){
 		previewContainer.removeChild(previewIframe);
 		previewIframe = document.createElement('iframe');
@@ -362,12 +395,13 @@ function _Terminal({ getCurrentService }){
 
 		// yet another way of doing it
 		//iframeDoc.srcdoc = doc;
-
+		alreadyUpdatedOnce = true;
 	}
 
 	const updateIframe = debounce(updateIframeRaw, 300);
 
 	function viewUpdate({ view, type, doc, docName, locked }){
+		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
 		const src = (docName||'').includes('jsx')
 			? templateJSX(doc)
 			: doc;
@@ -375,6 +409,8 @@ function _Terminal({ getCurrentService }){
 		if(type === "viewSelect"){
 			localStorage.setItem('rightPaneSelected', view);
 			const switcher = document.querySelector("#terminal-menu .panel-switcher-container");
+			const termMenuActions = document.querySelector("#terminal-menu .terminal-actions");
+			const previewControls = Array.from(termMenuActions.querySelectorAll('.preview-control'));
 
 			Array.from(switcher.querySelectorAll(".action-item.checked"))
 				.forEach(el => el.classList.remove('checked'));
@@ -382,34 +418,66 @@ function _Terminal({ getCurrentService }){
 			const newCheckedItem = switcher.querySelector(`.action-label[data-type=${view}]`);
 			newCheckedItem.parentNode.classList.add('checked');
 
-			console.log({ docName, foo:''});
 			if(view !== 'preview'){
+				previewControls.forEach(pc => pc.classList.add('hidden'));
 				previewContainer.classList.add('hidden');
 			} else {
-				if(!locked) {
+				previewControls.forEach(pc => pc.classList.remove('hidden'));
+				if(!locked || !alreadyUpdatedOnce) {
 					updateIframe({ src });
 				}
 
 				previewContainer.classList.remove('hidden');
 			}
+			return;
 		}
-		if(type === "fileSelect" || type === "fileClose" || type === "fileChange"){
-			updateIframe({ src });
+
+		if(!locked && type === "fileClose"){
+			debugger;
+			updateIframe({ src: "" });
+			return;
+		}
+		if(
+			type === "forceRefreshOnPersist" ||
+			type === "termMenuAction" ||
+			type === "fileSelect" ||
+			type === "fileChange"
+		){
+			if(!locked || !alreadyUpdatedOnce){
+				updateIframe({ src });
+			}
+			return;
 		}
 	}
 
+	function terminalActions({ view, type, doc, docName, locked }){
+		updateLockIcon(locked);
+		//console.log({ view, type, doc, docName, locked });
+		//termMenuAction
+	}
+
+
 	attachTrigger({
-		target: termMenu,
+		target: termMenu.querySelector('.view-switcher'),
 		domEvents: ['click'],
 		type: 'viewSelect',
 		selector: (e) => e.target.tagName === 'A',
 		handler: (e) => ({ view: e.target.dataset.type })
 	});
+	attachTrigger({
+		target: termMenu.querySelector('.terminal-actions'),
+		domEvents: ['click'],
+		type: 'termMenuAction',
+		selector: (e) => e.target.tagName === 'A'
+			&& e.target.parentNode.parentNode.classList.contains('actions-container'),
+		handler: (e) => ({ action: e.target.dataset.type })
+	});
 
 	EventTrigger = attachEvents({
 		getCurrentService,
 		write: (x) => term.write(x),
-		viewUpdate
+		viewUpdate,
+		terminalActions
 	});
 }
 

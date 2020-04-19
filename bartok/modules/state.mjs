@@ -15,16 +15,44 @@ function getDefaultFile(service){
 	return defaultFile || "index.js";
 }
 
+// has side effects of setting current code
+const getCurrentService = () => {
+	const changedArray = Object.keys(state.changedFiles)
+		.map(k => state.changedFiles[k]);
+	const mostRecent = changedArray.map(x => x[x.length-1]);
+
+	//error here because currentService is wrong sometimes
+
+	mostRecent.forEach(m => {
+		const found = currentService.code.find(x => x.name === m.filename);
+		if(!found){
+			console.error({
+				changedArray, mostRecent, filename: m.filename, found: found || 'notfound'
+			});
+			debugger;
+			return;
+		}
+		found.code = m.code;
+	});
+	return currentService;
+}
+
 // has side-effects of setting currentService and currentFile
 function getCodeFromService(service, file){
+
+	if(service){
+		currentService = service;
+		currentFile = undefined;
+		//TODO: and update changedArray?
+		console.log(`Current Service: ${service.id}: ${service.name}`);
+	}
 	//debugger;
 	getCurrentService(); //this caues service status to update?
 
 	if(!service){
 		service = currentService || {};
-	} else {
-		currentService = service;
 	}
+
 	if(!file){
 		currentFile = currentFile || getDefaultFile(service);
 		file = currentFile;
@@ -76,21 +104,8 @@ const setCurrentFolder = (path) => {
 	currentFolder = path;
 };
 
-// has side effects of setting current code
-const getCurrentService = () => {
-	const changedArray = Object.keys(state.changedFiles)
-		.map(k => state.changedFiles[k]);
-	const mostRecent = changedArray.map(x => x[x.length-1]);
-
-	mostRecent.forEach(m => {
-		const found = currentService.code.find(x => x.name === m.filename);
-		if(!found){ debugger; }
-		found.code = m.code;
-	});
-	return currentService;
-}
-
 const resetState = () => {
+	console.log(`Current Service reset!`);
 	currentFile = currentService = null;
 	state.changedFiles = {};
 };

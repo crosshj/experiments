@@ -13,8 +13,8 @@ const showServiceMapHandler = (showServiceMap) => async (event) => {
 const operationDoneHandler = (receiveServices) => async (event) => {
 	const { type, detail } = event;
 	const { op, id } = detail;
-	console.log('receive services');
-	console.log({ type, op, detail })
+	// console.log('receive services');
+	// console.log({ type, op, detail })
 	if(op === "read" && !id){
 		const services = detail.result;
 		receiveServices(services);
