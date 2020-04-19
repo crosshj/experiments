@@ -13,8 +13,11 @@ const jsxFirst = `
 
   <style>
     body {
-      margin: 20px;
-      margin-top: 60px;
+      margin: 0px;
+      margin-top: 40px;
+      color: white;
+      height: calc(100vh - 40px);
+      overflow: hidden;
       color: #ccc;
       font-family: sans-serif;
     }

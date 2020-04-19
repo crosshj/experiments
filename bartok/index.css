@@ -40,7 +40,6 @@ html, body {
 }
 
 
-#explorer::-webkit-scrollbar,
 .CodeMirror-vscrollbar::-webkit-scrollbar,
 .CodeMirror-hscrollbar::-webkit-scrollbar,
 body::-webkit-scrollbar,
@@ -48,6 +47,11 @@ iframe::-webkit-scrollbar,
 .CodeMirror-scrollbar-filler {
   width:0.5em !important;
   height:0.5em !important;
+}
+#editor-tabs::-webkit-scrollbar { /** WebKit */
+  height: 0px !important;
+  width: 0px !important;
+  display: none !important;
 }
 
 .CodeMirror-hscrollbar {
@@ -64,6 +68,7 @@ body::-webkit-scrollbar-thumb,
 iframe::-webkit-scrollbar-thumb{
   background: #ffffff10;
 }
+.hide-native-scrollbar::-webkit-scrollbar-track,
 #explorer::-webkit-scrollbar-track,
 .CodeMirror-vscrollbar::-webkit-scrollbar-track,
 .CodeMirror-hscrollbar::-webkit-scrollbar-track,
@@ -509,6 +514,7 @@ ul.editor-controls li:hover {
 #editor-tabs-container {
   height: 30px; /* IMPORTANT */
   background-color: var(--theme-subdued-color);
+  position: relative;
   /* padding-right: 20px; */
 }
 
@@ -689,6 +695,8 @@ notes-section.loading:after {
   -ms-overflow-style: none !important; /* Internet Explorer 11 */
 }
 .hide-native-scrollbar::-webkit-scrollbar { /** WebKit */
+  height: 0px;
+  width: 0px;
   display: none !important;
 }
 

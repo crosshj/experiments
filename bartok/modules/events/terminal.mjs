@@ -182,7 +182,17 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 			? code
 			: `
 			<html>
-				<body style="margin-top: 40px; color: white;">
+				<style>
+					body {
+						margin: 0px;
+						margin-top: 40px;
+						height: calc(100vh - 40px);
+						overflow: hidden;
+						color: #ccc;
+						font-family: sans-serif;
+					}
+				</style>
+				<body">
 					<pre>${code}</pre>
 				</body>
 			</html>
@@ -193,9 +203,11 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 
 	// TODO: bind and conditionally trigger render
 	// console.log({ type, op, id });
-	const doc = currentFile || `<html>
-		<body style="margin: 20%; color: white;">Hello world</body>
-	</html>`;
+	const doc = currentFile || `
+		<html>
+			<body style="margin: 20%; color: white;">Hello world</body>
+		</html>
+	`;
 	viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
 };
 
@@ -228,7 +240,17 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		? code
 		: `
 		<html>
-			<body style="margin-top: 40px; color: white;">
+			<style>
+				body {
+					margin: 0px;
+					margin-top: 40px;
+					height: calc(100vh - 40px);
+					overflow: hidden;
+					color: #ccc;
+					font-family: sans-serif;
+				}
+			</style>
+			<body">
 				<pre>${code}</pre>
 			</body>
 		</html>
@@ -254,7 +276,17 @@ const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	? code
 	: `
 	<html>
-		<body style="margin-top: 40px; color: white;">
+		<style>
+			body {
+				margin: 0px;
+				margin-top: 40px;
+				height: calc(100vh - 40px);
+				overflow: hidden;
+				color: #ccc;
+				font-family: sans-serif;
+			}
+		</style>
+		<body">
 			<pre>${code}</pre>
 		</body>
 	</html>

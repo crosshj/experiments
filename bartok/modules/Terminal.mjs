@@ -437,8 +437,11 @@ function _Terminal({ getCurrentService }){
 			updateIframe({ src: "" });
 			return;
 		}
+		if(type === "forceRefreshOnPersist"){
+			updateIframeRaw({ src });
+			return;
+		}
 		if(
-			type === "forceRefreshOnPersist" ||
 			type === "termMenuAction" ||
 			type === "fileSelect" ||
 			type === "fileChange"
