@@ -18,7 +18,7 @@ process.on('message', parentMsg => {
 	name: "package.json",
 	code: JSON.stringify({
 		name: _name,
-		main: "index.js",
+		main: "react-example.jsx",
 		description: "",
 		template: "",
 		port: ""
