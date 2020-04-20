@@ -74,6 +74,71 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 		inlineEditor, List  // instead of passing these here, Editor should be listening
 	});
 
+	//NOTE: this is only temporary
+	window.btBackup = () => {
+		const today = new Date();
+		const yesterday = new Date(today);
+		yesterday.setDate(yesterday.getDate() - 1);
+
+		const backupCounts = {};
+		const getDayStr = x => `${x.getYear()}-${x.getMonth()}-${x.getDate()}`;
+		const daysDiff = (a, b) => Math.abs(Math.round(
+			(b-a)/(1000*60*60*24)
+		));
+
+		const removeStorage = (x) => {
+			console.log(`removing ${new Date(
+				Number(x.split('-')[1])
+			)}`);
+			localStorage.removeItem(x);
+			return false;
+		};
+
+		const currentBackups = Object.keys(localStorage)
+			.filter(x => x.includes('localServices-'))
+			.sort().reverse();
+
+		currentBackups
+			.forEach(x => {
+				const thisUnixDay = Number(x.split('-')[1]);
+				const thisDate = new Date(thisUnixDay);
+				const thisDateStr = getDayStr(thisDate);
+
+				// remove older than 10 days ago
+				if(daysDiff(today, thisDate) > 10){ return removeStorage(x); }
+
+				// keep as many backups as current day has
+				if(getDayStr(today) === thisDateStr){ return true; }
+
+				// keep 3 backups from yesterday
+				if(getDayStr(yesterday) === thisDateStr){
+					backupCounts.yesterday = backupCounts.yesterday || 0;
+					if(backupCounts.yesterday > 2){ return removeStorage(x); }
+					backupCounts.yesterday++;
+					return true;
+				}
+
+				// keep 1 backup from past days
+				if(backupCounts[thisDateStr]){ return removeStorage(x); }
+				backupCounts[thisDateStr] = 1;
+
+				return true;
+			});
+
+		console.log(currentBackups.map(x => new Date(
+			Number( x.split('-')[1] )
+		)));
+
+		let result, error;
+		try {
+			const currentServices = localStorage.getItem('localServices');
+			const tag = new Date().valueOf();
+			localStorage.setItem('localServices-'+tag, currentServices);
+			result = `backed up all services: ${'localServices-'+tag}`
+		} catch(e){ error = e; }
+		return result || e;
+	};
+
 	const loadingEl = document.querySelector('#loading-screen');
 	loadingEl.classList.add('dismissed');
 	document.body.classList.remove('loading');

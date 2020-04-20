@@ -25,14 +25,22 @@
     }
   });
 
+  var lastLineChanged;
   function onChange(cm, change) {
-    if (CodeMirror.changeEnd(change).line == cm.lastLine())
+    //if (CodeMirror.changeEnd(change).line == cm.lastLine())
+
+    // "always" update bottom, not just when changing last line
+    var thisLineChanged = CodeMirror.changeEnd(change).line;
+    if(thisLineChanged !== lastLineChanged){
+      lastLineChanged = thisLineChanged;
       updateBottomMargin(cm);
+    }
   }
 
   function updateBottomMargin(cm) {
     var padding = "";
-    if (cm.lineCount() > 1) {
+    var scrollPastEndThreshold = 50;
+    if (cm.lineCount() > scrollPastEndThreshold) {
       var totalH = cm.display.scroller.clientHeight - 30,
           lastLineH = cm.getLineHandle(cm.lastLine()).height;
       padding = (totalH - lastLineH) + "px";

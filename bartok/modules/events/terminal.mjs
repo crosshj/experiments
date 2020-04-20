@@ -203,9 +203,9 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 
 	// TODO: bind and conditionally trigger render
 	// console.log({ type, op, id });
-	const doc = currentFile || `
+	const doc = `
 		<html>
-			<body style="margin: 20%; color: white;">Hello world</body>
+			<body style="margin: 20%; color: white;">No Preview</body>
 		</html>
 	`;
 	viewUpdate({ type, doc, docName: currentFileName, ...event.detail });

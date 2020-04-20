@@ -13,8 +13,7 @@ html, body {
   touch-action: none;
 }
 
-.CodeMirror-scrollbar-filler,
-.CodeMirror-gutter-filler  {
+.CodeMirror-scrollbar-filler {
   background: transparent !important;
 }
 
