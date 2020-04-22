@@ -37,8 +37,12 @@ const jsxFirst = `
 
 	<script id="jsxScript" type="text/jsx">
 	const React = window.React;
+	const Component = window.Component;
 	const render = window.render;
 	const h = window.h;
+	window.createClass = window.h;
+	window.createElement = window.h;
+
 	//console.log(window.h);
 	`;
 

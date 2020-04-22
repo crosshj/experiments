@@ -983,9 +983,6 @@ notes-section.loading:after {
   min-width: 50%;
 }
 
-
-
-
 .splitter {
   background-color: var(--main-theme-color);
   display: flex;
@@ -1000,10 +997,12 @@ notes-section.loading:after {
   overflow: hidden;
 }
 
+/*
 .splitter {
-  /* filter: saturate(1.1) contrast(1.1) brightness(1.5); */
-  /* filter: hue-rotate(310deg); */
+  filter: saturate(1.1) contrast(1.1) brightness(1.5);
+  filter: hue-rotate(310deg);
 }
+*/
 
 .cm-header {
   color: #6e8fab;

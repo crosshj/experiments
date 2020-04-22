@@ -7,6 +7,47 @@
 // const codeMirrorJsUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js";
 // const codeMirrorJsSyntaxUrl = "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/javascript/javascript.js";
 
+
+/*
+use something like this to hide scrollbars after scrolling has stopped
+(or show them once scrolling has started
+
+
+// Run a callback function after scrolling has stopped
+// (c) 2017 Chris Ferdinandi, MIT License, https://gomakethings.com
+// @param  {Function} callback The function to run after scrolling
+
+var scrollStop = function (callback) {
+
+	// Make sure a valid callback was provided
+	if (!callback || typeof callback !== 'function') return;
+
+	// Setup scrolling variable
+	var isScrolling;
+
+	// Listen for scroll events
+	window.addEventListener('scroll', function (event) {
+
+		// Clear our timeout throughout the scroll
+		window.clearTimeout(isScrolling);
+
+		// Set a timeout to run after scrolling ends
+		isScrolling = setTimeout(function() {
+
+			// Run the callback
+			callback();
+
+		}, 66);
+
+	}, false);
+
+};
+
+
+
+*/
+
+
 const codeMirrorCssUrl = "../shared/css/codemirror.css";
 const codeMirrorBespinThemeCssUrl = "../shared/css/bespin.css";
 const cmVSCodeUrl = "../shared/css/vscode.codemirror.css";
@@ -99,7 +140,6 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		try {
 			mode = opts.mode.name || mode;
 		} catch(e){}
-		debugger;
 		codeMirrorModeJs(mode, () => {
 			opts.mode = opts.mode.mimeType || opts.mode || mode;
 			window.Editor.toTextArea();
