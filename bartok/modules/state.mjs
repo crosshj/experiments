@@ -23,6 +23,7 @@ const getCurrentService = () => {
 
 	//error here because currentService is wrong sometimes
 
+	// SIDE EFFECTS!!!
 	mostRecent.forEach(m => {
 		const found = currentService.code.find(x => x.name === m.filename);
 		if(!found){
@@ -34,42 +35,56 @@ const getCurrentService = () => {
 		}
 		found.code = m.code;
 	});
+
 	return currentService;
 }
 
 // has side-effects of setting currentService and currentFile
+
+// this should really be broken out into:
+//    setCurrentFile, setCurrentService
+//    getCurrentFile, getCurrentService
+
 function getCodeFromService(service, file){
+	const serviceAction = !!service ? "set" : "get";
+	const fileAction = !!file ? "set" : "get";
 
-	if(service){
+	if(
+		serviceAction === "set" && currentService &&
+		Number(currentService.id) !== Number(service.id)
+	){
+		resetState();
+	}
+
+	if(serviceAction === "set"){
 		currentService = service;
-		currentFile = undefined;
-		//TODO: and update changedArray?
-		console.log(`Current Service: ${service.id}: ${service.name}`);
-	}
-	//debugger;
-	getCurrentService(); //this caues service status to update?
-
-	if(!service){
-		service = currentService || {};
 	}
 
-	if(!file){
-		currentFile = currentFile || getDefaultFile(service);
-		file = currentFile;
-	} else {
+	if(serviceAction === "get"){
+		//this caues service files based on changedArray
+		getCurrentService();
+	}
+
+	if(fileAction === "set"){
 		currentFile = file;
 	}
-	const code = Array.isArray(service.code)
-		? (service.code.find(x => x.name === file)||{}).code || ""
-		: isString(() => service.code)
-			? service.code
+
+	if(fileAction === "get"){
+		currentFile = currentFile || getDefaultFile(currentService);
+	}
+
+	const code = Array.isArray(currentService.code)
+		? (currentService.code.find(x => x.name === currentFile)||{}).code || ""
+		: isString(() => currentService.code)
+			? currentService.code
 			: "";
 
 	return {
+		name: currentService.name,
+		id: currentService.id,
+		// may be able to make next two lines go away (and also other code and file related stuff
 		code,
-		name: service.name,
-		id: service.id,
-		filename: file
+		filename: currentFile
 	};
 }
 
@@ -105,7 +120,7 @@ const setCurrentFolder = (path) => {
 };
 
 const resetState = () => {
-	console.log(`Current Service reset!`);
+	//console.log(`Current Service reset!`);
 	currentFile = currentService = null;
 	state.changedFiles = {};
 };

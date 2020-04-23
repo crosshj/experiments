@@ -431,7 +431,7 @@ function _Terminal({ getCurrentService }){
 			return;
 		}
 
-		if(!locked && type === "fileClose"){
+		if(!locked && type === "fileClose" && !doc ){
 			debugger;
 			updateIframe({ src: "" });
 			return;
@@ -441,6 +441,7 @@ function _Terminal({ getCurrentService }){
 			return;
 		}
 		if(
+			type === "fileClose" ||
 			type === "termMenuAction" ||
 			type === "fileSelect" ||
 			type === "fileChange"

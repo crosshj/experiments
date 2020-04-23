@@ -79,6 +79,7 @@ function getReadAfter(List, inlineEditor, getCodeFromService) {
 			if (!service) {
 				return inlineEditor({ code: "", name: "", id: "", filename: "" });
 			}
+
 			const { code, name, id, filename } = getCodeFromService(services[0]);
 			inlineEditor({ code, name, id, filename });
 			const event = new CustomEvent('fileSelect', {
@@ -92,11 +93,10 @@ function getReadAfter(List, inlineEditor, getCodeFromService) {
 	};
 }
 
-function getUpdateAfter(getCodeFromService, inlineEditor) {
+function getUpdateAfter(setCurrentService) {
 	return ({ result }) => {
 		const services = result.result;
-		const { code, name, id, filename } = getCodeFromService(services[0]);
-		//inlineEditor({ code, name, id, filename });
+		setCurrentService(services[0], null, 'set');
 	};
 }
 
@@ -169,6 +169,7 @@ const operationsListener = async (
 	const currentFile = getCurrentFile();
 	const currentService = getCurrentService();
 
+
 	// console.log(e.detail);
 	const manageOp = managementOp(e, currentService, currentFile);
 	let eventOp = (manageOp || {}).operation || e.detail.operation;
@@ -181,8 +182,13 @@ const operationsListener = async (
 	if (eventOp === 'update') {
 		// console.log(JSON.stringify({ currentService}, null, 2));
 		const files = JSON.parse(JSON.stringify(currentService.code));
-		(files.find(x => x.name === currentFile) || {})
-			.code = e.detail.body.code;
+
+		// NEXT: this is not needed because getCurrentService has sideffects of
+		// adding  current changes to service (safe to assume???)
+
+		// (files.find(x => x.name === currentFile) || {})
+		// 	.code = e.detail.body.code;
+
 		e.detail.body.code = JSON.stringify({
 			tree: currentService.tree,
 			files

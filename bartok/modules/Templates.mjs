@@ -109,7 +109,7 @@ const jsxFirst = `
 `;
 
 function templateJSX(src){
-	console.log('JSX TEMPLATE ACTIVATE');
+	//console.log('JSX TEMPLATE ACTIVATE');
 	return `${jsxFirst}${src}${jsxSecond}`;
 }
 
