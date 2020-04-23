@@ -26,7 +26,7 @@ const jsxFirst = `
   <script type="module">
     import {
       html, Component, render, useState, useCallback, h
-    } from 'https://unpkg.com/htm/preact/standalone.module.js';
+    } from '../shared/vendor/preact.standalone.module.js';
     window.Component = Component;
     window.render = render;
     window.useState = useState;
@@ -64,7 +64,7 @@ const jsxFirst = `
 		};
 
 		const appendBabel = () => {
-			const babelUrl = "https://unpkg.com/@babel/standalone/babel.min.js";
+			const babelUrl = "../shared/vendor/babel.min.js";
 			const babelAppendCallback = () => {
 				const output = Babel.transform(input, { presets: ['es2015','react'] }).code;
 				//console.log('BABELFY!');
