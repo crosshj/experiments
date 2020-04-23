@@ -131,7 +131,7 @@ async function externalStateRequest(op){
 				console.error("service to update is malformed!");
 				return;
 			}
-			debugger
+			//debugger
 			saveServiceToLS(lsServices, serviceToUpdate);
 			lsServices = getServicesFromLS() || [];
 			//console.log(JSON.stringify(op, null, 2));
@@ -142,7 +142,7 @@ async function externalStateRequest(op){
 
 			saveServiceToLS(lsServices, dummyService(id, name));
 			lsServices = getServicesFromLS() || [];
-			debugger
+			//debugger
 		}
 
 		if(op.name === "delete"){
