@@ -167,7 +167,10 @@ let currentView = localStorage.getItem('rightPaneSelected');
 
 const viewSelectHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
-	const { op, id } = detail;
+	const { view } = detail;
+
+	currentView = view;
+	localStorage.setItem('rightPaneSelected', view);
 
 	if(currentFile){
 		const code = currentFile;

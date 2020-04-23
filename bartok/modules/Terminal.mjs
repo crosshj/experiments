@@ -407,7 +407,6 @@ function _Terminal({ getCurrentService }){
 			: doc;
 
 		if(type === "viewSelect"){
-			localStorage.setItem('rightPaneSelected', view);
 			const switcher = document.querySelector("#terminal-menu .panel-switcher-container");
 			const termMenuActions = document.querySelector("#terminal-menu .terminal-actions");
 			const previewControls = Array.from(termMenuActions.querySelectorAll('.preview-control'));
