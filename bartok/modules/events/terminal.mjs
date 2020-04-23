@@ -179,13 +179,25 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 		const isSVG = code.includes('</svg>');
 		const isJSX = (name).includes('jsx');
 		if(!isSVG && !isHTML && !isJSX){
-			return;
+			code = `<div class="no-preview">No preview available.</div>`;
 		}
 		const doc = isHTML || isJSX
 			? code
 			: `
 			<html>
 				<style>
+					.no-preview {
+						position: absolute;
+						top: 0;
+						left: 0;
+						width: 100%;
+						height: 100%;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						font-size: 5vw;
+						color: #666;
+					}
 					body {
 						margin: 0px;
 						margin-top: 40px;
@@ -237,13 +249,25 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const isSVG = code.includes('</svg>');
 	const isJSX = (name||next).includes('jsx');
 	if(!isSVG && !isHTML && !isJSX){
-		return;
+		code = `<div class="no-preview">No preview available.</div>`;
 	}
 	const doc = isHTML || isJSX
 		? code
 		: `
 		<html>
 			<style>
+				.no-preview {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 5vw;
+					color: #666;
+				}
 				body {
 					margin: 0px;
 					margin-top: 40px;
@@ -267,19 +291,30 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 
 const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const { type, detail } = event;
-	const { name, id, file, code } = detail;
+	let { name, id, file, code } = detail;
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');
 	const isJSX = file.includes('jsx');
 	if(!isSVG && !isHTML && !isJSX){
-		debugger;
-		return;
+		code = `<div class="no-preview">No preview available.</div>`;
 	}
 	const doc = isHTML || isJSX
 	? code
 	: `
 	<html>
 		<style>
+			.no-preview {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 5vw;
+				color: #666;
+			}
 			body {
 				margin: 0px;
 				margin-top: 40px;
