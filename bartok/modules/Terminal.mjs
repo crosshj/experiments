@@ -6,7 +6,7 @@ import { debounce } from "../../shared/modules/utilities.mjs";
 
 import motd from "./motd.mjs";
 import { attachEvents, attachTrigger } from './events/terminal.mjs';
-import { templateJSX } from './Templates.mjs';
+import { templateJSX, templateSVC3 } from './Templates.mjs';
 
 let EventTrigger;
 
@@ -404,7 +404,9 @@ function _Terminal({ getCurrentService }){
 		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
 		const src = (docName||'').includes('jsx')
 			? templateJSX(doc)
-			: doc;
+			: doc.includes('/* svcV3 ')
+				? templateSVC3(doc)
+				: doc;
 
 		if(type === "viewSelect"){
 			const switcher = document.querySelector("#terminal-menu .panel-switcher-container");

@@ -178,10 +178,11 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 		const isHTML = code.includes('<html>');
 		const isSVG = code.includes('</svg>');
 		const isJSX = (name).includes('jsx');
-		if(!isSVG && !isHTML && !isJSX){
+		const isSVC3 = code.includes('/* svcV3 ');
+		if(!isSVG && !isHTML && !isJSX && !isSVC3){
 			code = `<div class="no-preview">No preview available.</div>`;
 		}
-		const doc = isHTML || isJSX
+		const doc = isHTML || isJSX || isSVC3
 			? code
 			: `
 			<html>
@@ -248,10 +249,11 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');
 	const isJSX = (name||next).includes('jsx');
-	if(!isSVG && !isHTML && !isJSX){
+	const isSVC3 = code.includes('/* svcV3 ');
+	if(!isSVG && !isHTML && !isJSX && !isSVC3){
 		code = `<div class="no-preview">No preview available.</div>`;
 	}
-	const doc = isHTML || isJSX
+	const doc = isHTML || isJSX || isSVC3
 		? code
 		: `
 		<html>
@@ -295,10 +297,11 @@ const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');
 	const isJSX = file.includes('jsx');
-	if(!isSVG && !isHTML && !isJSX){
+	const isSVC3 = code.includes('/* svcV3 ');
+	if(!isSVG && !isHTML && !isJSX && !isSVC3){
 		code = `<div class="no-preview">No preview available.</div>`;
 	}
-	const doc = isHTML || isJSX
+	const doc = isHTML || isJSX || isSVC3
 	? code
 	: `
 	<html>
