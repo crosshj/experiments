@@ -6,6 +6,7 @@ import LoaderBar from './modules/LoaderBar.mjs';
 import Panes from './modules/PanesNew.mjs';
 import Editor from './modules/Editor.mjs';
 
+import ContextMenu from './modules/ContextMenu.mjs';
 import TreeView from './modules/TreeView.mjs';
 import ActionBar from './modules/ActionBar.mjs';
 import Terminal from './modules/Terminal.mjs';
@@ -60,6 +61,7 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 	} = Editor({ getCodeFromService, TreeView });
 	inlineEditor(); //cache resources
 
+	ContextMenu();
 	TreeView();
 	StatusBar();
 	ActionBar();
