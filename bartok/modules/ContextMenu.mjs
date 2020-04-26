@@ -65,8 +65,9 @@ function ContextPane() {
 	padding: 2px var(--horiz-pad);
 	width: 100%;
 	text-align: left;
+	pointer-events: none; /* so clicks are never registered on this element */
 }
-.ContextMenu .list .item button:hover {
+.ContextMenu .list .item:hover {
 	background: var(--main-theme-highlight-color);
 }
 .ContextMenu .list .item {
@@ -95,7 +96,7 @@ function ContextPane() {
 	const menuItem = (item) => item === 'seperator'
 	? `<li class="context-seperator"></li>`
 	: `
-		<li class="item">
+		<li class="item" data-text="${item.name}">
 			<button name="${item.name}" class="">
 				<div class="linkContent">
 					<span class="itemText">${item.name}</span>
@@ -104,24 +105,6 @@ function ContextPane() {
 		</li>
 	`;
 	document.body.appendChild(contextPane);
-
-	const listItems = [{
-		name: 'New File'
-	}, {
-		name: 'New Folder'
-	}, 'seperator', {
-		name: 'Open in Preview'
-	}, {
-		name: 'Open in Terminal'
-	}, 'seperator', {
-		name: 'Copy'
-	}, {
-		name: 'Copy Path'
-	}, 'seperator',  {
-		name: 'Rename'
-	},{
-		name: 'Delete'
-	}];
 
 	function hideMenu(){
 		contextPane.style.removeProperty('visibility');
@@ -132,8 +115,16 @@ function ContextPane() {
 		Menu.classList.remove('open');
 	}
 
+	function triggerMenuEvent({ which, parent, data }){
+		const menuEvent = new CustomEvent('contextmenu-select', {
+			bubbles: true,
+			detail: { which, parent, data }
+		});
+		document.body.dispatchEvent(menuEvent);
+	}
+
 	function showMenu({
-		x=0, y=0
+		x=0, y=0, parent='unknown', data, list
 	}={}){
 		// warn if menu will appear offscreen?
 
@@ -146,8 +137,8 @@ function ContextPane() {
 		contextPane.style.backgroundColor = "#00000029";
 
 
-		const list = contextPane.querySelector('.list');
-		list.innerHTML = listItems.map(menuItem).join('\n');
+		const listDiv = contextPane.querySelector('.list');
+		listDiv.innerHTML = list.map(menuItem).join('\n');
 
 		const Menu = contextPane.querySelector('.ContextMenu')
 		Menu.classList.add('open');
@@ -155,11 +146,25 @@ function ContextPane() {
 		Menu.style.left = x + 'px';
 
 		//attach a listener to body that hides menu and detaches itself
+		const menuClickListener = (event) => {
+			hideMenu();
+			document.body.removeEventListener('click', menuClickListener, false);
+			const menuWasClicked = Menu.contains(event.target);
+			if(!menuWasClicked){ return; }
+			if(event.target.tagName !== 'LI'){ debugger; }
+
+			triggerMenuEvent({
+				which: event.target.dataset.text,
+				parent, data
+			});
+		};
+		document.body.addEventListener('click', menuClickListener);
 	}
 	window.showMenu = showMenu;
 	window.hideMenu = hideMenu;
 
 	//attachListeners({ showMenu });
+	//triggers = attachTriggers
 }
 
 export default ContextPane;

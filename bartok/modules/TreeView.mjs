@@ -3,6 +3,13 @@ import JSTreeView from "../../shared/vendor/js-treeview.1.1.5.js";
 
 import { attachListener } from './events/tree.mjs';
 
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim(); // Never return a text node of whitespace as the result
+	template.innerHTML = html;
+	return template.content.firstChild;
+}
+
 const getTreeViewDOM = ({ contextHandler } = {}) => {
 	const explorerPane = document.body.querySelector('#explorer');
 	const prevTreeView = document.querySelector('#tree-view');
@@ -17,7 +24,6 @@ const getTreeViewDOM = ({ contextHandler } = {}) => {
 	// _tree.classList.add(
 	// 	'sidenav', 'sidenav-fixed'
 	// );
-	_tree.addEventListener( "contextmenu", contextHandler);
 	const _treeMenu = document.createElement('div');
 	_treeMenu.id="tree-menu";
 	_treeMenu.classList.add("row", "no-margin");
@@ -25,102 +31,75 @@ const getTreeViewDOM = ({ contextHandler } = {}) => {
 	explorerPane.appendChild(_tree);
 
 	return _tree;
-}
-
-const contextMenuInit = (callback) => {
-	//https://materializecss.com/dropdown.html
-	const dropdown = document.createElement('ul');
-	dropdown.id = "dropdown1";
-	dropdown.classList.add('dropdown-content');
-	dropdown.innerHTML = `
-		<li><a href="#!">create</a></li>
-		<li><a href="#!">cancel</a></li>
-		<li><a href="#!">delete</a></li>
-		<li><a href="#!">persist</a></li>
-		<li><a href="#!">update</a></li>
-	`;
-	//<li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
-
-	dropdown.addEventListener('click', e => {
-		const operation = e.target.innerText;
-		const event = new CustomEvent('operations', {
-			bubbles: true,
-			detail: {
-				operation,
-				body: {
-					//name: (containerDiv.querySelector('#service_name')||{}).value,
-					//id: (containerDiv.querySelector('#service_id')||{}).value,
-					code: (window.Editor||{ getValue: ()=>{}}).getValue()
-				}
-			}
-		});
-		document.body.dispatchEvent(event);
-		e.preventDefault();
-		return false;
-	});
-
-	document.body.appendChild(dropdown);
-	callback();
-};
-
-const contextMenu = (e) => {
-	//console.log(e.target);
-	e.target.dataset.target = 'dropdown1';
-
-	contextMenuInit(() => {
-		const options = {
-			/*
-			alignment	String	'left'	Defines the edge the menu is aligned to.
-			autoTrigger	Boolean	true	If true, automatically focus dropdown el for keyboard.
-			constrainWidth	Boolean	true	If true, constrainWidth to the size of the dropdown activator.
-			container	Element	null	Provide an element that will be the bounding container of the dropdown.
-			coverTrigger	Boolean	true	If false, the dropdown will show below the trigger.
-			closeOnClick	Boolean	true	If true, close dropdown on item click.
-			hover	Boolean	false	If true, the dropdown will open on hover.
-			inDuration	Number	150	The duration of the transition enter in milliseconds.
-			outDuration	Number	250	The duration of the transition out in milliseconds.
-			onOpenStart	Function	null	Function called when dropdown starts entering.
-			onOpenEnd	Function	null	Function called when dropdown finishes entering.
-			onCloseStart	Function	null	Function called when dropdown starts exiting.
-			onCloseEnd	Function	null	Function called when dropdown finishes exiting.
-			*/
-		};
-
-		//TODO: maybe should destroy the instance after click out
-
-		var instance = M.Dropdown.init(e.target, options);
-		instance.open();
-	});
-
-	e.preventDefault();
-	return false;
 };
 
 const updateTree = (treeView) => (change, { name, id, file }) => {
-	if(change === "dirty"){
-		let dirtyParents;
-
-		//console.log(`Need to mark ${file} from ${name} ${id} as dirty`);
-		Array.from(treeView.querySelectorAll('.tree-leaf-content'))
-			.forEach(t => {
-				const item = JSON.parse(t.dataset.item);
-				if(item.name === file){
-					t.classList.add('changed');
-					dirtyParents = t.dataset.path.split('/').filter(x => !!x);
-				}
-			});
-		if(!dirtyParents){
-			return
-		}
-		Array.from(treeView.querySelectorAll('.tree-leaf-content'))
-			.forEach(t => {
-				const item = JSON.parse(t.dataset.item);
-				if(dirtyParents.includes(item.name)){
-					t.classList.add('changed');
-				}
-			});
+	if(change !== "dirty"){
+		return;
 	}
+
+	let dirtyParents;
+	//console.log(`Need to mark ${file} from ${name} ${id} as dirty`);
+	Array.from(treeView.querySelectorAll('.tree-leaf-content'))
+		.forEach(t => {
+			const item = JSON.parse(t.dataset.item);
+			if(item.name === file){
+				t.classList.add('changed');
+				dirtyParents = t.dataset.path.split('/').filter(x => !!x);
+			}
+		});
+	if(!dirtyParents){
+		return
+	}
+	Array.from(treeView.querySelectorAll('.tree-leaf-content'))
+		.forEach(t => {
+			const item = JSON.parse(t.dataset.item);
+			if(dirtyParents.includes(item.name)){
+				t.classList.add('changed');
+			}
+		});
 }
+function newFile({ onDone }){
+	if(!onDone){
+		return console.error('newFile requires an onDone event handler');
+	}
+	const nearbySibling = document.body
+		.querySelector('#tree-view > .tree-leaf > .tree-leaf-content:not(.folder)')
+		.parentNode;
+	const paddingLeft = nearbySibling
+		.querySelector('.tree-leaf-content')
+		.style.paddingLeft;
+	const newFileNode = htmlToElement(`
+		<div class="tree-leaf new">
+			<div class="tree-leaf-content" style="padding-left: ${paddingLeft};">
+				<div class="tree-leaf-text icon-default">
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+				</div>
+			</div>
+		</div>
+		`);
+	const fileNameInput = newFileNode.querySelector('input');
+	const finishInput = (event) => {
+		if (event.key && event.key !== "Enter") { return; }
+		const filename = fileNameInput.value;
+
+		fileNameInput.removeEventListener('blur', finishInput);
+		fileNameInput.removeEventListener('keyup', finishInput);
+		newFileNode.parentNode.removeChild(newFileNode);
+
+		if(!filename){ return; }
+		onDone(filename);
+	};
+	fileNameInput.addEventListener("blur", finishInput);
+	fileNameInput.addEventListener("keyup", finishInput);
+
+	//TODO: focus input, when input loses focus create real file
+	//TODO: when ENTER is pressed, create real file (or add a cool error box)
+	nearbySibling.parentNode.insertBefore(newFileNode, nearbySibling);
+	fileNameInput.focus();
+}
+
+window.newFile = newFile; //TODO: kill this some day
 
 function _TreeView(op){
 	if(op === "hide"){
@@ -130,12 +109,10 @@ function _TreeView(op){
 		}
 		return;
 	}
-	const treeView = getTreeViewDOM({
-		contextHandler: contextMenu
-	});
+	const treeView = getTreeViewDOM();
 	treeView.style.display = "";
 
-	attachListener(treeView, JSTreeView, updateTree(treeView));
+	attachListener(treeView, JSTreeView, updateTree(treeView), { newFile });
 }
 
 export default _TreeView;

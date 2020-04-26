@@ -5,6 +5,76 @@ import ext from '../../../shared/icons/seti/ext.json.mjs';
 
 let tree;
 
+const getTree = (result) => {
+	let resultTree = {
+		"index.js": {}
+	};
+
+	if(result && result[0] && result[0].tree){
+		return result[0].tree;
+	}
+
+	const name = ((result||[])[0]||{}).name || 'no service name';
+
+	try {
+		resultTree = { [name]: resultTree };
+		resultTree[name] = JSON.parse(result[0].tree);
+	} catch(e){
+		console.log('error parsing file tree');
+	}
+
+	return resultTree;
+};
+
+const fileTreeConvert = (input, converted=[]) => {
+	const keys = Object.keys(input);
+	keys.forEach(k => {
+		converted.push({
+			name: k,
+			children: fileTreeConvert(input[k])
+		})
+	});
+	return converted.sort((a, b) => {
+		if(a.name < b.name) { return -1; }
+    if(a.name > b.name) { return 1; }
+    return 0;
+	});
+};
+
+const treeMenu = ({ title }) => {
+	const treeMenu = document.querySelector('#explorer #tree-menu');
+	const menuInnerHTML = `
+		<div class="title-label">
+			<h2 title="${title}">${title}</h2>
+		</div>
+		<div class="title-actions">
+			<div class="monaco-toolbar">
+					<div class="monaco-action-bar animated">
+						<ul class="actions-container">
+								<li class="action-item">
+									<a class="action-label icon explorer-action new-file" role="button" title="New File">
+									</a>
+								</li>
+								<li class="action-item">
+									<a class="action-label icon explorer-action new-folder" role="button" title="New Folder">
+									</a>
+								</li>
+								<li class="action-item hidden">
+									<a class="action-label icon explorer-action refresh-explorer" role="button" title="Refresh Explorer">
+									</a>
+								</li>
+								<li class="action-item hidden">
+									<a class="action-label icon explorer-action collapse-explorer" role="button" title="Collapse Folders in Explorer">
+									</a>
+								</li>
+						</ul>
+					</div>
+			</div>
+		</div>
+	`;
+	treeMenu.innerHTML = menuInnerHTML;
+}
+
 function getDefaultFile(service){
 	let defaultFile;
 	try {
@@ -34,6 +104,7 @@ function getFileType(fileName=''){
 	}
 	return type;
 }
+
 
 
 const fileSelectHandler = (e) => {
@@ -110,80 +181,104 @@ const fileChangeHandler = (updateTree) => (event) => {
 	updateTree('dirty', {name, id, file});
 };
 
+const contextMenuHandler = ({ treeView, showMenu }) => (e) => {
+	if(!treeView.contains(e.target)){ return true; }
+	e.preventDefault();
 
-const getTree = (result) => {
-	let resultTree = {
-		"index.js": {}
-	};
-
-	if(result && result[0] && result[0].tree){
-		return result[0].tree;
-	}
-
-	const name = ((result||[])[0]||{}).name || 'no service name';
-
+	const listItems = [{
+		name: 'New File'
+	}, {
+		name: 'New Folder'
+	}, 'seperator', {
+		name: 'Open in Preview'
+	}, {
+		name: 'Open in Terminal'
+	}, 'seperator', {
+		name: 'Copy'
+	}, {
+		name: 'Copy Path'
+	}, 'seperator',  {
+		name: 'Rename'
+	},{
+		name: 'Delete'
+	}];
+	// ^^^ this list should be built based on what was clicked
+	let data;
 	try {
-		resultTree = { [name]: resultTree };
-		resultTree[name] = JSON.parse(result[0].tree);
-	} catch(e){
-		console.log('error parsing file tree');
+		const treeLeafContent = e.target.classList.contains('.tree-leaf-content')
+			? e.target
+			: e.target.closest('.tree-leaf-content');
+		data = {
+			name: treeLeafContent.innerText,
+			type: treeLeafContent.classList.contains('folder') ? 'folder' : 'file'
+		};
+	} catch(e) {}
+
+	if(!data){
+		console.error('some issue finding data for this context click!')
+		return;
 	}
 
-	return resultTree;
+	// debugger;
+	showMenu()({
+		x: e.clientX,
+		y: e.clientY,
+		list: listItems,
+		parent: 'TreeView',
+		data
+	});
+	return false;
 };
 
-const fileTreeConvert = (input, converted=[]) => {
-	const keys = Object.keys(input);
-	keys.forEach(k => {
-		converted.push({
-			name: k,
-			children: fileTreeConvert(input[k])
-		})
-	});
-	return converted.sort((a, b) => {
-		if(a.name < b.name) { return -1; }
-    if(a.name > b.name) { return 1; }
-    return 0;
-	});
+const contextMenuSelectHandler = ({ newFile }) => (e) => {
+	const { which, parent, data } = (e.detail || {});
+	if(parent !== 'TreeView'){
+		console.error('TreeView ignored a context-select event');
+		return;
+	}
+	if(which === 'New File'){
+		return newFile({
+			onDone: (filename) => {
+				if(!filename){ return; }
+				const event = new CustomEvent('operations', {
+					bubbles: true,
+					detail: {
+						operation: 'addFile',
+						filename,
+						body: {} //TODO: sucks that body is needed!!!
+					}
+				});
+				document.body.dispatchEvent(event);
+			},
+		});
+	}
+
+	if(which === 'Delete'){
+		console.log({ data });
+		const { name, type } = data;
+		if(!["folder", "file"].includes(type)){
+			console.error('cannot delete object of unkown type');
+			return;
+		}
+		const detail = { body: {} }; //TODO: sucks that body is needed!!!
+		if(type === "folder"){
+			detail.operation = 'deleteFolder';
+			detail.folderName = name;
+		}
+		if(type === "file"){
+			detail.operation = 'deleteFile';
+			detail.filename = name;
+		}
+
+		const event = new CustomEvent('operations', { bubbles: true, detail });
+		document.body.dispatchEvent(event);
+	}
 };
 
-const treeMenu = ({ title }) => {
-	const treeMenu = document.querySelector('#explorer #tree-menu');
-	const menuInnerHTML = `
-		<div class="title-label">
-			<h2 title="${title}">${title}</h2>
-		</div>
-		<div class="title-actions">
-			<div class="monaco-toolbar">
-					<div class="monaco-action-bar animated">
-						<ul class="actions-container">
-								<li class="action-item">
-									<a class="action-label icon explorer-action new-file" role="button" title="New File">
-									</a>
-								</li>
-								<li class="action-item">
-									<a class="action-label icon explorer-action new-folder" role="button" title="New Folder">
-									</a>
-								</li>
-								<li class="action-item hidden">
-									<a class="action-label icon explorer-action refresh-explorer" role="button" title="Refresh Explorer">
-									</a>
-								</li>
-								<li class="action-item hidden">
-									<a class="action-label icon explorer-action collapse-explorer" role="button" title="Collapse Folders in Explorer">
-									</a>
-								</li>
-						</ul>
-					</div>
-			</div>
-		</div>
-	`;
-	treeMenu.innerHTML = menuInnerHTML;
-}
 
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
 // new tree is created when: switch/open project, add file, ...
-function attachListener(treeView, JSTreeView, updateTree){
+function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 	const listener = async function (e) {
 		const { id, result, op } = e.detail;
 
@@ -390,8 +485,19 @@ function attachListener(treeView, JSTreeView, updateTree){
 		eventName: 'fileChange',
 		listener: fileChangeHandler(updateTree)
 	});
-
-
+	attach({
+		name: 'Explorer',
+		eventName: 'contextmenu',
+		listener: contextMenuHandler({
+			treeView,
+			showMenu: () => window.showMenu
+		})
+	});
+	attach({
+		name: 'Explorer',
+		eventName: 'contextmenu-select',
+		listener: contextMenuSelectHandler({ newFile })
+	});
 }
 
 

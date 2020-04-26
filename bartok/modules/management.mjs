@@ -170,7 +170,7 @@ function deleteFile(e, currentService, currentFile){
 
 	try {
 		const split = filename.split('/').filter(x => !!x);
-		const file = split.length > 1 ? split[split.length-1] : undefined;
+		const file = split[split.length-1];
 
 		let alreadyDeleted;
 		if(file){
@@ -178,8 +178,7 @@ function deleteFile(e, currentService, currentFile){
 			const rootFolderName = Object.keys(currentService.tree)[0];
 			const root = currentService.tree[rootFolderName];
 			const { parentObject } = getContextFromPath(root, parentPath);
-			const context = parentObject[parentPath];
-			delete context[file];
+			delete parentObject[file];
 			alreadyDeleted = true;
 		}
 		!alreadyDeleted && (

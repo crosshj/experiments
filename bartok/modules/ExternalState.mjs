@@ -131,7 +131,14 @@ async function externalStateRequest(op){
 				console.error("service to update is malformed!");
 				return;
 			}
+
 			//debugger
+			if(window.DEBUG){
+				const c = JSON.parse(serviceToUpdate.code);
+				debugger;
+				serviceToUpdate.code = JSON.stringify(c);
+			}
+
 			saveServiceToLS(lsServices, serviceToUpdate);
 			lsServices = getServicesFromLS() || [];
 			//console.log(JSON.stringify(op, null, 2));
