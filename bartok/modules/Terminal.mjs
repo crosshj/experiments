@@ -6,7 +6,7 @@ import { debounce } from "../../shared/modules/utilities.mjs";
 
 import motd from "./motd.mjs";
 import { attachEvents, attachTrigger } from './events/terminal.mjs';
-import { templateJSX, templateSVC3 } from './Templates.mjs';
+import { templateJSX, templateSVC3, transform } from './Templates.mjs';
 
 let EventTrigger;
 
@@ -400,9 +400,11 @@ function _Terminal({ getCurrentService }){
 
 	const updateIframe = debounce(updateIframeRaw, 300);
 
-	function viewUpdate({ view, type, doc, docName, locked }){
+	function viewUpdate({ supported, view, type, doc, docName, locked }){
 		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
-		const src = (docName||'').includes('jsx')
+		const src = supported
+		? transform({ name: docName, contents: doc })
+		: (docName||'').includes('jsx')
 			? templateJSX(doc)
 			: doc.includes('/* svcV3 ')
 				? templateSVC3(doc)

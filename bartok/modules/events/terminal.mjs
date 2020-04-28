@@ -2,6 +2,10 @@ import {
 	attach, trigger
 } from '../Listeners.mjs';
 
+import {
+	isSupported
+} from '../Templates.mjs'
+
 let locked;
 let lsLocked = localStorage.getItem("previewLocked");
 if(lsLocked === null){
@@ -9,6 +13,17 @@ if(lsLocked === null){
 	localStorage.setItem("previewLocked", "true");
 }
 locked = lsLocked === "true";
+
+
+let currentFile;
+let currentFileName;
+let currentView = localStorage.getItem('rightPaneSelected');
+
+let backupForLock = {
+	currentFile: '',
+	currentFileName: ''
+};
+
 
 const PROMPT = '\x1B[38;5;14m \r∑ \x1B[0m';
 
@@ -161,9 +176,7 @@ const terminalTrigger = (write, command, callback) => {
 	return preventDefault;
 };
 
-let currentFile;
-let currentFileName;
-let currentView = localStorage.getItem('rightPaneSelected');
+/// ----------------------------------------------------------------------------
 
 const viewSelectHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
@@ -172,88 +185,29 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 	currentView = view;
 	localStorage.setItem('rightPaneSelected', view);
 
-	if(currentFile){
-		const code = currentFile;
-		const name = currentFileName;
-		const isHTML = code.includes('<html>');
-		const isSVG = code.includes('</svg>');
-		const isJSX = (name).includes('jsx');
-		const isSVC3 = code.includes('/* svcV3 ');
-		if(!isSVG && !isHTML && !isJSX && !isSVC3){
-			code = `<div class="no-preview">No preview available.</div>`;
-		}
-		const doc = isHTML || isJSX || isSVC3
-			? code
-			: `
+	if(!currentFile){
+		// TODO: bind and conditionally trigger render
+		// console.log({ type, op, id });
+		const doc = `
 			<html>
-				<style>
-					.no-preview {
-						position: absolute;
-						top: 0;
-						left: 0;
-						width: 100%;
-						height: 100%;
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						font-size: 5vw;
-						color: #666;
-					}
-					body {
-						margin: 0px;
-						margin-top: 40px;
-						height: calc(100vh - 40px);
-						overflow: hidden;
-						color: #ccc;
-						font-family: sans-serif;
-					}
-				</style>
-				<body">
-					<pre>${code}</pre>
-				</body>
+				<body style="margin: 20%; color: white;">No Preview</body>
 			</html>
 		`;
-		viewUpdate({ type, doc, docName: currentFileName, locked, ...event.detail });
-		return;
+		viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
 	}
 
-	// TODO: bind and conditionally trigger render
-	// console.log({ type, op, id });
-	const doc = `
-		<html>
-			<body style="margin: 20%; color: white;">No Preview</body>
-		</html>
-	`;
-	viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
-};
-
-const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
-	const { type, detail } = event;
-	const { op, id, name, next } = detail;
-	if(type==="fileClose" && !next){
-		//TODO: this should be a bit more nuanced
-		return;
-	}
-	let code;
-	try {
-		const service = getCurrentService();
-		const selectedFile = service.code.find(x => x.name === (next || name));
-		({ code } = selectedFile);
-	} catch(e) {
-		console.error('could not find the file!');
-		return;
-	}
-
-	// bind and conditionally trigger render
-	// for instance, should not render some files
+	const code = currentFile;
+	const name = currentFileName;
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');
-	const isJSX = (name||next).includes('jsx');
+	const isJSX = (name).includes('jsx');
 	const isSVC3 = code.includes('/* svcV3 ');
-	if(!isSVG && !isHTML && !isJSX && !isSVC3){
+	const hasTemplate = isSupported({ name, contents: code });
+
+	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
 		code = `<div class="no-preview">No preview available.</div>`;
 	}
-	const doc = isHTML || isJSX || isSVC3
+	const doc = isHTML || isJSX || isSVC3 || hasTemplate
 		? code
 		: `
 		<html>
@@ -284,24 +238,96 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 			</body>
 		</html>
 	`;
-	currentFile = doc;
-	currentFileName = name||next;
+	viewUpdate({ supported: hasTemplate, type, doc, docName: currentFileName, locked, ...event.detail });
+	return;
+};
+
+const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
+	const { type, detail } = event;
+	const { op, id, name, next } = detail;
+	if(type==="fileClose" && !next){
+		//TODO: this should be a bit more nuanced
+		return;
+	}
+	let code;
+	try {
+		const service = getCurrentService();
+		const selectedFile = service.code.find(x => x.name === (next || name));
+		({ code } = selectedFile);
+	} catch(e) {
+		console.error('could not find the file!');
+		return;
+	}
+
+	// bind and conditionally trigger render
+	// for instance, should not render some files
+	const isHTML = code.includes('<html>');
+	const isSVG = code.includes('</svg>');
+	const isJSX = (name||next).includes('jsx');
+	const isSVC3 = code.includes('/* svcV3 ');
+	const hasTemplate = isSupported({ name, contents: code });
+
+	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
+		code = `<div class="no-preview">No preview available.</div>`;
+	}
+	const doc = isHTML || isJSX || isSVC3 || hasTemplate
+		? code
+		: `
+		<html>
+			<style>
+				.no-preview {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 5vw;
+					color: #666;
+				}
+				body {
+					margin: 0px;
+					margin-top: 40px;
+					height: calc(100vh - 40px);
+					overflow: hidden;
+					color: #ccc;
+					font-family: sans-serif;
+				}
+			</style>
+			<body">
+				<pre>${code}</pre>
+			</body>
+		</html>
+	`;
+	if(!locked){
+		currentFile = doc;
+		currentFileName = name||next;
+	} else {
+		backupForLock.currentFile = doc;
+		backupForLock.currentFileName = name||next;
+	}
 	if(doc && currentView === "preview"){
-		viewUpdate({ type, locked, doc, docName: next || name, ...event.detail });
+		viewUpdate({ supported: hasTemplate, type, locked, doc, docName: next || name, ...event.detail });
 	}
 };
 
 const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const { type, detail } = event;
 	let { name, id, file, code } = detail;
+
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');
 	const isJSX = file.includes('jsx');
 	const isSVC3 = code.includes('/* svcV3 ');
-	if(!isSVG && !isHTML && !isJSX && !isSVC3){
+	const hasTemplate = isSupported({ name: file, contents: code });
+
+	//debugger;
+	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
 		code = `<div class="no-preview">No preview available.</div>`;
 	}
-	const doc = isHTML || isJSX || isSVC3
+	const doc = isHTML || isJSX || isSVC3 || hasTemplate
 	? code
 	: `
 	<html>
@@ -332,10 +358,15 @@ const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		</body>
 	</html>
 `;
-	currentFile = doc;
-	currentFileName = file;
+	if(!locked){
+		currentFile = doc;
+		currentFileName = file;
+	} else {
+		backupForLock.currentFile = doc;
+		backupForLock.currentFileName = file;
+	}
 	if(doc && currentView === "preview"){
-		viewUpdate({ type, locked, doc, docName: file, ...event.detail });
+		viewUpdate({ supported: hasTemplate, type, locked, doc, docName: file, ...event.detail });
 	}
 };
 
@@ -347,14 +378,69 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 		locked = !locked;
 	}
 	terminalActions({ type, detail, locked, ...event.detail });
-	if(!locked && currentFile){
-		viewUpdate({
-			type, locked,
-			doc: currentFile,
-			docName: currentFileName,
-			...event.detail
-		});
+
+	if(locked){
+		return;
 	}
+	debugger
+
+	if(backupForLock.currentFile){
+		currentFile = backupForLock.currentFile;
+		currentFileName = backupForLock.currentFileName;
+	}
+
+	if(!currentFile){ return; }
+
+	const isHTML = currentFile.includes('<html>');
+	const isSVG = currentFile.includes('</svg>');
+	const isJSX = currentFileName.includes('jsx');
+	const isSVC3 = currentFile.includes('/* svcV3 ');
+	const hasTemplate = isSupported({ name: currentFileName, contents: currentFile });
+
+	let code;
+	//debugger;
+	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
+		code = `<div class="no-preview">No preview available.</div>`;
+	}
+	const doc = isHTML || isJSX || isSVC3 || hasTemplate
+	? currentFile
+	: `
+	<html>
+		<style>
+			.no-preview {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 5vw;
+				color: #666;
+			}
+			body {
+				margin: 0px;
+				margin-top: 40px;
+				height: calc(100vh - 40px);
+				overflow: hidden;
+				color: #ccc;
+				font-family: sans-serif;
+			}
+		</style>
+		<body">
+			<pre>${code}</pre>
+		</body>
+	</html>
+`;
+
+	viewUpdate({
+		type, locked, supported: hasTemplate,
+		doc,
+		docName: currentFileName,
+		...event.detail
+	});
+
 };
 
 function attachEvents({ write, viewUpdate, getCurrentService, terminalActions }){
@@ -393,7 +479,9 @@ function attachEvents({ write, viewUpdate, getCurrentService, terminalActions })
 		eventName: 'operations',
 		listener: (event) => {
 			if(event.detail.operation !== "persist"){ return; }
+			const hasTemplate = isSupported({ name: currentFileName, contents: currentFile });
 			viewUpdate({
+				supported: hasTemplate,
 				type: 'forceRefreshOnPersist',
 				locked: false,
 				doc: currentFile,

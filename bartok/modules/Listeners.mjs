@@ -3,7 +3,7 @@ const listeners = {};
 function attach({
 	name, listener, eventName, options
 }){
-	const listenerName = `${eventName}-${name}`;
+	const listenerName = `${eventName}__${name}`;
 	if(listeners[listenerName]){
 		return;
 	}
@@ -14,7 +14,7 @@ function attach({
 function remove({
 	name, eventName, options
 }){
-	const listenerName = `${eventName}-${name}`;
+	const listenerName = `${eventName}__${name}`;
 	document.body.removeEventListener(eventName, listeners[listenerName], options);
 	delete listeners[listenerName];
 }

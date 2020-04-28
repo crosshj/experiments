@@ -280,8 +280,8 @@ const handleSelect = (selection, canvas, {
 	const showUIServices = () => {
 		const listeners = list();
 		const mappedListeners = listeners.reduce((all, one) => {
-			const eventName = one.split('-')[0];
-			const name = one.split('-')[1];
+			const eventName = one.split('__')[0];
+			const name = one.split('__')[1];
 			all[name] = all[name] || [];
 			all[name].push(eventName);
 			return all;

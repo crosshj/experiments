@@ -1,4 +1,4 @@
-
+import { attachListeners } from './events/templates.mjs';
 
 const jsxFirst = `
 <!DOCTYPE html>
@@ -205,15 +205,75 @@ const svc3Second = `
 </html
 `;
 
+
+// DEPRECATE
 function templateSVC3(src){
 	return `${svc3First}${src}${svc3Second}`;
 }
 
+// DEPRECATE
 function templateJSX(src){
 	//console.log('JSX TEMPLATE ACTIVATE');
 	return `${jsxFirst}${src}${jsxSecond}`;
 }
 
+const convertRaw = (raw) => {
+  const newTemp = {
+    extensions: [],
+    body: '',
+    tokens: [],
+    matcher: () => false //TODO
+  };
+  newTemp.extensions.push(raw.name.split('.')[0]);
+  newTemp.tokens = [...new Set(raw.code.match(/{{.*}}/g))]
+    .map(x => x.replace(/{{|}}/g,''));
+  newTemp.body = raw.code;
+  return newTemp;
+};
+
+let templates = [];
+// get/save all the templates
+function updateTemplates(rawTemplates){
+  console.log('updateTemplates');
+  //console.log({ templates: rawTemplates });
+  templates = rawTemplates.map(convertRaw);
+}
+
+attachListeners({ updateTemplates })
+
+// TODO: maybe cache this answer (and kill cache when updateTemplates is ran)
+const isSupported = ({ name, contents }, returnMatched) => {
+  const extensionMatch = templates.find(t =>
+    t.extensions.find(ext =>
+      name.includes(`.${ext}`)
+    )
+  );
+  if(extensionMatch){
+    return returnMatched ? extensionMatch : !!extensionMatch;
+  }
+  const matcherMatch = templates.find(x => x.matcher({name, contents}));
+  return returnMatched ? matcherMatch : !!matcherMatch;
+};
+
+const transform = ({ name, contents }) => {
+  const template = isSupported({ name, contents }, 'returnMatched');
+  if(!template){
+    console.error('could not find a template that matched this file!');
+    return;
+  }
+  return template.body
+    .replace(`\{\{${template.tokens[0]}\}\}`, contents);
+};
+
+
+
+// [light] when asked if file/contents are supported by template, say so
+
+// [heavy] transform code according to matching template
+
+// Q: what if multiple templates match?
+
 export {
-	templateJSX, templateSVC3
+  templateJSX, templateSVC3,
+  isSupported, transform
 };
