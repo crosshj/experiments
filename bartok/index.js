@@ -138,7 +138,7 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 			localStorage.setItem('localServices-'+tag, currentServices);
 			result = `backed up all services: ${'localServices-'+tag}`
 		} catch(e){ error = e; }
-		return result || e;
+		return result || error;
 	};
 
 	const loadingEl = document.querySelector('#loading-screen');
