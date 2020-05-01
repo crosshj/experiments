@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Quadcopter Sim</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+		body {
+			margin: 0px;
+			overflow: hidden;
+			background: -webkit-radial-gradient(bottom, black, white); /* Safari 5.1 to 6.0 */
+  			background: -o-radial-gradient(black, white); /* For Opera 11.6 to 12.0 */
+  			background: -moz-radial-gradient(black, white); /* For Firefox 3.6 to 15 */
+  			background: radial-gradient(at bottom, rgba(3, 3, 3, 0.64), lightgray); /* Standard syntax */
+		}
+		#reset{
+			border: 1px solid black;
+			position: absolute;
+			padding: 5px;
+			font-family: monospace;
+			margin: 10px;
+			background-color: rgba(182, 182, 182, 0.56);
+			cursor: pointer;
+			right: 0px;
+		}
+
+		.noselect {
+		    -webkit-touch-callout: none;
+		    -webkit-user-select: none;
+		    -khtml-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    user-select: none;
+		}
+		</style>
+	</head>
+	<body ontouchstart="">
+		<div id="reset" class="noselect" onclick="resetQuad(quadcopter)">RESET</div>
+		<script src="js/three.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script>
+			var loader = new THREE.XHRLoader();
+			loader.load( 'app.json', function ( text ) {
+
+				var player = new APP.Player();
+				player.load( JSON.parse( text ) );
+				player.setSize( window.innerWidth, window.innerHeight );
+				player.play();
+
+				document.body.appendChild( player.dom );
+
+			} );
+
+		</script>
+	</body>
+</html>

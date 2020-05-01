@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>rxjs + react</title>
+    <meta name="description" content="Using rxjs with react in a fluxy (reduxy) and about-as-minimal-as-can-get kind of way">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+  </head>
+
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+    #root {
+      width: 325px;
+      background-color: white;
+      padding: 32px;
+      box-shadow: 3px 7px 11px rgba(0, 0, 0, 0.28);
+    }
+    h1 {
+      color: #00d8ff;
+      font-weight: 500;
+      font-size: xx-large;
+      margin-top: 0px;
+    }
+    #text-input, #output {
+      width: -moz-available;
+      width: -webkit-fill-available;
+      width: fill-available;
+      max-width: -moz-available;
+      max-width: -webkit-fill-available;
+      max-width: fill-available;
+      max-height: 100px;
+      height: 100px;
+      padding: 10px;
+      resize: none;
+    }
+    body, #text-input, #output {
+      font: 400 11px sans-serif;
+    }
+    #output {
+      background-color: #eee;
+    }
+
+    .argyle {
+      /* https://philiprogers.com/svgpatterns/#argyle */
+      background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI5MCI+CjxnIHRyYW5zZm9ybT0ic2NhbGUoMSAxLjUpIj4KPHJlY3Qgd2lkdGg9Ijk5IiBoZWlnaHQ9Ijk5IiBmaWxsPSIjNmQ2OTVjIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSI0Mi40MiIgaGVpZ2h0PSI0Mi40MiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMzAgMCkgcm90YXRlKDQ1KSIgZmlsbD0iIzYyNWY1MyI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMSIgdHJhbnNmb3JtPSJyb3RhdGUoNDUpIiBmaWxsPSIjNzE2ZjY0Ij48L3JlY3Q+CjxyZWN0IHdpZHRoPSI5OSIgaGVpZ2h0PSIxIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDYwKSByb3RhdGUoLTQ1KSIgZmlsbD0iIzcxNmY2NCI+PC9yZWN0Pgo8L2c+Cjwvc3ZnPg==");
+      background-color: #625f53;
+      background-blend-mode: luminosity;
+    }
+  </style>
+
+  <body class="argyle">
+    <div id="root"></div>
+  </body>
+
+  <script crossorigin src="https://unpkg.com/rxjs@6.5.3/bundles/rxjs.umd.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <script>
+    const { of, fromEvent, from, range } = rxjs;
+    const { Observable, Subject } = rxjs;
+    const { map, filter, startWith, scan } = rxjs.operators;
+
+    const { render } = ReactDOM;
+    const { createContext, createElement, Component, Fragment } = React;
+
+    const div = (props, children) => createElement("div", props, children);
+    const textarea = (props, children) => createElement("textarea", props, children);
+    const h4 = (props, children) => createElement("h4", props, children);
+    const h1 = (props, children) => createElement("h1", props, children);
+    const fragment = children => createElement(Fragment, null, children);
+
+    window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {}; //STUPID
+
+    const clone = o => {
+      const result = undefined;
+      try { result = JSON.parse(JSON.stringify(o)); }
+      catch(e) {}
+      return result;
+    }
+
+    // -------------------------------------------------------------------------
+
+    // STORE / REDUCER / ACTIONS
+    const action$ = new Subject();
+
+    const reducer = (state, action) => {
+      var newState = clone(state);
+      switch(action.type){
+        case 'NAME_CHANGED': {
+          newState = Object.assign({}, state, { name: action.payload });
+        }
+      }
+      return newState;
+    };
+
+    const initialState = { name: 'default' };
+    const store$ = action$
+      .pipe(
+        scan(reducer, initialState)
+      );
+  
+    const dispatcher = function(action){
+      return action$.next(action);
+    }
+  
+    const changeName = payload => dispatcher({  
+      type: 'NAME_CHANGED',
+      payload
+    });
+
+    // -------------------------------------------------------------------------
+    
+    // CONNECTOR (state to app)
+
+    function RXConnector(props) {
+      this.state = {};
+      this.render = () => {
+        return fragment(props.render(this.state));
+      };
+      this.observable$ = props.observable$;
+      this.componentWillMount = function(){
+        this.observable$.subscribe(o => {
+          this.setState(o)
+        });
+      }
+    }
+
+    RXConnector.prototype = Object.create(Component.prototype);
+
+    const Connector = (props, children) => createElement(RXConnector, props, children);
+
+
+    // -------------------------------------------------------------------------
+
+    // VIEW
+
+    const inputOnChange = e => changeName(e.target.value);
+
+    const Root = ({ name = '' }) => fragment([
+      h1({ key: 'main-title' }, 'react + fluxy rx'),
+      h4({ key: 'input-title' }, 'Action fired to trigger RX here:'),
+      textarea({ key: 'text-input', id: 'text-input', onChange: inputOnChange, placeholder: 'Enter some text'}),
+      h4({ key: 'output-title' }, 'Observable subscribe causes render here:'),
+      //TODO: make this textarea scroll position follow input textarea
+      textarea({ key: 'output', id: 'output', readOnly: true, value: name, placeholder: 'Text shows up here' })
+    ]);
+
+    // -------------------------------------------------------------------------
+
+    // MAIN
+
+    render(
+      Connector({ observable$: store$, render: Root }),
+      document.getElementById('root')
+    );
+
+  </script>
+</html>

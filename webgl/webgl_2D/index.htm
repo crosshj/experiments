@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!-- saved/modified from url=https://developer.mozilla.org/samples/webgl/sample2/ -->
+<!DOCTYPE html>
+<html>  
+  <head>    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebGL2D WIP</title>	
+    
+    <script type="text/javascript">
+       WebFontConfig = {
+         google: { families: [ 'Oxygen:400,700:latin' ] }
+       };
+      (function() {
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })(); 
+    </script>   
+    
+    <link rel="stylesheet" type="text/css" href="source/webgl.css">    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+    <script type="text/javascript">
+      var vs_source = null,
+          fs_source = null,
+          model_source = null;
+      // VERTEX
+      $.ajax({
+          async: false,
+          //url: 'source/shader1.vs',
+          url: 'source/shader2.vs',
+          success: function (data) {
+              console.log("Got VS source.");
+              vs_source = $(data).html();
+          },
+          dataType: ($.browser.msie) ? "text" : "html"
+      });
+      
+      // FRAGMENT
+      $.ajax({
+          async: false,
+          //url: 'source/shader1.fs',
+          url: 'source/shader2.fs',
+          success: function (data) {
+              console.log("Got FS source.");
+              fs_source = $(data).html();
+          },
+          dataType: ($.browser.msie) ? "text" : "html"
+      });
+
+      // MODEL
+      $.ajax({
+          async: false,
+          url: 'source/model.json',
+          success: function (data) {
+              console.log("Got model source.");
+              model_source = data;
+          },
+          dataType: ($.browser.msie) ? "text" : "html"
+      });      
+    </script>
+
+    <script src="source/sylvester.js" type="text/javascript"></script>    
+    <script src="source/glUtils.js" type="text/javascript"></script>    
+    <script src="source/webgl-demo.js" type="text/javascript"></script>    
+    <script src="source/other.js" type="text/javascript"></script> 
+
+    <!-- Fragment shader program -->    
+    <!--script id="shader-fs" type="x-shader/x-fragment" src="source/shaderFrag1.js"></script-->  
+    <!-- Vertex shader program -->    
+    <!--script id="shader-vs" type="x-shader/x-vertex" src="source/shaderVert1.js"></script-->    
+
+  </head>  
+  <body onload="start()">    
+    <div id="header">      
+      <font id="fontHeaderMain">webGL2D</font>      
+      <font id="fontHeaderOther">WIP</font>    
+    </div>    
+    <div id="mainContainer">      
+      <div id="canvasContainer">        
+        <canvas id="glcanvas" width="640" height="480">Your browser doesn't appear to support the HTML5 
+          <code>&lt;canvas&gt;
+          </code> element.         
+        </canvas>      
+      </div>    
+    </div>    
+    <div id="footer">
+    </div>  
+  </body>
+</html>

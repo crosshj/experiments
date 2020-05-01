@@ -1,0 +1,64 @@
+<pre>
+have a look at window.rangers
+
+hit rate => ranger.antiAvoidProb
+skill hit rate => ranger.antiSkillAvoidProb
+evade rate => avoidProbability
+skill evade rate => skillAvoidProbability
+
+what kind of strategies exist?
+what strategies are viable for lower developed teams?
+what attributes are important in these strategies?
+
+</pre>
+
+<style>
+    body {
+        background: #1b191a;
+        color: #96847d;
+    }
+</style>
+
+<script>
+    const rangerFetch = fetch('rangers')
+        .then(x => x.json());
+    const translateUNIT = fetch('translateUNIT')
+        .then(x => x.json());
+
+    Promise.all([rangerFetch, translateUNIT])
+        .then(x => {
+            window.rangers = x[0]
+                .map(r => {
+                    r.name = x[1][r.unitCode + '_nm'];
+                    return r;
+                })
+                .filter(r => r.unitCode[0] !== 'g') //guardians
+                .filter(r=> r.unitType !== 'SPECIAL') //leonards
+                .filter(r=> r.skillCode
+                    ? !r.skillCode.includes("_enemy")
+                    : true) //enemy
+                .filter( r => !(
+                    r.unitCode.includes('u90') && r.unitCode.split('-')[0].length === 6
+                ))
+                .filter( r => !(
+                    r.unitCode.includes('u81') && r.unitCode.split('-')[0].length === 6
+                ))
+                .filter( r => !(
+                    r.unitCode.includes('u82') && r.unitCode.split('-')[0].length === 6
+                ))
+                .filter(
+                        x => !!x.antiAvoidProb || !!x.antiSkillAvoidProb
+                );
+                const transformed = window.rangers
+                    .reduce((acc, {name, unitCode, ...x}) => {
+                        acc[name || unitCode] = x;
+                        return acc;
+                    }, {});
+                console.table(
+                    transformed,
+                        ['antiAvoidProb', 'antiSkillAvoidProb',
+                        'avoidProbability', 'skillAvoidProbability']
+                    );
+        })
+        .catch(console.log);
+</script>

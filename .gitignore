@@ -2,3 +2,9 @@ node_modules
 */node_modules/
 
 image-maker/native/build/*
+
+image-maker/images/out.png
+npm-debug.log
+rangers/.hardCache.json
+.DS_Store
+package-lock.json

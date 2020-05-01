@@ -18,13 +18,19 @@ https://cboard.cprogramming.com/c-programming/165802-printing-hexagon-using-loop
 
 */
 
+#include <time.h>
+#include <iostream>
+
 #include <nan.h>
+#include <picture.h>
+
+
 using namespace Nan;  
 using namespace v8;
 
-int rampColor(int value, float thresh){
+int rampColor(int value, double thresh){
 	int ramped = value * thresh < 256
-		? value * thresh
+		? (int)(value * thresh)
 		: value;
 	return ramped;
 }
@@ -78,11 +84,72 @@ NAN_METHOD(chop) {
 	);
 }
 
+NAN_METHOD(test) {
+	char * buffer = (char *) node::Buffer::Data(info[0]->ToObject());
+	int width = info[1]->Int32Value();
+	int height = info[2]->Int32Value();
+	int blockWidth = info[3]->Int32Value();
+	int blockHeight = info[4]->Int32Value();
+	int rotate = info[5]->Int32Value();
+	int tolerance = info[6]->Int32Value();
+	int size = height * width * 4;
+
+	srand ( (unsigned int)time(NULL) ); //initialize the random seed
+	//int degrees[3] = {90, 180, 270};
+
+	Picture* pic = new Picture(width, height, blockWidth, blockHeight);
+	pic->set(buffer);
+
+	if (rotate < 1){
+		// no effect, for test
+		pic->rotateBlock(0, 360);
+	} else {
+		for (int i=0; i < rotate; i++ ){
+			int swapOne = rand() % (height/blockHeight * width/blockWidth);
+			int swapTwo = swapOne;
+			int firstPass = true;
+			while (swapOne == swapTwo){
+				swapTwo = rand() % (height/blockHeight * width/blockWidth);
+			}
+			while (!pic->swapRotateBestMatch(swapOne, swapTwo, tolerance)){
+				swapTwo++;
+				if(swapTwo == swapOne){
+					swapTwo++;
+				}
+				if(swapTwo > (height/blockHeight * width/blockWidth) - 1){
+					swapTwo = 0;
+					if (!firstPass){
+						break;
+					} else {
+						firstPass = false;
+					}
+				}
+			}
+
+			//int randIndex = rand() % (height/blockHeight * width/blockWidth);
+			//pic->rotateBlock(randIndex, 90);
+
+			//int randIndex = rand() % (height/blockHeight * width/blockWidth);
+			// pic->rotateBlock(i, degrees[randIndex]);
+		}
+	}
+	char* retVal = pic->get();
+	
+	info.GetReturnValue().Set(
+		Nan::NewBuffer(retVal, size).ToLocalChecked()
+	);
+}
+
 NAN_MODULE_INIT(init) {  
 	Nan::Set(
 		target,
 		New<String>("chop").ToLocalChecked(),
 		GetFunction(New<FunctionTemplate>(chop)).ToLocalChecked()
+	);
+	Nan::Set(
+		target,
+		New<String>("test").ToLocalChecked(),
+		GetFunction(New<FunctionTemplate>(test)).ToLocalChecked()
 	);
 }
 

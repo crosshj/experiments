@@ -1,0 +1,3 @@
+__services/
+*.service
+#*.sqlite

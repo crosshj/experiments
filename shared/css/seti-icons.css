@@ -1,0 +1,817 @@
+@font-face {
+  font-family: 'seti';
+  /* src: url(/shared/fonts/seti.woff2) format('woff2'); */
+  src: url(../../shared/fonts/seti.woff2) format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+.icon-base-pseudo,
+.icon-R:before,
+.icon-apple:before,
+.icon-argdown:before,
+.icon-asm:before,
+.icon-audio:before,
+.icon-babel:before,
+.icon-bat:before,
+.icon-bower:before,
+.icon-bsl:before,
+.icon-c-sharp:before,
+.icon-c:before,
+.icon-cake:before,
+.icon-cake_php:before,
+.icon-checkbox-unchecked:before,
+.icon-checkbox:before,
+.icon-cjsx:before,
+.icon-clock:before,
+.icon-clojure:before,
+.icon-code-climate:before,
+.icon-code-search:before,
+.icon-coffee:before,
+.icon-coffee_erb:before,
+.icon-coldfusion:before,
+.icon-config:before,
+.icon-cpp:before,
+.icon-crystal:before,
+.icon-crystal_embedded:before,
+.icon-css:before,
+.icon-csv:before,
+.icon-d:before,
+.icon-dart:before,
+.icon-db:before,
+.icon-default:before,
+.icon-deprecation-cop:before,
+.icon-docker:before,
+.icon-editorconfig:before,
+.icon-ejs:before,
+.icon-elixir:before,
+.icon-elixir_script:before,
+.icon-elm:before,
+.icon-error:before,
+.icon-eslint:before,
+.icon-ethereum:before,
+.icon-f-sharp:before,
+.icon-favicon:before,
+.icon-firebase:before,
+.icon-firefox:before,
+.icon-folder:before,
+.icon-font:before,
+.icon-git:before,
+.icon-git_folder:before,
+.icon-git_ignore:before,
+.icon-github:before,
+.icon-go:before,
+.icon-go2:before,
+.icon-gradle:before,
+.icon-grails:before,
+.icon-graphql:before,
+.icon-grunt:before,
+.icon-gulp:before,
+.icon-hacklang:before,
+.icon-haml:before,
+.icon-happenings:before,
+.icon-haskell:before,
+.icon-haxe:before,
+.icon-heroku:before,
+.icon-hex:before,
+.icon-html:before,
+.icon-html_erb:before,
+.icon-ignored:before,
+.icon-illustrator:before,
+.icon-image:before,
+.icon-info:before,
+.icon-ionic:before,
+.icon-jade:before,
+.icon-java:before,
+.icon-javascript:before,
+.icon-jenkins:before,
+.icon-jinja:before,
+.icon-js_erb:before,
+.icon-json:before,
+.icon-julia:before,
+.icon-karma:before,
+.icon-kotlin:before,
+.icon-less:before,
+.icon-license:before,
+.icon-liquid:before,
+.icon-livescript:before,
+.icon-lock:before,
+.icon-lua:before,
+.icon-makefile:before,
+.icon-markdown:before,
+.icon-maven:before,
+.icon-mdo:before,
+.icon-mustache:before,
+.icon-new-file:before,
+.icon-npm:before,
+.icon-npm_ignored:before,
+.icon-nunjucks:before,
+.icon-ocaml:before,
+.icon-odata:before,
+.icon-pddl:before,
+.icon-pdf:before,
+.icon-perl:before,
+.icon-photoshop:before,
+.icon-php:before,
+.icon-plan:before,
+.icon-platformio:before,
+.icon-powershell:before,
+.icon-project:before,
+.icon-prolog:before,
+.icon-pug:before,
+.icon-puppet:before,
+.icon-python:before,
+.icon-rails:before,
+.icon-react:before,
+.icon-reasonml:before,
+.icon-rollup:before,
+.icon-ruby:before,
+.icon-rust:before,
+.icon-salesforce:before,
+.icon-sass:before,
+.icon-sbt:before,
+.icon-scala:before,
+.icon-search:before,
+.icon-settings:before,
+.icon-shell:before,
+.icon-slim:before,
+.icon-smarty:before,
+.icon-spring:before,
+.icon-stylelint:before,
+.icon-stylus:before,
+.icon-sublime:before,
+.icon-svg:before,
+.icon-swift:before,
+.icon-terraform:before,
+.icon-tex:before,
+.icon-time-cop:before,
+.icon-todo:before,
+.icon-tsconfig:before,
+.icon-twig:before,
+.icon-typescript:before,
+.icon-vala:before,
+.icon-video:before,
+.icon-vue:before,
+.icon-wasm:before,
+.icon-wat:before,
+.icon-webpack:before,
+.icon-wgt:before,
+.icon-windows:before,
+.icon-word:before,
+.icon-xls:before,
+.icon-xml:before,
+.icon-yarn:before,
+.icon-yml:before,
+.icon-zip:before {
+  font-family: 'seti';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: none;
+  /* background-size: 16px; */
+  /* background-position: 0; */
+  /* background-repeat: no-repeat; */
+  /* padding-right: 6px; */
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  vertical-align: top;
+  flex-shrink: 0;
+  font-size: 21px;
+  margin-top: -6px;
+  padding-right: 25px;
+}
+.icon-R:before {
+  content: '\E001';
+  color: white;
+}
+.icon-apple:before {
+  content: '\E002';
+  color: white;
+}
+.icon-argdown:before {
+  content: '\E003';
+  color: white;
+}
+.icon-asm:before {
+  content: '\E004';
+  color: white;
+}
+.icon-audio:before {
+  content: '\E005';
+  color: white;
+}
+.icon-babel:before {
+  content: '\E006';
+  color: white;
+}
+.icon-bower:before {
+  content: '\E007';
+  color: white;
+}
+.icon-bat:before {
+  content: '\E017';
+  color: #519aba;
+}
+.icon-bsl:before {
+  content: '\E008';
+  color: white;
+}
+.icon-c-sharp:before {
+  content: '\E009';
+  color: white;
+}
+.icon-c:before {
+  content: '\E00A';
+  color: white;
+}
+.icon-cake:before {
+  content: '\E00B';
+  color: white;
+}
+.icon-cake_php:before {
+  content: '\E00C';
+  color: white;
+}
+.icon-checkbox-unchecked:before {
+  content: '\E00D';
+  color: white;
+}
+.icon-checkbox:before {
+  content: '\E00E';
+  color: white;
+}
+.icon-cjsx:before {
+  content: '\E00F';
+  color: white;
+}
+.icon-clock:before {
+  content: '\E010';
+  color: white;
+}
+.icon-clojure:before {
+  content: '\E011';
+  color: white;
+}
+.icon-code-climate:before {
+  content: '\E012';
+  color: white;
+}
+.icon-code-search:before {
+  content: '\E013';
+  color: white;
+}
+.icon-coffee:before {
+  content: '\E014';
+  color: white;
+}
+.icon-coffee_erb:before {
+  content: '\E015';
+  color: white;
+}
+.icon-coldfusion:before {
+  content: '\E016';
+  color: white;
+}
+.icon-config:before {
+  content: '\E017';
+  color: white;
+}
+.icon-cpp:before {
+  content: '\E018';
+  color: white;
+}
+.icon-crystal:before {
+  content: '\E019';
+  color: white;
+}
+.icon-crystal_embedded:before {
+  content: '\E01A';
+  color: white;
+}
+.icon-css:before {
+  content: '\E01B';
+  color: #519aba;
+}
+.icon-csv:before {
+  content: '\E01C';
+  color: white;
+}
+.icon-d:before {
+  content: '\E01D';
+  color: white;
+}
+.icon-dart:before {
+  content: '\E01E';
+  color: white;
+}
+.icon-db:before {
+  content: '\E01F';
+  color: white;
+}
+.icon-default:before {
+  content: '\E020';
+  color: grey;
+}
+.icon-deprecation-cop:before {
+  content: '\E021';
+  color: white;
+}
+.icon-docker:before {
+  content: '\E022';
+  color: white;
+}
+.icon-editorconfig:before {
+  content: '\E023';
+  color: white;
+}
+.icon-ejs:before {
+  content: '\E024';
+  color: white;
+}
+.icon-elixir:before {
+  content: '\E025';
+  color: white;
+}
+.icon-elixir_script:before {
+  content: '\E026';
+  color: white;
+}
+.icon-elm:before {
+  content: '\E027';
+  color: white;
+}
+.icon-error:before {
+  content: '\E028';
+  color: white;
+}
+.icon-eslint:before {
+  content: '\E029';
+  color: white;
+}
+.icon-ethereum:before {
+  content: '\E02A';
+  color: white;
+}
+.icon-f-sharp:before {
+  content: '\E02B';
+  color: white;
+}
+.icon-favicon:before {
+  content: '\E02C';
+  color: white;
+}
+.icon-firebase:before {
+  content: '\E02D';
+  color: white;
+}
+.icon-firefox:before {
+  content: '\E02E';
+  color: white;
+}
+.icon-folder:before {
+  content: '\E02F';
+  color: white;
+}
+.icon-font:before {
+  content: '\E030';
+  color: white;
+}
+.icon-git:before {
+  content: '\E031';
+  color: white;
+}
+.icon-git_folder:before {
+  content: '\E032';
+  color: white;
+}
+.icon-git_ignore:before {
+  content: '\E033';
+  color: white;
+}
+.icon-github:before {
+  content: '\E034';
+  color: white;
+}
+.icon-go:before {
+  content: '\E035';
+  color: #68d8e1;
+}
+.icon-go2:before {
+  content: '\E036';
+  color: white;
+}
+.icon-gradle:before {
+  content: '\E037';
+  color: white;
+}
+.icon-grails:before {
+  content: '\E038';
+  color: white;
+}
+.icon-graphql:before {
+  content: '\E039';
+  color: white;
+}
+.icon-grunt:before {
+  content: '\E03A';
+  color: white;
+}
+.icon-gulp:before {
+  content: '\E03B';
+  color: white;
+}
+.icon-hacklang:before {
+  content: '\E03C';
+  color: white;
+}
+.icon-haml:before {
+  content: '\E03D';
+  color: white;
+}
+.icon-happenings:before {
+  content: '\E03E';
+  color: white;
+}
+.icon-haskell:before {
+  content: '\E03F';
+  color: white;
+}
+.icon-haxe:before {
+  content: '\E040';
+  color: white;
+}
+.icon-heroku:before {
+  content: '\E041';
+  color: white;
+}
+.icon-hex:before {
+  content: '\E042';
+  color: white;
+}
+.icon-html:before {
+  content: '\E043';
+  color: #e37933;
+}
+.icon-html_erb:before {
+  content: '\E044';
+  color: white;
+}
+.icon-ignored:before {
+  content: '\E045';
+  color: white;
+}
+.icon-illustrator:before {
+  content: '\E046';
+  color: white;
+}
+.icon-image:before {
+  content: '\E047';
+  color: #a074c4;
+}
+.icon-info:before {
+  content: '\E048';
+  color: #519aba;
+}
+.icon-ionic:before {
+  content: '\E049';
+  color: white;
+}
+.icon-jade:before {
+  content: '\E04A';
+  color: white;
+}
+.icon-java:before {
+  content: '\E04B';
+  color: white;
+}
+.icon-javascript:before {
+  content: '\E04C';
+  color: #c9d664;
+}
+.icon-jenkins:before {
+  content: '\E04D';
+  color: white;
+}
+.icon-jinja:before {
+  content: '\E04E';
+  color: white;
+}
+.icon-js_erb:before {
+  content: '\E04F';
+  color: white;
+}
+.icon-json:before {
+  content: '\E050';
+  color: #ff9800;
+}
+.icon-julia:before {
+  content: '\E051';
+  color: white;
+}
+.icon-karma:before {
+  content: '\E052';
+  color: white;
+}
+.icon-kotlin:before {
+  content: '\E053';
+  color: white;
+}
+.icon-less:before {
+  content: '\E054';
+  color: #519aba;
+}
+.icon-license:before {
+  content: '\E055';
+  color: white;
+}
+.icon-liquid:before {
+  content: '\E056';
+  color: white;
+}
+.icon-livescript:before {
+  content: '\E057';
+  color: white;
+}
+.icon-lock:before {
+  content: '\E058';
+  color: white;
+}
+.icon-lua:before {
+  content: '\E059';
+  color: white;
+}
+.icon-makefile:before {
+  content: '\E05A';
+  color: white;
+}
+.icon-markdown:before {
+  content: '\E05B';
+  color: white;
+}
+.icon-maven:before {
+  content: '\E05C';
+  color: white;
+}
+.icon-mdo:before {
+  content: '\E05D';
+  color: white;
+}
+.icon-mustache:before {
+  content: '\E05E';
+  color: white;
+}
+.icon-new-file:before {
+  content: '\E05F';
+  color: white;
+}
+.icon-npm:before {
+  content: '\E060';
+  color: white;
+}
+.icon-npm_ignored:before {
+  content: '\E061';
+  color: white;
+}
+.icon-nunjucks:before {
+  content: '\E062';
+  color: white;
+}
+.icon-ocaml:before {
+  content: '\E063';
+  color: white;
+}
+.icon-odata:before {
+  content: '\E064';
+  color: white;
+}
+.icon-pddl:before {
+  content: '\E065';
+  color: white;
+}
+.icon-pdf:before {
+  content: '\E066';
+  color: white;
+}
+.icon-perl:before {
+  content: '\E067';
+  color: #519aba;
+}
+.icon-photoshop:before {
+  content: '\E068';
+  color: white;
+}
+.icon-php:before {
+  content: '\E069';
+  color: #8892bf;
+}
+.icon-plan:before {
+  content: '\E06A';
+  color: white;
+}
+.icon-platformio:before {
+  content: '\E06B';
+  color: #62a562;
+}
+.icon-powershell:before {
+  content: '\E06C';
+  color: white;
+}
+.icon-project:before {
+  content: '\E06D';
+  color: white;
+}
+.icon-prolog:before {
+  content: '\E06E';
+  color: white;
+}
+.icon-pug:before {
+  content: '\E06F';
+  color: white;
+}
+.icon-puppet:before {
+  content: '\E070';
+  color: white;
+}
+.icon-python:before {
+  content: '\E071';
+  color: #fede59;
+}
+.icon-rails:before {
+  content: '\E072';
+  color: white;
+}
+.icon-react:before {
+  content: '\E073';
+  color: #61dafb;
+}
+.icon-reasonml:before {
+  content: '\E074';
+  color: white;
+}
+.icon-rollup:before {
+  content: '\E075';
+  color: white;
+}
+.icon-ruby:before {
+  content: '\E076';
+  color: #cc3e44;
+}
+.icon-rust:before {
+  content: '\E077';
+  color: white;
+}
+.icon-salesforce:before {
+  content: '\E078';
+  color: white;
+}
+.icon-sass:before {
+  content: '\E079';
+  color: #f55385;
+}
+.icon-sbt:before {
+  content: '\E07A';
+  color: white;
+}
+.icon-scala:before {
+  content: '\E07B';
+  color: white;
+}
+.icon-search:before {
+  content: '\E07C';
+  color: white;
+}
+.icon-settings:before {
+  content: '\E07D';
+  color: white;
+}
+.icon-shell:before {
+  content: '\E07E';
+  color: #4d5a5e;
+}
+.icon-slim:before {
+  content: '\E07F';
+  color: white;
+}
+.icon-smarty:before {
+  content: '\E080';
+  color: #bfbf94;
+}
+.icon-spring:before {
+  content: '\E081';
+  color: white;
+}
+.icon-stylelint:before {
+  content: '\E082';
+  color: white;
+}
+.icon-stylus:before {
+  content: '\E083';
+  color: white;
+}
+.icon-sublime:before {
+  content: '\E084';
+  color: white;
+}
+.icon-svg:before {
+  content: '\E085';
+  color: #a074c4;
+}
+.icon-swift:before {
+  content: '\E086';
+  color: white;
+}
+.icon-terraform:before {
+  content: '\E087';
+  color: white;
+}
+.icon-tex:before {
+  content: '\E088';
+  color: white;
+}
+.icon-time-cop:before {
+  content: '\E089';
+  color: white;
+}
+.icon-todo:before {
+  content: '\E08A';
+  color: white;
+}
+.icon-tsconfig:before {
+  content: '\E08B';
+  color: white;
+}
+.icon-twig:before {
+  content: '\E08C';
+  color: white;
+}
+.icon-typescript:before {
+  content: '\E08D';
+  color: #519aba;
+}
+.icon-vala:before {
+  content: '\E08E';
+  color: white;
+}
+.icon-video:before {
+  content: '\E08F';
+  color: white;
+}
+.icon-vue:before {
+  content: '\E090';
+  color: white;
+}
+.icon-wasm:before {
+  content: '\E091';
+  color: white;
+}
+.icon-wat:before {
+  content: '\E092';
+  color: white;
+}
+.icon-webpack:before {
+  content: '\E093';
+  color: white;
+}
+.icon-wgt:before {
+  content: '\E094';
+  color: white;
+}
+.icon-windows:before {
+  content: '\E095';
+  color: white;
+}
+.icon-word:before {
+  content: '\E096';
+  color: white;
+}
+.icon-xls:before {
+  content: '\E097';
+  color: white;
+}
+.icon-xml:before {
+  content: '\E098';
+  color: white;
+}
+.icon-yarn:before {
+  content: '\E099';
+  color: white;
+}
+.icon-yml:before {
+  content: '\E09A';
+  color: white;
+}
+.icon-zip:before {
+  content: '\E09B';
+  color: white;
+}
+
+
+
+/* don't show colored icons for inactive tabs */
+.tab:not(.active) span:before {
+  color: inherit !important;
+}

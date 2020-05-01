@@ -1,0 +1,2089 @@
+{
+	"allWeapon": [
+		{
+			"itemCode": "eq_wpn_0056",
+			"length": 196,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					34
+				],
+				[
+					"Mermaid Cony",
+					28
+				],
+				[
+					"Ace Soldier Moon",
+					20
+				],
+				[
+					"Edward Elric",
+					18
+				],
+				[
+					"Fashionista Choco",
+					16
+				],
+				[
+					"Goddess Jessica",
+					10
+				],
+				[
+					"Paladin Moon",
+					10
+				],
+				[
+					"Judo Team Captain Rachel",
+					8
+				],
+				[
+					"Ultimate Pilot Rei",
+					6
+				],
+				[
+					"Shining Sea Cony",
+					6
+				],
+				[
+					"Gladiator Moon",
+					6
+				],
+				[
+					"Maya",
+					4
+				],
+				[
+					"Unicorn Cony",
+					4
+				],
+				[
+					"Eternal Wanderer Ryu",
+					4
+				],
+				[
+					"Super Rocketeer Charles",
+					4
+				],
+				[
+					"Coast Guard Cony",
+					4
+				],
+				[
+					"Halloween Sally",
+					4
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Starlit Sea Pico",
+					2
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Mysterious Godot",
+					2
+				],
+				[
+					"Bow Choco",
+					2
+				]
+			],
+			"name": "Dark God Hammer"
+		},
+		{
+			"itemCode": "eq_wpn_06sf",
+			"length": 158,
+			"top": [
+				[
+					"Starlit Sea Pico",
+					34
+				],
+				[
+					"Gold Champagne Cony",
+					22
+				],
+				[
+					"Eternal Wanderer Ryu",
+					20
+				],
+				[
+					"Righteous Phoenix ",
+					18
+				],
+				[
+					"Perfect Edgeworth",
+					16
+				],
+				[
+					"Edward Elric",
+					14
+				],
+				[
+					"Blue Jade Chun-Li",
+					8
+				],
+				[
+					"Shish Kebab Brown",
+					6
+				],
+				[
+					"Mysterious Godot",
+					4
+				],
+				[
+					"Sit Back & Sea Pico",
+					4
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Fashionista Choco",
+					2
+				],
+				[
+					"King Crab Edward",
+					2
+				],
+				[
+					"Conan Holmes",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				]
+			],
+			"name": "[SF] Ryu's Gloves"
+		},
+		{
+			"itemCode": "eq_wpn_16metal",
+			"length": 150,
+			"top": [
+				[
+					"Edward Elric",
+					30
+				],
+				[
+					"Starlit Sea Pico",
+					24
+				],
+				[
+					"Mysterious Godot",
+					18
+				],
+				[
+					"Gold Champagne Cony",
+					16
+				],
+				[
+					"Super Hero Moon",
+					16
+				],
+				[
+					"Blue Jade Chun-Li",
+					12
+				],
+				[
+					"Sit Back & Sea Pico",
+					8
+				],
+				[
+					"Righteous Phoenix ",
+					6
+				],
+				[
+					"Eternal Wanderer Ryu",
+					6
+				],
+				[
+					"Perfect Edgeworth",
+					2
+				],
+				[
+					"Goddess Jessica",
+					2
+				],
+				[
+					"Unicorn Cony",
+					2
+				],
+				[
+					"Ultimate Pilot Rei",
+					2
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				],
+				[
+					"Scuba Diver Brown",
+					2
+				]
+			],
+			"name": "[FA] Führer's Longsword"
+		},
+		{
+			"itemCode": "eq_wpn_16sf_a",
+			"length": 80,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					38
+				],
+				[
+					"Ace Soldier Moon",
+					16
+				],
+				[
+					"The Moonlight Kid",
+					6
+				],
+				[
+					"Fashionista Choco",
+					4
+				],
+				[
+					"Acolyte Jessica",
+					4
+				],
+				[
+					"Shining Sea Cony",
+					4
+				],
+				[
+					"Coast Guard Cony",
+					2
+				],
+				[
+					"Mermaid Cony",
+					2
+				],
+				[
+					"Maya",
+					2
+				],
+				[
+					"Goddess Jessica",
+					2
+				]
+			],
+			"name": "[SF] Chun-Li's Bracelet"
+		},
+		{
+			"itemCode": "eq_wpn_0036",
+			"length": 80,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					50
+				],
+				[
+					"Shish Kebab Brown",
+					18
+				],
+				[
+					"Righteous Phoenix ",
+					4
+				],
+				[
+					"Perfect Edgeworth",
+					4
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				]
+			],
+			"name": "Planet Sniper"
+		},
+		{
+			"itemCode": "eq_wpn_evt_036",
+			"length": 32,
+			"top": [
+				[
+					"Edward Elric",
+					10
+				],
+				[
+					"Starlit Sea Pico",
+					6
+				],
+				[
+					"Paladin Moon",
+					4
+				],
+				[
+					"Eternal Wanderer Ryu",
+					4
+				],
+				[
+					"Mysterious Godot",
+					2
+				],
+				[
+					"Judo Team Captain Rachel",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Gladiator Moon",
+					2
+				]
+			],
+			"name": "Goddess Cony’s Wand"
+		},
+		{
+			"itemCode": "eq_wpn_0046",
+			"length": 28,
+			"top": [
+				[
+					"Perfect Edgeworth",
+					10
+				],
+				[
+					"Starlit Sea Pico",
+					4
+				],
+				[
+					"Super Hero Moon",
+					4
+				],
+				[
+					"Ultimate Pilot Rei",
+					4
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				],
+				[
+					"Sit Back & Sea Pico",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				]
+			],
+			"name": "Guardian Bow"
+		},
+		{
+			"itemCode": "eq_ace_wpn_16",
+			"length": 28,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					26
+				],
+				[
+					"Researcher Anita",
+					2
+				]
+			],
+			"name": "[AA] Edgeworth's Chess Piece "
+		},
+		{
+			"itemCode": "eq_wpn_26metal",
+			"length": 26,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					16
+				],
+				[
+					"Ace Soldier Moon",
+					4
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Mermaid Cony",
+					2
+				]
+			],
+			"name": "[FA] Edward's Spear"
+		},
+		{
+			"itemCode": "eq_ace_wpn_26",
+			"length": 22,
+			"top": [
+				[
+					"Edward Elric",
+					6
+				],
+				[
+					"Blue Jade Chun-Li",
+					4
+				],
+				[
+					"Judo Team Captain Rachel",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Poseidon Brown",
+					2
+				],
+				[
+					"Starlit Sea Pico",
+					2
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				]
+			],
+			"name": "[AA] Godot's Mug"
+		},
+		{
+			"itemCode": "eq_ace_wpn_06",
+			"length": 20,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					8
+				],
+				[
+					"Perfect Edgeworth",
+					6
+				],
+				[
+					"Shish Kebab Brown",
+					2
+				],
+				[
+					"Righteous Phoenix ",
+					2
+				],
+				[
+					"Starlit Sea Pico",
+					2
+				]
+			],
+			"name": "[AA] Phoenix's Magatama"
+		},
+		{
+			"itemCode": "eq_wpn_16co",
+			"length": 16,
+			"top": [
+				[
+					"Shish Kebab Brown",
+					6
+				],
+				[
+					"Gold Champagne Cony",
+					6
+				],
+				[
+					"Perfect Edgeworth",
+					4
+				]
+			],
+			"name": "[Conan] Soccer ball"
+		},
+		{
+			"itemCode": "eq_wpn_16sf_b",
+			"length": 14,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					8
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				]
+			],
+			"name": "[SF] Chun-Li's Bracelet"
+		},
+		{
+			"itemCode": "eq_wpn_06metal",
+			"length": 14,
+			"top": [
+				[
+					"Perfect Edgeworth",
+					8
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Gladiator Moon",
+					2
+				],
+				[
+					"Starlit Sea Pico",
+					2
+				]
+			],
+			"name": "[FA] Winry's Wrench"
+		},
+		{
+			"itemCode": "eq_wpn_evt_046",
+			"length": 10,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					6
+				],
+				[
+					"Shish Kebab Brown",
+					4
+				]
+			],
+			"name": "Thunder Brown's Glove"
+		},
+		{
+			"itemCode": "eq_wpn_0096",
+			"length": 10,
+			"top": [
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Shining Sea Cony",
+					2
+				],
+				[
+					"Edward Elric",
+					2
+				],
+				[
+					"Judo Team Captain Rachel",
+					2
+				],
+				[
+					"Goddess Jessica",
+					2
+				]
+			],
+			"name": "Galaxy Broom"
+		},
+		{
+			"itemCode": "eq_wpn_evt_016",
+			"length": 10,
+			"top": [
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Edward Elric",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Mysterious Godot",
+					2
+				],
+				[
+					"Shish Kebab Brown",
+					2
+				]
+			],
+			"name": "Queen Sally's Magic Wand"
+		},
+		{
+			"itemCode": "eq_wpn_0016",
+			"length": 10,
+			"top": [
+				[
+					"Shining Sea Cony",
+					4
+				],
+				[
+					"Ace Soldier Moon",
+					4
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				]
+			],
+			"name": "Dark Mage Staff"
+		},
+		{
+			"itemCode": "eq_wpn_06co",
+			"length": 4,
+			"top": [
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Perfect Edgeworth",
+					2
+				]
+			],
+			"name": "[Conan] Tranquilizer watch"
+		},
+		{
+			"itemCode": "eq_wpn_lim_016",
+			"length": 2,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					2
+				]
+			],
+			"name": "[SP] Swift Sword"
+		}
+	],
+	"allAcc": [
+		{
+			"itemCode": "eq_acc_16sf_a",
+			"length": 190,
+			"top": [
+				[
+					"Starlit Sea Pico",
+					50
+				],
+				[
+					"Spirit Medium Maya",
+					34
+				],
+				[
+					"Ace Soldier Moon",
+					14
+				],
+				[
+					"Mermaid Cony",
+					12
+				],
+				[
+					"Blue Jade Chun-Li",
+					10
+				],
+				[
+					"Sit Back & Sea Pico",
+					6
+				],
+				[
+					"Edward Elric",
+					6
+				],
+				[
+					"Shining Sea Cony",
+					6
+				],
+				[
+					"Fashionista Choco",
+					6
+				],
+				[
+					"Super Hero Moon",
+					6
+				],
+				[
+					"Shish Kebab Brown",
+					4
+				],
+				[
+					"Eternal Wanderer Ryu",
+					4
+				],
+				[
+					"Gold Champagne Cony",
+					4
+				],
+				[
+					"Coast Guard Cony",
+					4
+				],
+				[
+					"Righteous Phoenix ",
+					4
+				],
+				[
+					"Unicorn Cony",
+					4
+				],
+				[
+					"Ultimate Pilot Rei",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"The Moonlight Kid",
+					2
+				],
+				[
+					"Bow Choco",
+					2
+				],
+				[
+					"King Crab Edward",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				],
+				[
+					"Maya",
+					2
+				],
+				[
+					"Gladiator Moon",
+					2
+				]
+			],
+			"name": "[SF] Chun-Li's Hair Ribbons"
+		},
+		{
+			"itemCode": "eq_acc_06metal",
+			"length": 174,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					52
+				],
+				[
+					"Perfect Edgeworth",
+					36
+				],
+				[
+					"Shish Kebab Brown",
+					18
+				],
+				[
+					"Spirit Medium Maya",
+					12
+				],
+				[
+					"Righteous Phoenix ",
+					10
+				],
+				[
+					"Super Hero Moon",
+					6
+				],
+				[
+					"Starlit Sea Pico",
+					6
+				],
+				[
+					"Ace Soldier Moon",
+					6
+				],
+				[
+					"Eternal Wanderer Ryu",
+					4
+				],
+				[
+					"Mysterious Godot",
+					4
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Gladiator Moon",
+					2
+				],
+				[
+					"Sit Back & Sea Pico",
+					2
+				],
+				[
+					"Edward Elric",
+					2
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				],
+				[
+					"Shining Sea Cony",
+					2
+				],
+				[
+					"Conan Holmes",
+					2
+				],
+				[
+					"The Moonlight Kid",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Ultimate Pilot Rei",
+					2
+				]
+			],
+			"name": "[FA] Xiao-Mei's Panda Doll"
+		},
+		{
+			"itemCode": "eq_acc_0026",
+			"length": 152,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					44
+				],
+				[
+					"Mysterious Godot",
+					18
+				],
+				[
+					"Ace Soldier Moon",
+					10
+				],
+				[
+					"Goddess Jessica",
+					10
+				],
+				[
+					"Gold Champagne Cony",
+					8
+				],
+				[
+					"Eternal Wanderer Ryu",
+					8
+				],
+				[
+					"Super Hero Moon",
+					8
+				],
+				[
+					"Perfect Edgeworth",
+					8
+				],
+				[
+					"Righteous Phoenix ",
+					8
+				],
+				[
+					"Edward Elric",
+					6
+				],
+				[
+					"Shish Kebab Brown",
+					4
+				],
+				[
+					"Shining Sea Cony",
+					4
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Maya",
+					2
+				],
+				[
+					"Coast Guard Cony",
+					2
+				],
+				[
+					"Fashionista Choco",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Ultimate Pilot Rei",
+					2
+				]
+			],
+			"name": "Invincible Belt"
+		},
+		{
+			"itemCode": "eq_acc_0086",
+			"length": 80,
+			"top": [
+				[
+					"Mermaid Cony",
+					16
+				],
+				[
+					"Ace Soldier Moon",
+					12
+				],
+				[
+					"Spirit Medium Maya",
+					12
+				],
+				[
+					"Starlit Sea Pico",
+					6
+				],
+				[
+					"Gold Champagne Cony",
+					6
+				],
+				[
+					"Gladiator Moon",
+					4
+				],
+				[
+					"Fashionista Choco",
+					4
+				],
+				[
+					"Eternal Wanderer Ryu",
+					4
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				],
+				[
+					"Mysterious Godot",
+					2
+				],
+				[
+					"Edward Elric",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Sit Back & Sea Pico",
+					2
+				],
+				[
+					"Ultimate Pilot Rei",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Maya",
+					2
+				]
+			],
+			"name": "Dark Wing Purse"
+		},
+		{
+			"itemCode": "eq_acc_0006",
+			"length": 50,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					28
+				],
+				[
+					"Blue Jade Chun-Li",
+					8
+				],
+				[
+					"Super Hero Moon",
+					6
+				],
+				[
+					"Gladiator Moon",
+					2
+				],
+				[
+					"Starlit Sea Pico",
+					2
+				],
+				[
+					"Righteous Phoenix ",
+					2
+				],
+				[
+					"Sit Back & Sea Pico",
+					2
+				]
+			],
+			"name": "Angel Wing Ring"
+		},
+		{
+			"itemCode": "eq_acc_16sf_b",
+			"length": 46,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					8
+				],
+				[
+					"Starlit Sea Pico",
+					6
+				],
+				[
+					"Edward Elric",
+					6
+				],
+				[
+					"Mermaid Cony",
+					4
+				],
+				[
+					"Ultimate Pilot Rei",
+					4
+				],
+				[
+					"Blue Jade Chun-Li",
+					4
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Righteous Phoenix ",
+					2
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Perfect Edgeworth",
+					2
+				],
+				[
+					"Shining Sea Cony",
+					2
+				]
+			],
+			"name": "[SF] Chun-Li's Hair Ribbons"
+		},
+		{
+			"itemCode": "eq_acc_0036",
+			"length": 38,
+			"top": [
+				[
+					"Edward Elric",
+					12
+				],
+				[
+					"Paladin Moon",
+					10
+				],
+				[
+					"Judo Team Captain Rachel",
+					10
+				],
+				[
+					"Goddess Jessica",
+					4
+				],
+				[
+					"Shining Sea Cony",
+					2
+				]
+			],
+			"name": "Angel Wing Key"
+		},
+		{
+			"itemCode": "eq_acc_26metal",
+			"length": 32,
+			"top": [
+				[
+					"Edward Elric",
+					24
+				],
+				[
+					"Ace Soldier Moon",
+					4
+				],
+				[
+					"The Moonlight Kid",
+					2
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				]
+			],
+			"name": "[FA] Philosopher's Stone"
+		},
+		{
+			"itemCode": "eq_acc_06sf",
+			"length": 30,
+			"top": [
+				[
+					"Fashionista Choco",
+					10
+				],
+				[
+					"Starlit Sea Pico",
+					4
+				],
+				[
+					"Shish Kebab Brown",
+					4
+				],
+				[
+					"Spirit Medium Maya",
+					4
+				],
+				[
+					"Righteous Phoenix ",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Unicorn Cony",
+					2
+				]
+			],
+			"name": "[SF] Ryu's Headband"
+		},
+		{
+			"itemCode": "eq_acc_evt_046",
+			"length": 28,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					8
+				],
+				[
+					"Perfect Edgeworth",
+					6
+				],
+				[
+					"Shish Kebab Brown",
+					4
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				],
+				[
+					"Mysterious Godot",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Edward Elric",
+					2
+				],
+				[
+					"Starlit Sea Pico",
+					2
+				]
+			],
+			"name": "Thunder Brown's Cape"
+		},
+		{
+			"itemCode": "eq_acc_0106",
+			"length": 28,
+			"top": [
+				[
+					"Edward Elric",
+					10
+				],
+				[
+					"Eternal Wanderer Ryu",
+					8
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				]
+			],
+			"name": "Glorious Tear Belt"
+		},
+		{
+			"itemCode": "eq_ace_acc_26",
+			"length": 26,
+			"top": [
+				[
+					"Edward Elric",
+					6
+				],
+				[
+					"Spirit Medium Maya",
+					6
+				],
+				[
+					"Judo Team Captain Rachel",
+					2
+				],
+				[
+					"Gold Champagne Cony",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Poseidon Brown",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				],
+				[
+					"Researcher Anita",
+					2
+				],
+				[
+					"Mysterious Godot",
+					2
+				]
+			],
+			"name": "[AA] Godot's Mask"
+		},
+		{
+			"itemCode": "eq_acc_06co",
+			"length": 8,
+			"top": [
+				[
+					"Shish Kebab Brown",
+					4
+				],
+				[
+					"Gold Champagne Cony",
+					2
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				]
+			],
+			"name": "[Conan] Detective Badge"
+		},
+		{
+			"itemCode": "eq_acc_lim_006",
+			"length": 8,
+			"top": [
+				[
+					"Edward Elric",
+					6
+				],
+				[
+					"Judo Team Captain Rachel",
+					2
+				]
+			],
+			"name": "[SP] Sea Necklace"
+		},
+		{
+			"itemCode": "eq_ace_acc_06",
+			"length": 6,
+			"top": [
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Righteous Phoenix ",
+					2
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				]
+			],
+			"name": "[AA] Phoenix's Badge"
+		},
+		{
+			"itemCode": "eq_ace_acc_16",
+			"length": 4,
+			"top": [
+				[
+					"Super Rocketeer Charles",
+					2
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				]
+			],
+			"name": "[AA] Edgeworth's Badge"
+		},
+		{
+			"itemCode": "eq_acc_evt_016",
+			"length": 4,
+			"top": [
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Sit Back & Sea Pico",
+					2
+				]
+			],
+			"name": "Queen Sally's Brooch"
+		},
+		{
+			"itemCode": "eq_acc_16miku",
+			"length": 2,
+			"top": [
+				[
+					"Super Hero Moon",
+					2
+				]
+			],
+			"name": "[MIKU] Snowman"
+		},
+		{
+			"itemCode": "eq_acc_0076",
+			"length": 2,
+			"top": [
+				[
+					"Goddess Jessica",
+					2
+				]
+			],
+			"name": "Destiny Watch"
+		},
+		{
+			"itemCode": "eq_acc_evt_036",
+			"length": 2,
+			"top": [
+				[
+					"Scuba Diver Brown",
+					2
+				]
+			],
+			"name": "Goddess Cony's Tiara"
+		}
+	],
+	"allArmor": [
+		{
+			"itemCode": "eq_amr_0046",
+			"length": 288,
+			"top": [
+				[
+					"Spirit Medium Maya",
+					50
+				],
+				[
+					"Starlit Sea Pico",
+					42
+				],
+				[
+					"Ace Soldier Moon",
+					26
+				],
+				[
+					"Mermaid Cony",
+					24
+				],
+				[
+					"Mysterious Godot",
+					24
+				],
+				[
+					"Goddess Jessica",
+					16
+				],
+				[
+					"Blue Jade Chun-Li",
+					14
+				],
+				[
+					"Fashionista Choco",
+					14
+				],
+				[
+					"Shish Kebab Brown",
+					10
+				],
+				[
+					"Ultimate Pilot Rei",
+					10
+				],
+				[
+					"Sit Back & Sea Pico",
+					8
+				],
+				[
+					"Super Hero Moon",
+					8
+				],
+				[
+					"Unicorn Cony",
+					6
+				],
+				[
+					"Gladiator Moon",
+					4
+				],
+				[
+					"Halloween Sally",
+					4
+				],
+				[
+					"Eternal Wanderer Ryu",
+					4
+				],
+				[
+					"Righteous Phoenix ",
+					4
+				],
+				[
+					"Shining Sea Cony",
+					4
+				],
+				[
+					"Gold Champagne Cony",
+					4
+				],
+				[
+					"Edward Elric",
+					2
+				],
+				[
+					"Scuba Diver Brown",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				],
+				[
+					"Perfect Edgeworth",
+					2
+				],
+				[
+					"Super Rocketeer Charles",
+					2
+				],
+				[
+					"Bow Choco",
+					2
+				]
+			],
+			"name": "Cloud Wing Shoes"
+		},
+		{
+			"itemCode": "eq_amr_06metal",
+			"length": 248,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					66
+				],
+				[
+					"Spirit Medium Maya",
+					44
+				],
+				[
+					"Edward Elric",
+					28
+				],
+				[
+					"Perfect Edgeworth",
+					20
+				],
+				[
+					"Shish Kebab Brown",
+					16
+				],
+				[
+					"Righteous Phoenix ",
+					14
+				],
+				[
+					"Judo Team Captain Rachel",
+					12
+				],
+				[
+					"Starlit Sea Pico",
+					10
+				],
+				[
+					"Super Rocketeer Charles",
+					6
+				],
+				[
+					"Sit Back & Sea Pico",
+					4
+				],
+				[
+					"Paladin Moon",
+					4
+				],
+				[
+					"Super Hero Moon",
+					4
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Conan Holmes",
+					2
+				],
+				[
+					"Maya",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Coast Guard Cony",
+					2
+				],
+				[
+					"Researcher Anita",
+					2
+				],
+				[
+					"Mermaid Cony",
+					2
+				]
+			],
+			"name": "[FA] Roy's Gloves"
+		},
+		{
+			"itemCode": "eq_amr_06sf",
+			"length": 164,
+			"top": [
+				[
+					"Edward Elric",
+					28
+				],
+				[
+					"Perfect Edgeworth",
+					24
+				],
+				[
+					"Eternal Wanderer Ryu",
+					20
+				],
+				[
+					"Super Hero Moon",
+					14
+				],
+				[
+					"Ace Soldier Moon",
+					14
+				],
+				[
+					"Gold Champagne Cony",
+					12
+				],
+				[
+					"Spirit Medium Maya",
+					12
+				],
+				[
+					"Blue Jade Chun-Li",
+					6
+				],
+				[
+					"Shining Sea Cony",
+					6
+				],
+				[
+					"Coast Guard Cony",
+					4
+				],
+				[
+					"Righteous Phoenix ",
+					4
+				],
+				[
+					"Shish Kebab Brown",
+					4
+				],
+				[
+					"Gladiator Moon",
+					4
+				],
+				[
+					"Starlit Sea Pico",
+					4
+				],
+				[
+					"Poseidon Brown",
+					2
+				],
+				[
+					"Sit Back & Sea Pico",
+					2
+				],
+				[
+					"Maya",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				]
+			],
+			"name": "[SF] Ryu's Wear"
+		},
+		{
+			"itemCode": "eq_amr_evt_016",
+			"length": 54,
+			"top": [
+				[
+					"Edward Elric",
+					10
+				],
+				[
+					"Starlit Sea Pico",
+					6
+				],
+				[
+					"Spirit Medium Maya",
+					6
+				],
+				[
+					"Eternal Wanderer Ryu",
+					6
+				],
+				[
+					"Perfect Edgeworth",
+					4
+				],
+				[
+					"Shish Kebab Brown",
+					4
+				],
+				[
+					"Gold Champagne Cony",
+					4
+				],
+				[
+					"Shining Sea Cony",
+					2
+				],
+				[
+					"Righteous Phoenix ",
+					2
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"King Crab Edward",
+					2
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Mysterious Godot",
+					2
+				]
+			],
+			"name": "Queen Sally's Glove"
+		},
+		{
+			"itemCode": "eq_amr_evt_036",
+			"length": 28,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					8
+				],
+				[
+					"Starlit Sea Pico",
+					4
+				],
+				[
+					"Edward Elric",
+					4
+				],
+				[
+					"Maya",
+					2
+				],
+				[
+					"Righteous Phoenix ",
+					2
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				]
+			],
+			"name": "Goddess Cony's Bracelet"
+		},
+		{
+			"itemCode": "eq_amr_16pl",
+			"length": 24,
+			"top": [
+				[
+					"The Moonlight Kid",
+					6
+				],
+				[
+					"Spirit Medium Maya",
+					6
+				],
+				[
+					"Shining Sea Cony",
+					4
+				],
+				[
+					"Fashionista Choco",
+					4
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Gold Champagne Cony",
+					2
+				]
+			],
+			"name": "[Pili] Wind Outfit"
+		},
+		{
+			"itemCode": "eq_amr_26co",
+			"length": 24,
+			"top": [
+				[
+					"Starlit Sea Pico",
+					6
+				],
+				[
+					"Gold Champagne Cony",
+					4
+				],
+				[
+					"Spirit Medium Maya",
+					4
+				],
+				[
+					"Mermaid Cony",
+					4
+				],
+				[
+					"Mysterious Godot",
+					2
+				],
+				[
+					"Ultimate Pilot Rei",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				]
+			],
+			"name": "[Kid] Silk hat"
+		},
+		{
+			"itemCode": "eq_amr_16sf_a",
+			"length": 22,
+			"top": [
+				[
+					"Acolyte Jessica",
+					4
+				],
+				[
+					"Edward Elric",
+					4
+				],
+				[
+					"Fashionista Choco",
+					2
+				],
+				[
+					"Gold Champagne Cony",
+					2
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				],
+				[
+					"Mermaid Cony",
+					2
+				],
+				[
+					"Shish Kebab Brown",
+					2
+				],
+				[
+					"Eternal Wanderer Ryu",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				]
+			],
+			"name": "[SF] Chun-Li's China Dress"
+		},
+		{
+			"itemCode": "eq_amr_26metal",
+			"length": 22,
+			"top": [
+				[
+					"Starlit Sea Pico",
+					4
+				],
+				[
+					"Edward Elric",
+					2
+				],
+				[
+					"Gladiator Moon",
+					2
+				],
+				[
+					"Fashionista Choco",
+					2
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				],
+				[
+					"Halloween Sally",
+					2
+				],
+				[
+					"Acolyte Jessica",
+					2
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Ace Soldier Moon",
+					2
+				]
+			],
+			"name": "[FA] Alphonse's Helmet"
+		},
+		{
+			"itemCode": "eq_amr_0036",
+			"length": 10,
+			"top": [
+				[
+					"Gold Champagne Cony",
+					6
+				],
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Super Hero Moon",
+					2
+				]
+			],
+			"name": "Cloud Wing Helmet"
+		},
+		{
+			"itemCode": "eq_ace_amr_06",
+			"length": 8,
+			"top": [
+				[
+					"Righteous Phoenix ",
+					4
+				],
+				[
+					"Paladin Moon",
+					2
+				],
+				[
+					"Spirit Medium Maya",
+					2
+				]
+			],
+			"name": "[AA] Phoenix's Suit"
+		},
+		{
+			"itemCode": "eq_ace_amr_16",
+			"length": 8,
+			"top": [
+				[
+					"Blue Jade Chun-Li",
+					2
+				],
+				[
+					"Paladin Moon",
+					2
+				],
+				[
+					"Perfect Edgeworth",
+					2
+				],
+				[
+					"Gold Champagne Cony",
+					2
+				]
+			],
+			"name": "[AA] Edgeworth's Suit"
+		},
+		{
+			"itemCode": "eq_amr_evt_046",
+			"length": 6,
+			"top": [
+				[
+					"Edward Elric",
+					4
+				],
+				[
+					"Shish Kebab Brown",
+					2
+				]
+			],
+			"name": "Thunder Brown's Helmet"
+		},
+		{
+			"itemCode": "eq_amr_06co",
+			"length": 2,
+			"top": [
+				[
+					"Super Rocketeer Charles",
+					2
+				]
+			],
+			"name": "[Ran] Karate wear"
+		},
+		{
+			"itemCode": "eq_amr_0066",
+			"length": 2,
+			"top": [
+				[
+					"Judo Team Captain Rachel",
+					2
+				]
+			],
+			"name": "Guardian Shield"
+		}
+	]
+}

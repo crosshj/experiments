@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>rxjs + react</title>
+    <meta name="description" content="Simple online clock that can work as a stopwatch or countdown timer with start, pause and reset functions.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+  </head>
+  <style>
+    body {
+      font-family: monospace;
+    }
+    #clock {
+      font-size: larger;
+    }
+  </style>
+  <body>
+    <h3>RX listens here:</h3>
+    <input type="text" id="text-input" placeholder="enter text here"/>
+    
+    <h3>React renders here:</h3>
+    <div id="output" style="
+        background-color: aquamarine;
+        padding: 20px;
+        max-width: 200px;
+    "></div>
+    <div id="container"></div>
+  </body>
+  <script src="https://unpkg.com/rxjs@beta/bundles/rxjs.umd.js"></script>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <script>
+    // DOM elements
+    const input = document.getElementById('text-input');
+    const output = document.getElementById('output');
+
+    const { of, fromEvent, from, range } = rxjs;
+    const { Observable } = rxjs;
+    const { map, filter } = rxjs.operators;
+
+    const { render } = ReactDOM;
+    const { createContext, createElement, Component } = React;
+
+    window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {}; //STUPID
+
+    const Context = createContext();
+
+    // -------------------------------------------------------------------------
+
+    class Consumer2 extends Component {
+      constructor(props){
+        super(props);
+        this.state$ = props.state$;
+        this.state = { name: 'Default'};
+      }
+
+      componentWillMount(){
+        this.state$
+          .subscribe(o => this.setState({name: o}))
+      }
+
+      render(){
+        const attributes = {};
+        const innerHTML = `Hello ${(this.state||{}).name}`;
+        return React.createElement(
+          "div",
+          attributes,
+          innerHTML
+        );
+      }
+    }
+
+    const Consumer = createElement(
+      Context.Consumer,
+      null,
+      (value) => createElement(Consumer2, {state$: value})
+    );
+
+    function connect(context, component, observable, selector){
+      //TODO: fit Consumer & Consumer2 in here somehow
+    }
+
+    // -------------------------------------------------------------------------
+
+    const Provider = (observable) => createElement(
+      Context.Provider,
+      { value: observable },
+      Consumer //nested shallow here, but this could be nested way deeper
+    );
+
+    // -------------------------------------------------------------------------
+    const obs = fromEvent(input, 'input')
+      .pipe(
+        map(e => e.target.value),
+        filter(text => text.length < 10),
+      )
+
+    render(
+      createElement(() => Provider(obs)),
+      document.getElementById('output')
+    );
+
+  </script>
+</html>
