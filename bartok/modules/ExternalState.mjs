@@ -37,7 +37,6 @@ const defaultTree = (_name) => ({
 });
 
 
-
 const defaultServices = [{
 	id: 1,
 	name: 'API Server',
@@ -224,6 +223,17 @@ const App = () => {
   );
 };`;}
 
+/*
 
+- don't want to update this code every time I want new stuff to exist by default
+
+- would like to have a folder of default stuff, though
+
+- would like that to update at different times for different situations
+
+- not ready to go full-on with Service Worker to get to this
+
+
+*/
 
 export { externalStateRequest };

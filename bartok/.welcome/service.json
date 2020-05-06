@@ -1,0 +1,9 @@
+{
+    "id": 8675309,
+    "type": "frontend",
+    "persist": "filesystem",
+    "path": ".welcome",
+    "version": 0.4,
+    "tree": null,
+    "files": null
+}

@@ -1,0 +1,61 @@
+<html>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      color: #ccc;
+      margin: 40px;
+    }
+    .image-container {
+      width:80%;
+      height:100px;
+      position: relative;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    img:before {
+      background: #555;
+      color: #111;
+      top: -2px; left: -2px;
+      white-space: pre-wrap;
+      content: "MISSING IMAGE";
+      position: absolute;
+      height: calc(100% + 2px);
+      width: calc(100% + 2px);
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .explanation {
+      margin-top: -50%;
+      margin-bottom: 40px;
+      font-family: monospace;
+    }
+  </style>
+
+  <!-- div class="image-container">
+    <img src="data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7">
+  </div -->
+  
+  <div class="explanation">
+    <p>
+    This is a test for Bartok UI system.
+    If the image shows below, then a file called ./five.jpg exists in
+    the Bartok Client File System and is being delivered by a Service Worker.
+    </p>
+    <p>
+    If the Bartok Service Worker is not in place to handle these requests, then
+    a grey box will show "MISSING IMAGE"
+    </p>
+  </div>
+  <div class="image-container">
+    <img src="./five.png">
+  </div>
+
+</html>
