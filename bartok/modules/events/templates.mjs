@@ -26,7 +26,7 @@ const templatesListener = ({ updateTemplates }) => (event) => {
 	}
 
 	const { code, id, name, tree } = result[0];
-	const templatesTree = tree[name]['.templates'];
+	const templatesTree = tree[name]['.templates'] || {};
 
 	const templates = Object.keys(templatesTree)
 		.map(k =>
