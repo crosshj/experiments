@@ -1,2 +1,2 @@
 theme: jekyll-theme-minimal
-include: ["bartok/.welcome"]
+include: ["bartok/.nojekyll"]
