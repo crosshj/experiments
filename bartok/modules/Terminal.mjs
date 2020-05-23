@@ -223,7 +223,10 @@ function _Terminal({ getCurrentService }){
 								<a class="action-label icon lock-panel-action" data-type="lock" role="button" title="Lock Preview"></a>
 							</li>
 
-							<li class="action-item" role="presentation"><a class="disabled action-label icon hide-panel-action" role="button" title="Close Panel"></a></li>
+							<li class="action-item hidden" role="presentation">
+								<a class="disabled action-label icon hide-panel-action" role="button" title="Close Panel">
+								</a>
+							</li>
 					 </ul>
 				</div>
 		 </div>
@@ -436,11 +439,13 @@ function _Terminal({ getCurrentService }){
 		}
 
 		if(!locked && type === "fileClose" && !doc ){
-			debugger;
 			updateIframe({ src: "" });
 			return;
 		}
-		if(type === "forceRefreshOnPersist"){
+		if([
+			"forceRefreshOnPersist",
+			"operationDone"
+		].includes(type)){
 			updateIframeRaw({ src });
 			return;
 		}
@@ -451,7 +456,7 @@ function _Terminal({ getCurrentService }){
 			type === "fileChange"
 		){
 			if(!locked || !alreadyUpdatedOnce){
-				updateIframe({ src });
+				updateIframeRaw({ src });
 			}
 			return;
 		}

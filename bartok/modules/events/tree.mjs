@@ -51,11 +51,11 @@ const treeMenu = ({ title }) => {
 			<div class="monaco-toolbar">
 					<div class="monaco-action-bar animated">
 						<ul class="actions-container">
-								<li class="action-item">
+								<li class="action-item hidden">
 									<a class="action-label icon explorer-action new-file" role="button" title="New File">
 									</a>
 								</li>
-								<li class="action-item">
+								<li class="action-item hidden">
 									<a class="action-label icon explorer-action new-folder" role="button" title="New Folder">
 									</a>
 								</li>

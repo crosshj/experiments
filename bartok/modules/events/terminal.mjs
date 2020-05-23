@@ -6,6 +6,19 @@ import {
 	isSupported
 } from '../Templates.mjs'
 
+function getDefaultFile(service){
+	let defaultFile;
+	try {
+		const packageJson = JSON.parse(
+			service.code.find(x => x.name === "package.json").code
+		);
+		defaultFile = packageJson.main;
+	} catch(e){
+		//debugger;
+	}
+	return defaultFile || "index.js";
+}
+
 let locked;
 let lsLocked = localStorage.getItem("previewLocked");
 if(lsLocked === null){
@@ -443,6 +456,33 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 
 };
 
+const operationDone = ({
+	viewUpdate, getCurrentService
+}) =>
+	(event) => {
+		const { detail } = event;
+		const { op, id, result, operation } = detail;
+		// only care about service read with id
+		if(op !== "read" || !id){
+			return;
+		}
+		const defaultFile = getDefaultFile(result[0]);
+		const defaultFileContents = (result[0].code.find(x => x.name === defaultFile)||{}).code;
+
+		const hasTemplate = isSupported({
+			name: defaultFile,
+			contents: defaultFileContents
+		});
+		viewUpdate({
+			supported: hasTemplate,
+			type: 'operationDone',
+			locked,
+			doc: defaultFileContents,
+			docName: defaultFile,
+			...event.detail
+		});
+	};
+
 function attachEvents({ write, viewUpdate, getCurrentService, terminalActions }){
 	// write('\x1B[2K');
 	// write('\rEvent system attached.\n');
@@ -473,6 +513,11 @@ function attachEvents({ write, viewUpdate, getCurrentService, terminalActions })
 		name: 'Terminal',
 		eventName: 'termMenuAction',
 		listener: terminalActionHandler({ terminalActions, viewUpdate })
+	});
+	attach({
+		name: 'Terminal',
+		eventName: 'operationDone',
+		listener: operationDone({viewUpdate})
 	});
 	attach({
 		name: 'Terminal',

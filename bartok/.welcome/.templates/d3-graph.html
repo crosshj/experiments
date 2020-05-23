@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<style>
+  body {
+    margin-top: 45px;
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+  }
+  svg {
+    background: #9e9e9e03;
+    height: 100%;
+    width: 100%;
+  }
+  .link {
+    stroke: #aaa;
+  }
+  .node text {
+    fill: white;
+    cursor: pointer;
+    font-family: sans-serif;
+  }
+  .node circle {
+    stroke: #fff;
+    stroke-width: 1px;
+    fill: #555;
+  }
+</style>
+
+<body>
+  <script>
+    const graph = {
+      "file-type": "d3-graph",
+      "nodes":[
+        {id: "0", "name":"node1","radius":30},
+        {id: "1", "name":"node2","radius":40},
+        {id: "2", "name":"node3","radius":40},
+        {id: "3", "name":"node4","radius":30},
+        {id: "4", "name":"node5","radius":40},
+        {id: "5", "name":"node6","radius":40},
+        {id: "6", "name":"node7","radius":50}
+      ],
+      "links":[
+        {"source":2,"target":1,"weight":1},
+        {"source":3,"target":6,"weight":2},
+        {"source":2,"target":5,"weight":3},
+        {"source":2,"target":4,"weight":3},
+        //{"source":2,"target":6,"weight":6},
+        {"source":6,"target":5,"weight":3},
+        {"source":6,"target":0,"weight":3},
+        //{"source":0,"target":1,"weight":1},
+        //{"source":0,"target":3,"weight":1},
+        {"source":0,"target":2,"weight":5}
+      ]
+    };
+
+    var svg = d3.select("body").append("svg")
+    const width = document.querySelector('svg').clientWidth;
+    const height = document.querySelector('svg').clientHeight;
+
+
+    const forceLayout = {
+      charge: d3.forceManyBody()
+        .strength(-700),
+      center:  d3.forceCenter(width / 2, height / 2),
+      collision: d3.forceCollide()
+        .radius(d => d.radius * 1.9),
+      link: d3.forceLink()
+        .id(function(d) { return d.id; }).strength(0.5)
+    };
+
+    let sim = d3.forceSimulation(graph.nodes);
+    Object.entries(forceLayout)
+      .forEach(([key, value]) => sim.force(key, value));
+    sim.force("link").links(graph.links);
+
+    var link = svg.selectAll(".link")
+      .data(graph.links)
+      .enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", function (d) { return 2* Math.sqrt(d.weight); });
+
+    var node = svg.selectAll(".node")
+      .data(graph.nodes)
+      .enter().append("g")
+      .attr("class", "node")
+      .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+            .on("end", dragended)
+       );
+    function dragstarted(d) {
+      if (!d3.event.active) sim.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+    function dragged(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
+    function dragended(d) {
+      if (!d3.event.active) sim.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    node.append("circle")
+      //.style("fill",function() {
+      //  return "hsl(" + Math.random() * 360 + ",100%,50%)";
+      //})
+      .attr("r", function (d){ return d.radius });
+
+    node.append("text")
+      .attr("dx", -20)
+      .attr("dy", ".35em")
+      .text(function (d) { return d.name });
+
+    const ticked = function () {
+      try {
+        link.attr("x1", function (d) { return d.source.x; })
+          .attr("y1", function (d) { return d.source.y; })
+          .attr("x2", function (d) { return d.target.x; })
+          .attr("y2", function (d) { return d.target.y; });
+
+        node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+      } catch(e){
+        console.log(e.stack)
+      }
+    };
+
+    sim.on('tick', ticked);
+
+
+
+  </script>

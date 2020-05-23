@@ -217,12 +217,6 @@ function attachListener(
 		eventName: 'click',
 		listener
 	});
-
-	attach({
-		name: 'Tab Bar',
-		eventName: 'operationDone',
-		listener
-	});
 }
 
 export {

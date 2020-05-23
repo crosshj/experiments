@@ -80,7 +80,7 @@ function ActionBar(){
 					<!-- a></a -->
 					<i class="material-icons">code</i>
 				</li>
-				<li class="search" role="button" title="Search">
+				<li class="search hidden" role="button" title="Search">
 					<i class="material-icons">search</i>
 					<!-- a></a -->
 				</li>
@@ -101,7 +101,7 @@ function ActionBar(){
 				<li class="full-screen" role="button">
 					<a></a>
 				</li>
-				<li class="settings" role="button">
+				<li class="settings hidden" role="button">
 					<!-- a></a -->
 					<i class="material-icons">settings</i>
 				</li>
