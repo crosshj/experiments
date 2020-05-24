@@ -252,14 +252,15 @@ function _Terminal({ getCurrentService }){
 				bottom: 0px;
 				background: #1d1d1d;
 				z-index: 9;
+				overflow: hidden;
 			}
 			#terminal iframe {
 				position: relative;
 				top: 0;
-				right: 0;
-				left: 0;
-				bottom: 0;
-				width: 100%;
+				right: -1px;
+				left: -1px;
+				bottom: -1px;
+				width: calc(100% + 2px);
 				height: 100%;
 				z-index: 100;
 				border: 0px;
@@ -405,13 +406,14 @@ function _Terminal({ getCurrentService }){
 
 	function viewUpdate({ supported, view, type, doc, docName, locked }){
 		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
+		if(!supported && !doc) debugger
 		const src = supported
-		? transform({ name: docName, contents: doc })
-		: (docName||'').includes('jsx')
-			? templateJSX(doc)
-			: doc.includes('/* svcV3 ')
-				? templateSVC3(doc)
-				: doc;
+			? transform({ name: docName, contents: doc })
+			: (docName||'').includes('jsx')
+				? templateJSX(doc)
+				: (doc||'').includes('/* svcV3 ')
+					? templateSVC3(doc)
+					: doc;
 
 		if(type === "viewSelect"){
 			const switcher = document.querySelector("#terminal-menu .panel-switcher-container");

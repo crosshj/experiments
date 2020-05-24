@@ -245,7 +245,7 @@ attachListeners({ updateTemplates })
 const isSupported = ({ name, contents }, returnMatched) => {
   const extensionMatch = templates.find(t =>
     t.extensions.find(ext =>
-      name.includes(`.${ext}`)
+      (name||'').includes(`.${ext}`)
     )
   );
   if(extensionMatch){

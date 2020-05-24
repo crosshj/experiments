@@ -5,19 +5,7 @@ import {
 import {
 	isSupported
 } from '../Templates.mjs'
-
-function getDefaultFile(service){
-	let defaultFile;
-	try {
-		const packageJson = JSON.parse(
-			service.code.find(x => x.name === "package.json").code
-		);
-		defaultFile = packageJson.main;
-	} catch(e){
-		//debugger;
-	}
-	return defaultFile || "index.js";
-}
+import { getState, getCurrentFile } from '../state.mjs';
 
 let locked;
 let lsLocked = localStorage.getItem("previewLocked");
@@ -26,8 +14,6 @@ if(lsLocked === null){
 	localStorage.setItem("previewLocked", "true");
 }
 locked = lsLocked === "true";
-
-
 let currentFile;
 let currentFileName;
 let currentView = localStorage.getItem('rightPaneSelected');
@@ -36,7 +22,6 @@ let backupForLock = {
 	currentFile: '',
 	currentFileName: ''
 };
-
 
 const PROMPT = '\x1B[38;5;14m \r∑ \x1B[0m';
 
@@ -102,6 +87,19 @@ const projectOps = [
 	"fullscreen", "help"
 ];
 const eventsHandledAlready = [...manageOps, ...projectOps];
+
+function getDefaultFile(service){
+	let defaultFile;
+	try {
+		const packageJson = JSON.parse(
+			service.code.find(x => x.name === "package.json").code
+		);
+		defaultFile = packageJson.main;
+	} catch(e){
+		//debugger;
+	}
+	return defaultFile || "index.js";
+}
 
 const terminalTrigger = (write, command, callback) => {
 
@@ -326,7 +324,7 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	}
 };
 
-const fileChangeHandler = ({ viewUpdate, getCurrentService }) => (event) => {
+const fileChangeHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
 	let { name, id, file, code } = detail;
 
@@ -456,32 +454,81 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 
 };
 
-const operationDone = ({
-	viewUpdate, getCurrentService
-}) =>
-	(event) => {
-		const { detail } = event;
-		const { op, id, result, operation } = detail;
-		// only care about service read with id
-		if(op !== "read" || !id){
-			return;
-		}
-		const defaultFile = getDefaultFile(result[0]);
-		const defaultFileContents = (result[0].code.find(x => x.name === defaultFile)||{}).code;
+const operationDone = ({ viewUpdate }) => (event) => {
+	const { detail } = event;
+	const { op, id, result, operation } = detail;
+	// only care about service read with id
+	if(op !== "read" || !id){
+		return;
+	}
+	const defaultFile = getDefaultFile(result[0]);
+	const defaultFileContents = (result[0].code.find(x => x.name === defaultFile)||{}).code;
 
-		const hasTemplate = isSupported({
-			name: defaultFile,
-			contents: defaultFileContents
-		});
-		viewUpdate({
-			supported: hasTemplate,
-			type: 'operationDone',
-			locked,
-			doc: defaultFileContents,
-			docName: defaultFile,
-			...event.detail
-		});
+	const hasTemplate = isSupported({
+		name: defaultFile,
+		contents: defaultFileContents
+	});
+
+	currentFileName = defaultFile;
+	currentFile = defaultFileContents;
+
+	viewUpdate({
+		supported: hasTemplate,
+		type: 'operationDone',
+		locked,
+		doc: defaultFileContents,
+		docName: defaultFile,
+		...event.detail
+	});
+};
+
+const operations = ({ viewUpdate, getCurrentService }) => (event) => {
+	console.log(`terminal event listen heard operation: ${event.detail.operation}`);
+	if(event.detail.operation !== "update"){
+		return;
+	}
+	const state = getState();
+	const name = getCurrentFile();
+
+	const lastChange = (() => {
+		try{
+		return Object.entries(state.changedFiles)
+			.filter(([key]) => key.split('|')[2] === name)
+			.map(([key, value]) => value[value.length-1])[0]
+			.code;
+		}catch(e){}
+	})();
+	const getFileFromService = (fileName) => {
+		const service = getCurrentService();
+		const selectedFile = service.code.find(x => x.name === name);
+		const { code } = selectedFile || {};
+		return code;
 	};
+	const contents = lastChange
+		? lastChange
+		: getFileFromService(name);
+	const hasTemplate = isSupported({ name, contents });
+	if(locked && currentFileName !== name){
+		debugger
+		backupForLock.currentFile = contents;
+		backupForLock.currentFileName = name;
+		return;
+	}
+
+	currentFile = contents;
+	currentFileName = name;
+
+	viewUpdate({
+		supported: hasTemplate,
+		type: 'forceRefreshOnPersist',
+		locked,
+		doc: contents,
+		docName: name,
+		...event.detail
+	});
+};
+
+/// -----------------------------------------------------------------------------
 
 function attachEvents({ write, viewUpdate, getCurrentService, terminalActions }){
 	// write('\x1B[2K');
@@ -522,18 +569,7 @@ function attachEvents({ write, viewUpdate, getCurrentService, terminalActions })
 	attach({
 		name: 'Terminal',
 		eventName: 'operations',
-		listener: (event) => {
-			if(event.detail.operation !== "persist"){ return; }
-			const hasTemplate = isSupported({ name: currentFileName, contents: currentFile });
-			viewUpdate({
-				supported: hasTemplate,
-				type: 'forceRefreshOnPersist',
-				locked: false,
-				doc: currentFile,
-				docName: currentFileName,
-				...event.detail
-			});
-		}
+		listener: operations({ viewUpdate, getCurrentService })
 	});
 
 	return (command, callback) => terminalTrigger(write, command, callback);
