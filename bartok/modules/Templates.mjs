@@ -222,7 +222,7 @@ const convertRaw = (raw) => {
     extensions: [],
     body: '',
     tokens: [],
-    matcher: () => false //TODO
+    matcher: () => false //TODO: matchers are not currently implemented
   };
   newTemp.extensions.push(raw.name.split('.')[0]);
   newTemp.tokens = [...new Set(raw.code.match(/{{.*}}/g))]
@@ -251,6 +251,25 @@ const isSupported = ({ name, contents }, returnMatched) => {
   if(extensionMatch){
     return returnMatched ? extensionMatch : !!extensionMatch;
   }
+
+  const jsonMatch = (() => {
+    if(!(name||'').includes('.json')){ return; }
+    if(!contents.includes('file-type')){ return; }
+    try {
+      const parsed = JSON.parse(contents);
+      const extensionMatch = templates.find(t =>
+        t.extensions
+          .find(ext => parsed['file-type'] === ext )
+      );
+      return extensionMatch;
+    } catch(e){
+      console.log(e)
+    }
+  })();
+  if(jsonMatch){
+    return returnMatched ? jsonMatch : !!jsonMatch;
+  }
+
   const matcherMatch = templates.find(x => x.matcher({name, contents}));
   return returnMatched ? matcherMatch : !!matcherMatch;
 };

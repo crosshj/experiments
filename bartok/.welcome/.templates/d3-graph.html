@@ -1,45 +1,74 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<style>
-  body {
-    margin-top: 45px;
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 0; right: 0;
-  }
-  svg {
-    background: #9e9e9e03;
-    height: 100%;
-    width: 100%;
-  }
-  .link {
-    stroke: #aaa;
-  }
-  .node text {
-    fill: white;
-    cursor: pointer;
-    font-family: sans-serif;
-  }
-  .node circle {
-    stroke: #fff;
-    stroke-width: 1px;
-    fill: #555;
-  }
-</style>
+<textarea readonly hidden id="markdown-input">
+    {{markdown}}
+  </textarea>
 
-<body>
+  <!DOCTYPE html>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <style>
+    body {
+      margin-top: 15px;
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+    }
+    svg {
+      background: #9e9e9e03;
+      height: 100%;
+      width: 100%;
+    }
+    .link {
+      stroke: #aaa;
+    }
+    .node text {
+      fill: white;
+      cursor: pointer;
+      font-family: sans-serif;
+    }
+    .node circle {
+      stroke: #fff;
+      stroke-width: 1px;
+      fill: #555;
+    }
+  </style>
+
+  <body></body>
+
   <script>
-    const graph = {
+    (function(){
+     const mdInputEl = document.getElementById('markdown-input');
+     const templateInput = mdInputEl.innerHTML
+       .trim()
+       .replace(/&gt;/g, '>')
+       .replace(/&lt;/g, '<');
+     mdInputEl.innerHTML = '';
+     const comment = document.createComment('\n'+templateInput+'\n');
+     mdInputEl.appendChild(comment);
+
+    console.log({templateInput});
+
+    if(templateInput === ('{{' + 'markdown' + '}}')){
+      console.error('no template input - d3-graph json will not be previewed');
+      return;
+    }
+    if(templateInput.includes('</html>')){
+      console.log(templateInput)
+      console.error('d3-graph json should not have an </html> tag in it')
+      return;
+    }
+
+    const graphInput = JSON.parse(templateInput);
+
+    const defaultGraph = {
       "file-type": "d3-graph",
       "nodes":[
-        {id: "0", "name":"node1","radius":30},
-        {id: "1", "name":"node2","radius":40},
-        {id: "2", "name":"node3","radius":40},
-        {id: "3", "name":"node4","radius":30},
-        {id: "4", "name":"node5","radius":40},
-        {id: "5", "name":"node6","radius":40},
-        {id: "6", "name":"node7","radius":50}
+        {id: "0", "name":"node0","radius":30},
+        {id: "1", "name":"node1","radius":40},
+        {id: "2", "name":"node2","radius":40},
+        {id: "3", "name":"node3","radius":30},
+        {id: "4", "name":"node4","radius":40},
+        {id: "5", "name":"node5","radius":40},
+        {id: "6", "name":"node6","radius":50}
       ],
       "links":[
         {"source":2,"target":1,"weight":1},
@@ -54,11 +83,11 @@
         {"source":0,"target":2,"weight":5}
       ]
     };
+    const graph = graphInput || defaultGraph;
 
     var svg = d3.select("body").append("svg")
     const width = document.querySelector('svg').clientWidth;
     const height = document.querySelector('svg').clientHeight;
-
 
     const forceLayout = {
       charge: d3.forceManyBody()
@@ -131,6 +160,6 @@
 
     sim.on('tick', ticked);
 
-
+  })();
 
   </script>
