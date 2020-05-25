@@ -24,11 +24,17 @@
       fill: white;
       cursor: pointer;
       font-family: sans-serif;
+      user-select: none;
+      pointer-events: none;
     }
     .node circle {
       stroke: #fff;
       stroke-width: 1px;
       fill: #555;
+    }
+    .node circle:hover {
+      fill: #9340b3 !important;
+      stroke: #eb00ff;
     }
   </style>
 
@@ -49,7 +55,7 @@
 
     if(templateInput === ('{{' + 'markdown' + '}}')){
       console.error('no template input - d3-graph json will not be previewed');
-      return;
+      //return;
     }
     if(templateInput.includes('</html>')){
       console.log(templateInput)
@@ -57,47 +63,76 @@
       return;
     }
 
-    const graphInput = JSON.parse(templateInput);
+    const graphInput = (() => {
+      try {
+        return JSON.parse(templateInput);
+      }catch(e){}
+    })();
+    console.log({ graphInput });
 
     const defaultGraph = {
       "file-type": "d3-graph",
       "nodes":[
-        {id: "0", "name":"node0","radius":30},
-        {id: "1", "name":"node1","radius":40},
-        {id: "2", "name":"node2","radius":40},
-        {id: "3", "name":"node3","radius":30},
-        {id: "4", "name":"node4","radius":40},
-        {id: "5", "name":"node5","radius":40},
-        {id: "6", "name":"node6","radius":50}
+        {id: "0", "name":"node0","radius":30, "color": 'red'},
+        {
+           "id": "1",
+           "name": "node1",
+           "radius": 30,
+           "children": [
+             {"name": "2", "value": 17010},
+           ]
+        },
       ],
       "links":[
-        {"source":2,"target":1,"weight":1},
-        {"source":3,"target":6,"weight":2},
-        {"source":2,"target":5,"weight":3},
-        {"source":2,"target":4,"weight":3},
-        //{"source":2,"target":6,"weight":6},
-        {"source":6,"target":5,"weight":3},
-        {"source":6,"target":0,"weight":3},
-        //{"source":0,"target":1,"weight":1},
-        //{"source":0,"target":3,"weight":1},
-        {"source":0,"target":2,"weight":5}
+        {"source":0,"target":1,"weight":1}
       ]
     };
     const graph = graphInput || defaultGraph;
+
+    let childNodes = [];
+    graph.nodes = graph.nodes.map(n => {
+      if(!n.children){ return n; }
+      const nHier = d3.hierarchy(n);
+      const desc = nHier.descendants();
+      desc.forEach(x => {
+        x.group = n.name;
+      });
+      graph.links = [...nHier.links(), ...graph.links];
+      childNodes = [...childNodes, ...desc]
+      return null;
+    }).filter(x => !!x);
+    childNodes.forEach(x => {
+      x.id = x.data.id || x.data.name;
+      x.radius = x.data.radius || 10;
+      x.name = x.data.name;
+      x.color = x.data.color;
+    })
+    graph.nodes = [...childNodes, ...graph.nodes];
+    graph.links.forEach(x => {
+      x.weight = x.weight || 1;
+    });
+
+    console.log(graph.nodes)
+    console.log(graph.links)
+
 
     var svg = d3.select("body").append("svg")
     const width = document.querySelector('svg').clientWidth;
     const height = document.querySelector('svg').clientHeight;
 
     const forceLayout = {
-      charge: d3.forceManyBody()
-        .strength(-700),
+      x: d3.forceX(),
+      y: d3.forceY(),
+      charge: d3.forceManyBody().strength(-300),
       center:  d3.forceCenter(width / 2, height / 2),
-      collision: d3.forceCollide()
-        .radius(d => d.radius * 1.9),
-      link: d3.forceLink()
-        .id(function(d) { return d.id; }).strength(0.5)
+      collision: d3.forceCollide().radius(d => d.radius * 1.5),
+      link: d3.forceLink(graph.links)
+        .id(function(d) { return d.id; })
+        .distance(d => d.weight/6)
+        .strength(1)
     };
+
+
 
     let sim = d3.forceSimulation(graph.nodes);
     Object.entries(forceLayout)
@@ -138,10 +173,11 @@
       //.style("fill",function() {
       //  return "hsl(" + Math.random() * 360 + ",100%,50%)";
       //})
-      .attr("r", function (d){ return d.radius });
+      .style("fill", d => d.color || '')
+      .attr("r", function (d){ return d.radius || '5' });
 
     node.append("text")
-      .attr("dx", -20)
+      .attr("dx", function(d) { return -0.5* d.radius - d.name.length * 1.4})
       .attr("dy", ".35em")
       .text(function (d) { return d.name });
 
