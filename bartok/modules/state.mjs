@@ -30,7 +30,6 @@ const getCurrentService = () => {
 			console.error({
 				changedArray, mostRecent, filename: m.filename, found: found || 'notfound'
 			});
-			debugger;
 			return;
 		}
 		found.code = m.code;

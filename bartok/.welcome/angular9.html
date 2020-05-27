@@ -5,11 +5,15 @@
   <head>
     <title>Hello World, AngularJS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.2.1/rxjs.umd.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.5.7/core.js"></script>
     <script src="https://unpkg.com/@angular/core@9.1.1/bundles/core.umd.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.8.26/zone.min.js"></script>
     <script src="https://unpkg.com/@angular/common@9.1.1/bundles/common.umd.js"></script>
+
     <script src="https://unpkg.com/@angular/compiler@9.1.1/bundles/compiler.umd.js"></script>
+
     <script src="https://unpkg.com/@angular/platform-browser@9.1.1/bundles/platform-browser.umd.js"></script>
     <script src="https://unpkg.com/@angular/platform-browser-dynamic@9.1.1/bundles/platform-browser-dynamic.umd.js"></script>
   </head>
@@ -29,17 +33,17 @@
       align-items: center;
     }
   </style>
-  
+
   <body>
-    <my-app/>
+    <app-root></app-root>
   </body>
 
   <script id="ngScript" type="text/ng">
-    // app.js
+    // app.component.ts
     const { Component, VERSION } = ng.core;
 
     @Component({
-      selector: "my-app",
+      selector: "app-root",
       template: ` <h1 style="color:#808070;">{{ title }}</h1> `
     })
     class AppComponent {
@@ -48,7 +52,7 @@
       }
     }
 
-    // main.js
+    //app.module.ts
     const { BrowserModule } = ng.platformBrowser;
     const { NgModule } = ng.core;
     const { CommonModule } = ng.common;
@@ -61,18 +65,19 @@
     })
     class AppModule {}
 
+    // main.ts
     const { platformBrowserDynamic } = ng.platformBrowserDynamic;
     platformBrowserDynamic()
       .bootstrapModule(AppModule)
       .catch((err) => console.error(err));
   </script>
-  
-  
+
+
   <script>
     const input = document.getElementById('ngScript').innerText;
     const xfrmScript = document.createElement('script');
     xfrmScript.id = 'ngScriptXfrm';
- 
+
     const appendScript = (url, callback) => {
       var script = document.createElement('script');
       script.crossOrigin = "anonymous";
@@ -97,7 +102,7 @@
       appendScript(babelUrl, babelAppendCallback);
     };
     appendBabel();
-  
+
   </script>
-  
+
 </html>

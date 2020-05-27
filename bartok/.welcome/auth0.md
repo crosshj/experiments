@@ -38,15 +38,15 @@ Auth0 SPA authorization
   const userInfo = document.getElementById('user');
   const reposInfo = document.getElementById('repos');
   const filesInfo = document.getElementById('files');
-  
+
   var s = document.createElement("script");
   s.type = "text/javascript";
   s.src = "https://cdn.auth0.com/js/auth0-spa-js/1.7/auth0-spa-js.production.js";
   s.onload = auth0AttachedCb;
   document.head.appendChild(s);
-  
+
   const delay = time => new Promise(r=>setTimeout(r, time));
-  
+
   async function User(){
     const user = await auth0.getUser();
     if(!user) {
@@ -66,7 +66,7 @@ Auth0 SPA authorization
     await delay(1000);
     filesInfo.innerHTML = '[ files from backend ]';
   }
-  
+
   function auth0AttachedCb(){
     (async () => {
       loginButton.classList.add('hidden');

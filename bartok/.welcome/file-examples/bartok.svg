@@ -1,6 +1,17 @@
 <svg width="281" height="281" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
  <!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->
- <style>.bg1 {
+  <style>
+    body {
+      background: radial-gradient(#4a0017, #000000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 25%;
+      margin-top: auto;
+    }
+  </style>
+  <style>
+    .bg1 {
         fill: #61ddff;
         fill: white;
     }
@@ -10,12 +21,16 @@
     .integral {
         fill: #8003a6;
         stroke: #8003a6;
-        fill: white;
-        stroke: white;
+        fill: #7d7d7d;
+        stroke: #7d7d7d;
     }
     .border {
         stroke: #83008a;
-        stroke: white;
+        stroke: #7d7d7d;
+    }
+    svg {
+      filter: drop-shadow(0 18px 6px black);
+      opacity: 0.7;
     }
  </style>
  <g class="layer" display="inline">
