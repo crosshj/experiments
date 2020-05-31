@@ -18,6 +18,7 @@ function StatusBar(){
 			font-size: 12px;
 			padding: 2px 10px;
 			background: #1f476b;
+			background: #4f263d;
 		}
 		#status-bar a {
 			color: white;

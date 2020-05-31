@@ -1,201 +1,233 @@
 <textarea readonly hidden id="markdown-input">
-    {{markdown}}
-  </textarea>
+  {{markdown}}
+</textarea>
 
-  <!DOCTYPE html>
-  <meta charset="utf-8">
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <style>
-    body {
-      margin-top: 15px;
-      position: absolute;
-      top: 0; bottom: 0;
-      left: 0; right: 0;
-    }
-    svg {
-      background: #9e9e9e03;
-      height: 100%;
-      width: 100%;
-    }
-    .link {
-      stroke: #aaa;
-    }
-    .node text {
-      fill: white;
-      cursor: pointer;
-      font-family: sans-serif;
-      user-select: none;
-      pointer-events: none;
-    }
-    .node circle {
-      stroke: #fff;
-      stroke-width: 1px;
-      fill: #555;
-    }
-    .node circle:hover {
-      fill: #9340b3 !important;
-      stroke: #eb00ff;
-    }
-  </style>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<style>
+  body {
+    margin-top: 15px;
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+  }
+  svg {
+    background: #9e9e9e03;
+    height: 100%;
+    width: 100%;
+  }
+  .link {
+    stroke: #777;
+  }
+  .node text {
+    fill: white;
+    cursor: pointer;
+    font-family: sans-serif;
+    user-select: none;
+    pointer-events: none;
+  }
+  .node circle {
+    stroke: #fff;
+    stroke-width: 1px;
+    fill: #555;
+  }
+  .node circle:hover {
+    fill: #9340b3 !important;
+    stroke: #eb00ff;
+  }
+</style>
 
-  <body></body>
+<body></body>
 
-  <script>
-    (function(){
-     const mdInputEl = document.getElementById('markdown-input');
-     const templateInput = mdInputEl.innerHTML
-       .trim()
-       .replace(/&gt;/g, '>')
-       .replace(/&lt;/g, '<');
-     mdInputEl.innerHTML = '';
-     const comment = document.createComment('\n'+templateInput+'\n');
-     mdInputEl.appendChild(comment);
+<script>
+  (function(){
+   const mdInputEl = document.getElementById('markdown-input');
+   const templateInput = mdInputEl.innerHTML
+     .trim()
+     .replace(/&gt;/g, '>')
+     .replace(/&lt;/g, '<');
+   mdInputEl.innerHTML = '';
+   const comment = document.createComment('\n'+templateInput+'\n');
+   mdInputEl.appendChild(comment);
 
-    console.log({templateInput});
+  console.log({templateInput});
 
-    if(templateInput === ('{{' + 'markdown' + '}}')){
-      console.error('no template input - d3-graph json will not be previewed');
-      //return;
-    }
-    if(templateInput.includes('</html>')){
-      console.log(templateInput)
-      console.error('d3-graph json should not have an </html> tag in it')
-      return;
-    }
+  if(templateInput === ('{{' + 'markdown' + '}}')){
+    console.error('no template input - d3-graph json will not be previewed');
+    //return;
+  }
+  if(templateInput.includes('</html>')){
+    console.log(templateInput)
+    console.error('d3-graph json should not have an </html> tag in it')
+    return;
+  }
 
-    const graphInput = (() => {
-      try {
-        return JSON.parse(templateInput);
-      }catch(e){}
-    })();
-    console.log({ graphInput });
-
-    const defaultGraph = {
-      "file-type": "d3-graph",
-      "nodes":[
-        {id: "0", "name":"node0","radius":30, "color": 'red'},
-        {
-           "id": "1",
-           "name": "node1",
-           "radius": 30,
-           "children": [
-             {"name": "2", "value": 17010},
-           ]
-        },
-      ],
-      "links":[
-        {"source":0,"target":1,"weight":1}
-      ]
-    };
-    const graph = graphInput || defaultGraph;
-
-    let childNodes = [];
-    graph.nodes = graph.nodes.map(n => {
-      if(!n.children){ return n; }
-      const nHier = d3.hierarchy(n);
-      const desc = nHier.descendants();
-      desc.forEach(x => {
-        x.group = n.name;
-      });
-      graph.links = [...nHier.links(), ...graph.links];
-      childNodes = [...childNodes, ...desc]
-      return null;
-    }).filter(x => !!x);
-    childNodes.forEach(x => {
-      x.id = x.data.id || x.data.name;
-      x.radius = x.data.radius || 10;
-      x.name = x.data.name;
-      x.color = x.data.color;
-    })
-    graph.nodes = [...childNodes, ...graph.nodes];
-    graph.links.forEach(x => {
-      x.weight = x.weight || 1;
-    });
-
-    console.log(graph.nodes)
-    console.log(graph.links)
-
-
-    var svg = d3.select("body").append("svg")
-    const width = document.querySelector('svg').clientWidth;
-    const height = document.querySelector('svg').clientHeight;
-
-    const forceLayout = {
-      x: d3.forceX(),
-      y: d3.forceY(),
-      charge: d3.forceManyBody().strength(-300),
-      center:  d3.forceCenter(width / 2, height / 2),
-      collision: d3.forceCollide().radius(d => d.radius * 1.5),
-      link: d3.forceLink(graph.links)
-        .id(function(d) { return d.id; })
-        .distance(d => d.weight/6)
-        .strength(1)
-    };
-
-
-
-    let sim = d3.forceSimulation(graph.nodes);
-    Object.entries(forceLayout)
-      .forEach(([key, value]) => sim.force(key, value));
-    sim.force("link").links(graph.links);
-
-    var link = svg.selectAll(".link")
-      .data(graph.links)
-      .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", function (d) { return 2* Math.sqrt(d.weight); });
-
-    var node = svg.selectAll(".node")
-      .data(graph.nodes)
-      .enter().append("g")
-      .attr("class", "node")
-      .call(d3.drag()
-          .on("start", dragstarted)
-          .on("drag", dragged)
-            .on("end", dragended)
-       );
-    function dragstarted(d) {
-      if (!d3.event.active) sim.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
-    }
-    function dragged(d) {
-      d.fx = d3.event.x;
-      d.fy = d3.event.y;
-    }
-    function dragended(d) {
-      if (!d3.event.active) sim.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
-
-    node.append("circle")
-      //.style("fill",function() {
-      //  return "hsl(" + Math.random() * 360 + ",100%,50%)";
-      //})
-      .style("fill", d => d.color || '')
-      .attr("r", function (d){ return d.radius || '5' });
-
-    node.append("text")
-      .attr("dx", function(d) { return -0.5* d.radius - d.name.length * 1.4})
-      .attr("dy", ".35em")
-      .text(function (d) { return d.name });
-
-    const ticked = function () {
-      try {
-        link.attr("x1", function (d) { return d.source.x; })
-          .attr("y1", function (d) { return d.source.y; })
-          .attr("x2", function (d) { return d.target.x; })
-          .attr("y2", function (d) { return d.target.y; });
-
-        node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
-      } catch(e){
-        console.log(e.stack)
-      }
-    };
-
-    sim.on('tick', ticked);
-
+  const graphInput = (() => {
+    try {
+      return JSON.parse(templateInput);
+    }catch(e){}
   })();
+  console.log({ graphInput });
 
-  </script>
+  const defaultGraph = {
+    "file-type": "d3-graph",
+    "nodes":[
+      {id: "0", "name":"node0","radius":30, "color": 'red'},
+      {
+         "id": "1",
+         "name": "node1",
+         "radius": 30,
+         "children": [
+           {"name": "2", "value": 17010},
+         ]
+      },
+    ],
+    "links":[
+      {"source":0,"target":1,"weight":1}
+    ]
+  };
+  const graph = graphInput || defaultGraph;
+
+  let childNodes = [];
+  graph.nodes = graph.nodes.map(n => {
+    if(!n.children){ return n; }
+    const nHier = d3.hierarchy(n);
+    const desc = nHier.descendants();
+    desc.forEach(x => {
+      x.group = n.name;
+    });
+    graph.links = [...nHier.links(), ...graph.links];
+    childNodes = [...childNodes, ...desc]
+    return null;
+  }).filter(x => !!x);
+  childNodes.forEach(x => {
+    x.id = x.data.id || x.data.name;
+    x.radius = x.data.radius || 10;
+    x.name = x.data.name;
+    x.color = x.data.color;
+  })
+  graph.nodes = [...childNodes, ...graph.nodes];
+  graph.links.forEach(x => {
+    x.weight = x.weight || 1;
+  });
+
+  console.log(graph.nodes)
+  console.log(graph.links)
+
+
+  var svg = d3.select("body").append("svg")
+  const width = document.querySelector('svg').clientWidth;
+  const height = document.querySelector('svg').clientHeight;
+
+  const forceLayout = {
+    x: d3.forceX(),
+    y: d3.forceY(),
+    charge: d3.forceManyBody().strength(-300),
+    center:  d3.forceCenter(width / 2, height / 2),
+    collision: d3.forceCollide().radius(d => d.radius * 1.5),
+    link: d3.forceLink(graph.links)
+      .id(function(d) { return d.id; })
+      .distance(d => d.weight/6)
+      .strength(1)
+  };
+
+
+
+  let sim = d3.forceSimulation(graph.nodes);
+  Object.entries(forceLayout)
+    .forEach(([key, value]) => sim.force(key, value));
+  sim.force("link").links(graph.links);
+
+  var link = svg.selectAll(".link")
+    .data(graph.links)
+    .enter().append("line")
+    .attr("class", "link")
+    .style("stroke-width", function (d) { return 2* Math.sqrt(d.weight); });
+
+  var node = svg.selectAll(".node")
+    .data(graph.nodes)
+    .enter().append("g")
+    .attr("class", "node")
+    .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+          .on("end", dragended)
+     );
+  function dragstarted(d) {
+    if (!d3.event.active) sim.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+  function dragged(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+  function dragended(d) {
+    if (!d3.event.active) sim.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+
+  function hexagonPath(d){
+    return `M0.8660254037844386,-0.5000000000000001C0.9165435523385308,-0.41250000000000014,0.916543552338531,0.41249999999999976,0.8660254037844388,0.4999999999999998C0.8155072552303466,0.5874999999999998,0.10103629710818461,1,1.2246467991473532e-16,1C-0.10103629710818436,1,-0.8155072552303461,0.5875000000000004,-0.8660254037844384,0.5000000000000004C-0.9165435523385307,0.4125000000000005,-0.9165435523385312,-0.41249999999999926,-0.866025403784439,-0.4999999999999993C-0.8155072552303468,-0.5874999999999992,-0.10103629710818451,-1,0,-1C0.10103629710818451,-1,0.8155072552303464,-0.5875000000000001,0.8660254037844386,-0.5000000000000001`;
+  }
+
+  const group = node.append("g");
+    //.append("circle")
+    //.style("fill",function() {
+    //  return "hsl(" + Math.random() * 360 + ",100%,50%)";
+    //})
+  group
+    .append("path")
+    .attr("d", hexagonPath)
+    .style("fill", '#000')
+    .attr("transform", (d) => (`scale(${1.1*d.radius}, ${1.1*d.radius})`))
+    .attr("stroke", "#eee")
+    .attr("stroke-width", d => (`${2/d.radius}px`));
+  group
+    .append("path")
+    .attr("d", hexagonPath)
+    .style("fill", d => d.color || '#444')
+    .attr("fill-opacity", 0.35)
+    .attr("transform", (d) => (`scale(${1.1*d.radius}, ${1.1*d.radius})`))
+    .attr("stroke", "none");
+  group
+    .append("path")
+    .attr("d", hexagonPath)
+    .style("fill", d => d.color || '#444')
+    .attr("transform", (d) => (`scale(${0.98*d.radius}, ${0.98*d.radius})`))
+    .attr("stroke", "none")
+    .attr("stroke-width", d => (`${1.5/d.radius}px`));
+
+  const textGroup = node.append("g");
+
+  textGroup.append("text")
+    .attr("dx", function(d) { return -0.5* d.radius - d.name.length * 1.4})
+    .attr("dy", ".47em")
+    .style("fill", '#000')
+    .text(function (d) { return d.name });
+  textGroup.append("text")
+    .attr("dx", function(d) { return -0.5* d.radius - d.name.length * 1.4})
+    .attr("dy", ".35em")
+    .text(function (d) { return d.name });
+
+
+  const ticked = function () {
+    try {
+      link.attr("x1", function (d) { return d.source.x; })
+        .attr("y1", function (d) { return d.source.y; })
+        .attr("x2", function (d) { return d.target.x; })
+        .attr("y2", function (d) { return d.target.y; });
+
+      node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+    } catch(e){
+      console.log(e.stack)
+    }
+  };
+
+  sim.on('tick', ticked);
+
+})();
+
+</script>
