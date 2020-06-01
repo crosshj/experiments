@@ -7,7 +7,7 @@
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <style>
   body {
-    margin-top: 15px;
+    margin-top: 35px;
     position: absolute;
     top: 0; bottom: 0;
     left: 0; right: 0;
@@ -16,6 +16,22 @@
     background: #9e9e9e03;
     height: 100%;
     width: 100%;
+  }
+  .view {
+    fill: none;
+  }
+  .axis path {
+    display: none;
+  }
+  .axis text {
+    fill: slategrey;
+    fill-opacity: 0.9;
+    shape-rendering: crispEdges;
+  }
+  .axis line {
+    stroke: slategrey;
+    stroke-opacity: 0.3;
+    shape-rendering: crispEdges;
   }
   .link {
     stroke: #777;
@@ -51,7 +67,7 @@
    const comment = document.createComment('\n'+templateInput+'\n');
    mdInputEl.appendChild(comment);
 
-  console.log({templateInput});
+  //console.log({templateInput});
 
   if(templateInput === ('{{' + 'markdown' + '}}')){
     console.error('no template input - d3-graph json will not be previewed');
@@ -68,7 +84,7 @@
       return JSON.parse(templateInput);
     }catch(e){}
   })();
-  console.log({ graphInput });
+  //console.log({ graphInput });
 
   const defaultGraph = {
     "file-type": "d3-graph",
@@ -112,25 +128,73 @@
     x.weight = x.weight || 1;
   });
 
-  console.log(graph.nodes)
-  console.log(graph.links)
+  //console.log(graph.nodes)
+  //console.log(graph.links)
 
 
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select("body")
+    .append("svg")
   const width = document.querySelector('svg').clientWidth;
   const height = document.querySelector('svg').clientHeight;
+  var xScale = d3.scaleLinear().domain([0, 1]).range([0, 600]);
 
   const forceLayout = {
-    x: d3.forceX(),
-    y: d3.forceY(),
-    charge: d3.forceManyBody().strength(-300),
+    //x: d3.forceX(),
+    //y: d3.forceY(),
+    charge: d3.forceManyBody()
+      .strength(-100)
+      .distanceMin(100)
+      .distanceMax(300),
     center:  d3.forceCenter(width / 2, height / 2),
-    collision: d3.forceCollide().radius(d => d.radius * 1.5),
+    collision: d3.forceCollide().radius(d => d.radius*1.5),
     link: d3.forceLink(graph.links)
       .id(function(d) { return d.id; })
-      .distance(d => d.weight/6)
+      .distance(d => d.weight/3)
       .strength(1)
   };
+
+  var x = d3.scaleLinear()
+    .domain([-1, width + 1])
+    .range([-1, width + 1]);
+
+  var y = d3.scaleLinear()
+      .domain([-1, height + 1])
+      .range([-1, height + 1]);
+
+  var xAxis = d3.axisBottom(x)
+      .ticks((width + 2) / (height + 2) * 10)
+      .tickSize(height)
+      .tickPadding(8 - height);
+
+  var yAxis = d3.axisRight(y)
+      .ticks(10)
+      .tickSize(width)
+      .tickPadding(8 - width);
+
+  var gX = svg.append("g")
+    .attr("class", "axis axis--x")
+    .call(xAxis);
+
+  var gY = svg.append("g")
+    .attr("class", "axis axis--y")
+    .call(yAxis);
+
+  var view = svg.append("g")
+    .attr("class", "view")
+    .attr("x", 0.5)
+    .attr("y", 0.5)
+    .attr("width", width - 1)
+    .attr("height", height - 1);
+
+  function zoomed() {
+    view.attr("transform", d3.event.transform);
+    gX.call(xAxis.scale(d3.event.transform.rescaleX(x)));
+    gY.call(yAxis.scale(d3.event.transform.rescaleY(y)));
+  }
+  var zoom = d3.zoom()
+    .scaleExtent([1, 40])
+    .translateExtent([[-100, -100], [width + 90, height + 100]])
+    .on("zoom", zoomed);
 
 
 
@@ -139,13 +203,19 @@
     .forEach(([key, value]) => sim.force(key, value));
   sim.force("link").links(graph.links);
 
-  var link = svg.selectAll(".link")
+  //slows movement down a bit
+  //sim.velocityDecay(0.6);
+  //sim.alphaDecay(.8);
+  //sim.alphaTarget(0);
+
+  var link = view.selectAll(".link")
     .data(graph.links)
     .enter().append("line")
     .attr("class", "link")
+    .attr("stroke-opacity", 0.7)
     .style("stroke-width", function (d) { return 2* Math.sqrt(d.weight); });
 
-  var node = svg.selectAll(".node")
+  var node = view.selectAll(".node")
     .data(graph.nodes)
     .enter().append("g")
     .attr("class", "node")
@@ -154,19 +224,32 @@
         .on("drag", dragged)
           .on("end", dragended)
      );
+
+  // Preventing other nodes from moving while dragging one node
+  function fix_nodes(this_node) {
+      node.each(function(d){
+          if (this_node != d){
+              d.fx = d.x;
+              d.fy = d.y;
+          }
+      });
+  }
   function dragstarted(d) {
     if (!d3.event.active) sim.alphaTarget(0.3).restart();
     d.fx = d.x;
     d.fy = d.y;
+    sim.alphaTarget(0.005);
   }
   function dragged(d) {
     d.fx = d3.event.x;
     d.fy = d3.event.y;
+    //fix_nodes(d);
   }
   function dragended(d) {
     if (!d3.event.active) sim.alphaTarget(0);
     d.fx = null;
     d.fy = null;
+    sim.alphaTarget(0);
   }
 
   function hexagonPath(d){
@@ -184,6 +267,8 @@
     .style("fill", '#000')
     .attr("transform", (d) => (`scale(${1.1*d.radius}, ${1.1*d.radius})`))
     .attr("stroke", "#eee")
+    .attr("stroke-opacity", 0.7)
+    .attr("fill-opacity", 0.7)
     .attr("stroke-width", d => (`${2/d.radius}px`));
   group
     .append("path")
@@ -197,15 +282,17 @@
     .attr("d", hexagonPath)
     .style("fill", d => d.color || '#444')
     .attr("transform", (d) => (`scale(${0.98*d.radius}, ${0.98*d.radius})`))
+    .attr("fill-opacity", 0.5)
     .attr("stroke", "none")
     .attr("stroke-width", d => (`${1.5/d.radius}px`));
 
   const textGroup = node.append("g");
 
   textGroup.append("text")
-    .attr("dx", function(d) { return -0.5* d.radius - d.name.length * 1.4})
-    .attr("dy", ".47em")
+    .attr("dx", function(d) { return .75 + -0.5* d.radius - d.name.length * 1.4})
+    .attr("dy", ".42em")
     .style("fill", '#000')
+    .attr("fill-opacity", 0.7)
     .text(function (d) { return d.name });
   textGroup.append("text")
     .attr("dx", function(d) { return -0.5* d.radius - d.name.length * 1.4})
@@ -227,6 +314,8 @@
   };
 
   sim.on('tick', ticked);
+
+  svg.call(zoom);
 
 })();
 
