@@ -1,8 +1,9 @@
 {
-    "id": 8675309,
+    "id": 777,
     "type": "frontend",
     "persist": "filesystem",
     "path": ".welcome",
+    "main": "service.json",
     "version": 0.4,
     "tree": null,
     "files": null
