@@ -1,8 +1,25 @@
 
-
+### about the name
 
 bartok was a composer
+this is a service composer
 
+
+### how to run
+
+to run UI:
+- `npm install`
+- `npm run watch` 
+
+or just load index.html in your browser
+
+
+to run server:
+- run UI as above
+- `npm run watch.server` 
+
+
+### misc notes
 
 terminal   
 - https://xtermjs.org/
