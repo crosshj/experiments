@@ -1,10 +1,10 @@
 const { initService } = require("./instanceInit");
 
-const updateService = async ({ manager, arguments }) => {
-	const { id, code, name } = arguments[1];
+const updateService = async ({ manager, args }) => {
+	const { id, code, name } = args[1];
 	const service = manager.services.find(x => x.id === Number(id));
 	// console.log(JSON.stringify({ service }, null, 2 ));
-	// console.log({ arguments });
+	// console.log({ args });
 	service.name = name || service.name;
 	service.code = code || service.code;
 	service.instance.kill(); // maybe better to send a kill message and confirm death

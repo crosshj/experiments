@@ -5,7 +5,7 @@
   "config" : { "port" : "" },
   "port": "",
 
-  "main": "bartokv0.4.md",
+  "main": "service.json",
   "module": "dist/module.js",
   "browser": "dist/index.js",
 

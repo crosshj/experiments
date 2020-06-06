@@ -1,3 +1,6 @@
+const { resolve } = require('path');
+const { readdir } = require('fs').promises;
+
 // REFACTOR: this is redundant - add to manager.js
 function handler(handlerfns, name){
 	return async (req, res) => {
@@ -19,6 +22,22 @@ var cors = function(req, res, next) {
 	next();
 };
 
+const clone = x => {
+	try { return JSON.parse(JSON.stringify(x)); }
+	catch(e) {}
+};
+
+async function getTreeFiles(dir) {
+	const dirents = await readdir(dir, { withFileTypes: true });
+	const files = await Promise.all(dirents.map((dirent) => {
+	  const filePath = resolve(dir, dirent.name);
+	  return dirent.isDirectory()
+		  ? getTreeFiles(filePath)
+		  : { dir, file: dirent.name, filePath };
+	}));
+	return Array.prototype.concat(...files);
+}
+
 module.exports = {
-	handler, cors
+	handler, cors, clone, getTreeFiles
 };

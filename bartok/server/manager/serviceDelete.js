@@ -1,7 +1,7 @@
 const { instanceKill } = require("./instanceKill");
 
-const deleteService = async ({ manager, arguments }) => {
-	const { id } = arguments[1];
+const deleteService = async ({ manager, args }) => {
+	const { id } = args[1];
 	const service = manager.services.find(x => Number(x.id) === Number(id));
 	//console.log({service});
 

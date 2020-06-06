@@ -6,8 +6,8 @@ TODO: if service is set to auto-persist, save to DB as well
 
 const { initService } = require("./instanceInit");
 
-const createServices = async ({ db, manager, arguments }) => {
-	const { id, name } = arguments[1];
+const createServices = async ({ db, manager, args }) => {
+	const { id, name } = args[1];
 	const service = db.Service.build({
 		id: Number(id),
 		name,
@@ -47,7 +47,7 @@ process.on('message', parentMsg => {
 		})
 	});
 	// console.log({ service });
-	// console.log({ arguments });
+	// console.log({ args });
 	const newService = initService(service);
 	manager.services.push(newService);
 	const { id: _id, code: _code, name: _name, tree: _tree } = newService;

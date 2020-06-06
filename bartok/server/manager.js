@@ -20,6 +20,7 @@ const initManager = async ({ db }) => {
 	const manager = {
 		services: await db.read()
 	};
+	console.log(JSON.stringify(manager.services[12], null, 2))
 
 	//console.log(manager.services.filter(x => x.name === 'bartokv0.2').map(x => x.toJSON()));
 	manager.services = manager.services.map(initService);
@@ -58,23 +59,24 @@ const initManager = async ({ db }) => {
 // REFACTOR: this is redundant
 function handle({ name, db, manager }) {
 	return async function () {
+		const args = arguments;
 		if(name === 'create'){
-			return await createServices({ db, manager, arguments });
+			return await createServices({ db, manager, args });
 		}
 		if(name === 'read'){
-			return await readServices({ manager, arguments });
+			return await readServices({ manager, args });
 		}
 		if(name === 'update'){
-			return await updateService({ manager, arguments });
+			return await updateService({ manager, args });
 		}
 		if(name === 'delete'){
-			return await deleteService({ manager, arguments });
+			return await deleteService({ manager, args });
 		}
 		if(name === 'persist'){
-			return await persistServices({ db, manager, arguments });
+			return await persistServices({ db, manager, args });
 		}
 		process.stdout.write(name + ' -');
-		return arguments;
+		return args;
 	}
 }
 
@@ -94,4 +96,4 @@ async function init({ db }) {
 	return initHandlers({ db, manager })
 }
 
-module.exports = { init };
+module.exports = { init, handle };

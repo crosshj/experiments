@@ -1,4 +1,4 @@
-const persistServices = async ({ db, manager, arguments }) => {
+const persistServices = async ({ db, manager }) => {
 	const dbServices = await db.read();
 	for (var i = 0, len = manager.services.length; i < len; i++) {
 		const service = manager.services[i];
