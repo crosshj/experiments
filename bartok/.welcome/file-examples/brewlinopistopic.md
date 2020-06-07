@@ -1,35 +1,7 @@
+<!-- no-select -->
+
 Markdown: Basics
 ================
-
-<ul id="ProjectSubmenu">
-    <li><a href="/projects/markdown/" title="Markdown Project Page">Main</a></li>
-    <li><a class="selected" title="Markdown Basics">Basics</a></li>
-    <li><a href="/projects/markdown/syntax" title="Markdown Syntax Documentation">Syntax</a></li>
-    <li><a href="/projects/markdown/license" title="Pricing and License Information">License</a></li>
-    <li><a href="/projects/markdown/dingus" title="Online Markdown Web Form">Dingus</a></li>
-</ul>
-
-
-Getting the Gist of Markdown's Formatting Syntax
-------------------------------------------------
-
-This page offers a brief overview of what it's like to use Markdown.
-The [syntax page] [s] provides complete, detailed documentation for
-every feature, but Markdown should be very easy to pick up simply by
-looking at a few examples of it in action. The examples on this page
-are written in a before/after style, showing example syntax and the
-HTML output produced by Markdown.
-
-It's also helpful to simply try Markdown out; the [Dingus] [d] is a
-web application that allows you type your own Markdown-formatted text
-and translate it to XHTML.
-
-**Note:** This document is itself written using Markdown; you
-can [see the source for it by adding '.text' to the URL] [src].
-
-  [s]: /projects/markdown/syntax  "Markdown Syntax"
-  [d]: /projects/markdown/dingus  "Markdown Dingus"
-  [src]: /projects/markdown/basics.text
 
 
 ## Paragraphs, Headers, Blockquotes ##
@@ -247,17 +219,17 @@ Image syntax is very much like link syntax.
 
 Inline (titles are optional):
 
-  ![alt text](/path/to/img.jpg "Title")
+  ![alt text](.welcome/lame.png "Title")
 
 Reference-style:
 
   ![alt text][id]
 
-  [id]: /path/to/img.jpg "Title"
+  [id]: .welcome/lame.png "Title"
 
 Both of the above examples produce the same output:
 
-  <img src="/path/to/img.jpg" alt="alt text" title="Title" />
+  <img src=".welcome/lame.png" alt="alt text" title="Title" />
 
 
 

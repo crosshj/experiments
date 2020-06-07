@@ -7,7 +7,7 @@ useDefault: false
 <textarea readonly hidden id="markdown-input">
   {{markdown}}
 </textarea>
-  
+
 <textarea readonly hidden id="markdown-default">
   ## demo markdown
    - one
@@ -66,6 +66,7 @@ useDefault: false
     }
     body {
       margin: 0px;
+      margin-right: -17px;
       height: calc(100vh - 40px);
       overflow: hidden;
       color: #ccc;
@@ -190,9 +191,9 @@ useDefault: false
        mdInputEl.innerHTML = '';
        const comment = document.createComment('\n'+templateInput+'\n');
        mdInputEl.appendChild(comment);
-     
+
       //console.log({templateInput});
-      
+
       if(templateInput === ('{{' + 'markdown' + '}}')){
         console.error('no template input - markdown will not be previewed');
         return;
@@ -224,7 +225,7 @@ useDefault: false
       contain.innerHTML = output;
       const scripts = Array.from(contain.querySelectorAll('script'));
       scripts.map(x => eval(x.innerText))
-      
+
       if(templateInput.includes('<!-- no-select -->')){
         return;
       }
@@ -234,7 +235,7 @@ useDefault: false
         selected && selected.classList.remove('selected');
         e.target.classList.add('selected');
       });
-      
+
       document.addEventListener('keydown', (e) => {
          if(e.key === 'ArrowDown'){
            const selected = document.querySelector('.selected');
@@ -265,13 +266,13 @@ useDefault: false
            return false;
          }
        });
-      
+
       contain && contain.classList.add("markdown-body");
 
       const firstSelectable = contain && Array.from(contain.children)
         .find(x => ['H1','H2','H3','H4','H5','H6'].includes(x.tagName))
       firstSelectable && firstSelectable.classList.add('selected');
-      
+
     })();
   </script>
 

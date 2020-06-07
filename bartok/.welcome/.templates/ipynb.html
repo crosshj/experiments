@@ -22,7 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jsvine/notebookjs@master/notebook.js"></script>
     <!-- link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css" integrity="sha256-gzohnzxILb7OZZch6c8mySnK1r0yFviwmBR+1E5O0RM=" crossorigin="anonymous" / -->
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/css/vendor/prism.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/css/vendor/notebook.css" />
@@ -63,6 +63,8 @@
     }
     body {
       margin: 0px;
+      margin-right: -17px;
+      margin-bottom: -17px;
       height: 100vh;
       overflow: hidden;
       color: #ccc;
@@ -91,7 +93,7 @@
       padding: 15px;
       color: black;
     }
-    
+
     #container :not(pre) > code[class*="language-"],
     #container pre[class*="language-"] {
       filter: invert(1) contrast(.75) hue-rotate(208deg);
@@ -124,10 +126,10 @@
          .replace(/&gt;/g, '>')
          .replace(/&lt;/g, '<');
        mdInputEl.innerHTML = '';
-    
+
       const comment = document.createComment('\n'+templateInput+'\n');
       mdInputEl.appendChild(comment);
-     
+
       if(templateInput === ('{{' + 'markdown' + '}}')){
         console.error('no template input - markdown will not be previewed');
         return;

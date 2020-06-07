@@ -11,11 +11,11 @@ our $s2 = q(multi-
 	Example.
 =cut
 
-my $html=<<'HTML'
-<html>
-<title>hi!</title>
-</html>
-HTML
+my $multiline=<<'FOO'
+one
+two
+three
+FOO
 
 print "first,".join(',', 'second', qq~third~);
 

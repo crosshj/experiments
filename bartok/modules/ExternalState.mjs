@@ -187,8 +187,9 @@ async function externalStateRequest(op){
 
 
 			const untrickCode = JSON.parse(serviceToUpdate.code);
+			//TODO: this is where diff between filesytem backed files would be useful
 			untrickCode.files.forEach(f => {
-				if(f.path){
+				if(f.path && f.name === "service.json"){
 					f.code = '';
 				}
 			});
