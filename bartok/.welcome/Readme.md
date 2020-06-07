@@ -1,5 +1,9 @@
 <!-- no-select -->
 
+<p style="width:100%; text-align:center;margin:0;">
+  <img src=".welcome/file-examples/bartok.svg" style="width:300px;margin:auto;">
+</p>
+
 # welcome!
 This is Bartok, a system that is being created to help you create and manage your code!
 

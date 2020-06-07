@@ -1,3 +1,5 @@
+<!-- no-select -->
+
 ...
 
 graph file formats suck!
@@ -22,8 +24,8 @@ http://www.graphviz.org/gallery/
 
 
 
-d3 seems to use this format (or can easily be made to use):
-
+# d3 seems to use this format (or can easily be made to use):
+```javascript
 {
 	"nodes":[
 		{"name":"node1","group":1},
@@ -36,10 +38,11 @@ d3 seems to use this format (or can easily be made to use):
 		{"source":0,"target":2,"weight":3}
 	]
 }
+```
 
 
-GML example:
-
+# GML example:
+```javascript
 graph [
 	comment "This is a sample graph"
 	directed 1
@@ -76,10 +79,11 @@ graph [
 		label "Edge from node 3 to node 1"
 	]
 ]
+```
 
-GV example:
-# https://en.wikipedia.org/wiki/DOT_(graph_description_language)
-
+# GV example:
+[DOT graph format](https://en.wikipedia.org/wiki/DOT_(graph_description_language))
+```javascript
 graph graphname {
     // This attribute applies to the graph itself
     size="1,1";
@@ -92,3 +96,4 @@ graph graphname {
     b -- d [style=dotted];
     // [style=invis] hides a node.
   }
+```

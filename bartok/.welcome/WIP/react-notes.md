@@ -1,5 +1,5 @@
 <!-- no-select -->
-- https://mvc.givan.se/ - mvc family tree
+- [mvc family tree](https://mvc.givan.se/)
 
 
 ```xml
@@ -21,7 +21,7 @@
 <script type="view">
   <style>
   </style>
-  
+
   const App = () => {
     //binding to the store...
     const [ value, method ] = Store();
@@ -32,7 +32,7 @@
       </div>
     );
   };
-  
+
   // how does this view (App) get connected?
   // render(<App />); //right?
 </script>

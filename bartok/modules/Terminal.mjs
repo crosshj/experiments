@@ -190,7 +190,7 @@ function _Terminal({ getCurrentService }){
 					 <li class="action-item ${selected==="preview" ? "checked" : ""}" role="tab" draggable="true">
 							<a class="action-label preview" data-type="preview">Preview</a>
 						</li>
-						<li class="action-item ${selected==="logs" ? "checked" : ""}" role="tab" draggable="true">
+						<li class="action-item hidden ${selected==="logs" ? "checked" : ""}" role="tab" draggable="true">
 							<a class="action-label logs" data-type="logs">Logs</a>
 						</li>
 					 <li class="action-item" role="button" aria-label="Additional Views" title="Additional Views">
