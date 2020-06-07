@@ -74,6 +74,9 @@ function StatusBar(){
 		if(type.json){
 			docType = 'json';
 		}
+		if(type.typescript){
+			docType = 'TypeScript';
+		}
 		if(type.name && type.name.includes('html')){
 			console.log({ type });
 			docType = 'html';
@@ -81,8 +84,18 @@ function StatusBar(){
 		if(type === 'default'){
 			docType = 'Plain Text'
 		}
+		if(type === 'javascript'){
+			docType = 'JavaScript'
+		}
+		while(docType.toString().includes('object')){
+			if(docType.name){
+				docType = docType.name;
+				continue;
+			}
+			docType = 'Plain Text';
+		}
 
-		const capThese = ['css', 'html', 'json', 'xml', 'jsx'];
+		const capThese = ['css', 'html', 'json', 'xml', 'jsx', 'php'];
 		if(docType.toLowerCase && capThese.includes(docType.toLowerCase())){
 			el.classList.add('uppercase');
 		}

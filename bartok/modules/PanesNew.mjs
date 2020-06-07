@@ -111,6 +111,27 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		first.style.borderRight = "";
 		second.style.borderLeft = "";
 
+
+		//convert explorer right edge & editor left edge to pixel values
+		const setExplorerRightEdge = () => {
+			const explorer = document.getElementById('explorer');
+			//NOTE: this is lazy; should probably look at all edges for '%'
+			if(!explorer.style.right.includes('%')){
+				return;
+			}
+			const seperator1 = document.getElementById('seperator1');
+			const editor = document.getElementById('editor');
+
+			// NOTE: probably doesn't account for zoomed window properly
+			const docWidth = document.body.clientWidth;
+			const pixelLeftOffset = Number(seperator1.style.left.replace('%','')) * 0.01 * docWidth;
+
+			explorer.style.right = (docWidth - pixelLeftOffset) + 'px';
+			seperator1.style.left = pixelLeftOffset + 'px';
+			editor.style.left = pixelLeftOffset + 'px';
+		};
+		setExplorerRightEdge();
+
 		window.termResize();
 		dragging = false;
 	}

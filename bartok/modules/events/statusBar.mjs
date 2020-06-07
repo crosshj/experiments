@@ -64,6 +64,7 @@ const operationDone = ({
 		setLineNumber(1);
 		setColNumber(1);
 	};
+
 const fileSelect = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>
@@ -79,18 +80,21 @@ const fileSelect = ({
 		setLineNumber(1);
 		setColNumber(1);
 	};
+
 const fileClose = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>
 	(event) => {
 		console.log('status bar listen for fileClose');
 	};
+
 const fileChange = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>
 	(event) => {
 		console.log('status bar listen for fileChange');
 	};
+
 const click = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>

@@ -9,6 +9,7 @@ If you want an idea of what bartok can do, check out:
 
   - `terminal` pane, the right part of the screen.
   Try entering `help` then press `Enter` - not everything works, but some things do!!
+
   - `preview` mode can be chosen in the menu atop the terminal pane.
   Use it when you browse file examples.
 
