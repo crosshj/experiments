@@ -48,10 +48,25 @@ const defaultServices = [{
 	tree: defaultTree('UI Service'),
 	code: defaultCode('UI Service')
 }, {
-	id: 90,
-	name: 'Local Storage Service',
-	tree: defaultTree('Local Storage Service'),
-	code: defaultCode('Local Storage Service')
+	id: 777,
+	name: 'welcome',
+	tree: [{
+		welcome: {
+			"service.json": {}
+		}
+	}],
+	code: [{
+		name: "service.json",
+		code: JSON.stringify({
+			id: 777,
+			type: "frontend",
+			persist: "filesystem",
+			path: ".welcome",
+			version: 0.4,
+			tree: null,
+			code: null
+		}, null, 2)
+	}]
 }];
 
 const dummyService = (_id, _name) => ({
@@ -88,6 +103,35 @@ const saveServiceToLS = (currentServices=[], service) => {
 
 let lsServices = [];
 
+//TODO: this is intense, but save a more granular approach for future
+async function fileSystemTricks({ result }){
+	const serviceJSONFile = result.result[0].code.find(item => item.name === 'service.json');
+	if(serviceJSONFile && !serviceJSONFile.code){
+		const fetched = await fetch(`./.${result.result[0].name}/service.json`);
+		serviceJSONFile.code = await fetched.text();
+	}
+	if(serviceJSONFile){
+		let serviceJSON = JSON.parse(serviceJSONFile.code);
+		if(!serviceJSON.tree){
+			const fetched = await fetch(`./${serviceJSON.path}/service.json`);
+			serviceJSONFile.code = await fetched.text();
+			serviceJSON = JSON.parse(serviceJSONFile.code);
+		}
+		result.result[0].code = serviceJSON.files;
+		result.result[0].tree = {
+			[result.result[0].name]: serviceJSON.tree
+		}
+	}
+	const len = result.result[0].code.length;
+	for(var i=0; i < len; i++){
+		const item = result.result[0].code[i];
+		if(!item.code && item.path){
+			const fetched = await fetch('./' + item.path);
+			item.code = await fetched.text();
+		}
+	}
+}
+
 async function externalStateRequest(op){
 	//debugger
 	//console.log(op.name);
@@ -109,7 +153,12 @@ async function externalStateRequest(op){
 		})(op);
 		const response = await fetch(op.url, op.config);
 		result = await response.json();
+
+		if(result.message === 'read' && readId){
+			await fileSystemTricks({ result });
+		}
 	} catch (e) {
+		console.log(e)
 		lsServices = getServicesFromLS() || defaultServices;
 
 		if(op.name === "update"){
@@ -131,12 +180,22 @@ async function externalStateRequest(op){
 				return;
 			}
 
+
+			const untrickCode = JSON.parse(serviceToUpdate.code);
+			untrickCode.files.forEach(f => {
+				if(f.path){
+					f.code = '';
+				}
+			});
+			serviceToUpdate.code = JSON.stringify(untrickCode);
+
 			//debugger
 			if(window.DEBUG){
 				const c = JSON.parse(serviceToUpdate.code);
 				debugger;
 				serviceToUpdate.code = JSON.stringify(c);
 			}
+
 
 			saveServiceToLS(lsServices, serviceToUpdate);
 			lsServices = getServicesFromLS() || [];
@@ -160,9 +219,11 @@ async function externalStateRequest(op){
 		}
 
 		if(readId){
-			return {
+			const result = {
 				result: lsServices.filter(x => Number(x.id) === Number(readId))
-			};
+			}
+			await fileSystemTricks({ result });
+			return result;
 		}
 		if(updateId){
 			return {
@@ -173,6 +234,7 @@ async function externalStateRequest(op){
 		result = {
 			result: lsServices //.sort((a, b) => Number(a.id)-Number(b.id))
 		};
+
 	}
 	return result;
 }

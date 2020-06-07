@@ -20,7 +20,6 @@ const initManager = async ({ db }) => {
 	const manager = {
 		services: await db.read()
 	};
-	console.log(JSON.stringify(manager.services[12], null, 2))
 
 	//console.log(manager.services.filter(x => x.name === 'bartokv0.2').map(x => x.toJSON()));
 	manager.services = manager.services.map(initService);

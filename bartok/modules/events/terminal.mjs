@@ -207,7 +207,7 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 		viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
 	}
 
-	const code = currentFile;
+	let code = currentFile;
 	const name = currentFileName;
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');

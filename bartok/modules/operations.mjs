@@ -101,11 +101,14 @@ function getUpdateAfter(setCurrentService) {
 }
 
 async function performOperation(operation, eventData = {}, externalStateRequest) {
+
 	const { body = {}, after } = eventData;
 	if (operation.name !== "read") {
-		body.id = body.id === 0
-			? body.id
-			: body.id || (currentService || {}).id;
+		try{
+			body.id = body.id === 0
+				? body.id
+				: body.id || (currentService || {}).id;
+		} catch(e){}
 	}
 	let { id } = body;
 
@@ -273,7 +276,7 @@ async function Operations({
 
 	const lastService = localStorage.getItem('lastService');
 	//console.log({ lastService });
-	await performOperation(foundOp, { body: { id: lastService ? Number(lastService) : 90 } }, externalStateRequest);
+	await performOperation(foundOp, { body: { id: lastService ? Number(lastService) : 777 } }, externalStateRequest);
 
 }
 

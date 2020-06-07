@@ -16,7 +16,7 @@
     }
     img {
       width: 100%;
-      height: 100%;
+      /*height: 100%;*/
     }
     img:before {
       background: #555;
@@ -33,7 +33,7 @@
       text-align: center;
     }
     .explanation {
-      margin-top: -50%;
+      margin-top: -70%;
       margin-bottom: 40px;
       font-family: monospace;
     }
@@ -42,20 +42,25 @@
   <!-- div class="image-container">
     <img src="data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7">
   </div -->
-  
+
   <div class="explanation">
+    <h1>Bartok can preview files like..</h1>
     <p>
     This is a test for Bartok UI system.
-    If the image shows below, then a file called ./five.jpg exists in
+    If the image shows below, then a file called ./lame.png exists in
     the Bartok Client File System and is being delivered by a Service Worker.
     </p>
     <p>
     If the Bartok Service Worker is not in place to handle these requests, then
     a grey box will show "MISSING IMAGE"
     </p>
+    <p>
+      Why so "lame" with the lame.png?  Because the original intent was for this to load
+      from service worker, but that's not in place yet.  Still, OMG it's so COOOL!!!
+    </p>
   </div>
   <div class="image-container">
-    <img src="./five.png">
+    <img src="./.welcome/lame.png">
   </div>
 
 </html>

@@ -3,8 +3,290 @@
     "type": "frontend",
     "persist": "filesystem",
     "path": ".welcome",
-    "main": "service.json",
     "version": 0.4,
-    "tree": null,
-    "files": null
-}
+    "tree": {
+      "package.json": {},
+      ".templates": {
+        "d3-graph.html": {},
+        "gltf.html": {},
+        "ipynb.html": {},
+        "md.html": {}
+      },
+      "file-examples": {
+        "bartok.svg": {},
+        "blaptney.ts": {},
+        "blorptny.js": {},
+        "blurptny.jsx": {},
+        "brewlinopistopic.md": {},
+        "crackney.py": {},
+        "crelau.svg": {},
+        "cytoscape1.cx": {},
+        "cytoscape1.gml": {},
+        "damagedHelmet.gltf": {},
+        "demo.gltf": {},
+        "demo.ipynb": {},
+        "demo2.ipynb": {},
+        "demo3.ipynb": {},
+        "demo4.ipynb": {},
+        "graph.json": {},
+        "grestla.go": {},
+        "groiponte.php": {},
+        "hempto.rb": {},
+        "hexto.css": {},
+        "hexto.less": {},
+        "hexto.scss": {},
+        "hyperscript.js": {},
+        "jackrofae.png": {},
+        "lockIcon.svg": {},
+        "mempto.bat": {},
+        "reveal.htm": {},
+        "septo.txt": {},
+        "tessit.json": {},
+        "testmarkdown.md": {},
+        "trlpnirb.htm": {},
+        "trlpnord.jsx": {},
+        "yurklis.pl": {}
+      },
+      "folder-examples": {
+        "fee": {
+          "fie": {
+            "foe": {
+              "fum": {
+                "mlerpo.md": {}
+              }
+            }
+          }
+        },
+        "foo": {
+          "doo": {
+            "woo": {
+              "boo.js": {}
+            }
+          }
+        },
+        "test": {
+          "wee.js": {}
+        }
+      },
+      "Readme.md": {},
+      "service.json": {},
+      "tests": {
+        "sw.clientServer.htm": {}
+      },
+      "WIP": {
+        "angular9.html": {},
+        "auth0.md": {},
+        "graph-formats.md": {},
+        "Piksel-LIFE-20200506-191410.piskel": {},
+        "quotaIssue.js": {},
+        "react-notes.md": {}
+      }
+    },
+    "files": [
+      {
+        "name": "index.js",
+        "code": "",
+        "path": ".welcome/index.js"
+      },
+      {
+        "name": "package.json",
+        "path": ".welcome/package.json"
+      },
+      {
+        "name": "d3-graph.html",
+        "path": ".welcome/.templates/d3-graph.html"
+      },
+      {
+        "name": "gltf.html",
+        "path": ".welcome/.templates/gltf.html"
+      },
+      {
+        "name": "ipynb.html",
+        "path": ".welcome/.templates/ipynb.html"
+      },
+      {
+        "name": "md.html",
+        "path": ".welcome/.templates/md.html"
+      },
+      {
+        "name": "bartok.svg",
+        "path": ".welcome/file-examples/bartok.svg"
+      },
+      {
+        "name": "blaptney.ts",
+        "path": ".welcome/file-examples/blaptney.ts"
+      },
+      {
+        "name": "blorptny.js",
+        "path": ".welcome/file-examples/blorptny.js"
+      },
+      {
+        "name": "blurptny.jsx",
+        "path": ".welcome/file-examples/blurptny.jsx"
+      },
+      {
+        "name": "brewlinopistopic.md",
+        "path": ".welcome/file-examples/brewlinopistopic.md"
+      },
+      {
+        "name": "crackney.py",
+        "path": ".welcome/file-examples/crackney.py"
+      },
+      {
+        "name": "crelau.svg",
+        "path": ".welcome/file-examples/crelau.svg"
+      },
+      {
+        "name": "cytoscape1.cx",
+        "path": ".welcome/file-examples/cytoscape1.cx"
+      },
+      {
+        "name": "cytoscape1.gml",
+        "path": ".welcome/file-examples/cytoscape1.gml"
+      },
+      {
+        "name": "damagedHelmet.gltf",
+        "path": ".welcome/file-examples/damagedHelmet.gltf"
+      },
+      {
+        "name": "demo.gltf",
+        "path": ".welcome/file-examples/demo.gltf"
+      },
+      {
+        "name": "demo.ipynb",
+        "path": ".welcome/file-examples/demo.ipynb"
+      },
+      {
+        "name": "demo2.ipynb",
+        "path": ".welcome/file-examples/demo2.ipynb"
+      },
+      {
+        "name": "demo3.ipynb",
+        "path": ".welcome/file-examples/demo3.ipynb"
+      },
+      {
+        "name": "demo4.ipynb",
+        "path": ".welcome/file-examples/demo4.ipynb"
+      },
+      {
+        "name": "graph.json",
+        "path": ".welcome/file-examples/graph.json"
+      },
+      {
+        "name": "grestla.go",
+        "path": ".welcome/file-examples/grestla.go"
+      },
+      {
+        "name": "groiponte.php",
+        "path": ".welcome/file-examples/groiponte.php"
+      },
+      {
+        "name": "hempto.rb",
+        "path": ".welcome/file-examples/hempto.rb"
+      },
+      {
+        "name": "hexto.css",
+        "path": ".welcome/file-examples/hexto.css"
+      },
+      {
+        "name": "hexto.less",
+        "path": ".welcome/file-examples/hexto.less"
+      },
+      {
+        "name": "hexto.scss",
+        "path": ".welcome/file-examples/hexto.scss"
+      },
+      {
+        "name": "hyperscript.js",
+        "path": ".welcome/file-examples/hyperscript.js"
+      },
+      {
+        "name": "jackrofae.png",
+        "path": ".welcome/file-examples/jackrofae.png"
+      },
+      {
+        "name": "lockIcon.svg",
+        "path": ".welcome/file-examples/lockIcon.svg"
+      },
+      {
+        "name": "mempto.bat",
+        "path": ".welcome/file-examples/mempto.bat"
+      },
+      {
+        "name": "reveal.htm",
+        "path": ".welcome/file-examples/reveal.htm"
+      },
+      {
+        "name": "septo.txt",
+        "path": ".welcome/file-examples/septo.txt"
+      },
+      {
+        "name": "tessit.json",
+        "path": ".welcome/file-examples/tessit.json"
+      },
+      {
+        "name": "testmarkdown.md",
+        "path": ".welcome/file-examples/testmarkdown.md"
+      },
+      {
+        "name": "trlpnirb.htm",
+        "path": ".welcome/file-examples/trlpnirb.htm"
+      },
+      {
+        "name": "trlpnord.jsx",
+        "path": ".welcome/file-examples/trlpnord.jsx"
+      },
+      {
+        "name": "yurklis.pl",
+        "path": ".welcome/file-examples/yurklis.pl"
+      },
+      {
+        "name": "mlerpo.md",
+        "path": ".welcome/folder-examples/fee/fie/foe/fum/mlerpo.md"
+      },
+      {
+        "name": "boo.js",
+        "path": ".welcome/folder-examples/foo/doo/woo/boo.js"
+      },
+      {
+        "name": "wee.js",
+        "path": ".welcome/folder-examples/test/wee.js"
+      },
+      {
+        "name": "Readme.md",
+        "path": ".welcome/Readme.md"
+      },
+      {
+        "name": "service.json",
+        "path": ".welcome/service.json"
+      },
+      {
+        "name": "sw.clientServer.htm",
+        "path": ".welcome/tests/sw.clientServer.htm"
+      },
+      {
+        "name": "angular9.html",
+        "path": ".welcome/WIP/angular9.html"
+      },
+      {
+        "name": "auth0.md",
+        "path": ".welcome/WIP/auth0.md"
+      },
+      {
+        "name": "graph-formats.md",
+        "path": ".welcome/WIP/graph-formats.md"
+      },
+      {
+        "name": "Piksel-LIFE-20200506-191410.piskel",
+        "path": ".welcome/WIP/Piksel-LIFE-20200506-191410.piskel"
+      },
+      {
+        "name": "quotaIssue.js",
+        "path": ".welcome/WIP/quotaIssue.js"
+      },
+      {
+        "name": "react-notes.md",
+        "path": ".welcome/WIP/react-notes.md"
+      }
+    ]
+  }
