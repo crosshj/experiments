@@ -106,7 +106,7 @@ const codeMirrorModeJs = (mode, callback) => {
 		callback();
 		return;
 	}
-	const modeUrl = codeMirrorJsSyntaxUrl.replace('javascript', mode);
+	const modeUrl = codeMirrorJsSyntaxUrl.replace('javascript', mode.name || mode);
 	const script = appendScript(modeUrl, callback);
 	script.id = scriptId;
 };
@@ -123,7 +123,11 @@ const setupEditor = (text, opts) => {
 	const options = { ...defaultOptions, ...opts };
 
 	//console.log({ mimeModes: CodeMirror.mimeModes, modes: CodeMirror.modes })
-	const editor = CodeMirror.fromTextArea(document.querySelector('.simulation .functionInput'), options);
+	const textArea = document.querySelector('.simulation .functionInput');
+	if(!textArea){
+		return;
+	}
+	const editor = CodeMirror.fromTextArea(textArea, options);
 
 	//console.log({ options });
 	CodeMirror.keyMap.default["Shift-Tab"] = "indentLess";
@@ -160,7 +164,19 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 							codeMirrorModeJs("htmlmixed", () => {
 								codeMirrorModeJs("htmlembedded", () => {
 									codeMirrorModeJs(opts.mode, () => {
-										const theEditor = setupEditor(text, opts || {});
+										let theEditor = setupEditor(text, opts || {});
+										if(!theEditor){
+											setTimeout(() => {
+												theEditor = setupEditor(text, opts || {});
+												if(!theEditor){
+													console.log('STUBBORN editor...');
+													debugger;
+												}
+												window.Editor = theEditor;
+												callback(null, theEditor);
+											}, 1000);
+											return;
+										}
 										//theEditor.setOption("mode", opts.mode);
 										//theEditor.setOption("theme", "default");
 										window.Editor = theEditor;
