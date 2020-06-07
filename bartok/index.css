@@ -1112,6 +1112,7 @@ notes-section.loading:after {
   /* width: 200px; */
   min-width: 200px;
   transition: background-color 2s ease-in;
+  margin-right: -17px;
 }
 
 /* container for editor and terminal*/
