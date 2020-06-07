@@ -63,9 +63,8 @@
     }
     body {
       margin: 0px;
-      margin-right: -17px;
-      margin-bottom: -17px;
-      height: 100vh;
+      height: calc(100vh + 17px);
+      width: calc(100% + 17px);
       overflow: hidden;
       color: #ccc;
       font-family: sans-serif;
@@ -131,7 +130,7 @@
       mdInputEl.appendChild(comment);
 
       if(templateInput === ('{{' + 'markdown' + '}}')){
-        console.error('no template input - markdown will not be previewed');
+        console.error('no template input - jupyter notebook will not be previewed');
         return;
       }
       if(templateInput.includes('</html>')){

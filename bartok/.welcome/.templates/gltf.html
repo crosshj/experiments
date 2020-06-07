@@ -27,7 +27,7 @@ OTHER FILETYPES: see https://threejs.org/docs/#manual/en/introduction/FAQ
     (function(){
       let templateInput = document.getElementById('template-input').innerHTML.trim();
       const tag = '{{' + 'template_input' + '}}';
-      if(templateInput === tag){ return console.error('no template input - markdown will not be previewed'); }
+      if(templateInput === tag){ return console.error('no template input - GTLF will not be previewed'); }
       if(templateInput.includes('</html>')){ return console.error('gltf should not have an </html> tag in it'); }
       const container = document.getElementById('container');
       if(!container){ return; }
@@ -64,10 +64,10 @@ OTHER FILETYPES: see https://threejs.org/docs/#manual/en/introduction/FAQ
 
         //var helper = new THREE.CameraHelper( light.shadow.camera );
         //scene.add( helper );
-       
+
         var ambient	= new THREE.AmbientLight( 0xee9911 );
         scene.add( ambient )
-        
+
         var directional	= new THREE.DirectionalLight('#ffffee', 1)
         directional.position.set(0.5, 2, 2);
         //directional.castShadow = true;
@@ -77,7 +77,7 @@ OTHER FILETYPES: see https://threejs.org/docs/#manual/en/introduction/FAQ
         directional.shadow.mapSize.width = 4096;
         directional.shadow.mapSize.height = 4096;
         scene.add( directional )
-        
+
         var keylight	= new THREE.DirectionalLight('#fdfbd3', 0.75)
         keylight.position.set(-0.5, 2, -2);
         //keylight.castShadow = true;
@@ -129,14 +129,14 @@ OTHER FILETYPES: see https://threejs.org/docs/#manual/en/introduction/FAQ
 
 
         renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-        
+
         composer = new THREE.EffectComposer( renderer );
         var ssaoPass = new THREE.SSAOPass( scene, camera, width, height );
         ssaoPass.kernelRadius = 6;
         ssaoPass.maxDistance = 0.17;
         ssaoPass.minDistance = 0.001;
         composer.addPass( ssaoPass );
-        
+
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.setPixelRatio( window.devicePixelRatio );
@@ -144,7 +144,7 @@ OTHER FILETYPES: see https://threejs.org/docs/#manual/en/introduction/FAQ
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 0.8;
         renderer.outputEncoding = THREE.sRGBEncoding;
-        
+
         container.appendChild( renderer.domElement );
 
         controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -156,18 +156,18 @@ OTHER FILETYPES: see https://threejs.org/docs/#manual/en/introduction/FAQ
 
         window.addEventListener( 'resize', onWindowResize, false );
       }
-      
+
       function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize( window.innerWidth, window.innerHeight );
         render();
       }
-      
+
       function render() {
         renderer.render( scene, camera );
       }
-      
+
     })();
   </script>
   <style>

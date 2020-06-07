@@ -66,8 +66,8 @@ useDefault: false
     }
     body {
       margin: 0px;
-      margin-right: -17px;
       height: calc(100vh - 40px);
+      width: calc(100% + 17px);
       overflow: hidden;
       color: #ccc;
       font-family: sans-serif;
@@ -199,6 +199,7 @@ useDefault: false
         return;
       }
       if(templateInput.includes('</html>')){
+        console.log(templateInput)
         console.error('markdown should not have an </html> tag in it')
         return;
       }
