@@ -151,6 +151,11 @@ async function externalStateRequest(op){
 				return;
 			}
 		})(op);
+
+		if(document.location.href.includes('apps.crosshj.com')){
+			throw new Error('Server not implemented for apps.crosshj.com');
+		}
+
 		const response = await fetch(op.url, op.config);
 		result = await response.json();
 
