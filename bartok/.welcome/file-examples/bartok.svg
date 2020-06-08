@@ -29,7 +29,7 @@
         stroke: #7d7d7d;
     }
     svg {
-      filter: drop-shadow(0 18px 6px black);
+      filter: drop-shadow(0 0px 6px black);
       opacity: 0.7;
     }
  </style>
