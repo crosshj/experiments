@@ -1,7 +1,7 @@
 <!-- no-select -->
 
 <p style="width:100%; text-align:center;margin:0;">
-  <img src="file-examples/bartok.svg" style="width:300px;margin:auto;">
+  <img src="file-examples/bartok.svg?cache-bust=1" style="width:300px;margin:auto;">
 </p>
 
 # welcome!
