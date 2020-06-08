@@ -5,7 +5,13 @@
 </p>
 
 # welcome!
-This is Bartok, a system that is being created to help you create and manage your code!
+This is Bartok, a system that is being created to help you create, run, and manage your code!
+
+With Bartok, your code is collected into collections of files called services.  There are two main types of services: frontend and backend.  Frontend services are ran and executed in a browser.  Backend services run on a server.
+
+This instance of Bartok runs only frontend services.  If you want backend services, visit the (github repository)[https://github.com/crosshj/experiments/tree/gh-pages/bartok], clone, and follow instructions.
+
+You can use this frontend-only version of Bartok as an editor and to explore the Bartok templates and preview.  You'll need to create your own service because the `welcome` service will not persist changes to local storage in your browser for this special, introductory service.
 
 Currently, this is a work in progress, but you can play around!
 
