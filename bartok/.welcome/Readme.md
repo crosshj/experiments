@@ -26,8 +26,11 @@ If you want an idea of what bartok can do, check out:
   - `file-examples` folder, to the left in explorer tree.
   Try clicking one of these files and watching `preview` pane.
 
-  - `.templates` folder.
+  - `.templates` folder, at the top of the file tree on the left.
   Exploring this will give you an idea of how `preview` works
+  
+  - `service map` screen, appears after clicking the triangular icon near top, far left .
+  This shows connected services and connections within services.  You can find it by clicking on the triangular icon near the top at the far left.
 
 Feel free to edit anything!  In Bartok's current state, you won't hurt anything!
 
