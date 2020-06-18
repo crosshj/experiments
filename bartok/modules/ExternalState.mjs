@@ -105,6 +105,13 @@ let lsServices = [];
 
 //TODO: this is intense, but save a more granular approach for future
 async function fileSystemTricks({ result }){
+	if(!result.result[0].code.find){
+		const parsed = JSON.parse(result.result[0].code);
+		result.result[0].code = parsed.files;
+		result.result[0].tree = parsed.tree;
+		console.log('will weird things ever stop happening?');
+		return;
+	}
 	const serviceJSONFile = result.result[0].code.find(item => item.name === 'service.json');
 	if(serviceJSONFile && !serviceJSONFile.code){
 		const fetched = await fetch(`./.${result.result[0].name}/service.json`);
