@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./src/app/overmind/utils/setAirtable.ts"],"names":["Airtable","apiKey"],"mappings":"qHAAA,uEAEe,cAAIA,IAAS,CAAEC,OAAQ","file":"static/js/airtable.8ac987e2c.chunk.js","sourcesContent":["import Airtable from 'airtable';\n\nexport default new Airtable({ apiKey: 'keyJugfwdJzOyL7Aa' });\n"],"sourceRoot":""}

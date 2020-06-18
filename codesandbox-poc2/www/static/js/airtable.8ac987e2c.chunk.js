@@ -1,0 +1,2 @@
+(this.csbJsonP=this.csbJsonP||[]).push([[15],{"./src/app/overmind/utils/setAirtable.ts":function(s,e,t){"use strict";t.r(e);var a=t("../../node_modules/airtable/lib/airtable.js"),i=t.n(a);e.default=new i.a({apiKey:"keyJugfwdJzOyL7Aa"})}}]);
+//# sourceMappingURL=airtable.8ac987e2c.chunk.js.map
