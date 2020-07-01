@@ -11,6 +11,11 @@
 
 # random
 
-- waiting is not a problem; waiting desire to move forward is a problem
+- waiting is not a problem; waiting with desire to move forward is a problem
 - measure code change as risk, but shouldn't this also map to AST branch change (loose question)
 -
+
+# layout
+- http://golden-layout.com/
+
+

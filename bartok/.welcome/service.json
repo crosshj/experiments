@@ -29,6 +29,7 @@
         "demo3.ipynb": {},
         "demo4.ipynb": {},
         "graph.json": {},
+        "graph2.json": {},
         "grestla.go": {},
         "groiponte.php": {},
         "hempto.rb": {},
@@ -171,6 +172,10 @@
       {
         "name": "graph.json",
         "path": ".welcome/file-examples/graph.json"
+      },
+      {
+        "name": "graph2.json",
+        "path": ".welcome/file-examples/graph2.json"
       },
       {
         "name": "grestla.go",
