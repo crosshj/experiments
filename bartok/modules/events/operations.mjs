@@ -228,6 +228,20 @@ const readFolderHandler = ({
 	);
 };
 
+const operationsHandler = ({
+	managementOp, externalStateRequest,
+	getCurrentFile, getCurrentService,
+	getCurrentFolder, setCurrentFolder,
+	resetState,
+	getOperations, getReadAfter, getUpdateAfter,
+	performOperation, operationsListener
+}) => (event) => {
+	//find the operation
+	//wrangle context(state?)?
+	//execute operation with context
+	debugger;
+};
+
 const handlers = {
 	showCurrentFolderHandler,
 	changeCurrentFolderHandler,
@@ -236,7 +250,8 @@ const handlers = {
 	deleteFolderHandler,
 	renameFolderHandler,
 	moveFolderHandler,
-	moveFileHandler
+	moveFileHandler,
+	operationsHandler
 };
 
 function attachListeners(...args){

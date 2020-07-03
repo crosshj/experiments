@@ -44,6 +44,10 @@ const getCurrentService = () => {
 //    setCurrentFile, setCurrentService
 //    getCurrentFile, getCurrentService
 
+function setCurrentService(service){
+	return getCodeFromService(service);
+}
+
 function getCodeFromService(service, file){
 	const serviceAction = !!service ? "set" : "get";
 	const fileAction = !!file ? "set" : "get";
@@ -126,6 +130,7 @@ const resetState = () => {
 
 export {
 	getCodeFromService, getCurrentFile, getCurrentService,
+	setCurrentService,
 	getCurrentFolder, setCurrentFolder,
 	getState, setState, resetState
 };

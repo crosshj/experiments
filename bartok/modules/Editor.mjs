@@ -280,6 +280,7 @@ const inlineEditor = (ChangeHandler) => ({
 		styleActiveLine: true,
 		styleActiveSelected: true,
 		matchBrackets: true,
+		lineWrapping: true,
 		scrollPastEnd: true
 	}, (error, editor) => {
 		editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
@@ -294,8 +295,8 @@ const inlineEditor = (ChangeHandler) => ({
 
 function _Editor() {
 	attachListener((filename) => {
-		const { code = "error", name, id } = getCodeFromService(null, filename);
-		inlineEditor(ChangeHandler)({ code, name, id, filename });
+		const { code = "error", name, id, filename: defaultFile } = getCodeFromService(null, filename);
+		inlineEditor(ChangeHandler)({ code, name, id, filename: filename || defaultFile });
 	});
 
 	inlineEditor(ChangeHandler)();

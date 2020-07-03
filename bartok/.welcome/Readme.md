@@ -1,8 +1,23 @@
 <!-- no-select -->
 
-<p style="width:100%; text-align:center;margin:0;">
-  <img src="file-examples/bartok.svg?cache-bust=1" style="width:300px;margin:auto;">
-</p>
+<style>
+  .background {
+    text-align: center;
+    margin: 0;
+    background-image: url(file-examples/bartok.svg);
+    position: absolute;
+    top: 40;
+    bottom: 0;
+    left: 5px;
+    right: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.15;
+    z-index: -1;
+  }
+</style>
+<p class="background"></p>
 
 # welcome!
 This is Bartok, a system that is being created to help you create, run, and manage your code!
@@ -28,7 +43,7 @@ If you want an idea of what bartok can do, check out:
 
   - `.templates` folder, at the top of the file tree on the left.
   Exploring this will give you an idea of how `preview` works
-  
+
   - `service map` screen, appears after clicking the triangular icon near top, far left .
   This shows connected services and connections within services.  You can find it by clicking on the triangular icon near the top at the far left.
 

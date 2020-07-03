@@ -3,10 +3,13 @@
     "modules": [
     {
         "resources": [
+            "/",
             "./index.sw.html",
+            "./index.html",
             "./bartok-logo.png",
             "/shared/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2",
-            "/shared/fonts/seti.woff2"
+            "/shared/fonts/seti.woff2",
+            "/shared/fonts/codicon.ttf"
         ]
     },
 
@@ -66,12 +69,23 @@
             "/shared/vendor/codemirror-searchcursor.js",
 
             "/shared/vendor/codemirror/mode/javascript.js",
+            "/shared/vendor/codemirror/mode/jsx.js",
             "/shared/vendor/codemirror/mode/xml.js",
             "/shared/vendor/codemirror/mode/css.js",
             "/shared/vendor/codemirror/mode/clike.js",
             "/shared/vendor/codemirror/mode/htmlmixed.js",
-            "/shared/vendor/codemirror/mode/htmlembedded.js"
+            "/shared/vendor/codemirror/mode/htmlembedded.js",
+            "/shared/vendor/codemirror/mode/markdown.js",
+            "/shared/vendor/codemirror/mode/perl.js"
         ]
+    }, {
+        "route": "./ContextMenu",
+        "type": "domComponent",
+        "source": "modules/ContextMenu.mjs"
+    }, {
+        "route": "./Operations",
+        "type": "domComponent",
+        "source": "modules/Operations_New.mjs"
     },
 
     "NOTE: should be a handlers in service worker context",
@@ -107,6 +121,10 @@
         "route": "./events/editorTabs.mjs",
         "source": "modules/events/editorTabs.mjs",
         "handler": null
+    }, {
+        "route": "./events/operations.mjs",
+        "source": "modules/events/operations.mjs",
+        "handler": null
     },
 
     "NOTE: should be compiled in to each module",
@@ -128,6 +146,22 @@
     }, {
         "route": "./state.mjs",
         "source": "modules/state.mjs",
+        "handler": null
+    }, {
+        "route": "./ExternalState.mjs",
+        "source": "modules/ExternalState.mjs",
+        "handler": null
+    }, {
+        "route": "./operationsManagement.mjs",
+        "source": "modules/operationsManagement.mjs",
+        "handler": null
+    }, {
+        "route": "./operationsService.mjs",
+        "source": "modules/operationsService.mjs",
+        "handler": null
+    }, {
+        "route": "./modules/Types.mjs",
+        "source": "modules/Types.mjs",
         "handler": null
     }, {
         "route": "./Types.mjs",
@@ -153,6 +187,18 @@
             "/shared/css/material-icons.css",
             "/shared/css/materialize.min.css"
         ]
+    },
+
+    "NOTE: external handlers",
+    {
+        "route": "\/service\/(.*)",
+        "type": "fetch",
+        "handler": "./modules/serviceRequestHandler.js"
+    },
+    {
+        "route": "\/.welcome\/(.*)",
+        "type": "fetch",
+        "handler": "./modules/serviceRequestHandler.js"
     },
 
     "NOTE: end modules"]
