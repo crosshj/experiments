@@ -240,7 +240,7 @@ function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 	tabsContainer.innerHTML = `
 		<div class="scrollable hide-native-scrollbar" id="editor-tabs-container">
 			<div id="editor-tabs" class="row no-margin">
-				<div class="tab last active empty"></div>
+				<!-- div class="tab last active empty"></div -->
 			</div>
 			<div
 				class="invisible scrollbar horizontal fade"
