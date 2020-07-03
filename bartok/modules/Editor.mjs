@@ -299,6 +299,12 @@ function _Editor() {
 	});
 
 	inlineEditor(ChangeHandler)();
+
+	//deprecate
+	return {
+		inlineEditor: inlineEditor(ChangeHandler),
+		List: List()
+	}
 }
 
 export default _Editor;
