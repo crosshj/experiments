@@ -263,6 +263,10 @@ const inlineEditor = (ChangeHandler) => ({
 		"Ctrl-D": selectNextOccurrence
 	};
 
+	if(!code){
+		return;
+	}
+
 	Editor({
 		text: code,
 		lineNumbers: true,

@@ -226,7 +226,6 @@ const initTabs = (parent) => (tabDefArray=[]) => {
 	tabDefArray.map(createTab(parent))
 };
 
-
 let tabsContainer;
 let tabsList;
 function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){

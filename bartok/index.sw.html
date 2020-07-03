@@ -285,29 +285,36 @@
   }
 
   (async function () {
-    const serviceWorker = await getServiceWorker();
-    if (!serviceWorker) {
-      console.error('could not find service worker');
-      return;
+
+    function formatBytes(bytes) {
+        var marker = 1024; // Change to 1000 if required
+        var decimal = 3; // Change as required
+        var kiloBytes = marker; // One Kilobyte is 1024 bytes
+        var megaBytes = marker * marker; // One MB is 1024 KB
+        var gigaBytes = marker * marker * marker; // One GB is 1024 MB
+        var teraBytes = marker * marker * marker * marker; // One TB is 1024 GB
+
+        // return bytes if less than a KB
+        if(bytes < kiloBytes) return bytes + " Bytes";
+        // return KB if less than a MB
+        else if(bytes < megaBytes) return(bytes / kiloBytes).toFixed(decimal) + " KB";
+        // return MB if less than a GB
+        else if(bytes < gigaBytes) return(bytes / megaBytes).toFixed(decimal) + " MB";
+        // return GB if less than a TB
+        else return(bytes / gigaBytes).toFixed(decimal) + " GB";
     }
 
-    const components = [];
-    const addUIModulesToArray = async (modules) => {
-      const _c = modules.filter(x => x.type === 'domComponent');
-      for(var i=0, len=_c.length; i<len; i++){
-        const x = _c[i];
-        const comp = (await import(x.route)).default;
-        //console.log('Will invoke: ' + x.route)
-        components.push(comp);
-      }
-      await loadUI();
-    };
+    navigator.storage.estimate()
+      .then(function(estimate){
+        console.log(`
+        Using ${formatBytes(estimate.usage)} out of ${formatBytes(estimate.quota)}.
+      `);
+    });
 
-    const serviceWorkerMessageHandler = ({ data = {} }) => {
-      const { msg, modules } = data;
-      console.log(msg);
-      addUIModulesToArray(modules);
-    };
+    const moduleCache = ''; //localStorage.getItem('moduleCache');
+    //const moduleCache = localStorage.getItem('moduleCache');
+
+    const components = [];
 
     const loadUI = async () => {
       while(components.length < 6){
@@ -327,6 +334,49 @@
         await components[i]();
       }
     };
+
+    const addUIModulesToArray = async (modules) => {
+      const _c = modules.filter(x => x.type === 'domComponent');
+      for(var i=0, len=_c.length; i<len; i++){
+        const x = _c[i];
+        const comp = (await import(x.route)).default;
+        //console.log('Will invoke: ' + x.route)
+        components.push(comp);
+      }
+      await loadUI();
+    };
+
+    if(moduleCache){
+      try {
+        addUIModulesToArray(
+          JSON.parse(moduleCache)
+            .map(x => ({
+              route: x,
+              type: 'domComponent'
+            }))
+        );
+        return;
+      } catch(e) {}
+    }
+
+    const serviceWorker = await getServiceWorker();
+    if (!serviceWorker) {
+      console.error('could not find service worker');
+      return;
+    }
+
+    const serviceWorkerMessageHandler = ({ data = {} }) => {
+      const { msg, modules } = data;
+      console.log(msg);
+      localStorage.setItem('moduleCache', JSON.stringify(
+        modules
+          .filter(x => x && x.type && x.type === 'domComponent')
+          .map(x => x.route)
+      ));
+      addUIModulesToArray(modules);
+    };
+
+
 
     navigator.serviceWorker.addEventListener('message', serviceWorkerMessageHandler);
     serviceWorker.postMessage({

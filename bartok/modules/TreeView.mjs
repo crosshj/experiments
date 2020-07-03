@@ -18,9 +18,41 @@ const getTreeViewDOM = ({ contextHandler } = {}) => {
 		return prevTreeView;
 	}
 
-	explorerPane.classList.add('pane-loading');
+	//explorerPane.classList.add('pane-loading');
 	const _tree = document.createElement('div');
 	_tree.id = 'tree-view';
+
+	const showOpenService = true;
+	if(showOpenService){
+		const opener = document.createElement('div');
+		opener.innerHTML = `
+			<style>
+			.service-opener {
+				display: flex;
+				flex-direction: column;
+				padding: 0px 20px;
+				margin-right: 17px;
+			}
+			.service-opener button {
+				color: white;
+				background: #0e639c;
+				border: 0;
+				padding: 10px;
+			}
+			.service-opener p {
+				white-space: normal;
+			}
+			</style>
+			<div class="service-opener">
+				<p>No service selected.</p>
+				<button>Open Service</button>
+				<p>Note: this button doesn't work, lol! Some day it will!</p>
+				<button>Create New Service</button>
+				<p>Note: this button ALSO doesn't work, lol! Some day it will!</p>
+			</div>
+		`;
+		_tree.appendChild(opener);
+	}
 	// _tree.classList.add(
 	// 	'sidenav', 'sidenav-fixed'
 	// );
