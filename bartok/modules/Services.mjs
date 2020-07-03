@@ -254,6 +254,9 @@ function getServiceSelector(el, onSelect){
 		</div>
 	`;
 	const select = el.querySelector('select');
+	if(!window.M){
+		return;
+	}
 	const selectInstance = M.FormSelect.init(select, {
 		//classes: 'grey darken-3',
 		dropdownOptions: {
@@ -275,8 +278,8 @@ function getServiceSelector(el, onSelect){
 }
 
 const handleSelect = (selection, canvas, {
-	list, getCurrentServices
-}) => {
+	list= () => ([]), getCurrentServices
+} = {}) => {
 	const showUIServices = () => {
 		const listeners = list();
 		const mappedListeners = listeners.reduce((all, one) => {
@@ -398,7 +401,6 @@ function Services({ list } = {}){
 	}, 300);
 
 	attachPan(canvas);
-
 }
 
 export default Services;

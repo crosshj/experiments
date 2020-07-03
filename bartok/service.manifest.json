@@ -1,0 +1,159 @@
+{
+    "version": "0.4",
+    "modules": [
+    {
+        "resources": [
+            "./index.sw.html",
+            "./bartok-logo.png",
+            "/shared/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2",
+            "/shared/fonts/seti.woff2"
+        ]
+    },
+
+    "NOTE: modules",
+    {
+        "route": "./Panes",
+        "type": "domComponent",
+        "source": "modules/PanesNew.mjs"
+    }, {
+        "route": "./StatusBar",
+        "type": "domComponent",
+        "source": "modules/StatusBar.mjs"
+    }, {
+        "route": "./ActionBar",
+        "type": "domComponent",
+        "source": "modules/ActionBar.mjs"
+    }, {
+        "route": "./TreeView",
+        "type": "domComponent",
+        "source": "modules/TreeView.mjs",
+        "resources": [
+            "/shared/vendor/js-treeview.1.1.5.js"
+        ]
+    }, {
+        "route": "./LoaderBar",
+        "type": "domComponent",
+        "source": "modules/LoaderBar.mjs"
+    }, {
+        "route": "./Terminal",
+        "type": "domComponent",
+        "source": "modules/Terminal.mjs",
+        "resources": [
+            "/shared/vendor/xterm.min.js",
+            "/shared/vendor/xterm-addon-fit.js"
+        ]
+    }, {
+        "route": "./Hotkeys",
+        "type": "domComponent",
+        "source": "modules/HotKeys.mjs"
+    }, {
+        "route": "./Services",
+        "type": "domComponent",
+        "source": "modules/Services.mjs"
+    }, {
+        "route": "./Editor",
+        "type": "domComponent",
+        "source": "modules/Editor.mjs",
+        "resources": [
+            "/shared/modules/editor.mjs",
+            "/shared/css/codemirror.css",
+            "/shared/css/bespin.css",
+            "/shared/css/vscode.codemirror.css",
+
+            "/shared/vendor/codemirror.js",
+            "/shared/vendor/codemirror-scrollpastend.js",
+            "/shared/vendor/codemirror-show-invisibles.js",
+            "/shared/vendor/codemirror-searchcursor.js",
+
+            "/shared/vendor/codemirror/mode/javascript.js",
+            "/shared/vendor/codemirror/mode/xml.js",
+            "/shared/vendor/codemirror/mode/css.js",
+            "/shared/vendor/codemirror/mode/clike.js",
+            "/shared/vendor/codemirror/mode/htmlmixed.js",
+            "/shared/vendor/codemirror/mode/htmlembedded.js"
+        ]
+    },
+
+    "NOTE: should be a handlers in service worker context",
+    {
+        "route": "./events/statusBar.mjs",
+        "source": "modules/events/statusBar.mjs",
+        "handler": null
+    }, {
+        "route": "./events/tree.mjs",
+        "source": "modules/events/tree.mjs",
+        "handler": null
+    }, {
+        "route": "./events/loader.mjs",
+        "source": "modules/events/loader.mjs",
+        "handler": null
+    }, {
+        "route": "./events/terminal.mjs",
+        "source": "modules/events/terminal.mjs",
+        "handler": null
+    }, {
+        "route": "./events/services.mjs",
+        "source": "modules/events/services.mjs",
+        "handler": null
+    }, {
+        "route": "./events/templates.mjs",
+        "source": "modules/events/templates.mjs",
+        "handler": null
+    }, {
+        "route": "./events/editor.mjs",
+        "source": "modules/events/editor.mjs",
+        "handler": null
+    }, {
+        "route": "./events/editorTabs.mjs",
+        "source": "modules/events/editorTabs.mjs",
+        "handler": null
+    },
+
+    "NOTE: should be compiled in to each module",
+    {
+        "route": "./Listeners.mjs",
+        "source": "modules/Listeners.mjs",
+        "handler": null
+    }, {
+        "route": "./Templates.mjs",
+        "source": "modules/Templates.mjs",
+        "handler": null
+    }, {
+        "route": "./EditorTabs.mjs",
+        "source": "modules/EditorTabs.mjs"
+    }, {
+        "route": "./motd.mjs",
+        "source": "modules/motd.mjs",
+        "handler": null
+    }, {
+        "route": "./state.mjs",
+        "source": "modules/state.mjs",
+        "handler": null
+    }, {
+        "route": "./Types.mjs",
+        "source": "modules/Types.mjs",
+        "handler": null
+    }, {
+        "route": "/shared/modules/utilities.mjs",
+        "source": "/shared/modules/utilities.mjs",
+        "handler": null
+    }, {
+        "route": "/shared/icons/seti/ext.json.mjs",
+        "source": "/shared/icons/seti/ext.json.mjs",
+        "handler": null
+    },
+
+    "NOTE: should be bundled and minified?",
+    {
+        "route": "./index.css",
+        "source": "index.css",
+        "include": [
+            "/shared/css/xterm.css",
+            "/shared/css/seti-icons.css",
+            "/shared/css/material-icons.css",
+            "/shared/css/materialize.min.css"
+        ]
+    },
+
+    "NOTE: end modules"]
+}

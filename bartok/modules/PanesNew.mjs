@@ -132,7 +132,7 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		};
 		setExplorerRightEdge();
 
-		window.termResize();
+		window.termResize && window.termResize();
 		dragging = false;
 	}
 

@@ -3,6 +3,8 @@ import EditorTabs from './EditorTabs.mjs';
 import { attachListener, ChangeHandler } from './events/editor.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
 
+import { getCodeFromService } from './state.mjs'
+
 import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
 
 function getFileType(fileName = '') {
@@ -76,8 +78,7 @@ const Container = ({ operations }) => {
 	return containerDiv;
 };
 
-const List = (TreeView) => ({ services }) => {
-	TreeView("hide");
+const List = () => ({ services }) => {
 	const containerDiv = Container({
 		operations: ['read', 'manage', 'monitor', 'persist']
 	});
@@ -140,9 +141,14 @@ const List = (TreeView) => ({ services }) => {
 	return listDiv;
 };
 
-const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename } = {}) => {
-	TreeView(); //<<< this should go away
-
+//const BLANK_CODE_PAGE = `${(new Array(99)).fill().join('\n')}`;
+const BLANK_CODE_PAGE = '';
+const inlineEditor = (ChangeHandler) => ({
+	code=BLANK_CODE_PAGE,
+	name,
+	id,
+	filename
+} = {}) => {
 	const prevEditor = document.querySelector('#editor-container');
 	let editorDiv = prevEditor;
 	if (!editorDiv) {
@@ -152,16 +158,16 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename } 
 		editorDiv = document.createElement('div');
 		editorDiv.id = "editor-container";
 		editorDiv.innerHTML = `
-				<div id="service-fields" class="row no-margin">
-					<div class="input-field col s6">
-						<input id="service_name" type="text" class="" value="${name}">
-						<label for="service_name">Name</label>
-					</div>
-					<div class="input-field col s6">
-						<input id="service_id" type="text" class="" value="${id}">
-						<label for="service_id">ID</label>
-					</div>
+			<div id="service-fields" class="row no-margin">
+				<div class="input-field col s6">
+					<input id="service_name" type="text" class="" value="${name}">
+					<label for="service_name">Name</label>
 				</div>
+				<div class="input-field col s6">
+					<input id="service_id" type="text" class="" value="${id}">
+					<label for="service_id">ID</label>
+				</div>
+			</div>
 		`;
 
 		editorDiv.appendChild(EditorTabs(name
@@ -176,7 +182,7 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename } 
 		containerDiv.querySelector('.contain').appendChild(editorDiv);
 	}
 
-	M.updateTextFields();
+	window.M && M.updateTextFields();
 
 	//const editorPane = document.querySelector('#editor');
 	//editorPane.style.width = editorPane.clientWidth + 'px';
@@ -282,16 +288,13 @@ const inlineEditor = (TreeView, ChangeHandler) => ({ code, name, id, filename } 
 	});
 }
 
-function getEditor({ getCodeFromService, TreeView } = {}) {
+function _Editor() {
 	attachListener((filename) => {
 		const { code = "error", name, id } = getCodeFromService(null, filename);
-		inlineEditor(TreeView, ChangeHandler)({ code, name, id, filename });
+		inlineEditor(ChangeHandler)({ code, name, id, filename });
 	});
 
-	return {
-		inlineEditor: inlineEditor(TreeView, ChangeHandler),
-		List: List(TreeView)
-	}
+	inlineEditor(ChangeHandler)();
 }
 
-export default getEditor;
+export default _Editor;

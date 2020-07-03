@@ -5,7 +5,7 @@ import {
 import {
 	isSupported
 } from '../Templates.mjs'
-import { getState, getCurrentFile } from '../state.mjs';
+import { getState, getCurrentFile, getCurrentService } from '../state.mjs';
 
 let locked;
 let lsLocked = localStorage.getItem("previewLocked");
@@ -24,6 +24,38 @@ let backupForLock = {
 };
 
 const PROMPT = '\x1B[38;5;14m \r∑ \x1B[0m';
+
+const NO_PREVIEW = `
+<html>
+	<style>
+		.no-preview {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 5vw;
+			color: #666;
+		}
+		body {
+			margin: 0px;
+			margin-top: 40px;
+			height: calc(100vh - 40px);
+			overflow: hidden;
+			color: #ccc;
+			font-family: sans-serif;
+		}
+	</style>
+	<body">
+		<pre>
+			<div class="no-preview">No preview available.</div>
+			</pre>
+	</body>
+</html>
+`;
 
 const commands = [{
 	name: 'showCurrentFolder',
@@ -199,12 +231,9 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 	if(!currentFile){
 		// TODO: bind and conditionally trigger render
 		// console.log({ type, op, id });
-		const doc = `
-			<html>
-				<body style="margin: 20%; color: white;">No Preview</body>
-			</html>
-		`;
+		const doc = NO_PREVIEW;
 		viewUpdate({ type, doc, docName: currentFileName, ...event.detail });
+		return;
 	}
 
 	let code = currentFile;
@@ -326,7 +355,7 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 
 const fileChangeHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
-	let { name, id, file, code } = detail;
+	let { name, id, file='', code='' } = detail;
 
 	const isHTML = code.includes('<html>');
 	const isSVG = code.includes('</svg>');
@@ -500,6 +529,10 @@ const operations = ({ viewUpdate, getCurrentService }) => (event) => {
 	})();
 	const getFileFromService = (fileName) => {
 		const service = getCurrentService();
+		if(!service){
+			console.error('Terminal module cannot see current service');
+			return;
+		}
 		const selectedFile = service.code.find(x => x.name === name);
 		const { code } = selectedFile || {};
 		return code;
@@ -522,7 +555,7 @@ const operations = ({ viewUpdate, getCurrentService }) => (event) => {
 		supported: hasTemplate,
 		type: 'forceRefreshOnPersist',
 		locked,
-		doc: contents,
+		doc: contents || NO_PREVIEW,
 		docName: name,
 		...event.detail
 	});
@@ -530,7 +563,7 @@ const operations = ({ viewUpdate, getCurrentService }) => (event) => {
 
 /// -----------------------------------------------------------------------------
 
-function attachEvents({ write, viewUpdate, getCurrentService, terminalActions }){
+function attachEvents({ write, viewUpdate, terminalActions }){
 	// write('\x1B[2K');
 	// write('\rEvent system attached.\n');
 	// write(`\n${PROMPT}`);

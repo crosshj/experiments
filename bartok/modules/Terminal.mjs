@@ -109,7 +109,7 @@ function tryExecCommand({ command, loading, done }){
 		isProjectOp && loading(`${command}: running... `);
 	};
 
-function _Terminal({ getCurrentService }){
+function _Terminal(){
 	const options = {
 		theme: {
 			foreground: '#ccc', // '#ffffff',
@@ -488,7 +488,6 @@ function _Terminal({ getCurrentService }){
 	});
 
 	EventTrigger = attachEvents({
-		getCurrentService,
 		write: (x) => term.write(x),
 		viewUpdate,
 		terminalActions

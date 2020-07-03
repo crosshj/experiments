@@ -229,7 +229,7 @@ const initTabs = (parent) => (tabDefArray=[]) => {
 
 let tabsContainer;
 let tabsList;
-function EditorTabs(tabsArray /* = [{ name: "index.js", active: true }] */){
+function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 	if(tabsContainer){
 		//console.log('already exists');
 		tabsList = tabsList || tabsContainer.querySelector('#editor-tabs');
@@ -241,6 +241,7 @@ function EditorTabs(tabsArray /* = [{ name: "index.js", active: true }] */){
 	tabsContainer.innerHTML = `
 		<div class="scrollable hide-native-scrollbar" id="editor-tabs-container">
 			<div id="editor-tabs" class="row no-margin">
+				<div class="tab last active empty"></div>
 			</div>
 			<div
 				class="invisible scrollbar horizontal fade"
