@@ -135,8 +135,21 @@ const dummyService = (_id, _name) => ({
 	code: defaultCode(_name),
 	tree: defaultTree(_name)
 });
+
+async function getFileContents({ filename, store }){
+    const cachedFile = await store.getItem(filename);
+    let contents;
+    if(cachedFile){
+        return cachedFile;
+    }
+    const fetched = await fetch(filename);
+    contents = await fetched.text();
+    store.setItem(filename, contents);
+    return contents;
+}
+
 //TODO: this is intense, but save a more granular approach for future
-async function fileSystemTricks({ result }){
+async function fileSystemTricks({ result, store }){
 	if(!result.result[0].code.find){
 		const parsed = JSON.parse(result.result[0].code);
 		result.result[0].code = parsed.files;
@@ -146,14 +159,16 @@ async function fileSystemTricks({ result }){
 	}
 	const serviceJSONFile = result.result[0].code.find(item => item.name === 'service.json');
 	if(serviceJSONFile && !serviceJSONFile.code){
-		const fetched = await fetch(`./.${result.result[0].name}/service.json`);
-		serviceJSONFile.code = await fetched.text();
+        console.log('service.json without code');
+        const filename = `./.${result.result[0].name}/service.json`;
+        serviceJSONFile.code = await getFileContents({ filename, store });
 	}
 	if(serviceJSONFile){
+        console.log('service.json without tree');
 		let serviceJSON = JSON.parse(serviceJSONFile.code);
 		if(!serviceJSON.tree){
-			const fetched = await fetch(`./${serviceJSON.path}/service.json`);
-			serviceJSONFile.code = await fetched.text();
+			const filename = `./${serviceJSON.path}/service.json`;
+			serviceJSONFile.code = await getFileContents({ filename, store });
 			serviceJSON = JSON.parse(serviceJSONFile.code);
 		}
 		result.result[0].code = serviceJSON.files;
@@ -165,8 +180,8 @@ async function fileSystemTricks({ result }){
 	for(var i=0; i < len; i++){
 		const item = result.result[0].code[i];
 		if(!item.code && item.path){
-			const fetched = await fetch('./' + item.path);
-			item.code = await fetched.text();
+			const filename = './' + item.path;
+			item.code = await getFileContents({ filename, store });
 		}
 	}
 }
@@ -260,7 +275,7 @@ const fakeExpress = () => {
         const result = {
             result: lsServices.filter(x => Number(x.id) === Number(params.id))
         }
-        await fileSystemTricks({ result });
+        await fileSystemTricks({ result, store });
         return result;
 
         //const foo = await store.getItem("foo");

@@ -7,6 +7,7 @@
             "./index.sw.html",
             "./index.html",
             "./bartok-logo.png",
+
             "/shared/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2",
             "/shared/fonts/seti.woff2",
             "/shared/fonts/codicon.ttf"
@@ -76,7 +77,13 @@
             "/shared/vendor/codemirror/mode/htmlmixed.js",
             "/shared/vendor/codemirror/mode/htmlembedded.js",
             "/shared/vendor/codemirror/mode/markdown.js",
-            "/shared/vendor/codemirror/mode/perl.js"
+
+            "/shared/vendor/codemirror/mode/perl.js",
+            "/shared/vendor/codemirror/mode/python.js",
+            "/shared/vendor/codemirror/mode/php.js",
+            "/shared/vendor/codemirror/mode/go.js",
+            "/shared/vendor/codemirror/mode/clojure.js",
+            "/shared/vendor/codemirror/mode/ruby.js"
         ]
     }, {
         "route": "./ContextMenu",

@@ -336,6 +336,23 @@
     };
 
     const addUIModulesToArray = async (modules) => {
+      let modulesReady = false;
+      let maxRetry = 30;
+      let tries=0;
+      let testModule = modules.find(x => x.type === 'domComponent' && !!x.route);
+      while(!modulesReady && tries < maxRetry){
+        await delay(500);
+        tries++;
+        try {
+          await import(testModule.route);
+          modulesReady=true;
+        } catch(e) {}
+      }
+      if(tries >= maxRetry){
+        console.error(`unable to load modules, gave up after ${tries} tries`);
+        return;
+      }
+
       const _c = modules.filter(x => x.type === 'domComponent');
       for(var i=0, len=_c.length; i<len; i++){
         const x = _c[i];
@@ -368,12 +385,27 @@
     const serviceWorkerMessageHandler = ({ data = {} }) => {
       const { msg, modules } = data;
       console.log(msg);
-      localStorage.setItem('moduleCache', JSON.stringify(
-        modules
-          .filter(x => x && x.type && x.type === 'domComponent')
-          .map(x => x.route)
-      ));
-      addUIModulesToArray(modules);
+
+      if(modules){
+        localStorage.setItem('moduleCache', JSON.stringify(
+          modules
+            .filter(x => x && x.type && x.type === 'domComponent')
+            .map(x => x.route)
+        ));
+      }
+
+      let cachedModules;
+      if(!modules){
+        try {
+          const cached = localStorage.getItem('moduleCache');
+          cachedModules = JSON.parse(cached)
+            .map(x => ({
+              route: x,
+              type: 'domComponent'
+            }));
+        } catch(e){}
+      }
+      addUIModulesToArray(modules || cachedModules);
     };
 
 

@@ -26,6 +26,11 @@ TODO
 - indent using tabs
 - code folding
 
+- open a folder from local hard drive
+  - https://www.html5rocks.com/en/tutorials/file/filesystem/#toc-dir-reading
+  - https://www.html5rocks.com/en/tutorials/file/filesystem-sync/
+
+
 - finish tree context menu
 - web loading time
 - web persistence layer
@@ -49,6 +54,7 @@ TODO
 - collaboration
 - write and edit bartok web in bartok web
 - require an npm package (and use it)
+- open a page that is just the file in editor or preview mode; options editor + preview (or other mashup)
 
 ---------------
 I want to be able to do little experiments
@@ -64,7 +70,7 @@ Examples of little experiments:
 	- architect stage of some project
 	- emulate kubernetes, explore kubernetes pattern
 	- services with central config service pattern
-	- scrape a bunch of sites and do wizardry
+	- scrape a bunch of sites and do wizardry (data composition & representation)
 
 
 

@@ -254,7 +254,7 @@
 }
 .icon-clojure:before {
   content: '\E011';
-  color: white;
+  color: #68b13b;
 }
 .icon-code-climate:before {
   content: '\E012';

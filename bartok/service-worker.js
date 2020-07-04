@@ -61,6 +61,7 @@ function messageHandler(event) {
 
 	if (bootstrap) {
 		(async () => {
+			try {
 			console.log('booting');
 			const modules = await bootstrapHandler(bootstrap);
 
@@ -75,6 +76,17 @@ function messageHandler(event) {
 				}),
 				msg: "boot complete"
 			});
+			} catch(e){
+				console.log(e);
+				const client = event.source;
+				if (!client) {
+					console.error('failed to notify client on boot complete');
+					return;
+				}
+				client.postMessage({
+					msg: "boot error - you offline?"
+				});
+			}
 		})();
 		return;
 	}

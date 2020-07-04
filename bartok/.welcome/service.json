@@ -27,6 +27,7 @@
         "blorptny.js": {},
         "blurptny.jsx": {},
         "brewlinopistopic.md": {},
+        "clojure.cljs": {},
         "crackney.py": {},
         "crelau.svg": {},
         "cytoscape1.cx": {},
@@ -160,6 +161,10 @@
       {
         "name": "brewlinopistopic.md",
         "path": ".welcome/file-examples/brewlinopistopic.md"
+      },
+      {
+        "name": "clojure.cljs",
+        "path": ".welcome/file-examples/clojure.cljs"
       },
       {
         "name": "crackney.py",

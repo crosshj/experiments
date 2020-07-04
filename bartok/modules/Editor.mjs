@@ -283,6 +283,10 @@ const inlineEditor = (ChangeHandler) => ({
 		lineWrapping: true,
 		scrollPastEnd: true
 	}, (error, editor) => {
+		if(error){
+			console.log(error);
+			return;
+		}
 		editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
 		window.Editor = editor;
 		editor.on('change', handlerBoundToDoc);

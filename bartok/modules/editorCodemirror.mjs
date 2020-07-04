@@ -1,3 +1,15 @@
+/*
+
+this module is not used yet, but....
+
+should compile all css and js to bundle (via service manifest) and use them here
+
+
+
+*/
+
+
+
 //import CodeMirror from "https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.js";
 //import "https://dev.jspm.io/codemirror@5.49.0/mode/javascript/javascript.js";
 //import "https://dev.jspm.io/codemirror@5.49.0/mode/markdown/markdown.js";
@@ -137,15 +149,8 @@ const setupEditor = (text, opts) => {
 	return editor;
 };
 
-let stack = [];
+
 const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
-	if(window.EditorLoading){
-		stack.push({ text, opts, callback });
-		codeMirrorModeJs(opts.mode, () => {
-			callback('editor is still loading');
-		});
-		return;
-	}
 	if(window.Editor){
 		let mode = opts.mode || "javascript";
 		try {
@@ -162,7 +167,6 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		})
 		return;
 	}
-	window.EditorLoading= true;
 	codeMirrorCss(() => {
 		codeMirrorJs(() => {
 			codeMirrorModeJs("xml", () => {
@@ -172,10 +176,6 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 							codeMirrorModeJs("htmlmixed", () => {
 								codeMirrorModeJs("htmlembedded", () => {
 									codeMirrorModeJs(opts.mode, () => {
-										if(stack.length > 0){
-											({ text, opts, callback } = stack.pop());
-											stack = [];
-										}
 										let theEditor = setupEditor(text, opts || {});
 										if(!theEditor){
 											setTimeout(() => {
@@ -184,7 +184,6 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 													console.log('STUBBORN editor...');
 													debugger;
 												}
-												window.EditorLoading= false;
 												window.Editor = theEditor;
 												callback(null, theEditor);
 											}, 1000);
@@ -192,7 +191,6 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 										}
 										//theEditor.setOption("mode", opts.mode);
 										//theEditor.setOption("theme", "default");
-										window.EditorLoading= false;
 										window.Editor = theEditor;
 										callback(null, theEditor);
 									});
