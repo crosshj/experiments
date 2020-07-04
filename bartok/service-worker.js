@@ -2,6 +2,8 @@
 
 const cacheName = 'v0.3.1';
 
+importScripts('/shared/vendor/localforage.min.js');
+
 self.addEventListener('install', installHandler);
 self.addEventListener('activate', activateHandler);
 self.addEventListener('fetch', fetchHandler);
@@ -25,7 +27,7 @@ function fetchHandler(event) {
 	});
 	if (foundHandler) {
 		//console.log(foundHandler)
-		return foundHandler.handler(event)
+		return foundHandler.handler(event);
 	}
 
 	// if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
@@ -33,7 +35,7 @@ function fetchHandler(event) {
 	// 	return;
 	// }
 	if (event.request.url.includes('/browser-sync/')) {
-		return fetch(event.request);
+		return fetch(event.request.url);
 	}
 	if (
 		!event.request.url.includes('/bartok/') &&
@@ -99,7 +101,10 @@ async function bootstrapHandler({ manifest }) {
 		return;
 	}
 	//should only register modules that are not in cache
-	await Promise.all(modules.map(registerModule));
+	//await Promise.all(modules.map(registerModule));
+	for(var i=0, len=modules.length; i<len; i++){
+		await registerModule(modules[i]);
+	}
 	return modules;
 }
 async function registerModule(module) {

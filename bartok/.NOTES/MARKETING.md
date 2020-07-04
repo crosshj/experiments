@@ -1,5 +1,6 @@
-## Introduction
+<h1 style="display:none"></h1>
 
+## Introduction
   * Bartok does(will do) things that other things do.
   * Consequently, one may think Bartok IS one of those things.
   * Possibly, Bartok can be used as one of those things.

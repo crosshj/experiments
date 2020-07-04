@@ -40,7 +40,7 @@ function getOperations(updateAfter, readAfter) {
 		url: 'persist'
 	}];
 	operations.forEach(x => {
-		x.url = `http://localhost:3080/${x.url}`;
+		//x.url = `./${x.url}`;
 		if (x.config && x.config.body) {
 			x.config.body = JSON.stringify(x.config.body);
 		}

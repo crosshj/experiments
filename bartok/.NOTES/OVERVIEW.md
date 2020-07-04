@@ -1,3 +1,5 @@
+<!-- no-select -->
+
 Bartok Overview
 ===============
 

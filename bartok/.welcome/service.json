@@ -3,9 +3,18 @@
     "type": "frontend",
     "persist": "filesystem",
     "path": ".welcome",
-    "version": 0.4,
+    "version": 0.5,
     "tree": {
       "package.json": {},
+      ".NOTES": {
+        "releases": {},
+        ".bugs": {},
+        ".scratch": {},
+        "future.md": {},
+        "MARKETING.md": {},
+        "MILESTONES.md": {},
+        "OVERVIEW.md": {}
+      },
       ".templates": {
         "d3-graph.html": {},
         "gltf.html": {},
@@ -84,6 +93,29 @@
       }
     },
     "files": [
+      {
+        "name": ".bugs",
+        "path": ".NOTES/_bugs.md"
+      },
+      {
+        "name": ".scratch",
+        "path": ".NOTES/_scratch.md" },
+      {
+        "name": "future.md",
+        "path": ".NOTES/future.md"
+      },
+      {
+        "name": "MARKETING.md",
+        "path": ".NOTES/MARKETING.md"
+      },
+      {
+        "name": "MILESTONES.md",
+        "path": ".NOTES/MILESTONES.md"
+      },
+      {
+        "name": "OVERVIEW.md",
+        "path": ".NOTES/OVERVIEW.md"
+      },
       {
         "name": "index.js",
         "code": "",
