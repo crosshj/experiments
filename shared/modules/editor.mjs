@@ -140,9 +140,13 @@ const setupEditor = (text, opts) => {
 let stack = [];
 const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 	if(window.EditorLoading){
-		stack.push({ text, opts, callback });
-		codeMirrorModeJs(opts.mode, () => {
-			callback('editor is still loading');
+		stack.push({
+			text, opts,
+			callback: (...args) => {
+				codeMirrorModeJs(opts.mode, () => {
+					callback(...args);
+				});
+			}
 		});
 		return;
 	}
