@@ -82,7 +82,8 @@
       "Readme.md": {},
       "service.json": {},
       "tests": {
-        "sw.clientServer.htm": {}
+        "sw.clientServer.htm": {},
+        "open.folder.html": {}
       },
       "WIP": {
         "angular9.html": {},
@@ -253,6 +254,10 @@
       {
         "name": "mempto.bat",
         "path": ".welcome/file-examples/mempto.bat"
+      },
+      {
+        "name": "open.folder.html",
+        "path": ".welcome/tests/open.folder.html"
       },
       {
         "name": "reveal.htm",

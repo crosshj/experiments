@@ -1,0 +1,64 @@
+<html>
+  <style>
+    body {
+      margin: 100px 50px;
+      color: white;
+      font-family: sans-serif;
+    }
+    pre {
+        background: rgba(255, 255, 255, .1);
+        padding: 20px;
+    }
+    .inputfile {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+    }
+    .inputfile + label {
+      padding: 5px 15px;
+      color: white;
+      border: 1px solid #555;
+      background-color: #555;
+      border-radius: 5px;
+      display: inline-block;
+    }
+
+    .inputfile:focus + label,
+    .inputfile + label:hover {
+      background-color: #777;
+    }
+    a {
+      color: #00ffe7;
+    }
+  </style>
+
+  <body>
+    <p>this is still possible? see <a href="https://caniuse.com/#feat=input-file-directory" target="blank">caniuse.com</a></p>
+
+    <input class="inputfile" type="file" id="file-input" directory webkitdirectory mozdirectory>
+    <label for="file-input">choose a folder</label>
+
+
+    <div id="file-content">
+    </div>
+  </body>
+
+  <script>
+      function readFolder(e) {
+        const files = Array.from(e.target.files).map(x => x.webkitRelativePath);
+        document.getElementById("file-content")
+            .innerHTML = `
+            <p>selected:</p>
+            <pre>${files.join('\n')}</pre>
+            `;
+        //console.log(e.target.files);
+      }
+
+      document.getElementById('file-input')
+        .addEventListener('change', readFolder, false);
+  </script>
+
+</html>
