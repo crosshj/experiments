@@ -208,6 +208,8 @@
         "type": "fetch",
         "handler": "./modules/serviceRequestHandler.js"
     },
+
+    "NOTE: this should not be defined here, instead it should be dynamically loaded",
     {
         "route": "\/.welcome\/(.*)",
         "type": "fetch",

@@ -196,6 +196,34 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 	}
 }
 
+function onResize(){
+	try {
+		const explorerPane = document.getElementById("explorer");
+		const explorerCover = document.getElementById("explorer-cover");
+
+		const editorPane = document.getElementById("editor");
+		const editorCover = document.getElementById("editor-cover");
+		const seperator = document.getElementById("seperator1");
+
+		const windowWidth = document.documentElement.clientWidth;
+		const handleLeft = Math.floor(
+			seperator.style.left.includes('%')
+				? 0.01 * windowWidth * Number(seperator.style.left.replace('%', ''))
+				: Number(seperator.style.left.replace('px', ''))
+		);
+
+		seperator.style.left = handleLeft + 'px';
+		editorPane.style.left = handleLeft + 'px';
+		editorCover.style.left = handleLeft + 'px';
+
+		const rightOffset = windowWidth - handleLeft;
+		explorerPane.style.right = rightOffset + 'px';
+		explorerCover.style.right = rightOffset + 'px';
+	} catch(e){
+		console.log(e);
+	}
+}
+
 function attachListeners() {
 	const explorerPane = document.getElementById("explorer");
 	const explorerCover = document.getElementById("explorer-cover");
@@ -228,6 +256,8 @@ function attachListeners() {
 		terminalPane,
 		allPanes
 	);
+
+	window.onresize = onResize;
 }
 
 // TODO: resizeStart and resizeEnd events should be triggered so contents can adjust!!
@@ -309,7 +339,7 @@ function Panes() {
 	// terminalCover.style.left = 50 + explorer.offsetWidth + editor.offsetWidth - 4 + "px";
 	// terminalCover.style.width = terminal.offsetWidth + "px";
 
-
+	onResize();
 	attachListeners()
 }
 

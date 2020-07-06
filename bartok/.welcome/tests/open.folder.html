@@ -1,14 +1,80 @@
 <html>
-  <style>
-    body {
-      margin: 100px 50px;
-      color: white;
-      font-family: sans-serif;
+
+<body>
+    <p>
+        <span>this is still possible?</span>
+        <span>see <a href="https://caniuse.com/#feat=input-file-directory" target="blank">caniuse.com</a>
+        </span>
+    </p>
+
+    <input class="inputfile" type="file" id="file-input" multiple directory webkitdirectory mozdirectory>
+    <label for="file-input">choose a folder</label>
+    <div id="file-content">
+    </div>
+</body>
+
+<script>
+    const files = sessionStorage.getItem('prevFiles');
+    if (files) {
+        document.getElementById("file-content")
+            .innerHTML = `
+        <p>selected (from cache):</p>
+        <div class="container">
+          <pre>${JSON.parse(files).join('\n')}</pre>
+        </div>
+        `;
     }
+    function readFolder(e) {
+        const files = Array.from(e.target.files)
+            .map(x => x.webkitRelativePath);
+        sessionStorage.setItem("prevFiles", JSON.stringify(files));
+        document.getElementById("file-content")
+            .innerHTML = `
+          <p>selected:</p>
+          <div class="container">
+            <pre>${files.join('\n')}</pre>
+          </div>
+          `;
+        //console.log(e.target.files);
+    }
+
+    document.getElementById('file-input')
+        .addEventListener('change', readFolder, false);
+</script>
+
+<style>
+    body {
+        margin: 100px 50px;
+        color: white;
+        font-family: sans-serif;
+    }
+
+    .container {
+        position: absolute;
+        top: 210px;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .container::-webkit-scrollbar,
+    pre::-webkit-scrollbar {
+        display: none;
+    }
+
     pre {
         background: rgba(255, 255, 255, .1);
-        padding: 20px;
+        padding: 30px 20px;
+        margin-bottom: 50px;
+        font-family: monospace;
+        font-size: 10px;
+        overflow-x: auto;
+        margin-left: 50px;
+        margin-right: 50px;
     }
+
     .inputfile {
         width: 0.1px;
         height: 0.1px;
@@ -17,48 +83,24 @@
         position: absolute;
         z-index: -1;
     }
-    .inputfile + label {
-      padding: 5px 15px;
-      color: white;
-      border: 1px solid #555;
-      background-color: #555;
-      border-radius: 5px;
-      display: inline-block;
+
+    .inputfile+label {
+        padding: 5px 15px;
+        color: white;
+        border: 1px solid #E91E63;
+        background-color: #E91E63;
+        border-radius: 5px;
+        display: inline-block;
     }
 
-    .inputfile:focus + label,
-    .inputfile + label:hover {
-      background-color: #777;
+    .inputfile:focus+label,
+    .inputfile+label:hover {
+        background-color: #ff42ae;
     }
+
     a {
-      color: #00ffe7;
+        color: #00ffe7;
     }
-  </style>
-
-  <body>
-    <p>this is still possible? see <a href="https://caniuse.com/#feat=input-file-directory" target="blank">caniuse.com</a></p>
-
-    <input class="inputfile" type="file" id="file-input" directory webkitdirectory mozdirectory>
-    <label for="file-input">choose a folder</label>
-
-
-    <div id="file-content">
-    </div>
-  </body>
-
-  <script>
-      function readFolder(e) {
-        const files = Array.from(e.target.files).map(x => x.webkitRelativePath);
-        document.getElementById("file-content")
-            .innerHTML = `
-            <p>selected:</p>
-            <pre>${files.join('\n')}</pre>
-            `;
-        //console.log(e.target.files);
-      }
-
-      document.getElementById('file-input')
-        .addEventListener('change', readFolder, false);
-  </script>
+</style>
 
 </html>

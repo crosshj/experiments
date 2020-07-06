@@ -1,23 +1,6 @@
-/*
 
-this should do the job of ExternalState.mjs:
-
-- serve files from cache first, then from network
-- serve files for offline (cache)
-
-- cache updates to be pushed later
-
-*/
-
-/*
-
-this module should not take dependencies for granted
-
-for example:
-fetch, cache, DB, storage - these should be passed in
-
-*/
-function exampleReact(){ return `
+function exampleReact() {
+    return `
 // (p)react hooks
 function useStore() {
   let [value, setValue] = useState(1);
@@ -61,11 +44,12 @@ const App = () => {
       <p>{value}</p>
     </div>
   );
-};`;}
+};`;
+}
 const defaultCode = (_name) => [{
-	name: "index.js",
-	code:
-`const serviceName = '${_name}';
+    name: "index.js",
+    code:
+        `const serviceName = '${_name}';
 
 const send = (message) => {
 	const serviceMessage = \`\${serviceName}: \${message}\`;
@@ -79,67 +63,69 @@ process.on('message', parentMsg => {
 });
 `
 }, {
-	name: "package.json",
-	code: JSON.stringify({
-		name: _name,
-		main: "react-example.jsx",
-		description: "",
-		template: "",
-		port: ""
-	}, null, '\t')
+    name: "package.json",
+    code: JSON.stringify({
+        name: _name,
+        main: "react-example.jsx",
+        description: "",
+        template: "",
+        port: ""
+    }, null, '\t')
 }, {
-	name: 'react-example.jsx',
-	code: exampleReact()
+    name: 'react-example.jsx',
+    code: exampleReact()
 }];
 const defaultTree = (_name) => ({
-	[_name]: {
-		"index.js": {},
-		"package.json": {},
-		"react-example.jsx": {}
-	}
+    [_name]: {
+        "index.js": {},
+        "package.json": {},
+        "react-example.jsx": {}
+    }
 });
 const defaultServices = () => [{
-	id: 1,
-	name: 'API Server',
-	tree: defaultTree('API Server'),
-	code: defaultCode('API Server')
+    id: 1,
+    name: 'API Server',
+    tree: defaultTree('API Server'),
+    code: defaultCode('API Server')
 }, {
-	id: 10,
-	name: 'UI Service',
-	tree: defaultTree('UI Service'),
-	code: defaultCode('UI Service')
+    id: 10,
+    name: 'UI Service',
+    tree: defaultTree('UI Service'),
+    code: defaultCode('UI Service')
 }, {
-	id: 777,
-	name: 'welcome',
-	tree: [{
-		welcome: {
-			"service.json": {}
-		}
-	}],
-	code: [{
-		name: "service.json",
-		code: JSON.stringify({
-			id: 777,
-			type: "frontend",
-			persist: "filesystem",
-			path: ".welcome",
-			version: 0.4,
-			tree: null,
-			code: null
-		}, null, 2)
-	}]
+    id: 777,
+    name: 'welcome',
+    tree: [{
+        welcome: {
+            "service.json": {}
+        }
+    }],
+    code: [{
+        name: "service.json",
+        code: JSON.stringify({
+            id: 777,
+            type: "frontend",
+            persist: "filesystem",
+            path: ".welcome",
+            version: 0.4,
+            tree: null,
+            code: null
+        }, null, 2)
+    }]
 }];
 const dummyService = (_id, _name) => ({
-	id: _id+"",
-	name: _name,
-	code: defaultCode(_name),
-	tree: defaultTree(_name)
+    id: _id + "",
+    name: _name,
+    code: defaultCode(_name),
+    tree: defaultTree(_name)
 });
 
-async function getFileContents({ filename, store }){
+async function getFileContents({ filename, store, cache }) {
     const cachedFile = await store.getItem(filename);
     let contents;
-    if(cachedFile){
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/Request/cache
+    if (cachedFile && cache !== 'reload') {
         return cachedFile;
     }
     const fetched = await fetch(filename);
@@ -149,48 +135,48 @@ async function getFileContents({ filename, store }){
 }
 
 //TODO: this is intense, but save a more granular approach for future
-async function fileSystemTricks({ result, store }){
-	if(!result.result[0].code.find){
-		const parsed = JSON.parse(result.result[0].code);
-		result.result[0].code = parsed.files;
-		result.result[0].tree = parsed.tree;
-		console.log('will weird things ever stop happening?');
-		return;
-	}
-	const serviceJSONFile = result.result[0].code.find(item => item.name === 'service.json');
-	if(serviceJSONFile && !serviceJSONFile.code){
+async function fileSystemTricks({ result, store, cache }) {
+    if (!result.result[0].code.find) {
+        const parsed = JSON.parse(result.result[0].code);
+        result.result[0].code = parsed.files;
+        result.result[0].tree = parsed.tree;
+        console.log('will weird things ever stop happening?');
+        return;
+    }
+    const serviceJSONFile = result.result[0].code.find(item => item.name === 'service.json');
+    if (serviceJSONFile && !serviceJSONFile.code) {
         //console.log('service.json without code');
         const filename = `./.${result.result[0].name}/service.json`;
-        serviceJSONFile.code = await getFileContents({ filename, store });
-	}
-	if(serviceJSONFile){
+        serviceJSONFile.code = await getFileContents({ filename, store, cache });
+    }
+    if (serviceJSONFile) {
         //console.log('service.json without tree');
-		let serviceJSON = JSON.parse(serviceJSONFile.code);
-		if(!serviceJSON.tree){
-			const filename = `./${serviceJSON.path}/service.json`;
-			serviceJSONFile.code = await getFileContents({ filename, store });
-			serviceJSON = JSON.parse(serviceJSONFile.code);
-		}
-		result.result[0].code = serviceJSON.files;
-		result.result[0].tree = {
-			[result.result[0].name]: serviceJSON.tree
-		}
-	}
-	const len = result.result[0].code.length;
-	for(var i=0; i < len; i++){
-		const item = result.result[0].code[i];
-		if(!item.code && item.path){
-			const filename = './' + item.path;
-			item.code = await getFileContents({ filename, store });
-		}
-	}
+        let serviceJSON = JSON.parse(serviceJSONFile.code);
+        if (!serviceJSON.tree) {
+            const filename = `./${serviceJSON.path}/service.json`;
+            serviceJSONFile.code = await getFileContents({ filename, store, cache });
+            serviceJSON = JSON.parse(serviceJSONFile.code);
+        }
+        result.result[0].code = serviceJSON.files;
+        result.result[0].tree = {
+            [result.result[0].name]: serviceJSON.tree
+        }
+    }
+    const len = result.result[0].code.length;
+    for (var i = 0; i < len; i++) {
+        const item = result.result[0].code[i];
+        if (!item.code && item.path) {
+            const filename = './' + item.path;
+            item.code = await getFileContents({ filename, store, cache });
+        }
+    }
 }
 
 let lsServices = [];
 
-// instead of importing path-to-regex
+// FOR NOW: instead of importing path-to-regex
 // go here https://forbeslindesay.github.io/express-route-tester/
-// enter path expression
+// enter path expression; include regex for base path, eg. (.*)/.welcome/:path?
 // get the regex and add it to this
 const pathToRegex = {
     '/service/create': (() => {
@@ -212,23 +198,36 @@ const pathToRegex = {
                 id: regex.exec(url)[2]
             })
         }
+    })(),
+    '/.welcome/:path?': (() => {
+        // WARNING: this is actually the regex for (.*)/.welcome/(.*)
+        const regex = new RegExp(
+            /^((?:.*))\/\.welcome\/((?:.*))(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                path: (regex.exec(url)[2]||"").split('?')[0],
+                query: (regex.exec(url)[2]||"").split('?')[1]
+            })
+        }
     })()
 };
 const fakeExpress = () => {
     const handlers = [];
     const generic = (pathString, handler) => {
         const path = pathToRegex[pathString];
-        if(!path){ return; }
+        if (!path) { return; }
         handlers.push({ ...path, handler });
     };
     const find = (url) => {
         const found = handlers.find(x => x.match(url));
-        if(!found){
+        if (!found) {
             return;
         }
         return {
-            exec: async () => {
-                return await found.handler(found.params(url));
+            exec: async (event) => {
+                return await found.handler(found.params(url), event);
             }
         };
     };
@@ -240,8 +239,34 @@ const fakeExpress = () => {
     return app;
 };
 
+
+
+/*
+
+this should do the job of ExternalState.mjs:
+
+- serve files from cache first, then from network
+- serve files for offline (cache)
+
+- cache updates to be pushed later
+
+*/
+
+/*
+
+this module should not take dependencies for granted
+
+for example:
+fetch, cache, DB, storage - these should be passed in
+
+
+//TODO: need service worker handlers so they can be dynamically added by this handler
+
+// TODO: what if this handler needs things to be stored when it is first loaded?
+
+*/
+
 (() => {
-    // TODO: what if this handler needs things to be stored when it is first loaded?
 
     var driverOrder = [
         localforage.INDEXEDDB,
@@ -250,23 +275,29 @@ const fakeExpress = () => {
     ];
     const store = localforage
         .createInstance({
-            driver      : driverOrder,
-            name        : 'serviceRequest',
-            version     : 1.0,
-            storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
-            description : 'some description'
+            driver: driverOrder,
+            name: 'serviceRequest',
+            version: 1.0,
+            storeName: 'keyvaluepairs', // Should be alphanumeric, with underscores.
+            description: 'some description'
         });
     //console.log({ driver: store.driver() })
 
+
+
     let app = fakeExpress();
-	app.post('/service/create', () => {});
-    app.get('/service/read/:id?', async (params) => {
-        //also, what if "file service"?
+    app.post('/service/create', () => { });
+    app.get('/service/read/:id?', async (params, event) => {
+        //also, what if not "file service"?
         //also, what if "offline"?
 
+        const cache = event.request.cache;
+
         //if not id, return all services
-        if(!params.id){
-            return { result: defaultServices() };
+        if (!params.id) {
+            return JSON.stringify({
+                result: defaultServices()
+            }, null, 2);
         }
 
         //if id, return that service
@@ -277,32 +308,35 @@ const fakeExpress = () => {
         const result = {
             result: lsServices.filter(x => Number(x.id) === Number(params.id))
         }
-        await fileSystemTricks({ result, store });
-        return result;
-
+        await fileSystemTricks({ result, store, cache });
+        return  JSON.stringify(result, null, 2)
         //const foo = await store.getItem("foo");
 
     });
-	app.post('/service/update', () => {});
-	app.post('/service/delete', () => {});
+    app.post('/service/update', () => { });
+    app.post('/service/delete', () => { });
 
-	app.get('/manage', () => {});
-	app.get('/monitor', () => {});
-    app.get('/persist', () => {});
+    app.get('/manage', () => { });
+    app.get('/monitor', () => { });
+    app.get('/persist', () => { });
 
-    app.get('/.welcome/:path?', (event, params) => {
-        //
-    })
+    app.get('/.welcome/:path?', async (params, event) => {
+        /*
+        TODO: this route should instead be created dynamically instead of defined in this service
+        based on reading services & determining which are "file system services"
+        */
+       console.log({ params })
+       return await (await fetch(event.request.url)).text();
+    });
 
-    async function serviceAPIRequestHandler(event){
+
+    async function serviceAPIRequestHandler(event) {
         const serviceAPIMatch = app.find(event.request.url);
-        if(serviceAPIMatch){
+        if (serviceAPIMatch) {
             event.respondWith(
                 (async () => {
-                    const responseText = await serviceAPIMatch.exec();
-                    return new Response(
-                        JSON.stringify(responseText,null,2)
-                    );
+                    const responseText = await serviceAPIMatch.exec(event);
+                    return new Response(responseText);
                 })()
             );
             return;

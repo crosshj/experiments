@@ -12,26 +12,23 @@ self.addEventListener('sync', syncHandler);
 self.addEventListener('push', pushHandler);
 
 const handlers = [];
-let handlerStore;
 
-// TODO: read these from localStorage
+const driverOrder = [
+	localforage.INDEXEDDB,
+	localforage.WEBSQL,
+	localforage.LOCALSTORAGE,
+];
+const handlerStore = localforage
+	.createInstance({
+		driver: driverOrder,
+		name: 'serviceWorker',
+		version: 1.0,
+		storeName: 'handlerStore',
+		description: 'used after app has booted when service worker is updated'
+	});
 
 async function installHandler(event) {
 	console.log('service worker install event');
-
-	var driverOrder = [
-		localforage.INDEXEDDB,
-		localforage.WEBSQL,
-		localforage.LOCALSTORAGE,
-	];
-	handlerStore = localforage
-		.createInstance({
-			driver: driverOrder,
-			name: 'serviceWorker',
-			version: 1.0,
-			storeName: 'handlerStore',
-			description: 'used after app has booted when service worker is updated'
-		});
 	await handlerStore
 		.iterate((value, key) => {
 			const {
@@ -290,6 +287,6 @@ try {
 	}
 } catch(e){
 	console.error('failed to register module');
-	debugger;
+	console.log(module);
 }
 }

@@ -163,6 +163,10 @@ async function externalStateRequest(op){
 			throw new Error('Server not implemented for apps.crosshj.com');
 		}
 
+		if(localStorage.getItem("reloadServices")){
+			op.config.cache = 'reload';
+		}
+
 		const response = await fetch(op.url, op.config);
 		result = await response.json();
 
