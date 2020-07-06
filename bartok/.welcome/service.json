@@ -22,41 +22,41 @@
         "md.html": {}
       },
       "file-examples": {
-        "bartok.svg": {},
-        "blaptney.ts": {},
-        "blorptny.js": {},
-        "blurptny.jsx": {},
-        "brewlinopistopic.md": {},
+        "svg-bartok.svg": {},
+        "typescript.ts": {},
+        "javascript.js": {},
+        "react2.jsx": {},
+        "markdown2.md": {},
         "clojure.cljs": {},
-        "crackney.py": {},
-        "crelau.svg": {},
-        "cytoscape1.cx": {},
-        "cytoscape1.gml": {},
-        "damagedHelmet.gltf": {},
-        "demo.gltf": {},
-        "demo.ipynb": {},
-        "demo2.ipynb": {},
-        "demo3.ipynb": {},
-        "demo4.ipynb": {},
-        "graph.json": {},
-        "graph2.json": {},
-        "grestla.go": {},
-        "groiponte.php": {},
-        "hempto.rb": {},
-        "hexto.css": {},
-        "hexto.less": {},
-        "hexto.scss": {},
+        "python.py": {},
+        "svg-compass.svg": {},
+        "graph-cytoscape.cx": {},
+        "graph-cytoscape.gml": {},
+        "webgl-helmet.gltf": {},
+        "webgl-duck.gltf": {},
+        "jupyter.ipynb": {},
+        "jupyter2.ipynb": {},
+        "jupyter3.ipynb": {},
+        "jupyter4.ipynb": {},
+        "graph-d3.json": {},
+        "graph-d3.2.json": {},
+        "golang.go": {},
+        "php.php": {},
+        "ruby.rb": {},
+        "styles.css": {},
+        "styles.less": {},
+        "styles.scss": {},
         "hyperscript.js": {},
         "jackrofae.png": {},
-        "lockIcon.svg": {},
-        "mempto.bat": {},
-        "reveal.htm": {},
-        "septo.txt": {},
-        "tessit.json": {},
-        "testmarkdown.md": {},
-        "trlpnirb.htm": {},
-        "trlpnord.jsx": {},
-        "yurklis.pl": {}
+        "svg-lock.svg": {},
+        "windows.bat": {},
+        "slides-reveal.htm": {},
+        "plain.txt": {},
+        "json.json": {},
+        "markdown.md": {},
+        "preact-hyperscript.htm": {},
+        "react-todo.jsx": {},
+        "perl.pl": {}
       },
       "folder-examples": {
         "fee": {
@@ -144,100 +144,100 @@
         "path": ".welcome/.templates/md.html"
       },
       {
-        "name": "bartok.svg",
-        "path": ".welcome/file-examples/bartok.svg"
+        "name": "svg-bartok.svg",
+        "path": ".welcome/file-examples/svg-bartok.svg"
       },
       {
-        "name": "blaptney.ts",
-        "path": ".welcome/file-examples/blaptney.ts"
+        "name": "typescript.ts",
+        "path": ".welcome/file-examples/typescript.ts"
       },
       {
-        "name": "blorptny.js",
-        "path": ".welcome/file-examples/blorptny.js"
+        "name": "javascript.js",
+        "path": ".welcome/file-examples/javascript.js"
       },
       {
-        "name": "blurptny.jsx",
-        "path": ".welcome/file-examples/blurptny.jsx"
+        "name": "react2.jsx",
+        "path": ".welcome/file-examples/react2.jsx"
       },
       {
-        "name": "brewlinopistopic.md",
-        "path": ".welcome/file-examples/brewlinopistopic.md"
+        "name": "markdown2.md",
+        "path": ".welcome/file-examples/markdown2.md"
       },
       {
         "name": "clojure.cljs",
         "path": ".welcome/file-examples/clojure.cljs"
       },
       {
-        "name": "crackney.py",
-        "path": ".welcome/file-examples/crackney.py"
+        "name": "python.py",
+        "path": ".welcome/file-examples/python.py"
       },
       {
-        "name": "crelau.svg",
-        "path": ".welcome/file-examples/crelau.svg"
+        "name": "svg-compass.svg",
+        "path": ".welcome/file-examples/svg-compass.svg"
       },
       {
-        "name": "cytoscape1.cx",
-        "path": ".welcome/file-examples/cytoscape1.cx"
+        "name": "graph-cytoscape.cx",
+        "path": ".welcome/file-examples/graph-cytoscape.cx"
       },
       {
-        "name": "cytoscape1.gml",
-        "path": ".welcome/file-examples/cytoscape1.gml"
+        "name": "graph-cytoscape.gml",
+        "path": ".welcome/file-examples/graph-cytoscape.gml"
       },
       {
-        "name": "damagedHelmet.gltf",
-        "path": ".welcome/file-examples/damagedHelmet.gltf"
+        "name": "webgl-helmet.gltf",
+        "path": ".welcome/file-examples/webgl-helmet.gltf"
       },
       {
-        "name": "demo.gltf",
-        "path": ".welcome/file-examples/demo.gltf"
+        "name": "webgl-duck.gltf",
+        "path": ".welcome/file-examples/webgl-duck.gltf"
       },
       {
-        "name": "demo.ipynb",
-        "path": ".welcome/file-examples/demo.ipynb"
+        "name": "jupyter.ipynb",
+        "path": ".welcome/file-examples/jupyter.ipynb"
       },
       {
-        "name": "demo2.ipynb",
-        "path": ".welcome/file-examples/demo2.ipynb"
+        "name": "jupyter2.ipynb",
+        "path": ".welcome/file-examples/jupyter2.ipynb"
       },
       {
-        "name": "demo3.ipynb",
-        "path": ".welcome/file-examples/demo3.ipynb"
+        "name": "jupyter3.ipynb",
+        "path": ".welcome/file-examples/jupyter3.ipynb"
       },
       {
-        "name": "demo4.ipynb",
-        "path": ".welcome/file-examples/demo4.ipynb"
+        "name": "jupyter4.ipynb",
+        "path": ".welcome/file-examples/jupyter4.ipynb"
       },
       {
-        "name": "graph.json",
-        "path": ".welcome/file-examples/graph.json"
+        "name": "graph-d3.json",
+        "path": ".welcome/file-examples/graph-d3.json"
       },
       {
-        "name": "graph2.json",
-        "path": ".welcome/file-examples/graph2.json"
+        "name": "graph-d3.2.json",
+        "path": ".welcome/file-examples/graph-d3.2.json"
       },
       {
-        "name": "grestla.go",
-        "path": ".welcome/file-examples/grestla.go"
+        "name": "golang.go",
+        "path": ".welcome/file-examples/golang.go"
       },
       {
-        "name": "groiponte.php",
-        "path": ".welcome/file-examples/groiponte.php"
+        "name": "php.php",
+        "path": ".welcome/file-examples/php.php"
       },
       {
-        "name": "hempto.rb",
-        "path": ".welcome/file-examples/hempto.rb"
+        "name": "ruby.rb",
+        "path": ".welcome/file-examples/ruby.rb"
       },
       {
-        "name": "hexto.css",
-        "path": ".welcome/file-examples/hexto.css"
+        "name": "styles.css",
+        "path": ".welcome/file-examples/styles.css"
       },
       {
-        "name": "hexto.less",
-        "path": ".welcome/file-examples/hexto.less"
+        "name": "styles.less",
+        "path": ".welcome/file-examples/styles.less"
       },
       {
-        "name": "hexto.scss",
-        "path": ".welcome/file-examples/hexto.scss"
+        "name": "styles.scss",
+        "path": ".welcome/file-examples/styles.scss"
       },
       {
         "name": "hyperscript.js",
@@ -248,44 +248,44 @@
         "path": ".welcome/file-examples/jackrofae.png"
       },
       {
-        "name": "lockIcon.svg",
-        "path": ".welcome/file-examples/lockIcon.svg"
+        "name": "svg-lock.svg",
+        "path": ".welcome/file-examples/svg-lock.svg"
       },
       {
-        "name": "mempto.bat",
-        "path": ".welcome/file-examples/mempto.bat"
+        "name": "windows.bat",
+        "path": ".welcome/file-examples/windows.bat"
       },
       {
         "name": "open.folder.html",
         "path": ".welcome/tests/open.folder.html"
       },
       {
-        "name": "reveal.htm",
-        "path": ".welcome/file-examples/reveal.htm"
+        "name": "slides-reveal.htm",
+        "path": ".welcome/file-examples/slides-reveal.htm"
       },
       {
-        "name": "septo.txt",
-        "path": ".welcome/file-examples/septo.txt"
+        "name": "plain.txt",
+        "path": ".welcome/file-examples/plain.txt"
       },
       {
-        "name": "tessit.json",
-        "path": ".welcome/file-examples/tessit.json"
+        "name": "json.json",
+        "path": ".welcome/file-examples/json.json"
       },
       {
-        "name": "testmarkdown.md",
-        "path": ".welcome/file-examples/testmarkdown.md"
+        "name": "markdown.md",
+        "path": ".welcome/file-examples/markdown.md"
       },
       {
-        "name": "trlpnirb.htm",
-        "path": ".welcome/file-examples/trlpnirb.htm"
+        "name": "preact-hyperscript.htm",
+        "path": ".welcome/file-examples/preact-hyperscript.htm"
       },
       {
-        "name": "trlpnord.jsx",
-        "path": ".welcome/file-examples/trlpnord.jsx"
+        "name": "react-todo.jsx",
+        "path": ".welcome/file-examples/react-todo.jsx"
       },
       {
-        "name": "yurklis.pl",
-        "path": ".welcome/file-examples/yurklis.pl"
+        "name": "perl.pl",
+        "path": ".welcome/file-examples/perl.pl"
       },
       {
         "name": "mlerpo.md",

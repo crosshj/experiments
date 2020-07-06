@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>htm + preact</title>
-    <meta name="description" content="Using rxjs with react in a fluxy (reduxy) and about-as-minimal-as-can-get kind of way">
+    <meta name="description" content="preact-htm demo">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
   </head>
-  
+
   <style>
     body {
       margin: 20px;
@@ -19,7 +19,7 @@
       display: none;
     }
   </style>
-  
+
   <script type="module">
     import {
       html, Component, render, useState, useCallback
@@ -33,7 +33,7 @@
       }, [value]);
       return { value, addTodo };
     }
-    
+
     const Header = ({ name, page }) => html`
       <h1 class="header">
         ${name} List
@@ -47,7 +47,7 @@
     const App = ({ page }, { todos:_todos = [] }) => {
       const { value, addTodo } = useStore();
       const { todos = [] } = value || { todos: _todos};
- 
+
       return html`
         <div class="app">
           <${Header} name="ToDo" page=${page} />
@@ -62,11 +62,10 @@
       `;
     };
 
-
     render(html`
       <${App} page="All" />
     `, document.body);
   </script>
-  
+
   <body></body>
 </html>

@@ -17,7 +17,11 @@ html, body {
   background: transparent !important;
 }
 
-#explorer,
+#explorer {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+}
+
 .CodeMirror .CodeMirror-hscrollbar,
 .CodeMirror .CodeMirror-vscrollbar {
   overflow-x: hidden !important;
@@ -33,7 +37,6 @@ html, body {
 .CodeMirror:hover .CodeMirror-hscrollbar {
   overflow-x: auto !important;
 } */
-#explorer:hover,
 .CodeMirror:hover .CodeMirror-vscrollbar {
   overflow-y: auto !important;
 }
@@ -959,7 +962,7 @@ notes-section.loading:after {
   border: 0px;
   opacity: 0.4;
   position: absolute;
-  right: 6px;
+  right: 22px;
 }
 
 /* new files and folders */

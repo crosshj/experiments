@@ -27,8 +27,6 @@ https://developers.google.com/web/fundamentals/primers/service-workers/high-perf
 https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook
 
 
-
-
 2020-07-01
 ==========
 - indent using tabs
@@ -58,8 +56,10 @@ https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookb
 - settings
 	- define a backend
 	- define a workflow
-- log in
+- log in (auth with an identity provider)
 - collaboration
+  - https://github.com/lesmana/webrtc-without-signaling-server
+  - https://github.com/cjb/serverless-webrtc
 - write and edit bartok web in bartok web
 - require an npm package (and use it)
 - open a page that is just the file in editor or preview mode; options editor + preview (or other mashup)
