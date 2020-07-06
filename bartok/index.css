@@ -115,7 +115,7 @@ iframe::-webkit-scrollbar-track{
 }
 
 :root {
-  --main-theme-color: #227a9c;
+  --main-theme-color: #e8e8e8;
   --main-theme-highlight-color: #039be5;
   --main-theme-background-color: white;
   --main-theme-background-dark-color: #eee;
@@ -125,6 +125,9 @@ iframe::-webkit-scrollbar-track{
   --theme-subdued-color: #f5f5f5;
   --theme-text-color: #fff;
   --theme-text-selected: orange;
+  --tree-selected: #dadada;
+  --tree-hover: orange;
+  --code-line-selected: orange;
 }
 
 :root.dark-enabled {
@@ -145,6 +148,9 @@ iframe::-webkit-scrollbar-track{
   --theme-subdued-color: #262626;
   --theme-text-color: black;
   --theme-text-selected: #82e3ae;
+  --tree-selected: #094771;
+  --tree-hover: #333;
+  --code-line-selected: orange;
 }
 
 :root.dark-enabled ul#slide-out {
@@ -448,11 +454,9 @@ nav a.sidenav-trigger i,
 
 
 
-/*
 .CodeMirror-gutter{
-  background: #e0e0e0;
+  background: var(--main-theme-color);
 }
-*/
 
 .CodeMirror pre.CodeMirror-line { padding-left: 15px }
 
@@ -851,7 +855,7 @@ notes-section.loading:after {
 }
 .tree-leaf-content:hover{
   /* color:#00f */
-  background-color: #333;
+  background-color: var(--tree-hover);
   /* color: var(--main-theme-highlight-color); */
 }
 .tree-leaf .tree-leaf-content:after,
@@ -936,7 +940,7 @@ notes-section.loading:after {
 
 .tree-leaf-content.selected {
   /* background: var(--main-theme-background-color); */
-  background: #094771;
+  background: var(--tree-selected);
   /* color: var(--theme-text-selected); */
 }
 
@@ -1352,4 +1356,15 @@ li.action-item.checked a {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#boot-iframe {
+  border: 0;
+  position: absolute;
+  top: 10px;
+  height: 32px;
+  z-index: 99;
+  left: 0;
+  right: 0;
+  margin: auto;
 }

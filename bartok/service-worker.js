@@ -12,9 +12,54 @@ self.addEventListener('sync', syncHandler);
 self.addEventListener('push', pushHandler);
 
 const handlers = [];
+let handlerStore;
 
-function installHandler(event) {
+// TODO: read these from localStorage
+
+async function installHandler(event) {
 	console.log('service worker install event');
+
+	var driverOrder = [
+		localforage.INDEXEDDB,
+		localforage.WEBSQL,
+		localforage.LOCALSTORAGE,
+	];
+	handlerStore = localforage
+		.createInstance({
+			driver: driverOrder,
+			name: 'serviceWorker',
+			version: 1.0,
+			storeName: 'handlerStore',
+			description: 'used after app has booted when service worker is updated'
+		});
+	await handlerStore
+		.iterate((value, key) => {
+			const {
+				type, route, handlerName, handlerText
+			} = value;
+			const foundHandler = handlers.find(x => x.handlerName === handlerName);
+			const foundExactHandler = foundHandler && handlers.find(x =>
+				x.handlerName === handlerName && x.routePattern === route
+			);
+			if(foundExactHandler){
+				console.log(`handler was already installed for ${foundExactHandler.routePattern}`);
+				return;
+			}
+			let handlerFunction;
+			if (!foundHandler) {
+				handlerFunction = eval(handlerText);
+			}
+			console.log(`handler installed for ${route} (from indexDB handlerStore)`);
+			handlers.push({
+				type,
+				routePattern: route,
+				route: type === "fetch"
+					? new RegExp(route)
+					: route,
+				handler: handlerFunction || foundHandler.handler,
+				handlerName, handlerText
+			});
+		});
 }
 
 function activateHandler(event) {
@@ -30,13 +75,22 @@ function fetchHandler(event) {
 		return foundHandler.handler(event);
 	}
 
+	if (
+		event.request.url.includes('index.bootstrap') ||
+		event.request.url.includes('browser-sync/socket.io')
+	) {
+		return;
+	}
+
+	// do not use or update cache
+	if (event.request.cache === 'no-store') {
+		return;
+	}
 	// if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
 	// 	debugger;
 	// 	return;
 	// }
-	if (event.request.url.includes('/browser-sync/')) {
-		return fetch(event.request.url);
-	}
+
 	if (
 		!event.request.url.includes('/bartok/') &&
 		!event.request.url.includes('/shared/')
@@ -62,21 +116,29 @@ function messageHandler(event) {
 	if (bootstrap) {
 		(async () => {
 			try {
-			console.log('booting');
-			const modules = await bootstrapHandler(bootstrap);
+				console.log('booting');
+				const bootstrapMessageEach = (module) => {
+					const client = event.source;
+					if (!client) {
+						console.error('failed to notify client on boot complete');
+						return;
+					}
+					client.postMessage({ module, msg: 'module-loaded' });
+				};
+				const modules = await bootstrapHandler(bootstrap, bootstrapMessageEach);
 
-			const client = event.source;
-			if (!client) {
-				console.error('failed to notify client on boot complete');
-				return;
-			}
-			client.postMessage({
-				modules: modules.filter(x => {
-					return !x.includes || !x.includes('NOTE:')
-				}),
-				msg: "boot complete"
-			});
-			} catch(e){
+				const client = event.source;
+				if (!client) {
+					console.error('failed to notify client on boot complete');
+					return;
+				}
+				client.postMessage({
+					modules: modules.filter(x => {
+						return !x.includes || !x.includes('NOTE:')
+					}),
+					msg: "boot complete"
+				});
+			} catch (e) {
 				console.log(e);
 				const client = event.source;
 				if (!client) {
@@ -104,9 +166,20 @@ function pushHandler(event) {
 
 // ----
 
-async function bootstrapHandler({ manifest }) {
+async function bootstrapHandler({ manifest }, bootstrapMessageEach) {
 	//console.log({ manifest});
-	const _manifest = await (await fetch(manifest)).json();
+	const manifestResponse = await fetch(manifest);
+	const _manifest = await manifestResponse.json();
+	const _source = new Response(JSON.stringify(_manifest, null, 2), {
+		status: manifestResponse.status,
+		statusText: manifestResponse.statusText,
+		headers: manifestResponse.headers
+	});
+	await caches.open(cacheName)
+		.then(function (cache) {
+			cache.put(manifest, _source);
+		});
+
 	const { modules } = _manifest || {};
 	if (!modules || !Array.isArray(modules)) {
 		console.error('Unable to find modules in service manifest');
@@ -114,12 +187,14 @@ async function bootstrapHandler({ manifest }) {
 	}
 	//should only register modules that are not in cache
 	//await Promise.all(modules.map(registerModule));
-	for(var i=0, len=modules.length; i<len; i++){
+	for (var i = 0, len = modules.length; i < len; i++) {
 		await registerModule(modules[i]);
+		bootstrapMessageEach(modules[i])
 	}
 	return modules;
 }
 async function registerModule(module) {
+try {
 	if (module.includes && module.includes('NOTE:')) {
 		return;
 	}
@@ -135,19 +210,34 @@ async function registerModule(module) {
 	should instantiate this function and add it to handlers, but also add to DB
 	*/
 	if (handler) {
-		const foundHandler = (handlers.find(x => x.handlerName === handler) || {}).handler;
-		let handlerFunction;
-		if (!foundHandler) {
-			const handlerText = await (await fetch(handler)).text();
+		const foundHandler = handlers.find(x => x.handlerName === handler);
+		let handlerFunction, handlerText;
+		if (!foundHandler || !foundHandler.handler) {
+			handlerText = await (await fetch(handler)).text();
 			handlerFunction = eval(handlerText);
 		}
+		const foundExactHandler = foundHandler && handlers.find(x =>
+			x.handlerName === handler && x.routePattern === route
+		);
+		if(foundExactHandler){
+			console.log(`handler was already installed for ${foundExactHandler.routePattern} (boot)`);
+			return;
+		}
+		await handlerStore.setItem(route, {
+			type, route,
+			handlerName: handler,
+			handlerText: handlerText || foundHandler.handlerText
+		});
+		console.log(`handler installed for ${route} (boot)`);
 		handlers.push({
 			type,
+			routePattern: route,
 			route: type === "fetch"
 				? new RegExp(route)
 				: route,
-			handler: foundHandler || handlerFunction,
-			handlerName: handler
+			handler: handlerFunction || foundHandler.handler,
+			handlerName: handler,
+			handlerText: handlerText || foundHandler.handlerText
 		});
 		return;
 	}
@@ -198,5 +288,8 @@ async function registerModule(module) {
 				cache.put(route, _source);
 			});
 	}
-
+} catch(e){
+	console.error('failed to register module');
+	debugger;
+}
 }

@@ -35,5 +35,8 @@ module.exports = {
             }
             next();
         }
-    ]
+    ],
+    // snippetOptions: {
+    //     ignorePaths: ["index.bootstrap.html"],
+    // }
 };

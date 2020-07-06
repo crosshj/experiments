@@ -159,12 +159,12 @@ async function fileSystemTricks({ result, store }){
 	}
 	const serviceJSONFile = result.result[0].code.find(item => item.name === 'service.json');
 	if(serviceJSONFile && !serviceJSONFile.code){
-        console.log('service.json without code');
+        //console.log('service.json without code');
         const filename = `./.${result.result[0].name}/service.json`;
         serviceJSONFile.code = await getFileContents({ filename, store });
 	}
 	if(serviceJSONFile){
-        console.log('service.json without tree');
+        //console.log('service.json without tree');
 		let serviceJSON = JSON.parse(serviceJSONFile.code);
 		if(!serviceJSON.tree){
 			const filename = `./${serviceJSON.path}/service.json`;
@@ -241,6 +241,8 @@ const fakeExpress = () => {
 };
 
 (() => {
+    // TODO: what if this handler needs things to be stored when it is first loaded?
+
     var driverOrder = [
         localforage.INDEXEDDB,
         localforage.WEBSQL,
@@ -249,7 +251,7 @@ const fakeExpress = () => {
     const store = localforage
         .createInstance({
             driver      : driverOrder,
-            name        : 'myApp',
+            name        : 'serviceRequest',
             version     : 1.0,
             storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
             description : 'some description'

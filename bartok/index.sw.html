@@ -175,6 +175,7 @@
 
 <body class="loading">
   <script>
+    localStorage.setItem('themeDark', true);
     const darkEnabled = window.localStorage.getItem('themeDark') === "true";
     document.body.style.backgroundColor = darkEnabled
       ? document.body.style.backgroundColor = (document.querySelector("meta[name=dark-page-color]") || {}).content
@@ -254,36 +255,6 @@
 <script>
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
-  async function getServiceWorker() {
-    //should ever use navigator.serviceWorker.ready?
-    let reg, error;
-    if (!('serviceWorker' in navigator)) {
-      error = 'no service worker support';
-      return console.log('Service worker support is required and not present.  Will not continue.');
-    }
-    try {
-      reg = await navigator.serviceWorker.register('./service-worker.js', { scope: './' });
-      reg && console.log('Service worker registration succeeded. Scope is ' + reg.scope);
-    } catch (e) {
-      error = e;
-      error && console.log('Service worker registration failed with ' + error);
-    }
-    if(!error && !!reg){
-      let count = 0;
-      const MAX_COUNT = 10;
-
-      while (!reg.active && count < MAX_COUNT){
-        await delay(300);
-        count++;
-      }
-      if(count >= MAX_COUNT){
-        return console.error('gave up waiting for service worker registration to activate');
-      }
-    }
-
-    return reg.active;
-  }
-
   (async function () {
 
     function formatBytes(bytes) {
@@ -307,20 +278,57 @@
     navigator.storage.estimate()
       .then(function(estimate){
         console.log(`
-        Using ${formatBytes(estimate.usage)} out of ${formatBytes(estimate.quota)}.
-      `);
-    });
+          Using ${formatBytes(estimate.usage)} out of ${formatBytes(estimate.quota)}.
+        `);
+      });
 
-    const moduleCache = ''; //localStorage.getItem('moduleCache');
-    //const moduleCache = localStorage.getItem('moduleCache');
 
     const components = [];
 
-    const loadUI = async () => {
-      while(components.length < 6){
-        console.log('Delaying...');
-        await delay(300);
+    const addUIModulesToArray = (modules) => {
+      //let modulesReady = false;
+      //let maxRetry = 100;
+      //let tries=0;
+      //let testModule = modules.find(x => x.type === 'domComponent' && !!x.route);
+      // while(!modulesReady && tries < maxRetry){
+      //   await delay(500);
+      //   tries++;
+      //   try {
+      //     await import(testModule.route);
+      //     modulesReady=true;
+      //   } catch(e) {}
+      // }
+      // if(tries >= maxRetry){
+      //   console.error(`unable to load modules, gave up after ${tries} tries`);
+      //   return;
+      // }
+
+      const _c = modules.filter(x => x.type === 'domComponent');
+      for(var i=0, len=_c.length; i<len; i++){
+        const x = _c[i];
+        const comp = async () => { return (await import(x.route)).default; }
+        //console.log('Will invoke: ' + x.route)
+        components.push(comp);
       }
+      //await loadUI();
+    };
+
+    const loadUI = async () => {
+      const moduleCache = localStorage.getItem('moduleCache');
+      if(!moduleCache){
+        console.log('app has not been installed');
+        return;
+      }
+      try {
+        addUIModulesToArray(
+          JSON.parse(moduleCache)
+            .map(x => ({
+              route: x,
+              type: 'domComponent'
+            }))
+        );
+      } catch(e) {}
+
       const splashContainer = document.getElementById('container');
       splashContainer.parentNode.removeChild(splashContainer);
 
@@ -331,95 +339,36 @@
       document.body.classList.remove('loading')
 
       for(var i=0, len=components.length; i<len; i++){
-        await components[i]();
+        (await components[i]())();
       }
     };
 
-    const addUIModulesToArray = async (modules) => {
-      let modulesReady = false;
-      let maxRetry = 30;
-      let tries=0;
-      let testModule = modules.find(x => x.type === 'domComponent' && !!x.route);
-      while(!modulesReady && tries < maxRetry){
-        await delay(500);
-        tries++;
-        try {
-          await import(testModule.route);
-          modulesReady=true;
-        } catch(e) {}
-      }
-      if(tries >= maxRetry){
-        console.error(`unable to load modules, gave up after ${tries} tries`);
-        return;
-      }
-
-      const _c = modules.filter(x => x.type === 'domComponent');
-      for(var i=0, len=_c.length; i<len; i++){
-        const x = _c[i];
-        const comp = (await import(x.route)).default;
-        //console.log('Will invoke: ' + x.route)
-        components.push(comp);
-      }
-      await loadUI();
-    };
-
-    if(moduleCache){
-      try {
-        addUIModulesToArray(
-          JSON.parse(moduleCache)
-            .map(x => ({
-              route: x,
-              type: 'domComponent'
-            }))
-        );
-        return;
-      } catch(e) {}
-    }
-
-    const serviceWorker = await getServiceWorker();
-    if (!serviceWorker) {
-      console.error('could not find service worker');
-      return;
-    }
-
-    const serviceWorkerMessageHandler = ({ data = {} }) => {
-      const { msg, modules } = data;
-      console.log(msg);
-
-      if(modules){
-        localStorage.setItem('moduleCache', JSON.stringify(
-          modules
-            .filter(x => x && x.type && x.type === 'domComponent')
-            .map(x => x.route)
-        ));
-      }
-
-      let cachedModules;
-      if(!modules){
-        try {
-          const cached = localStorage.getItem('moduleCache');
-          cachedModules = JSON.parse(cached)
-            .map(x => ({
-              route: x,
-              type: 'domComponent'
-            }));
-        } catch(e){}
-      }
-      addUIModulesToArray(modules || cachedModules);
-    };
-
-
-
-    navigator.serviceWorker.addEventListener('message', serviceWorkerMessageHandler);
-    serviceWorker.postMessage({
-      bootstrap: {
-        manifest: 'service.manifest.json'
-      }
-    });
     const button = document.querySelector('#worker-message');
     button.addEventListener('click', loadUI);
 
   })();
+</script>
+
+<script>
+  function bootIframe(callback){
+    const bootframe = document.createElement('iframe');
+    bootframe.id = "boot-iframe";
+    bootframe.src = "index.bootstrap.html";
+    document.body.appendChild(bootframe);
+
+    //TODO: should listen for message from iframe before deleting it
+    setTimeout(x => {
+      document.body.removeChild(bootframe);
+      callback && callback();
+    }, 5000);
+  }
+  window.boot = bootIframe;
+  const moduleCache = localStorage.getItem('moduleCache');
+  if(!moduleCache){
+    boot(() => {
+      document.location.reload();
+    });
+  }
 </script>
 
 </html>

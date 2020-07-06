@@ -13,7 +13,13 @@
             "/shared/fonts/codicon.ttf"
         ]
     },
-
+    "NOTE: resources for example apps",
+    {
+        "resources": [
+            "/shared/vendor/showdown.1.9.1.min.js",
+            "/shared/css/github-markdown.min.css"
+        ]
+    },
     "NOTE: modules",
     {
         "route": "./Panes",
