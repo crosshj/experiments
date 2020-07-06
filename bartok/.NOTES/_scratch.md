@@ -20,6 +20,14 @@ TODO
 - how much would I pay to use bartok (trick question)?
 - how much would you have to pay me to use bartok (trick question)?
 
+Service Worker
+==============
+
+https://developers.google.com/web/fundamentals/primers/service-workers/high-performance-loading
+https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook
+
+
+
 
 2020-07-01
 ==========

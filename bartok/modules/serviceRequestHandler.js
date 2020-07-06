@@ -326,6 +326,21 @@ fetch, cache, DB, storage - these should be passed in
         based on reading services & determining which are "file system services"
         */
        console.log({ params })
+
+       /*
+        TODO:
+        expect something like this:
+
+        http://localhost:3000/bartok/.welcome/Readme.md?preview=true&edit=true
+        should render document using a template and include editor to the left
+
+        http://localhost:3000/bartok/.welcome/Readme.md?preview=true
+        should preview document, no editing
+
+        http://localhost:3000/bartok/.welcome/Readme.md?edit=true
+        should allow editing and saving of document, no preview
+       */
+
        return await (await fetch(event.request.url)).text();
     });
 
