@@ -15,6 +15,7 @@ function codemirrorModeFromFileType(fileType){
 		less: { name: 'css', mimeType: 'text/x-less' },
 		image: { name  : 'default' },
 		bat: { name: 'default' },
+		mjs: { name: 'javascript' },
 		json: { name: 'javascript', json: true }
 	};
 	//console.log({ fileType, conversions: conversions[fileType] });

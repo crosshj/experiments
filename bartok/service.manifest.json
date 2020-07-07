@@ -1,5 +1,6 @@
 {
     "version": "0.4",
+    "main": "service.manifest.json",
     "modules": [
     {
         "resources": [
@@ -22,30 +23,30 @@
     },
     "NOTE: modules",
     {
-        "route": "./Panes",
+        "route": "./modules/Panes.mjs",
         "type": "domComponent",
         "source": "modules/PanesNew.mjs"
     }, {
-        "route": "./StatusBar",
+        "route": "./modules/StatusBar.mjs",
         "type": "domComponent",
         "source": "modules/StatusBar.mjs"
     }, {
-        "route": "./ActionBar",
+        "route": "./modules/ActionBar.mjs",
         "type": "domComponent",
         "source": "modules/ActionBar.mjs"
     }, {
-        "route": "./TreeView",
+        "route": "./modules/TreeView.mjs",
         "type": "domComponent",
         "source": "modules/TreeView.mjs",
         "resources": [
             "/shared/vendor/js-treeview.1.1.5.js"
         ]
     }, {
-        "route": "./LoaderBar",
+        "route": "./modules/LoaderBar.mjs",
         "type": "domComponent",
         "source": "modules/LoaderBar.mjs"
     }, {
-        "route": "./Terminal",
+        "route": "./modules/Terminal.mjs",
         "type": "domComponent",
         "source": "modules/Terminal.mjs",
         "resources": [
@@ -53,15 +54,15 @@
             "/shared/vendor/xterm-addon-fit.js"
         ]
     }, {
-        "route": "./Hotkeys",
+        "route": "./modules/Hotkeys.mjs",
         "type": "domComponent",
         "source": "modules/HotKeys.mjs"
     }, {
-        "route": "./Services",
+        "route": "./modules/Services.mjs",
         "type": "domComponent",
         "source": "modules/Services.mjs"
     }, {
-        "route": "./Editor",
+        "route": "./modules/Editor.mjs",
         "type": "domComponent",
         "source": "modules/Editor.mjs",
         "resources": [
@@ -92,92 +93,88 @@
             "/shared/vendor/codemirror/mode/ruby.js"
         ]
     }, {
-        "route": "./ContextMenu",
+        "route": "./modules/ContextMenu.mjs",
         "type": "domComponent",
         "source": "modules/ContextMenu.mjs"
     }, {
-        "route": "./Operations",
+        "route": "./modules/Operations.mjs",
         "type": "domComponent",
         "source": "modules/Operations_New.mjs"
     },
 
     "NOTE: should be a handlers in service worker context",
     {
-        "route": "./events/statusBar.mjs",
+        "route": "./modules/events/statusBar.mjs",
         "source": "modules/events/statusBar.mjs",
         "handler": null
     }, {
-        "route": "./events/tree.mjs",
+        "route": "./modules/events/tree.mjs",
         "source": "modules/events/tree.mjs",
         "handler": null
     }, {
-        "route": "./events/loader.mjs",
+        "route": "./modules/events/loader.mjs",
         "source": "modules/events/loader.mjs",
         "handler": null
     }, {
-        "route": "./events/terminal.mjs",
+        "route": "./modules/events/terminal.mjs",
         "source": "modules/events/terminal.mjs",
         "handler": null
     }, {
-        "route": "./events/services.mjs",
+        "route": "./modules/events/services.mjs",
         "source": "modules/events/services.mjs",
         "handler": null
     }, {
-        "route": "./events/templates.mjs",
+        "route": "./modules/events/templates.mjs",
         "source": "modules/events/templates.mjs",
         "handler": null
     }, {
-        "route": "./events/editor.mjs",
+        "route": "./modules/events/editor.mjs",
         "source": "modules/events/editor.mjs",
         "handler": null
     }, {
-        "route": "./events/editorTabs.mjs",
+        "route": "./modules/events/editorTabs.mjs",
         "source": "modules/events/editorTabs.mjs",
         "handler": null
     }, {
-        "route": "./events/operations.mjs",
+        "route": "./modules/events/operations.mjs",
         "source": "modules/events/operations.mjs",
         "handler": null
     },
 
     "NOTE: should be compiled in to each module",
     {
-        "route": "./Listeners.mjs",
+        "route": "./modules/Listeners.mjs",
         "source": "modules/Listeners.mjs",
         "handler": null
     }, {
-        "route": "./Templates.mjs",
+        "route": "./modules/Templates.mjs",
         "source": "modules/Templates.mjs",
         "handler": null
     }, {
-        "route": "./EditorTabs.mjs",
+        "route": "./modules/EditorTabs.mjs",
         "source": "modules/EditorTabs.mjs"
     }, {
-        "route": "./motd.mjs",
+        "route": "./modules/motd.mjs",
         "source": "modules/motd.mjs",
         "handler": null
     }, {
-        "route": "./state.mjs",
+        "route": "./modules/state.mjs",
         "source": "modules/state.mjs",
         "handler": null
     }, {
-        "route": "./ExternalState.mjs",
+        "route": "./modules/ExternalState.mjs",
         "source": "modules/ExternalState.mjs",
         "handler": null
     }, {
-        "route": "./operationsManagement.mjs",
+        "route": "./modules/operationsManagement.mjs",
         "source": "modules/operationsManagement.mjs",
         "handler": null
     }, {
-        "route": "./operationsService.mjs",
+        "route": "./modules/operationsService.mjs",
         "source": "modules/operationsService.mjs",
         "handler": null
     }, {
         "route": "./modules/Types.mjs",
-        "source": "modules/Types.mjs",
-        "handler": null
-    }, {
-        "route": "./Types.mjs",
         "source": "modules/Types.mjs",
         "handler": null
     }, {

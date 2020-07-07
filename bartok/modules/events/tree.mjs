@@ -1,4 +1,5 @@
 import { attach } from '../Listeners.mjs';
+import { getDefaultFile } from '../state.mjs';
 
 import ext from '../../../shared/icons/seti/ext.json.mjs';
 
@@ -73,19 +74,6 @@ const treeMenu = ({ title }) => {
 		</div>
 	`;
 	treeMenu.innerHTML = menuInnerHTML;
-}
-
-function getDefaultFile(service){
-	let defaultFile;
-	try {
-		const packageJson = JSON.parse(
-			service.code.find(x => x.name === "package.json").code
-		);
-		defaultFile = packageJson.main;
-	} catch(e){
-		//debugger;
-	}
-	return defaultFile || "index.js";
 }
 
 function getFileType(fileName=''){

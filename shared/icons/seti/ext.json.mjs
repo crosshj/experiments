@@ -56,6 +56,7 @@ export default {
     "gif": "image",
     "jade": "jade",
     "java": "java",
+    "mjs": "javascript",
     "js": "javascript",
     "es6": "javascript",
     "es7": "javascript",

@@ -7,6 +7,12 @@ let currentFolder;
 function getDefaultFile(service){
 	let defaultFile;
 	try {
+		const manifestJson = JSON.parse(
+			service.code.find(x => x.name === "service.manifest.json").code
+		);
+		defaultFile = manifestJson.main;
+	} catch(e){}
+	try {
 		const packageJson = JSON.parse(
 			service.code.find(x => x.name === "package.json").code
 		);
@@ -130,6 +136,7 @@ const resetState = () => {
 
 export {
 	getCodeFromService, getCurrentFile, getCurrentService,
+	getDefaultFile,
 	setCurrentService,
 	getCurrentFolder, setCurrentFolder,
 	getState, setState, resetState

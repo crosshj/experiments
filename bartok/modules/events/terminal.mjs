@@ -4,8 +4,10 @@ import {
 
 import {
 	isSupported
-} from '../Templates.mjs'
+} from '../Templates.mjs';
+
 import { getState, getCurrentFile, getCurrentService } from '../state.mjs';
+import { getDefaultFile } from '../state.mjs';
 
 let locked;
 let lsLocked = localStorage.getItem("previewLocked");
@@ -120,19 +122,6 @@ const projectOps = [
 ];
 const eventsHandledAlready = [...manageOps, ...projectOps];
 
-function getDefaultFile(service){
-	let defaultFile;
-	try {
-		const packageJson = JSON.parse(
-			service.code.find(x => x.name === "package.json").code
-		);
-		defaultFile = packageJson.main;
-	} catch(e){
-		//debugger;
-	}
-	return defaultFile || "index.js";
-}
-
 const terminalTrigger = (write, command, callback) => {
 
 	let preventDefault = true;
@@ -238,8 +227,8 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 
 	let code = currentFile;
 	const name = currentFileName;
-	const isHTML = code.includes('<html>');
-	const isSVG = code.includes('</svg>');
+	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return name.includes('.'+x)});
+	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return name.includes('.'+x)});
 	const isJSX = (name).includes('jsx');
 	const isSVC3 = code.includes('/* svcV3 ');
 	const hasTemplate = isSupported({ name, contents: code });
@@ -301,11 +290,11 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 
 	// bind and conditionally trigger render
 	// for instance, should not render some files
-	const isHTML = code.includes('<html>');
-	const isSVG = code.includes('</svg>');
+	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return (name||next).includes('.'+x)});
+	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return (name||next).includes('.'+x)});
 	const isJSX = (name||next).includes('jsx');
 	const isSVC3 = code.includes('/* svcV3 ');
-	const hasTemplate = isSupported({ name, contents: code });
+	const hasTemplate = isSupported({ name: name||next, contents: code });
 
 	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
 		code = `<div class="no-preview">No preview available.</div>`;
@@ -357,9 +346,9 @@ const fileChangeHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
 	let { name, id, file='', code='' } = detail;
 
-	const isHTML = code.includes('<html>');
-	const isSVG = code.includes('</svg>');
-	const isJSX = file.includes('jsx');
+	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return file.includes('.'+x)});
+	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return file.includes('.'+x)});
+	const isJSX = (file).includes('jsx');
 	const isSVC3 = code.includes('/* svcV3 ');
 	const hasTemplate = isSupported({ name: file, contents: code });
 
@@ -422,7 +411,6 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 	if(locked){
 		return;
 	}
-	debugger
 
 	if(backupForLock.currentFile){
 		currentFile = backupForLock.currentFile;
@@ -431,9 +419,9 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 
 	if(!currentFile){ return; }
 
-	const isHTML = currentFile.includes('<html>');
-	const isSVG = currentFile.includes('</svg>');
-	const isJSX = currentFileName.includes('jsx');
+	const isHTML = currentFile.includes('</html>') && ['htm', 'html'].find(x => { return currentFileName.includes('.'+x)});
+	const isSVG = currentFile.includes('</svg>') && ['svg'].find(x => { return currentFileName.includes('.'+x)});
+	const isJSX = (currentFileName).includes('jsx');
 	const isSVC3 = currentFile.includes('/* svcV3 ');
 	const hasTemplate = isSupported({ name: currentFileName, contents: currentFile });
 
@@ -490,22 +478,31 @@ const operationDone = ({ viewUpdate }) => (event) => {
 	if(op !== "read" || !id){
 		return;
 	}
+
 	const defaultFile = getDefaultFile(result[0]);
 	const defaultFileContents = (result[0].code.find(x => x.name === defaultFile)||{}).code;
+	currentFileName = defaultFile;
+	currentFile = defaultFileContents;
+
+	const isHTML = currentFile.includes('</html>') && ['htm', 'html'].find(x => { return currentFileName.includes('.'+x)});
+	const isSVG = currentFile.includes('</svg>') && ['svg'].find(x => { return currentFileName.includes('.'+x)});
+	const isJSX = (currentFileName).includes('jsx');
+	const isSVC3 = currentFile.includes('/* svcV3 ');
 
 	const hasTemplate = isSupported({
 		name: defaultFile,
 		contents: defaultFileContents
 	});
 
-	currentFileName = defaultFile;
-	currentFile = defaultFileContents;
+	const supported = [
+		isHTML, isSVG, isJSX, isSVC3
+	].find(x => !!x);
 
 	viewUpdate({
 		supported: hasTemplate,
 		type: 'operationDone',
 		locked,
-		doc: defaultFileContents,
+		doc: (supported || hasTemplate) ? defaultFileContents : NO_PREVIEW,
 		docName: defaultFile,
 		...event.detail
 	});

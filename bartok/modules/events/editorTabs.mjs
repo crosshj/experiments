@@ -1,19 +1,6 @@
 import { attach } from '../Listeners.mjs';
-
+import { getDefaultFile } from '../state.mjs';
 let tabs = [];
-
-function getDefaultFile(service){
-	let defaultFile;
-	try {
-		const packageJson = JSON.parse(
-			service.code.find(x => x.name === "package.json").code
-		);
-		defaultFile = packageJson.main;
-	} catch(e){
-		//debugger;
-	}
-	return defaultFile || "index.js";
-}
 
 function getTabsToUpdate(name) {
 	const tabsToUpdate = [];

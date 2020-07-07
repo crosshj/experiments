@@ -145,10 +145,40 @@ const Style = () => (
       justify-content: space-around;
     }
     .todo-body * {
-      color: grey;
+      color: #999;
       background: transparent;
     }
-
+    .todo-body ul {
+      display: block;
+      overflow: auto;
+      position: absolute;
+      top: 130px;
+      bottom: 30px;
+      margin-right: -18px;
+      padding-right: 45px;
+      padding-top: 15px;
+      padding-bottom: 30px;
+    }
+    .todo-body ul:before {
+      content: '';
+      position: fixed;
+      top: 137px;
+      left: 19px;
+      right: 19px;
+      height: 40px;
+      z-index: 9;
+      background: linear-gradient(rgba(29, 29, 29, 1), rgba(29, 29, 29, 0.001));
+    }
+    .todo-body ul:after {
+      content: '';
+      position: fixed;
+      bottom: 45px;
+      left: 19px;
+      right: 19px;
+      height: 60px;
+      z-index: 9;
+      background: linear-gradient(rgba(29, 29, 29, 0.001), rgba(29, 29, 29, 1));
+    }
     .input-container {
       border: 1px solid;
       border-radius: 3px;
@@ -215,7 +245,6 @@ const Style = () => (
       content: '✓';
       color: #8BC34A;
     }
-
     .todo-footer {
       position: absolute;
       bottom: 20px;

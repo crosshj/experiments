@@ -311,3 +311,26 @@ UNSORTED
 
 // VERY COOL TOOL: https://danmarshall.github.io/google-font-to-svg-path/
 // WORKS GREAT WITH: https://svg-edit.github.io/svgedit/editor
+
+
+
+
+
+thinking / re-thinking
+======================
+
+
+
+fugue: (the UI portion of the bartok ecosystem)
+
+
+components:
+
+- dom: init dom, change/update dom
+
+- listeners: process event, call some update function that dom has passed
+
+- triggers/actions: user interacting with dom causes system event to be fired
+
+- state?
+

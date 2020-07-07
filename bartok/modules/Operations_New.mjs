@@ -34,13 +34,12 @@ async function Operations() {
         //console.log(args);
         const { result = {} } = args[0] || {};
         const services = result.result;
-        setCurrentService(services[0]);
 
+        //TODO: should really be firing a service read done event (or similar)
+        const { filename: name } = setCurrentService(services[0]);
         const event = new CustomEvent('fileSelect', {
             bubbles: true,
-            detail: {
-                name: ''
-            }
+            detail: { name }
         });
         document.body.dispatchEvent(event);
     });
@@ -49,11 +48,11 @@ async function Operations() {
     // request a list of services from server (and determine if server is accessible)
     const foundOp = operations.find(x => x.name === 'read');
     //console.log({ foundOp });
-    await performOperation(foundOp, { body: { id: '' } }, externalStateRequest);
+    //await performOperation(foundOp, { body: { id: '' } }, externalStateRequest);
 
     const lastService = localStorage.getItem('lastService');
     //console.log({ lastService });
-    await performOperation(foundOp, { body: { id: lastService ? Number(lastService) : 777 } }, externalStateRequest);
+    await performOperation(foundOp, { body: { id: lastService ? Number(lastService) : "0" } }, externalStateRequest);
 
 }
 

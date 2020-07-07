@@ -293,6 +293,48 @@ fetch, cache, DB, storage - these should be passed in
 
         const cache = event.request.cache;
 
+        if(Number(params.id) === 0){
+            const cache = await caches.open(cacheName);
+            const keys = await cache.keys();
+            let tree = {};
+            const code = [];
+
+            for(var i=0, len=keys.length; i<len; i++){
+                const request = keys[i];
+                const split = request.url.split(/(\/bartok\/|\/shared\/)/);
+                split.shift();
+                const pathSplit = split.join('').split('/').filter(x=>!!x);
+                let current = tree;
+                for(var j=0, jlen=pathSplit.length; j<jlen; j++){
+                    const leafName = pathSplit[j];
+                    if(!leafName){
+                        continue;
+                    }
+                    current[leafName] = current[leafName] || {};
+                    current = current[leafName];
+                }
+
+                let name = (pathSplit[pathSplit.length-1]||"").replace("/", "");
+                const _code = await (await cache.match(request)).text();
+                code.push({ name, code: _code });
+            }
+
+            const name = 'fugue ui';
+
+            tree = { ...tree.bartok, ...tree };
+            delete tree.bartok;
+
+            const bartokCode = {
+                result: [{
+                    id: 0,
+                    name,
+                    tree: { [name]: tree },
+                    code
+                }]
+            }
+            return JSON.stringify(bartokCode, null, 2);
+        }
+
         //if not id, return all services
         if (!params.id) {
             return JSON.stringify({
@@ -300,7 +342,8 @@ fetch, cache, DB, storage - these should be passed in
             }, null, 2);
         }
 
-        //if id, return that service
+        // if id, return that service
+        // (currently doesn't do anything since app uses localStorage version of this)
         await store.setItem('lastService', params.id);
 
         //todo: get this from store instead

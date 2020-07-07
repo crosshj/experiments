@@ -1,6 +1,7 @@
 import { attach } from '../Listeners.mjs';
 import { codemirrorModeFromFileType } from '../../../shared/modules/utilities.mjs'
 import ext from '../../../shared/icons/seti/ext.json.mjs'
+import { getDefaultFile } from '../state.mjs';
 
 function getFileType(fileName = '') {
 	let type = 'default';
@@ -29,19 +30,6 @@ function getFileType(fileName = '') {
 		};
 	}
 	return type;
-}
-
-function getDefaultFile(service){
-	let defaultFile;
-	try {
-		const packageJson = JSON.parse(
-			service.code.find(x => x.name === "package.json").code
-		);
-		defaultFile = packageJson.main;
-	} catch(e){
-		//debugger;
-	}
-	return defaultFile || "index.js";
 }
 
 // EVENTS -------------------------------------------------------------

@@ -114,6 +114,9 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 	if(id === "*"){
 		id = '';
 	}
+	if(id !== '' && Number(id) === 0){
+		id = "0";
+	}
 	op.url = op.url.replace('{id}', id || '');
 	op.config = op.config || {};
 	op.config.headers = {

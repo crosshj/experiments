@@ -407,7 +407,7 @@ function _Terminal(){
 	function viewUpdate({ supported, view, type, doc, docName, locked }){
 		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
 		if(!supported && !doc) debugger
-		const src = supported
+		let src = supported
 			? transform({ name: docName, contents: doc })
 			: (docName||'').includes('jsx')
 				? templateJSX(doc)
