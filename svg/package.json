@@ -22,7 +22,7 @@
     "@babel/preset-env": "^7.4.2",
     "babel-loader": "^8.0.5",
     "dot": "^1.1.2",
-    "electron": "^4.1.1",
+    "electron": "^9.1.0",
     "express": "^4.16.4",
     "filtrex": "^1.0.0",
     "memory-fs": "^0.4.1",
