@@ -12,7 +12,7 @@ const App = () => {
   return (
     <div class="app">
       <Style />
-      <Header name="🦠 todo 🦠"/>
+      <Header name="⚡ todo ⚡"/>
       <Body todos={todos} add={add} check={checkItem}/>
       <Footer filter={filterTodos} active={activeFilter}/>
     </div>
@@ -137,6 +137,14 @@ function useStore() {
 
 const Style = () => (
   <style dangerouslySetInnerHTML={{__html: `
+    :root {
+      --bg-color: #1a1a1a;
+      --bg-color-a: #1a1a1aff;
+      --bg-color-a-low: #1a1a1a11;
+    }
+    body {
+      background: var(--bg-color);
+    }
     .app {
       margin: 20px;
     }
@@ -144,9 +152,16 @@ const Style = () => (
       display: flex;
       justify-content: space-around;
     }
+    .todo-body input {
+      background: #272727;
+      outline: none;
+    }
     .todo-body * {
       color: #999;
       background: transparent;
+    }
+    .todo-body input {
+      background: #272727;
     }
     .todo-body ul {
       display: block;
@@ -154,6 +169,8 @@ const Style = () => (
       position: absolute;
       top: 130px;
       bottom: 30px;
+      right: 0px;
+      left: 13px;
       margin-right: -18px;
       padding-right: 45px;
       padding-top: 15px;
@@ -167,7 +184,7 @@ const Style = () => (
       right: 19px;
       height: 40px;
       z-index: 9;
-      background: linear-gradient(rgba(29, 29, 29, 1), rgba(29, 29, 29, 0.001));
+      background: linear-gradient(var(--bg-color-a), var(--bg-color-a-low));
     }
     .todo-body ul:after {
       content: '';
@@ -177,25 +194,31 @@ const Style = () => (
       right: 19px;
       height: 60px;
       z-index: 9;
-      background: linear-gradient(rgba(29, 29, 29, 0.001), rgba(29, 29, 29, 1));
+      background: linear-gradient(var(--bg-color-a-low), var(--bg-color-a));
     }
     .input-container {
-      border: 1px solid;
+      border: 0px solid;
       border-radius: 3px;
-      height: 30px;
+      height: 35px;
     }
     .input-container input,
     .input-container button {
-        font-size: 0.8em;
+        font-size: 1.1em;
     }
     .input-container button {
       height: 100%;
       border: 1px solid transparent;
       background: transparent;
-      margin-left: -45px;
+      margin-left: -55px;
     }
     .input-container form {
       height: 100%;
+    }
+    .input-container input:focus {
+      background: #000;
+    }
+    .input-container button:focus {
+      outline: none;
     }
     .input-container input {
       border: 0px;

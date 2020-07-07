@@ -291,7 +291,7 @@ fetch, cache, DB, storage - these should be passed in
         //also, what if not "file service"?
         //also, what if "offline"?
 
-        const cache = event.request.cache;
+        const cache = event.request.headers.get('x-cache');
 
         if(Number(params.id) === 0){
             const cache = await caches.open(cacheName);

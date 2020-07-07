@@ -32,6 +32,8 @@ https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookb
 - indent using tabs
 - code folding
 
+- inline font: https://www.webucator.com/blog/2016/11/inline-web-font-avoid-fout/
+
 - open a folder from local hard drive
   - https://www.html5rocks.com/en/tutorials/file/filesystem/#toc-dir-reading
   - https://www.html5rocks.com/en/tutorials/file/filesystem-sync/
