@@ -601,6 +601,18 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 		eventName: 'operations',
 		listener: operations({ viewUpdate, getCurrentService })
 	});
+	attach({
+		name: 'Terminal',
+		eventName: 'contextmenu',
+		listener: (e, ...args) => {
+			const terminalDom = document.getElementById('terminal');
+			if(!terminalDom.contains(e.target)){ return true; }
+			e.preventDefault();
+			console.log(args);
+			console.log('terminal right click menu')
+			return false;
+		}
+	});
 
 	return (command, callback) => terminalTrigger(write, command, callback);
 }

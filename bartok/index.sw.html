@@ -277,11 +277,14 @@
 
     navigator.storage.estimate()
       .then(function(estimate){
-        console.log(`
-          Using ${formatBytes(estimate.usage)} out of ${formatBytes(estimate.quota)}.
-        `);
+        window.memoryStats = () => {
+          console.log(`
+          Storage: using ${formatBytes(estimate.usage)} out of ${formatBytes(estimate.quota)}.
+          Memory: using ${formatBytes(performance.memory.usedJSHeapSize)}
+          `);
+        }
+        memoryStats();
       });
-
 
     const components = [];
 

@@ -23,12 +23,29 @@ TODO
 Service Worker
 ==============
 
+chrome://serviceworker-internals/
+
+
 https://developers.google.com/web/fundamentals/primers/service-workers/high-performance-loading
 https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook
+cache - https://hasura.io/blog/strategies-for-service-worker-caching-d66f3c828433/
+https://blog.codecentric.de/en/2019/09/service-workers-tricks-traps/
+
+events - https://w3c.github.io/ServiceWorker/#execution-context-events
+
+lifecycle picture - https://www.digitalocean.com/community/tutorials/demystifying-the-service-worker-lifecycle
+lifecycle picture - https://hasura.io/blog/strategies-for-service-worker-caching-d66f3c828433/
+
+https://www.oreilly.com/library/view/building-progressive-web/9781491961643/ch04.html#note_sw_controlling_after_load
+
+stream from service worker - https://developers.google.com/web/updates/2016/06/sw-readablestreams
+
+websocket from service worker?
 
 
 2020-07-01
 ==========
+- bitcoin/blockchain in browser (and why?)
 - indent using tabs
 - code folding
 
@@ -37,6 +54,10 @@ https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookb
 - open a folder from local hard drive
   - https://www.html5rocks.com/en/tutorials/file/filesystem/#toc-dir-reading
   - https://www.html5rocks.com/en/tutorials/file/filesystem-sync/
+
+- webtorrent
+  - in a worker: https://github.com/webtorrent/webtorrent/issues/1248
+  - see browser-server and aether-torrent from ^^^
 
 
 - finish tree context menu
@@ -315,7 +336,12 @@ UNSORTED
 // WORKS GREAT WITH: https://svg-edit.github.io/svgedit/editor
 
 
+memory usage and performance
+============================
 
+https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/
+https://github.com/paulirish/memory-stats.js/blob/master/memory-stats.js
+https://web.dev/monitor-total-page-memory-usage/
 
 
 thinking / re-thinking
@@ -335,4 +361,6 @@ components:
 - triggers/actions: user interacting with dom causes system event to be fired
 
 - state?
+
+
 

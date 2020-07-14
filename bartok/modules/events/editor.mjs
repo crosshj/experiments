@@ -44,6 +44,22 @@ function attachListener(switchEditor){
 		eventName: 'fileClose',
 		listener
 	});
+	attach({
+		name: 'Editor',
+		eventName: 'contextmenu',
+		listener: (e, ...args) => {
+			const editorDom = document.querySelector('#editor .CodeMirror');
+			if(!editorDom.contains(e.target)){ return true; }
+			debugger;
+			e.preventDefault();
+			console.log(args);
+			console.log('editor right click menu')
+			return false;
+		},
+		options: {
+			capture: true
+		}
+	});
 }
 
 export {

@@ -12,7 +12,6 @@ self.addEventListener('sync', syncHandler);
 self.addEventListener('push', pushHandler);
 
 const handlers = [];
-
 const driverOrder = [
 	localforage.INDEXEDDB,
 	localforage.WEBSQL,
@@ -26,9 +25,9 @@ const handlerStore = localforage
 		storeName: 'handlerStore',
 		description: 'used after app has booted when service worker is updated'
 	});
-
-async function installHandler(event) {
-	console.log('service worker install event');
+(async() => {
+	//TODO: in install/activate, this probably won't work the way expected
+	// ie, these handlers do not come back after SW is idle or terminated
 	await handlerStore
 		.iterate((value, key) => {
 			const {
@@ -57,10 +56,17 @@ async function installHandler(event) {
 				handlerName, handlerText
 			});
 		});
+})();
+
+
+async function installHandler(event) {
+	console.log('service worker install event');
+	return self.skipWaiting();
 }
 
 function activateHandler(event) {
 	console.log('service worker activate event');
+	self.clients.claim();
 }
 
 function fetchHandler(event) {

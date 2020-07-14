@@ -204,6 +204,19 @@ function attachListener(
 		eventName: 'click',
 		listener
 	});
+
+	attach({
+		name: 'Tab Bar',
+		eventName: 'contextmenu',
+		listener: (e, ...args) => {
+			const editorDom = document.querySelector('#editor-tabs-container');
+			if(!editorDom.contains(e.target)){ return true; }
+			e.preventDefault();
+			console.log(args);
+			console.log('editor tabs right click menu')
+			return false;
+		}
+	});
 }
 
 export {
