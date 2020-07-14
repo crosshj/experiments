@@ -159,7 +159,16 @@ const contextMenuHandler = ({ event, showMenu }) => {
 	if(!editorDom.contains(event.target)){ return true; }
 	event.preventDefault();
 
-	const listItems = ['EDITOR TABS CONTEXT', 'seperator', 'one', 'two', 'seperator', 'three', 'four', 'seperator', 'five', 'six']
+	//TODO: maybe these should be defined in UI Module
+	const listItems = [
+		'Close', 'Close Others', 'Close to the Right', 'Close Saved', 'Close All',
+		'seperator',
+		'Copy Path', 'Copy Relative Path',
+		'seperator',
+		'Reveal in Side Bar',
+		'seperator',
+		'Keep Open', 'Pin',
+	]
 		.map(x => x === 'seperator'
 			? 'seperator'
 			: { name: x }

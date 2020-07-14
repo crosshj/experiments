@@ -20,6 +20,9 @@ function StatusBar(){
 			background: #1f476b;
 			background: #4f263d;
 		}
+		#status-bar, #status-bar * {
+			cursor: default;
+		}
 		#status-bar a {
 			color: white;
 			opacity: 0.65;

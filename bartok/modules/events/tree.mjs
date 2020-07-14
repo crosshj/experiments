@@ -93,8 +93,6 @@ function getFileType(fileName=''){
 	return type;
 }
 
-
-
 const fileSelectHandler = (e) => {
 	const { name, next } = e.detail;
 	if(e.type === "fileClose" && !next){
@@ -144,8 +142,6 @@ const folderSelectHandler = (e) => {
 	const leaves = Array.from(
 		document.querySelectorAll('#tree-view .tree-leaf-content')||[]
 	);
-
-
 
 	split.forEach((spl, i) => {
 		const found = leaves.find(x => {
@@ -303,34 +299,80 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 		//currentExplorer.style.width = currentExplorer.clientWidth;
 		currentExplorer.style.minWidth = currentExplorer.clientWidth + 'px';
 
-		if(tree && tree.id !== id){
+		const refreshTree = tree && tree.id !== id;
+		if(refreshTree){
 			tree && tree.off();
 			tree = undefined;
 		}
-		const treeFromResult = getTree(result);
-		const converted = fileTreeConvert(treeFromResult);
-		//converted[0].expanded = true;
 
-		const projectName = converted[0].name;
-		treeMenu({ title: projectName });
+		const flatten = (obj) => {
+			const array = Array.isArray(obj) ? obj : [obj];
+			return array.reduce((acc, value) => {
+				acc.push(value);
+				if (value.children) {
+					acc = [ ...acc, ...flatten(value.children) ];
+					//delete value.children;
+				}
+				return acc;
+			}, []);
+		  }
 
-		const children = converted[0].children; // don't use "tree trunk" folder
+		const treeFromStorage = (() => {
+			try {
+				const storeTree = JSON.parse(sessionStorage.getItem('tree'));
+				storeTree.expanded = storeTree.expanded || [];
+				let flat = flatten(storeTree.data);
+				// make selections
+				(flat.find(x => x.name === storeTree.selected) || {}).selected = true;
+				// make expansions
+				for(var i=0, len=storeTree.expanded.length; i<len; i++){
+					const expanded = storeTree.expanded[i];
+					(flat.find(x => x.name === expanded) || {}).expanded = true;
+				}
+				return storeTree;
+			} catch(e){
+				debugger
+			}
+		})();
 
-		if(!result[0]){
-			return;
+		let childrenSorted;
+		if(!tree && !refreshTree && !(treeFromStorage && treeFromStorage.data) ){
+			const treeFromResult = getTree(result);
+			const converted = fileTreeConvert(treeFromResult);
+			//converted[0].expanded = true;
+
+			const projectName = converted[0].name;
+			treeMenu({ title: projectName });
+
+			const children = converted[0].children; // don't use "tree trunk" folder
+
+			if(!result[0]){
+				return;
+			}
+
+			const files = children
+				.filter(x => result[0].code.find(y => y.name === x.name));
+			const folders = children
+				.filter(x => !result[0].code.find(y => y.name === x.name));
+
+			childrenSorted = [...folders, ...files];
+			sessionStorage.setItem('tree', JSON.stringify({ data: childrenSorted }));
+		} else {
+			childrenSorted = treeFromStorage.data;
 		}
-
-		const files = children
-			.filter(x => result[0].code.find(y => y.name === x.name));
-		const folders = children
-			.filter(x => !result[0].code.find(y => y.name === x.name));
-
-		const childrenSorted = [...folders, ...files];
 
 		const newTree = new JSTreeView(childrenSorted, 'tree-view');
 		newTree.id = id;
 		newTree.selected = selected;
 		newTree.expanded = expanded;
+		if(treeFromStorage && treeFromStorage.expanded){
+			expanded = [...expanded, ...newTree.expanded ];
+			newTree.expanded = [...expanded, ...newTree.expanded ];
+		}
+		if(treeFromStorage && treeFromStorage.selected){
+			selected =  treeFromStorage.selected;
+			newTree.selected = treeFromStorage.selected;
+		}
 
 		function triggerFolderSelect(e, collapse) {
 			const event = new CustomEvent('folderSelect', {
@@ -348,6 +390,11 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 			const folderName = JSON.parse(e.target.dataset.item).name;
 			//const folderPath = e.target.dataset.path + folderName;
 			tree.expanded.push(folderName);
+			const storeTree = JSON.parse(sessionStorage.getItem('tree'));
+			storeTree.expanded = storeTree.expanded || [];
+			storeTree.expanded.push(folderName);
+			storeTree.selected = folderName;
+			sessionStorage.setItem('tree', JSON.stringify(storeTree));
 			triggerFolderSelect(e);
 		});
 
@@ -355,7 +402,12 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 			tree.expanded = tree.expanded || [];
 			const folderName = JSON.parse(e.target.dataset.item).name;
 			//const folderPath = e.target.dataset.path + folderName;
-			tree.expanded = tree.expanded.filter(x => x === folderName);
+			tree.expanded = tree.expanded.filter(x => x !== folderName);
+			const storeTree = JSON.parse(sessionStorage.getItem('tree'));
+			storeTree.selected = folderName;
+			storeTree.expanded = storeTree.expanded || [];
+			storeTree.expanded = storeTree.expanded.filter(x => x !== folderName);
+			sessionStorage.setItem('tree', JSON.stringify(storeTree));
 			const collapse = true;
 			triggerFolderSelect(e, collapse);
 		});
@@ -363,6 +415,11 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 		newTree.on('select', function (e) {
 			const parent = e.target.target.parentNode;
 			const isFolder = parent.classList.contains('folder');
+
+			const storeTree = JSON.parse(sessionStorage.getItem('tree'));
+			storeTree.selected = e.data.name;
+			sessionStorage.setItem('tree', JSON.stringify(storeTree));
+
 			if(isFolder){
 				const expando = parent.querySelector('.tree-expando');
 				const isOpen = expando.classList.contains('open');
@@ -448,6 +505,29 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 		tree = newTree;
 	};
 
+	const saveTree = (fn) => (...args) => {
+		const result = fn(...args);
+		if(tree){
+			try {
+				const storeTree = JSON.parse(sessionStorage.getItem('tree'));
+				console.log(JSON.stringify({
+					oldSelected: storeTree.selected,
+					newSelected: tree.selected
+				}, null, 2));
+				// console.log(JSON.stringify({
+				// 	oldExpanded: storeTree.expanded,
+				// 	newExpanded: tree.expanded
+				// }, null, 2));
+				storeTree.selected = tree.selected;
+				//storeTree.expanded = tree.expanded;
+				sessionStorage.setItem('tree', JSON.stringify(storeTree));
+			} catch(e){
+				debugger;
+			}
+		}
+		return result;
+	};
+
 	attach({
 		name: 'Explorer',
 		eventName: 'operationDone',
@@ -456,7 +536,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 	attach({
 		name: 'Explorer',
 		eventName: 'fileSelect',
-		listener: fileSelectHandler
+		listener: saveTree(fileSelectHandler)
 	});
 	attach({
 		name: 'Explorer',
@@ -471,7 +551,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 	attach({
 		name: 'Explorer',
 		eventName: 'fileChange',
-		listener: fileChangeHandler(updateTree)
+		listener: saveTree(fileChangeHandler(updateTree))
 	});
 	attach({
 		name: 'Explorer',

@@ -1,6 +1,6 @@
 import Editor from '../../shared/modules/editor.mjs';
 import EditorTabs from './EditorTabs.mjs';
-import { attachListener, ChangeHandler } from './events/editor.mjs';
+import { attachListener, ChangeHandler, CursorActivityHandler } from './events/editor.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
 
 import { getCodeFromService } from './state.mjs'
@@ -206,10 +206,11 @@ const inlineEditor = (ChangeHandler) => ({
 	const onCursorActivity = (instance) => {
 		const cursor = instance.getCursor();
 		const line = cursor.line + 1;
-		const col = cursor.ch + 1;
+		const column = cursor.ch + 1;
 		updateLineInfo(instance, line);
 		//console.log({ line, col });
 		// STATUS_CURRENT_LINE.textContent = cursor.line + 1;
+		CursorActivityHandler({ line, column });
 	};
 
 	const onScrollCursor = (instance, event) => {

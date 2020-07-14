@@ -3,6 +3,8 @@ import { codemirrorModeFromFileType } from '../../../shared/modules/utilities.mj
 import ext from '../../../shared/icons/seti/ext.json.mjs'
 import { getDefaultFile } from '../state.mjs';
 
+let statusBarDom;
+
 function getFileType(fileName = '') {
 	let type = 'default';
 	const extension = ((
@@ -87,13 +89,26 @@ const click = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>
 	(event) => {
+		statusBarDom = statusBarDom || document.getElementById('status-bar');
+		if(!statusBarDom.contains(event.target)){ return true; }
+		event.preventDefault();
+
 		console.log('status bar listen for click');
 	};
 
+const cursorActivity = ({
+	setLineNumber, setColNumber
+}) =>
+	(event) => {
+		const { detail } = event;
+		const { line, column } = detail;
+		setLineNumber(line);
+		setColNumber(column);
+	};
 
 
 const listeners = {
-	operationDone, fileSelect, fileClose, fileChange, click
+	operationDone, fileSelect, fileClose, fileChange, click, cursorActivity
 };
 
 function attachListeners({

@@ -239,7 +239,7 @@ const operationsHandler = ({
 	//find the operation
 	//wrangle context(state?)?
 	//execute operation with context
-	debugger;
+	//debugger;
 };
 
 const handlers = {

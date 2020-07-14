@@ -26,12 +26,27 @@ const ChangeHandler = (doc) => {
 	};
 };
 
+// this is really a trigger
+const CursorActivityHandler = ({ line, column }) => {
+	const event = new CustomEvent('cursorActivity', {
+		bubbles: true,
+		detail: { line, column }
+	});
+	document.body.dispatchEvent(event);
+}
+
 const contextMenuHandler = ({ showMenu }={}) => (e) => {
 	const editorDom = document.querySelector('#editor .CodeMirror');
 	if(!editorDom.contains(e.target)){ return true; }
 	e.preventDefault();
 
-	const listItems = ['EDITOR CONTEXT', 'seperator', 'one', 'two', 'seperator', 'three', 'four', 'seperator', 'five', 'six']
+	const listItems = [
+		'Change All Occurences', 'Format Selection', 'Format Document',
+		'seperator',
+		'Cut', 'Copy', 'Paste',
+		'seperator',
+		'Command Palette...'
+	]
 		.map(x => x === 'seperator'
 			? 'seperator'
 			: { name: x }
@@ -100,5 +115,5 @@ function attachListener(switchEditor){
 }
 
 export {
-	attachListener, ChangeHandler
+	attachListener, ChangeHandler, CursorActivityHandler
 };

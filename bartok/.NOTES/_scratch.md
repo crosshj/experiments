@@ -20,6 +20,51 @@ TODO
 - how much would I pay to use bartok (trick question)?
 - how much would you have to pay me to use bartok (trick question)?
 
+TODO 200714_1902
+================
+  - [ ] ability to close last file
+  - [ ] bypass "let's go" button on repeat usage
+  - [ ] command palette
+  - [ ] default view for no service selected
+  - [ ] download ZIP
+  - [ ] edit bartok in bartok
+  - [ ] editor code folding
+  - [ ] editor collaborative
+  - [ ] fix: closing (and opening?) a folder should not save that folder as selected
+  - [ ] folders open when contained file is selected
+  - [ ] full screen for preview
+  - [ ] mini map
+  - [ ] preview binary files: image, font, audio, video
+  - [ ] preview uses service worker
+  - [ ] react template loading spinner
+  - [ ] recall open files
+  - [ ] recall pane sizes
+  - [ ] recall pinned preview
+  - [ ] recall scroll position per file
+  - [ ] recall selected file
+  - [ ] search in file
+  - [ ] search in folder
+  - [ ] share service
+  - [ ] shared libs should load in offline mode
+  - [ ] smoother development flow on file change
+  - [ ] storage usage indicators: memory & file system
+  - [ ] switch indent between tabs and spaces
+  - [ ] todo export to bartok file system
+  - [ ] todo groups
+  - [ ] todo item edit
+  - [ ] todo priority
+  - [ ] todos import
+  - [ ] upload a folder
+  - [ ] upload binary files
+  - [X] export todo's: JSON
+  - [X] export todo's: markdown
+  - [X] fix issue with explorer pane resizing
+  - [X] read bartok ui (now called "fugue") in bartok
+  - [X] recall open tree folders
+  - [X] rename file-examples to be more descriptive
+  - [X] status bar line and column number update
+  - [X] todo scrolling
+
 Service Worker
 ==============
 
@@ -72,7 +117,7 @@ websocket from service worker?
 - open preview in new window / share
 - web build system / service layer
 - services graph / service selection
-- codemirror elegance & bug where editor shows blank
+- [X] codemirror elegance & bug where editor shows blank
 - non editor tabs
 - template creation flow & overall template design
 	- allow preview to interact with other bartok web components
@@ -83,7 +128,8 @@ websocket from service worker?
 - collaboration
   - https://github.com/lesmana/webrtc-without-signaling-server
   - https://github.com/cjb/serverless-webrtc
-- write and edit bartok web in bartok web
+- [X] read bartok web in bartok web
+- [ ] write bartok web in bartok web
 - require an npm package (and use it)
 - open a page that is just the file in editor or preview mode; options editor + preview (or other mashup)
 
@@ -97,11 +143,17 @@ I want to be able to do little experiments
 ---------------
 Examples of little experiments:
 	- broken clock right twice a day
-	- collection of people as faulty mirros
+	- simluate a collection of people as faulty mirrors
 	- architect stage of some project
 	- emulate kubernetes, explore kubernetes pattern
 	- services with central config service pattern
 	- scrape a bunch of sites and do wizardry (data composition & representation)
+  - write a bunch of ideas then visually group and connect them
+  - write a bunch of little modules then visually group and connect them
+  - collect a ton of stuff and have something make me come back to them or recall them
+  - search for unicode icons without leaving text editor
+  - view fonts in editor
+  - view/change/convert colors and color palettes in editor
 
 
 
@@ -126,13 +178,13 @@ Potential Sinkhole Hard Examples:
   - how do UI services work? how much of Bartok UI is built with them?
   - can I build bartok with bartok editor?
 - editor
-  - could spend too much time building an editor and putting all the cool things in it
+  - could spend too much time (too much?) building an editor and putting all the cool things in it
   - perhaps editor should have it's own MVP/sink-hole evaluation
   - parity: does it do all the beloved editor things?
   - completeness: does it do everything right?
   - innovation: does it do cool things that other editors do not do?
 - visuals
-  - less concern here because visuals have appeal
+  - less concern about time waste here because visuals have appeal
   - would like to fully grasp how far is too far
   - there needs to be a basic set of items in service map
   - how they look is not as much important as how they connect
@@ -159,7 +211,7 @@ What are currently the biggest "   "win"   " items?
   - [X] file templates (UI services)
   - [X] file preview (htm, svg, react)
 
-  - files need id's for uniqueness
+  - files need id's for uniqueness <<< HUGE!!!
   - service save in chunks (because some files are huge)
 
   - [ ] service templates
@@ -222,6 +274,7 @@ UNSORTED
 - https://react-live.netlify.app/
 
 - https://bl.ocks.org/
+  - https://bl.ocks.org/mbostock/11357811 - Wilson's algorithm (maze generation)
 - http://www.biofabric.org/gallery/pages/SuperQuickBioFabric.html
 
 
@@ -247,7 +300,7 @@ UNSORTED
 - pane splitting (as with a framework that allows open-ended pane manipulation)
 - code diff
 
-- page resize doesn't respect min width for explorer
+- [X] page resize doesn't respect min width for explorer
 - explorer can be hidden more beautifully, will auto-show and dismiss
 - terminal/preview can be hidden or take up full screen
 

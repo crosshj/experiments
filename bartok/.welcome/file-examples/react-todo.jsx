@@ -1,5 +1,76 @@
 /* http://todomvc.com/ - the bartok|react answer */
 
+const DownloadJSONButton = () => {
+  const dateString = (new Date()).toISOString().slice(2,10).replace(/-/g, '')
+    + '_'
+    + (new Date()).toLocaleString("en-US", {
+      minute: "2-digit",
+        hour: "2-digit",
+      hour12: false
+    }).replace(":", "");
+
+  function downloadMarkDown(exportObj, exportName){
+    const markdown =
+`TODO ${dateString}
+================
+${exportObj
+  .filter(x => x.status === 'active')
+  .map(x => `  - [ ] ${x.value}`)
+  .join('\n')
+}
+${exportObj
+  .filter(x => x.status !== 'active')
+  .map(x => `  - [X] ${x.value}`)
+  .join('\n')
+}
+    `;
+    var dataStr = "data:text/json;charset=utf-8,"
+      + encodeURIComponent(markdown);
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("target", "_blank");
+    downloadAnchorNode.setAttribute("download", exportName + ".md");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+
+  function downloadObjectAsJson(exportObj, exportName){
+    var dataStr = "data:text/json;charset=utf-8,"
+      + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("target", "_blank");
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+  const { value } = useStore({ filter: 'all'});
+  const { todos=[] } = value || {};
+
+  return (
+    <div className="icon" title="Download all"
+      onClick={() => downloadMarkDown(todos, `TODO-${dateString}`)}
+    >
+      ⭳
+    </div>
+  );
+};
+
+const UploadButton = () => {
+  const { value } = useStore();
+  const { todos=[], activeFilter='all' } = value || {};
+
+  return (
+    <div className="icon" title="Upload Todo's"
+      onClick={() => alert('coming soon')}
+    >
+      ⭱
+    </div>
+  );
+};
+
 const App = () => {
   const { value, addTodo, checkItem, filterTodos } = useStore();
   const { todos=[], activeFilter='all' } = value || {};
@@ -13,6 +84,10 @@ const App = () => {
     <div class="app">
       <Style />
       <Header name="⚡ todo ⚡"/>
+      <div id="actions-top">
+        <UploadButton />
+        <DownloadJSONButton />
+      </div>
       <Body todos={todos} add={add} check={checkItem}/>
       <Footer filter={filterTodos} active={activeFilter}/>
     </div>
@@ -63,7 +138,7 @@ const Footer = ({ filter, active }) => (
 );
 
 // state, using hooks
-function useStore() {
+function useStore({ filter }={}) {
   let [value, setValue] = useState(0);
 
   if(!value){
@@ -100,10 +175,10 @@ function useStore() {
 
   const state = value
     ? {
-      todos: value.activeFilter === 'all'
+      todos: (filter || value.activeFilter) === 'all'
         ? value.todos
         : (value.todos||[]).filter(
-            x => x.status === value.activeFilter
+            x => x.status === (filter || value.activeFilter)
         ),
       activeFilter: value.activeFilter
     }
@@ -246,7 +321,8 @@ const Style = () => (
       text-indent: -19px;
     }
     li.completed span {
-      text-decoration: line-through;
+      /*text-decoration: line-through;*/
+      color: #6e6e6e;
     }
     input[type="checkbox"] {
       left: -18px;
@@ -289,6 +365,23 @@ const Style = () => (
     .todo-footer .active {
       color: white;
       background: #ffffff10;
+    }
+    #actions-top{
+      position: absolute;
+      right: 29px;
+      top: 37px;
+      display: flex;
+    }
+    #actions-top .icon {
+      font-size: 30px;
+      color: #555;
+      transform: scale(1.5, 1);
+      font-size: 32px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    #actions-top .icon:hover {
+      color: white;
     }
   `}} />
 );
