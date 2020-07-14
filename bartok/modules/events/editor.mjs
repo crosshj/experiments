@@ -26,6 +26,44 @@ const ChangeHandler = (doc) => {
 	};
 };
 
+const contextMenuHandler = ({ showMenu }={}) => (e) => {
+	const editorDom = document.querySelector('#editor .CodeMirror');
+	if(!editorDom.contains(e.target)){ return true; }
+	e.preventDefault();
+
+	const listItems = ['EDITOR CONTEXT', 'seperator', 'one', 'two', 'seperator', 'three', 'four', 'seperator', 'five', 'six']
+		.map(x => x === 'seperator'
+			? 'seperator'
+			: { name: x }
+		);
+	let data;
+	try {
+		data = {}
+	} catch(e) {}
+
+	if(!data){
+		console.error('some issue finding data for this context click!')
+		return;
+	}
+
+	showMenu()({
+		x: e.clientX,
+		y: e.clientY,
+		list: listItems,
+		parent: 'Editor',
+		data
+	});
+	return false;
+};
+
+const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
+	const { which, parent, data } = (e.detail || {});
+	if(parent !== 'Editor'){
+		console.error('Editor ignored a context-select event');
+		return;
+	}
+};
+
 function attachListener(switchEditor){
 	const listener = async function (e) {
 		const { name, next } = e.detail;
@@ -47,18 +85,17 @@ function attachListener(switchEditor){
 	attach({
 		name: 'Editor',
 		eventName: 'contextmenu',
-		listener: (e, ...args) => {
-			const editorDom = document.querySelector('#editor .CodeMirror');
-			if(!editorDom.contains(e.target)){ return true; }
-			debugger;
-			e.preventDefault();
-			console.log(args);
-			console.log('editor right click menu')
-			return false;
-		},
+		listener: contextMenuHandler({
+			showMenu: () => window.showMenu
+		}),
 		options: {
 			capture: true
 		}
+	});
+	attach({
+		name: 'Editor',
+		eventName: 'contextmenu-select',
+		listener: contextMenuSelectHandler()
 	});
 }
 

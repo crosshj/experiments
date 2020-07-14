@@ -558,6 +558,45 @@ const operations = ({ viewUpdate, getCurrentService }) => (event) => {
 	});
 };
 
+const contextMenuHandler = ({ showMenu }={}) => (e) => {
+	const terminalDom = document.getElementById('terminal');
+	if(!terminalDom.contains(e.target)){ return true; }
+	e.preventDefault();
+
+	const listItems = ['TERMINAL CONTEXT', 'seperator', 'one', 'two', 'seperator', 'three', 'four', 'seperator', 'five', 'six']
+		.map(x => x === 'seperator'
+			? 'seperator'
+			: { name: x }
+		);
+	let data;
+	try {
+		data = {}
+	} catch(e) {}
+
+	if(!data){
+		console.error('some issue finding data for this context click!')
+		return;
+	}
+
+	showMenu()({
+		x: e.clientX,
+		y: e.clientY,
+		list: listItems,
+		parent: 'Terminal',
+		data
+	});
+	return false;
+};
+
+const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
+	const { which, parent, data } = (e.detail || {});
+	if(parent !== 'Terminal'){
+		console.error('Terminal ignored a context-select event');
+		return;
+	}
+};
+
+
 /// -----------------------------------------------------------------------------
 
 function attachEvents({ write, viewUpdate, terminalActions }){
@@ -604,14 +643,17 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 	attach({
 		name: 'Terminal',
 		eventName: 'contextmenu',
-		listener: (e, ...args) => {
-			const terminalDom = document.getElementById('terminal');
-			if(!terminalDom.contains(e.target)){ return true; }
-			e.preventDefault();
-			console.log(args);
-			console.log('terminal right click menu')
-			return false;
+		listener: contextMenuHandler({
+			showMenu: () => window.showMenu
+		}),
+		options: {
+			capture: true
 		}
+	});
+	attach({
+		name: 'Terminal',
+		eventName: 'contextmenu-select',
+		listener: contextMenuSelectHandler()
 	});
 
 	return (command, callback) => terminalTrigger(write, command, callback);

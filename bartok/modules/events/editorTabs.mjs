@@ -119,7 +119,6 @@ const fileSelectHandler = ({
 	});
 };
 
-
 const fileChangeHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
@@ -155,12 +154,52 @@ const operationDoneHandler = ({
 	initTabs(tabs)
 };
 
+const contextMenuHandler = ({ event, showMenu }) => {
+	const editorDom = document.querySelector('#editor-tabs-container');
+	if(!editorDom.contains(event.target)){ return true; }
+	event.preventDefault();
+
+	const listItems = ['EDITOR TABS CONTEXT', 'seperator', 'one', 'two', 'seperator', 'three', 'four', 'seperator', 'five', 'six']
+		.map(x => x === 'seperator'
+			? 'seperator'
+			: { name: x }
+		);
+	let data;
+	try {
+		data = {}
+	} catch(e) {}
+
+	if(!data){
+		console.error('some issue finding data for this context click!')
+		return;
+	}
+
+	showMenu()({
+		x: event.clientX,
+		y: event.clientY,
+		list: listItems,
+		parent: 'Tab Bar',
+		data
+	});
+	return false;
+};
+
+const contextMenuSelectHandler = ({ event, newFile }) => {
+	const { which, parent, data } = (event.detail || {});
+	if(parent !== 'Tab Bar'){
+		console.error('Tab Bar ignored a context-select event');
+		return;
+	}
+};
+
 const handlers = {
-	click: clickHandler,
-	fileSelect: fileSelectHandler,
-	fileClose: fileCloseHandler,
-	fileChange: fileChangeHandler,
-	operationDone: operationDoneHandler
+	'click': clickHandler,
+	'fileSelect': fileSelectHandler,
+	'fileClose': fileCloseHandler,
+	'fileChange': fileChangeHandler,
+	'operationDone': operationDoneHandler,
+	'contextmenu': contextMenuHandler,
+	'contextmenu-select': contextMenuSelectHandler
 };
 
 function attachListener(
@@ -170,8 +209,9 @@ function attachListener(
 	const listener = async function (event) {
 		//console.log(event.type)
 		// await something here??
+		const showMenu = () => window.showMenu;
 		handlers[event.type] && handlers[event.type]({
-			event, container, initTabs, createTab, updateTab, removeTab
+			event, container, initTabs, createTab, updateTab, removeTab, showMenu
 		});
 	};
 
@@ -208,14 +248,13 @@ function attachListener(
 	attach({
 		name: 'Tab Bar',
 		eventName: 'contextmenu',
-		listener: (e, ...args) => {
-			const editorDom = document.querySelector('#editor-tabs-container');
-			if(!editorDom.contains(e.target)){ return true; }
-			e.preventDefault();
-			console.log(args);
-			console.log('editor tabs right click menu')
-			return false;
-		}
+		listener
+	});
+
+	attach({
+		name: 'Tab Bar',
+		eventName: 'contextmenu-select',
+		listener
 	});
 }
 
