@@ -208,8 +208,6 @@ function useStore({ filter }={}) {
   };
 }
 
-
-
 const Style = () => (
   <style dangerouslySetInnerHTML={{__html: `
     :root {

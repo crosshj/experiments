@@ -154,6 +154,8 @@ Examples of little experiments:
   - search for unicode icons without leaving text editor
   - view fonts in editor
   - view/change/convert colors and color palettes in editor
+  - write web code the way I want to, use files the way I want to
+    - ^^^ might be useful to expand on this
 
 
 
@@ -228,23 +230,27 @@ What are currently the biggest "   "win"   " items?
 SORTED
 ======
 
-# FILE CHANGES
+FILE CHANGES
+------------
  - only keep changed tabs open, reuse previous/unchanged tabs
  - tabs stay open across reload
  - scroll/cursor position remembered
  - allow closing last tab
 
-# PACKAGE.JSON / CONFIG
+PACKAGE.JSON / CONFIG
+---------------------
  - service should get its name from package.json
  - package.json should be ideal and not strict?
    - (comments, unquoted, single quotes, trailing commas, etc)
  - package.json should be service.json? .bartok.yml ?
 
-# TEMPLATES
+TEMPLATES
+---------
  - templates for services? routeHandler, uiTemplate, plainNode, etc
  - eject templated app? (export)
 
-# PREVIEW
+PREVIEW
+-------
  - [X] better release notes recording videos - page of code SUCKS!
  - [X] sidepane shows preview for React Component, HTML, markdown, etc
  - [X] use iframe: https://stackoverflow.com/questions/5050380/set-innerhtml-of-an-iframe
@@ -266,8 +272,6 @@ UNSORTED
 - https://www.serverless.com/
 - https://docs.aws.amazon.com/cdk/latest/guide/home.html
 - https://d1.awsstatic.com/whitepapers/architecture/AWS-Serverless-Applications-Lens.pdf
--
-
 
 - may be useful with all the stringifying - https://github.com/jsbin/jsbin/blob/master/public/js/vendor/stringify.js
 
@@ -276,8 +280,6 @@ UNSORTED
 - https://bl.ocks.org/
   - https://bl.ocks.org/mbostock/11357811 - Wilson's algorithm (maze generation)
 - http://www.biofabric.org/gallery/pages/SuperQuickBioFabric.html
-
-
 
 - diff - http://cemerick.github.io/jsdifflib/demo.html
 
@@ -400,10 +402,7 @@ https://web.dev/monitor-total-page-memory-usage/
 thinking / re-thinking
 ======================
 
-
-
 fugue: (the UI portion of the bartok ecosystem)
-
 
 components:
 
@@ -415,5 +414,7 @@ components:
 
 - state?
 
+web assembly
+============
 
-
+- https://www.toptal.com/virtual-reality/assemblyscript-and-webassembly-tutorial

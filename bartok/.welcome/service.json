@@ -83,7 +83,8 @@
       "service.json": {},
       "tests": {
         "sw.clientServer.htm": {},
-        "open.folder.html": {}
+        "open.folder.html": {},
+        "wasm.binaryen.html": {}
       },
       "WIP": {
         "angular9.html": {},
@@ -95,6 +96,10 @@
       }
     },
     "files": [
+      {
+        "name": "wasm.binaryen.html",
+        "path": ".welcome/tests/wasm.binaryen.html"
+      },
       {
         "name": ".bugs",
         "path": ".NOTES/_bugs.md"
