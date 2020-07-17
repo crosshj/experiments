@@ -29,7 +29,7 @@
         "markdown2.md": {},
         "clojure.cljs": {},
         "python.py": {},
-        "svg-compass.svg": {},
+        "svg-solar-system.svg": {},
         "graph-cytoscape.cx": {},
         "graph-cytoscape.gml": {},
         "webgl-helmet.gltf": {},
@@ -177,8 +177,8 @@
         "path": ".welcome/file-examples/python.py"
       },
       {
-        "name": "svg-compass.svg",
-        "path": ".welcome/file-examples/svg-compass.svg"
+        "name": "svg-solar-system.svg",
+        "path": ".welcome/file-examples/svg-solar-system.svg"
       },
       {
         "name": "graph-cytoscape.cx",
