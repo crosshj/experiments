@@ -268,6 +268,9 @@ PREVIEW
 UNSORTED
 ========
 
+- https://www.x3dom.org/
+- http://create3000.de/x_ite/getting-started/#xhtml-dom-integration
+
 - https://docs.stackery.io/docs/quickstart/quickstart-nodejs/
 - https://www.serverless.com/
 - https://docs.aws.amazon.com/cdk/latest/guide/home.html

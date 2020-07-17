@@ -13,8 +13,9 @@ https://joshworth.com/dev/pixelspace/pixelspace_solarsystem.html
 
 http://franzheidl.github.io/keysplines/
 -->
+
   <style>
-    body {
+    body, svg {
       background: #13121a;
       background-image:
         radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 10px),
@@ -24,6 +25,10 @@ http://franzheidl.github.io/keysplines/
       background-size: 550px 690px, 350px 500px, 250px 300px, 150px 150px;
       background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
       background-repeat: repeat;
+      filter: grayscale(0) contrast(1.1);
+    }
+    pre > svg {
+      background: transparent !important;
     }
     #sun {
       r: 25;
@@ -34,18 +39,21 @@ http://franzheidl.github.io/keysplines/
     .earth {
       r: 1;
     }
-    #orbit, #orbit2 {
-      stroke: #444;
+    #orbit, #orbit2, #orbit3 {
+      stroke: #555;
       opacity: 0.9;
       fill: none;
       stroke-width: 0.3;
+    }
+    #planet_2 {
+      r: 5;
     }
   </style>
 
   <defs>
     <radialGradient id="grad1" cx="50%" cy="50%" r="80%" fx="50%" fy="61%">
-      <stop offset="20%" style="stop-color:#dd0000;" />
-      <stop offset="50%" style="stop-color:#ff6600;" />
+      <stop offset="20%" style="stop-color:#ff1111;" />
+      <stop offset="50%" style="stop-color:#ff7700;" />
       <stop offset="70%" style="stop-color:#ffffff;" />
     </radialGradient>
 
@@ -79,6 +87,12 @@ http://franzheidl.github.io/keysplines/
            A80,20 0 1,1 -80,0"
         stroke-width="1"
   />
+  <path id="orbit3"
+        d="M-110 5
+           A110,35 0 1,1 110,10
+           A110,35 0 1,1 -110,5"
+        stroke-width="1"
+  />
 
   <circle id="earth_back" class="earth">
     <animateMotion
@@ -91,7 +105,8 @@ http://franzheidl.github.io/keysplines/
     <animate
        attributeType="CSS"
        attributeName="display"
-       from="block" to="none" dur="8s"
+       from="block" to="none"
+       dur="8s"
        repeatCount="indefinite"
      />
      <animate
@@ -101,11 +116,16 @@ http://franzheidl.github.io/keysplines/
        values="#2965ff;#f79;#2965ff"
        keyTimes="0;0.5;1"
        dur="4s"
-       keySplines="
-         0 0 1 1;
-         0 0 1 1;"
-       calcMode="spline"
        repeatCount="indefinite"
+     />
+     <animate
+        attributeName="transform"
+        attributeType="XML"
+        type="scale"
+        values="1;0.25;1"
+        keyTimes="0;0.5;1"
+        dur="4s"
+        repeatCount="indefinite"
      />
   </circle>
 
@@ -138,23 +158,41 @@ http://franzheidl.github.io/keysplines/
        values="#2965ff;#008;#2965ff"
        keyTimes="0;0.5;1"
        dur="4s"
-       keySplines="
-          0 0 1 1;
-          0 0 1 1;"
-       calcMode="spline"
        repeatCount="indefinite"
     />
     <animateTransform
       attributeName="transform"
       attributeType="XML"
       type="scale"
-      values="1;1.3;1"
+      values="1;2;1"
       keyTimes="0;0.5;1"
       dur="4s"
-      keySplines="
-        0 0 1 1;
-        0 0 1 1;"
-      calcMode="spline"
+      repeatCount="indefinite"
+    />
+  </circle>
+    <circle id="planet_2" class="earth">
+    <animateMotion
+       begin="0s"
+       dur="12s"
+       repeatCount="indefinite"
+     >
+      <mpath xlink:href="#orbit3"/>
+    </animateMotion>
+    <animate
+       attributeType="CSS"
+       attributeName="fill"
+       values="#066;#077;#066;#033;#066;"
+       keyTimes="0;0.25;0.5;0.75;1"
+       dur="12s"
+       repeatCount="indefinite"
+    />
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="scale"
+      values="1;0.25;1;2;1"
+      keyTimes="0;0.25;0.5;0.75;1"
+      dur="12s"
       repeatCount="indefinite"
     />
   </circle>
