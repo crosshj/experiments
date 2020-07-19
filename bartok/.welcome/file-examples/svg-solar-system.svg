@@ -5,13 +5,61 @@
 >
 
 <!--
+
 inspired by:
 https://www.youtube.com/watch?v=VEgH61FioaY
 
-actual distances:
+actual distances between solar bodies:
 https://joshworth.com/dev/pixelspace/pixelspace_solarsystem.html
 
+reasonable css starfield in 6 lines:
+https://leaverou.github.io/css3patterns/#starry-night
+
+
+svg z-index / 3d transform (there isn't one):
+https://stackoverflow.com/questions/17786618/how-to-use-z-index-in-svg-elements
+
+svg filter blur:
+https://stackoverflow.com/questions/25489846/svg-css-filter-to-blur-some-elements
+
+svg filter animate turbulence:
+https://blogs.adobe.com/creativecloud/how-to-create-squiggly-text-with-svg-filters/
+
+svg filter animate tubulence seed:
+https://redstapler.co/realistic-water-effect-svg-turbulence-filter/
+
+svg animation splines:
 http://franzheidl.github.io/keysplines/
+
+svg animate on path:
+https://stackoverflow.com/questions/34748303/how-can-i-draw-an-ellipse-as-a-path-in-svg
+
+
+SVG IRRITATIONS (versus DOM):
+  - gradients require markup
+  - no 3d transforms / z-index
+  - no CSS animation keyframes (?)
+  - filter creation unwieldy
+  - namespaces, yuck
+
+SVG IS COOL (versus DOM):
+  - filters are powerful (can be used in po-CSS)
+  - geometry primitives
+
+IDEAS FOR IMPROVEMENT:
+  - motion does not seem accurate
+  - elliptical orbits
+  - more planets
+  - illumination on planets
+  - blinking stars
+  - moon(s) for planets
+  - rings/patterns on planets
+  - performance
+  - port to html/css
+  - port to canvas
+  - port to webgl
+  - port to shader
+  - show the temperature of planets based on scale
 -->
 
   <style>
@@ -27,37 +75,30 @@ http://franzheidl.github.io/keysplines/
       background-repeat: repeat;
       filter: grayscale(0) contrast(1.1);
     }
-    pre > svg {
-      background: transparent !important;
-    }
+    pre > svg { background: transparent !important; }
     #sun {
       r: 25;
-      fill: url(#grad1);
-      filter: url(#f3);
-      z-index: -1;
+      fill: url(#sun-gradient);
+      filter: url(#sun-filter);
     }
-    .earth {
-      r: 1;
-    }
+    .earth { r: 1; }
+    #planet2 { r: 5; }
     #orbit, #orbit2, #orbit3 {
       stroke: #555;
       opacity: 0.9;
       fill: none;
       stroke-width: 0.3;
     }
-    #planet_2 {
-      r: 5;
-    }
   </style>
 
   <defs>
-    <radialGradient id="grad1" cx="50%" cy="50%" r="80%" fx="50%" fy="61%">
+    <radialGradient id="sun-gradient" cx="50%" cy="50%" r="80%" fx="50%" fy="61%">
       <stop offset="20%" style="stop-color:#ff1111;" />
       <stop offset="50%" style="stop-color:#ff7700;" />
       <stop offset="70%" style="stop-color:#ffffff;" />
     </radialGradient>
 
-    <filter id="f3">
+    <filter id="sun-filter">
       <feTurbulence id="turb-filter" type="fractalNoise" baseFrequency="0.9"
         numOctaves="1" result="turbulence"
       />
@@ -87,6 +128,7 @@ http://franzheidl.github.io/keysplines/
            A80,20 0 1,1 -80,0"
         stroke-width="1"
   />
+
   <path id="orbit3"
         d="M-110 5
            A110,35 0 1,1 110,10
@@ -135,7 +177,7 @@ http://franzheidl.github.io/keysplines/
     id="orbit2"
     d="M25 18.91
        A 29,2 0,0 1 -25,18.91"
- />
+  />
 
   <circle id="earth_front" class="earth">
     <animateMotion
@@ -170,7 +212,8 @@ http://franzheidl.github.io/keysplines/
       repeatCount="indefinite"
     />
   </circle>
-    <circle id="planet_2" class="earth">
+
+  <circle id="planet2" class="earth">
     <animateMotion
        begin="0s"
        dur="12s"
