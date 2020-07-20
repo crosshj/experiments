@@ -304,7 +304,7 @@ function _Editor() {
 		inlineEditor(ChangeHandler)({ code, name, id, filename: filename || defaultFile });
 	});
 
-	inlineEditor(ChangeHandler)();
+	//inlineEditor(ChangeHandler)();
 
 	//deprecate
 	return {

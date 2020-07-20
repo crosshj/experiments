@@ -79,13 +79,23 @@ const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 	}
 };
 
+let firstLoad = true;
 function attachListener(switchEditor){
 	const listener = async function (e) {
 		const { name, next } = e.detail;
+		let savedFileName;
 		if(e.type === "fileClose" && !next){
 			return;
 		}
-		switchEditor(next || name);
+		const isFileSelect = e.type === "fileSelect";
+		if(firstLoad && isFileSelect){
+			savedFileName = sessionStorage.getItem('editorFile');
+			firstLoad = false;
+		}
+		if(!savedFileName){
+			sessionStorage.setItem('editorFile', next || name);
+		}
+		switchEditor(savedFileName || next || name);
 	};
 	attach({
 		name: 'Editor',
