@@ -15,11 +15,9 @@
   - [ ] !!! search icon (magnifer) should be connected to somehting
 
 ### panes
-  - [ ] !!! pane position/size remembered
-  - [ ] !!! close/hide panes and remember this
+  - nothing
 
 ### explorer
-  - [ ] !!! context menu for tabs (close all / other)
   - [ ] !!! hook up new file icon
   - [ ] !!! hook up new folder action
   - [ ] rename project/service
@@ -28,13 +26,13 @@
     - selected in terminal
 
 ### preview
-  - [ ] default file should load in preview on page load
+  - nothing
 
 ### templates
-  - [ ] match based on tag in file contents
+  - nothing
 
 ### editor
-  - [ ] !!! per file, remember scroll position
+  - nothing
 
 ### terminal
   - [ ] current folder above prompt when applicable (maybe?)
@@ -44,9 +42,9 @@
   - [ ] !!! authorization
 
 ### status bar
-  - [ ] !!! connected to line & col #
-  - [X] !!! connected to syntax mode
   - [ ] !!! connected to indent settings
+  - [ ] connected to encoding type
+  - [ ] connected to line ending
 
 ### service map
   - [ ] show registered triggers in map

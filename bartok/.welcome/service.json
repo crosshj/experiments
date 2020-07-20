@@ -57,7 +57,7 @@
         "styles.less": {},
         "styles.scss": {},
         "hyperscript.js": {},
-        "jackrofae.png": {},
+        "image.png": {},
         "svg-lock.svg": {},
         "windows.bat": {},
         "slides-reveal.htm": {},
@@ -95,7 +95,16 @@
         "css-3d.html": {},
         "sw.clientServer.htm": {},
         "open.folder.html": {},
-        "wasm.binaryen.html": {}
+        "wasm.binaryen.html": {},
+        "bf.html": {},
+        "cljs.html": {},
+        "cpp.html": {},
+        "lisp.html": {},
+        "pro.html": {},
+        "py.html": {},
+        "rb.html": {},
+        "scm.html": {},
+        "sql.html": {}
       },
       "WIP": {
         "angular9.html": {},
@@ -107,6 +116,42 @@
       }
     },
     "files": [
+      {
+        "name": "sql.html",
+        "path": ".welcome/tests/sql.html"
+      },
+      {
+        "name": "scm.html",
+        "path": ".welcome/tests/scm.html"
+      },
+      {
+        "name": "rb.html",
+        "path": ".welcome/tests/rb.html"
+      },
+      {
+        "name": "py.html",
+        "path": ".welcome/tests/py.html"
+      },
+      {
+        "name": "pro.html",
+        "path": ".welcome/tests/pro.html"
+      },
+      {
+        "name": "lisp.html",
+        "path": ".welcome/tests/lisp.html"
+      },
+      {
+        "name": "cpp.html",
+        "path": ".welcome/tests/cpp.html"
+      },
+      {
+        "name": "cljs.html",
+        "path": ".welcome/tests/cljs.html"
+      },
+      {
+        "name": "bf.html",
+        "path": ".welcome/tests/bf.html"
+      },
       {
         "name": "wasm.binaryen.html",
         "path": ".welcome/tests/wasm.binaryen.html"
@@ -264,8 +309,8 @@
         "path": ".welcome/file-examples/hyperscript.js"
       },
       {
-        "name": "jackrofae.png",
-        "path": ".welcome/file-examples/jackrofae.png"
+        "name": "image.png",
+        "path": ".welcome/file-examples/image.png"
       },
       {
         "name": "svg-lock.svg",

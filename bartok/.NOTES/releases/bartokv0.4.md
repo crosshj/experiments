@@ -48,26 +48,31 @@
   - [ ] pop out preview
 
 ### panes
-  - [ ] pane position/size remembered
-  - [ ] close/hide panes and remember this
+  - [ ] pane position/size remembered (on page reload)
+  - [ ] close/hide panes and remember this (on page reload)
 
 ### explorer
-  - [X] recall open folders and selected file
-  - [ ] context menu for tabs (close all / other)
-
-### preview
-  - [ ] default file should load in preview on page load
-
-### templates
-  - [ ] match based on tag in file contents
+  - [X] recall open folders and selected file (on page reload)
+  - [ ] recall scroll position on page reload (or scroll selected into view)
 
 ### editor
   - [X] syntax highlight for clojure
   - [X] improved loading
-  - [ ] per file, remember scroll position
+  - [X] recall last used file
+  - [X] recall previous tabs
+  - [ ] context menu for tabs (close all / other)
+  - [ ] per file, remember scroll position (on file reload & page reload)
 
 ### status bar
   - [X] connected to line & col #
+  - [ ] recall previous file type (on page reload)
+
+### templates
+  - [ ] match based on tag in file contents
+
+### preview
+  - [X] default file should load in preview on page load
+  - [X] recall last shown preview on page reload
 
 ### service map
   - [ ] show registered triggers in map
