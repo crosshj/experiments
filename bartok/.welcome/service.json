@@ -7,7 +7,17 @@
     "tree": {
       "package.json": {},
       ".NOTES": {
-        "releases": {},
+        "releases": {
+          "bartokv0.0.md": {},
+          "bartokv0.1.md": {},
+          "bartokv0.2.md": {},
+          "bartokv0.3.0.md": {},
+          "bartokv0.3.1.md": {},
+          "bartokv0.3.2.md": {},
+          "bartokv0.4.0.md": {},
+          "bartokv0.4.1.md": {},
+          "bartokv0.5.md": {}
+        },
         ".bugs": {},
         ".scratch": {},
         "future.md": {},
@@ -82,6 +92,7 @@
       "Readme.md": {},
       "service.json": {},
       "tests": {
+        "css-3d.html": {},
         "sw.clientServer.htm": {},
         "open.folder.html": {},
         "wasm.binaryen.html": {}
@@ -99,6 +110,10 @@
       {
         "name": "wasm.binaryen.html",
         "path": ".welcome/tests/wasm.binaryen.html"
+      },
+      {
+        "name": "css-3d.html",
+        "path": ".welcome/tests/css-3d.html"
       },
       {
         "name": ".bugs",
@@ -339,6 +354,42 @@
       {
         "name": "react-notes.md",
         "path": ".welcome/WIP/react-notes.md"
+      },
+      {
+        "name": "bartokv0.0.md",
+        "path": ".NOTES/releases/bartokv0.0.md"
+      },
+      {
+        "name": "bartokv0.1.md",
+        "path": ".NOTES/releases/bartokv0.1.md"
+      },
+      {
+        "name": "bartokv0.2.md",
+        "path": ".NOTES/releases/bartokv0.2.md"
+      },
+      {
+        "name": "bartokv0.3.0.md",
+        "path": ".NOTES/releases/bartokv0.3.md"
+      },
+      {
+        "name": "bartokv0.3.1.md",
+        "path": ".NOTES/releases/bartokv0.3.1.md"
+      },
+      {
+        "name": "bartokv0.3.2.md",
+        "path": ".NOTES/releases/bartokv0.3.2.md"
+      },
+      {
+        "name": "bartokv0.4.0.md",
+        "path": ".NOTES/releases/bartokv0.4.md"
+      },
+      {
+        "name": "bartokv0.4.1.md",
+        "path": ".NOTES/releases/bartokv0.4.1.md"
+      },
+      {
+        "name": "bartokv0.5.md",
+        "path": ".NOTES/releases/bartokv0.5.md"
       }
     ]
   }

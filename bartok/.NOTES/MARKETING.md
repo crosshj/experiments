@@ -7,6 +7,10 @@
   * However, it may not be that thing and that is not the sole vision for it.
   * Consider the following an exploration of what bartok is(will be).
 
+## TL;DR
+  * bartok takes inspiration from all of the following in some regard
+  * bartok will most likely not do any one of these things as well as any one of these do
+
 ## Bartok IS or NOT (maybe)
 
 ### editor
@@ -16,6 +20,9 @@
 ### ide | playground
   - online editor and web-based code share/run
   - examples: plunker, codepen, stackblitz, runkit, glitch, observables, jupyter notebook
+
+### mindmap | knowledge management tool
+  - example: dendron.so, roam, athens, foam, vscode-memo
 
 ### continuous integration tool
   - code, build, deployment automation

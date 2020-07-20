@@ -1,3 +1,4 @@
+<h1 style="display:none"></h1>
 ![Test Image](https://img.youtube.com/vi/nFXOxs-oDMA/maxresdefault.jpg)
 
 Summary
@@ -12,7 +13,7 @@ Current State
   - explorer
   - editor
   - terminal
-  
+
 ##### explorer
   - mocked for now
   - UI services not a primary concern

@@ -1,3 +1,4 @@
+<h1 style="display:none"></h1>
 ![Test Image](https://img.youtube.com/vi/yKxyX_6NMZQ/maxresdefault.jpg)
 
 Summary
@@ -11,7 +12,7 @@ Current State
   - basic editor allows text entry
   - some buttons on UI allow API calls
   - single file per service
-  
+
 ##### server
   - basic API form in place
   - some API's work partially: create service, read services

@@ -51,11 +51,15 @@ IDEAS FOR IMPROVEMENT:
   - elliptical orbits
   - more planets
   - illumination on planets
-  - blinking stars
+  - twinkline stars (even though this is not accurate)
   - moon(s) for planets
   - rings/patterns on planets
   - performance
   - port to html/css
+    - https://danielcwilson.com/blog/2020/01/motion-path-quirks/
+    - https://www.the-art-of-web.com/css/css-animation/
+    - https://www.the-art-of-web.com/css/3d-transforms/
+    - https://css-tricks.com/things-watch-working-css-3d/
   - port to canvas
   - port to webgl
   - port to shader
@@ -63,6 +67,14 @@ IDEAS FOR IMPROVEMENT:
 -->
 
   <style>
+    body {
+      display: flex;
+      height: 85vh;
+    }
+    pre {
+      margin: auto;
+      width: 100vw;
+    }
     body, svg {
       background: #13121a;
       background-image:

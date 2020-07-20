@@ -1,3 +1,4 @@
+<h1 style="display:none"></h1>
 ![Test Image](https://img.youtube.com/vi/NJc68mc8Wag/maxresdefault.jpg)
 
 Summary

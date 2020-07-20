@@ -51,7 +51,7 @@ const NO_PREVIEW = `
 			font-family: sans-serif;
 		}
 	</style>
-	<body">
+	<body>
 		<pre>
 			<div class="no-preview">No preview available.</div>
 			</pre>
@@ -262,7 +262,7 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 					font-family: sans-serif;
 				}
 			</style>
-			<body">
+			<body>
 				<pre>${code}</pre>
 			</body>
 		</html>
@@ -325,7 +325,7 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 					font-family: sans-serif;
 				}
 			</style>
-			<body">
+			<body>
 				<pre>${code}</pre>
 			</body>
 		</html>
@@ -382,7 +382,7 @@ const fileChangeHandler = ({ viewUpdate }) => (event) => {
 				font-family: sans-serif;
 			}
 		</style>
-		<body">
+		<body>
 			<pre>${code}</pre>
 		</body>
 	</html>
@@ -456,7 +456,7 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 				font-family: sans-serif;
 			}
 		</style>
-		<body">
+		<body>
 			<pre>${code}</pre>
 		</body>
 	</html>

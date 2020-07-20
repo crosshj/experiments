@@ -1,3 +1,4 @@
+<h1 style="display:none"></h1>
 ![Release Image](https://i.ytimg.com/vi/LAKMr2ARd34/maxresdefault.jpg)
 
 Summary
@@ -9,7 +10,7 @@ Summary
   - new status bar
   - improved service map
   - [Release Video](https://youtu.be/LAKMr2ARd34)
-  
+
 Some Thoughts
 =============
   - how to make video summaries fun
@@ -66,7 +67,7 @@ Current State
      - [X] move - rename folder can do this without rename file
   - [X] delete command works properly (for project/service)
 
-##### server 
+##### server
   - [X] delete command works properly (for project/service)
 
 ##### statusBar

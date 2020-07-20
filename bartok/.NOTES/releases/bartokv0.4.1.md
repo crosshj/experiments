@@ -1,5 +1,6 @@
-![Release Image](https://images7.alphacoders.com/905/thumb-1920-905114.png)
 <!-- no-select -->
+<h1 style="display:none"></h1>
+![Release Image](https://images7.alphacoders.com/905/thumb-1920-905114.png)
 
 # bartok v0.4
   - planning
@@ -25,7 +26,7 @@
   - [ ] open parent folders when file/folder selected
     - selected from tabs
     - selected in terminal
-    
+
 ### preview
   - [ ] default file should load in preview on page load
 
@@ -49,5 +50,5 @@
 
 ### service map
   - [ ] show registered triggers in map
-  
-  
+
+

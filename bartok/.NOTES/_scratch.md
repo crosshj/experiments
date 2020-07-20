@@ -11,6 +11,31 @@ can currupt previously saved data.
 - save to filesystem (so git can be source-of-truth)
 - some consistency between server and UI storage
 
+HUGE 200719_1731
+================
+
+recall all things
+  - editor tabs (remember open, selected, and scroll position)
+  - editor (load last loaded file)
+  - preview (load last loaded preview)
+  - panes (window width same as previous, recall positions)
+
+connect all context menu items
+  - huge list...
+
+create|update|delete for service API in serviceHandler
+  - need this before service worker fork can be merged
+
+reset page for ui
+  - kill tree cache (sessionStorage)
+  - kill all the recalled things (above)
+  - kill service worker cache (or maybe don't use this)
+  - kill service worker (which will be reloaded with boot())
+  - kill moduleCache (localStorage) (maybe should be sessionStorage)
+  - reloadServices true versus false
+  - kill/reload serviceHandler
+
+BUG: loading page shows loading bar multiple times
 
 TODO
 ====

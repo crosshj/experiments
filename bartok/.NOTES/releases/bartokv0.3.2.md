@@ -1,3 +1,4 @@
+<h1 style="display:none"></h1>
 ![Test Image](https://images6.alphacoders.com/107/thumb-1920-1072417.jpg)
 
 ## bartok v0.3.2

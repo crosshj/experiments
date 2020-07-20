@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>css 3d playground</title>
+    <meta name="description" content="preact-htm demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+  </head>
+
+  <style>
+    body {
+      display: flex;
+      padding: 35px 20px;
+      margin: 0;
+      color: #ccc;
+      font-family: sans-serif;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .header-page {
+      display: none;
+    }
+    #Zcube{
+      width: 800px;
+      height: 300px;
+      transform-style: preserve-3d;
+      perspective: 200px;
+      perspective-origin:  50% 0px;
+      background: #0005;
+      position: relative;
+    }
+    #square{
+      margin: auto;
+      width: 200px;
+      height: 200px;
+      background: red;
+      transform: rotateX(-0.25deg);
+      border: 10px solid white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 10em;
+      color: white;
+    }
+    #square, #highlight {
+      position: absolute;
+      left: 0; right: 0;
+      top: 0; bottom: 0;
+    }
+    #highlight {
+      width: 100%;
+      height: 25px;
+      background: #8b6eff6e;
+      transform: translateZ(150px);
+      mix-blend-mode: screen;
+    }
+  </style>
+
+  <body>
+
+    <div id="Zcube">
+      <div id="square">X</div>
+      <div id="highlight"></div>
+    </div>
+
+  </body>
+</html>
