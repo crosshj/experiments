@@ -14,7 +14,7 @@
 </body>
 
 <script>
-    const files = sessionStorage.getItem('prevFiles');
+    const files = localStorage.getItem('prevFiles');
     if (files) {
         document.getElementById("file-content")
             .innerHTML = `
@@ -27,7 +27,7 @@
     function readFolder(e) {
         const files = Array.from(e.target.files)
             .map(x => x.webkitRelativePath);
-        sessionStorage.setItem("prevFiles", JSON.stringify(files));
+        localStorage.setItem("prevFiles", JSON.stringify(files));
         document.getElementById("file-content")
             .innerHTML = `
           <p>selected:</p>
