@@ -271,7 +271,14 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 	return;
 };
 
+//NOTE: this also handles fileClose events, thus next||name below
+let firstLoadSelect = true;
 const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
+	if(firstLoadSelect){
+		firstLoadSelect = false;
+		return;
+	}
+
 	const { type, detail } = event;
 	const { op, id, name, next } = detail;
 	if(type==="fileClose" && !next){
@@ -290,11 +297,11 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 
 	// bind and conditionally trigger render
 	// for instance, should not render some files
-	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return (name||next).includes('.'+x)});
-	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return (name||next).includes('.'+x)});
-	const isJSX = (name||next).includes('jsx');
+	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return (next||name).includes('.'+x)});
+	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return (next||name).includes('.'+x)});
+	const isJSX = (next||name).includes('jsx');
 	const isSVC3 = code.includes('/* svcV3 ');
-	const hasTemplate = isSupported({ name: name||next, contents: code });
+	const hasTemplate = isSupported({ name: next||name, contents: code });
 
 	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
 		code = `<div class="no-preview">No preview available.</div>`;
@@ -332,13 +339,15 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	`;
 	if(!locked){
 		currentFile = doc;
-		currentFileName = name||next;
+		currentFileName = next||name;
 	} else {
 		backupForLock.currentFile = doc;
-		backupForLock.currentFileName = name||next;
+		backupForLock.currentFileName = next||name;
 	}
 	if(doc && currentView === "preview"){
-		viewUpdate({ supported: hasTemplate, type, locked, doc, docName: next || name, ...event.detail });
+		const viewArgs = { supported: hasTemplate, type, locked, doc, docName: next || name, ...event.detail };
+		sessionStorage.setItem('preview', JSON.stringify(viewArgs));
+		viewUpdate(viewArgs);
 	}
 };
 
@@ -471,7 +480,27 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 
 };
 
+let firstLoad = true;
 const operationDone = ({ viewUpdate }) => (event) => {
+	if(firstLoad){
+		const savedPreview = (() => {
+			try {
+				return JSON.parse(
+					sessionStorage.getItem('preview')
+				);
+			} catch(e){}
+		})();
+		firstLoad = false;
+		firstLoadSelect = false;
+		if(savedPreview){
+			currentFile = savedPreview.doc;
+			currentFileName = savedPreview.docName;
+			backupForLock.currentFile = savedPreview.doc;
+			backupForLock.currentFileName = savedPreview.docName;
+			viewUpdate(savedPreview);
+			return;
+		}
+	}
 	const { detail } = event;
 	const { op, id, result, operation } = detail;
 	// only care about service read with id
