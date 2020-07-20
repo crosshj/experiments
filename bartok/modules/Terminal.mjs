@@ -359,9 +359,11 @@ function _Terminal(){
 
 	fitAddon.fit();
 
-	if(window.FUN){
+	if(true || window.FUN){
+		//const whichMotd = Math.floor(Math.random() * motd.length);
+		const whichMotd = 1;
 		term.write(
-			motd[Math.floor(Math.random() * motd.length)]
+			motd[whichMotd]
 		);
 	} else {
 		term.write(`\x1B[38;5;242m
