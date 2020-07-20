@@ -52,12 +52,15 @@ const fileCloseHandler = ({
 
 	const found = tabs.find(x => x.name === name);
 	tabs = tabs.filter(x => x.name !== name);
+	sessionStorage.setItem('tabs', JSON.stringify(tabs));
 
 	removeTab(found);
 
 	if(!next){ return; }
 	const nextTab = tabs.find(x => x.name === next);
 	nextTab.active = true;
+	sessionStorage.setItem('tabs', JSON.stringify(tabs));
+
 	updateTab(nextTab);
 };
 
@@ -100,6 +103,13 @@ const clickHandler = ({
 const fileSelectHandler = ({
 	event, container, initTabs, createTab, updateTab, removeTab
 }) => {
+	const firstLoad = tabs.length < 1;
+	// TODO: need a finer defintion of first load
+	// because all tabs may be exited later in usage
+	if(firstLoad){
+		return;
+	}
+
 	const { name, changed } = event.detail;
 	let id;
 
@@ -107,6 +117,7 @@ const fileSelectHandler = ({
 	tabsToUpdate.map(updateTab);
 
 	if(foundTab){
+		sessionStorage.setItem('tabs', JSON.stringify(tabs));
 		return;
 	}
 
@@ -117,6 +128,7 @@ const fileSelectHandler = ({
 	tabs.push({
 		name, active: true, id, changed
 	});
+	sessionStorage.setItem('tabs', JSON.stringify(tabs));
 };
 
 const fileChangeHandler = ({
@@ -145,12 +157,22 @@ const operationDoneHandler = ({
 	if(op !== 'read' || !id){
 		return;
 	}
-	const defaultFile = getDefaultFile(result[0]);
-	tabs = [{
-		name: defaultFile,
-		active: true,
-		id: 'TAB' + Math.random().toString().replace('0.', '')
-	}];
+	const storedTabs = (() => {
+		try {
+			return JSON.parse(sessionStorage.getItem('tabs'));
+		} catch(e){}
+	})();
+	if(storedTabs){
+		tabs = storedTabs;
+	} else {
+		const defaultFile = getDefaultFile(result[0]);
+		tabs = [{
+			name: defaultFile,
+			active: true,
+			id: 'TAB' + Math.random().toString().replace('0.', '')
+		}];
+	}
+
 	initTabs(tabs)
 };
 

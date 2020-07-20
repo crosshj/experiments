@@ -134,11 +134,15 @@ function getFileType(fileName=''){
 	return type;
 }
 
-const createTab = (parent) => (tabDef) => {
+const createTab = (parent, init) => (tabDef) => {
 	const tab = document.createElement('div');
 	tab.id = tabDef.id;
 	tab.classList.add('tab');
-	tab.classList.add('new');
+	if(!init){
+		tab.classList.add('new');
+	} else {
+		tab.classList.remove('new');
+	}
 	tabDef.changed && tab.classList.add('changed');
 
 	const fileType = getFileType(tabDef.name);
@@ -223,7 +227,11 @@ const removeTab = (parent) => (tabDef) => {
 const initTabs = (parent) => (tabDefArray=[]) => {
 	Array.from(parent.querySelectorAll('.tab'))
 		.map(removeTab(parent));
-	tabDefArray.map(createTab(parent))
+	const init = true;
+	tabDefArray.map(createTab(parent, init));
+	setTimeout(() => {
+		document.querySelector('#editor-tabs-container .active').scrollIntoView();
+	}, 1000); //TODO: this sucks
 };
 
 let tabsContainer;
