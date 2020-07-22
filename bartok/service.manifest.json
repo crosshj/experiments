@@ -73,6 +73,7 @@
             "/shared/css/vscode.codemirror.css",
 
             "/shared/vendor/codemirror.js",
+            "/shared/vendor/codemirror/addons/_fold.bundle.js",
             "/shared/vendor/codemirror-scrollpastend.js",
             "/shared/vendor/codemirror-show-invisibles.js",
             "/shared/vendor/codemirror-searchcursor.js",

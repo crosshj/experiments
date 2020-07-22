@@ -15,10 +15,10 @@ HUGE 200719_1731
 ================
 
 recall all things
-  - editor tabs (remember open, selected, and scroll position)
-  - editor (load last loaded file)
-  - preview (load last loaded preview)
-  - panes (window width same as previous, recall positions)
+  - [X] editor tabs (remember open, selected, and scroll position)
+  - [X] editor (load last loaded file)
+  - [X] preview (load last loaded preview)
+  - [ ] panes (window width same as previous, recall positions)
 
 connect all context menu items
   - huge list...
@@ -53,7 +53,8 @@ TODO 200714_1902
   - [ ] default view for no service selected
   - [ ] download ZIP
   - [ ] edit bartok in bartok
-  - [ ] editor code folding
+  - [X] editor code folding
+    - https://codemirror.net/doc/manual.html#addon_foldcode
   - [ ] editor collaborative
   - [ ] fix: closing (and opening?) a folder should not save that folder as selected
   - [ ] folders open when contained file is selected
@@ -117,7 +118,7 @@ websocket from service worker?
 ==========
 - bitcoin/blockchain in browser (and why?)
 - indent using tabs
-- code folding
+- [X] code folding
 
 - inline font: https://www.webucator.com/blog/2016/11/inline-web-font-avoid-fout/
 
@@ -361,7 +362,7 @@ UNSORTED
 
 - keep up with VS CODE: icons, fold/match lines, folder arrows
 
-- code folding & fold all, etc
+- [X] code folding & fold all, etc
 
 
 - keyboard shortcuts:

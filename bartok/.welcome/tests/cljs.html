@@ -7,3 +7,233 @@ http://swannodette.github.io/2015/07/29/clojurescript-17/
 http://swannodette.github.io/assets/js/cljs_next/main.js
 
 -->
+<html>
+  <style>
+    .no-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-size: 5vw; color: #666; }
+    body:before {  content: '';display: block;height: 35px;position: absolute;left: 0px;top: 0px;right: 0px;z-index: 1;background: #1d1d1deb; }
+    body:after { content: '';display: block;height: 5px;position: absolute;left: 0px;top: 35px;right: 0px;z-index: 1;background: linear-gradient(180deg, #1d1d1deb, transparent); }
+    body { margin: 0px;/*height: calc(100vh - 40px);*/overflow: hidden; color: #ccc;font-family: sans-serif; }
+    #container { height: 100%; width: 100%;overflow: hidden;/*padding: 30px;*//*margin-bottom: 20px;*//*padding-top: 40px;padding-bottom: 40px;*/ }
+    #container img { width: 100%;max-height: 400px;object-fit: cover;object-position: center;margin-left: -30px;background-color: transparent !important; }
+    #container hr { border: 1px dotted #999;border-top: 0px;margin-left: -30px; }
+    #container.markdown-body { color: #acb5be; }
+    #container > *:last-child { margin-bottom: 200px!important; }
+    #container.markdown-body * { border-color: #777 !important; }
+    blockquote { margin: 0;border-left: 5px solid #7a7a7a;font-style: italic; padding: 1px 20px; text-align: left; }
+    .selected:after { content: ''; display: block; background: #e2961d; position: absolute; left: -100px; right: 0px; top: -10px; bottom: -10px; z-index: -1; }
+    .selected { color: black; position: relative; /*font-size: 35px !important;*/ }
+    li.selected,ul.selected,h2.selected,h3.selected { margin-left: 0.5%; zoom: 2 !important; }
+    #container.markdown-body input[type=checkbox] { visibility: hidden !important; position: relative !important; color: inherit !important; }
+    #container.markdown-body input[type=checkbox]:before { visibility: visible !important; position: absolute !important; font-size: 24px !important; top: -12px !important; left: -3px !important; content: '☐' !important; }
+    #container.markdown-body input[type=checkbox]:checked:before { content: '✓' !important; color: #8BC34A !important; }
+    #container.markdown-body .selected input[type=checkbox]:checked:before { color: black !important; }
+    #container.markdown-body .highlight pre,
+    #container.markdown-body pre { background-color: #ffffff11; }
+  </style>
+  <style>
+    body {
+      margin: 40px;
+    }
+    .CodeMirror-gutter-filler,
+    .CodeMirror-cursors,
+    .CodeMirror-vscrollbar,
+    .CodeMirror-hscrollbar,
+    .klipse-snippet,
+    .language-klipse,
+    .CodeMirror-lines > div > .CodeMirror-measure {
+        display: none !important;
+    }
+    .CodeMirror-code {
+      display: block;
+    }
+    .CodeMirror-line {
+      margin: 0;
+    }
+    .klipse-result, code {
+      color: #888;
+    }
+    h3 {
+      margin-top: 3em;
+      margin-bottom: 2em;
+    }
+    .cljs {
+        background: #2d2d2d;
+        padding: 0px 10px 20px 10px;
+        margin: 15px 0px -8px 0px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-size: 0.9em;
+        color: #ccc;
+        display: block;
+    }
+    .cljs-input {
+        height: 200px;
+    }
+    .cljs::-webkit-scrollbar {
+        width: 5px;
+    }
+    .cljs::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .cljs::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+    .cljs::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    .cljs-output span {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      overflow: hidden;
+    }
+    pre {
+        margin-top: -3em;
+    }
+    span.mark {
+      color: #E91E63;
+      background: #E91E63;
+      border-radius: 50%;
+    }
+    span.blank {
+      color: #222;
+      background: #444;
+      border: 1px solid #222;
+      box-sizing: border-box;
+    }
+  </style>
+
+  <body>
+    <h3>CLOJURE CODE EVAL DEMO</h3>
+<pre>
+
+INPUT:
+<code class="cljs-input cljs">
+(ns game.of.life
+"Conway's Game of Life, based on the work of
+Christophe Grand (http://clj-me.cgrand.net/2011/08/19/conways-game-of-life)
+and Laurent Petit (https://gist.github.com/1200343).")
+
+;;; Core game of life's algorithm functions
+(defn neighbors
+"Given a cell's coordinates `[x y]`, returns the coordinates of its
+neighbors."
+[[x y]]
+(for [dx [-1 0 1]
+        dy (if (zero? dx)
+            [-1 1]
+            [-1 0 1])]
+    [(+ dx x) (+ dy y)]))
+
+(defn step
+"Given a set of living `cells`, computes the new set of living cells."
+[cells]
+(set (for [[cell n] (frequencies (mapcat neighbors cells))
+            :when (or (= n 3)
+                        (and (= n 2)
+                            (cells cell)))]
+        cell)))
+
+;;; Utility methods for displaying game on a text terminal
+(defn print-grid
+"Prints a `grid` of `w` columns and `h` rows, on *out*, representing a
+step in the game."
+[grid w h]
+(doseq [x (range (inc w))
+        y (range (inc h))]
+    (when (= y 0) (println))
+    (print (if (grid [x y])
+            " • "
+            " · "))))
+
+(defn print-grids
+"Prints a sequence of `grids` of `w` columns and `h` rows on *out*,
+representing several steps."
+[grids w h]
+(doseq [grid grids]
+    (print-grid grid w h)
+    (println)))
+
+;;; Launches an example grid
+(def grid
+"`grid` represents the initial set of living cells"
+#{[0 1] [2 0] [2 1] [2 2] [1 2]})
+
+(print-grids (take 7 (iterate step grid)) 5 5)
+</code>
+
+OUTPUT:
+<code class="cljs-output">
+</code>
+
+</pre>
+    </body>
+    <script>
+    // var observer = new MutationObserver(function(mutations, observer) {
+    //     debugger;
+    // });
+
+    const inputDOM = document.querySelector('.cljs-input');
+    const outputDOM = document.querySelector('.cljs-output');
+    // observer.observe(inputDOM, {
+    //   subtree: true,
+    //   attributes: true
+    // });
+
+    const appendScript = (url, callback) => {
+        var script = document.createElement('script');
+        script.crossOrigin = "anonymous";
+        script.onload = callback;
+        script.src = url;
+        document.head.appendChild(script);
+    };
+
+    window.klipse_settings = {
+        selector: '.language-klipse'
+    };
+
+    //const klipseScriptUrl = "http://app.klipse.tech/plugin/js/klipse_plugin.js";
+    const klipseScriptUrl = "https://cdn.jsdelivr.net/npm/klipse@7.9.6/dist/klipse_plugin.js";
+
+    function klipseCallback(){
+        // klipse, cljs, etc should be available here
+        // https://github.com/viebel/klipse-clj/blob/master/src/klipse_clj/lang/clojure.cljs#L310-L341
+        // https://github.com/viebel/klipse/issues/352
+
+        // external libs
+        //      - https://github.com/viebel/klipse/issues/352#issuecomment-552788699
+        //      - https://github.com/viebel/klipse/issues/116
+        //      - https://github.com/viebel/klipse-clj/blob/master/src/klipse_clj/lang/clojure/io.cljs#L124
+        // klipse usage
+        //      - https://github.com/viebel/klipse-clj/blob/869b03a7f1483d87f4d5cf237043d8cafe487651/src/klipse_clj/lang/clojure.cljs#L253
+        // namespace
+        //      - https://github.com/viebel/klipse-clj/blob/master/src/klipse_clj/lang/clojure/io.cljs#L124
+
+        // debugger;
+        klipse_clj
+            .lang
+            .clojure["eval_and_callback"](
+                inputDOM.innerText,
+                (...args) => {
+                  console.log({ args })
+                }
+            );
+        outputDOM.innerHTML = '\nloading...';
+        let loading = true;
+        cljs.core.set_print_fn_BANG_(
+          (a) => {
+            if(loading){
+              outputDOM.innerHTML = '';
+              loading = false;
+            }
+            if(a){
+              outputDOM.innerHTML += `<span class="${a === ' • ' ? 'mark' : 'blank'}">${a}</span>`;
+            } else {
+              outputDOM.innerHTML += '<br/>';
+            }
+          }
+        );
+    }
+    appendScript(klipseScriptUrl, klipseCallback);
+  </script>
+</html>

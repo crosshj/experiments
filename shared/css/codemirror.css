@@ -348,3 +348,53 @@ div.CodeMirror-dragcursors {
 
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext { background: none; }
+
+
+
+/* code folding */
+.CodeMirror-foldmarker {
+  /* color: blue;
+  text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px; */
+  font-family: arial;
+  line-height: .3;
+  cursor: pointer;
+  padding-left: 3px;
+  padding-right: 2px;
+  letter-spacing: 3px;
+  font-weight: 600;
+}
+.CodeMirror-foldgutter {
+  padding-left: 6px;
+  width: .7em;
+}
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+  cursor: pointer;
+  font-size: 1.5em;
+
+  font-size: 17px;
+  font-family: monospace;
+  display: block;
+  margin-top: -2px;
+  transition: transform 0.2s;
+}
+.CodeMirror-foldgutter-open {
+  color: #555;
+}
+.CodeMirror-foldgutter-open:hover {
+  color: inherit;
+}
+.CodeMirror-foldgutter-open:after {
+  content: "\25BE";
+  margin-left: 2px;
+  content: '>';
+  transform-origin: 5px 8.5px;
+  transform: rotateZ(90deg);
+  display: block;;
+}
+.CodeMirror-foldgutter-folded:after {
+  content: "\25B8";
+  margin-left: 2px;
+  content: '>';
+}
+/* END code folding */

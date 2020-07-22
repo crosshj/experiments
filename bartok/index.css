@@ -144,7 +144,8 @@ iframe::-webkit-scrollbar-track{
   --main-theme-background-color: #363636; /* #2d2d2d */
   --main-theme-background-dark-color: #29252b;
   --main-theme-text-color-dark: green;
-  --main-theme-text-color: #d8d8d8;
+  /* --main-theme-text-color: #d8d8d8; */
+  --main-theme-text-color: #c2c2c2;
   /* --main-theme-text-invert-color: #d0c0d8; */
   --main-theme-text-invert-color: #818181;
   /* --theme-subdued-color: #483f48; */

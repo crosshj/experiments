@@ -59,6 +59,8 @@ const codeMirrorSearchCursor = "../shared/vendor/codemirror-searchcursor.js";
 
 const codeMirrorJsSyntaxUrl = "../shared/vendor/codemirror/mode/javascript.js";
 
+const codeMirrorFoldBundleUrl = '../shared/vendor/codemirror/addons/_fold.bundle.js'
+
 const appendScript = (url, callback) => {
 	var script = document.createElement('script');
 	script.crossOrigin = "anonymous";
@@ -87,9 +89,11 @@ const codeMirrorCss = (callback) => {
 
 const codeMirrorJs = (callback) => {
 	appendScript(codeMirrorJsUrl, () => {
-		appendScript(codeMirrorSearchCursor, () => {
-			appendScript(codeMirrorScrollPastUrl, () => {
-				appendScript(codeMirrorShowInvisibles, callback);
+		appendScript(codeMirrorFoldBundleUrl, () => {
+			appendScript(codeMirrorSearchCursor, () => {
+				appendScript(codeMirrorScrollPastUrl, () => {
+					appendScript(codeMirrorShowInvisibles, callback);
+				});
 			});
 		});
 	});

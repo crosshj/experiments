@@ -65,7 +65,7 @@
 
 ### status bar
   - [X] connected to line & col #
-  - [ ] recall previous file type (on page reload)
+  - [X] recall previous file type (on page reload)
 
 ### templates
   - [ ] match based on tag in file contents

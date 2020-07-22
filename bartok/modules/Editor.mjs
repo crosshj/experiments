@@ -282,7 +282,13 @@ const inlineEditor = (ChangeHandler) => ({
 		styleActiveSelected: true,
 		matchBrackets: true,
 		lineWrapping: true,
-		scrollPastEnd: true
+		scrollPastEnd: true,
+		foldGutter: true,
+		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+		foldOptions: {
+			widget: (from, to) => { return '...'; },
+			minFoldSize: 3
+		}
 	}, (error, editor) => {
 		if(error){
 			console.log(error);

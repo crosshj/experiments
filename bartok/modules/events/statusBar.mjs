@@ -36,10 +36,25 @@ function getFileType(fileName = '') {
 
 // EVENTS -------------------------------------------------------------
 
+let firstRun = true;
 const operationDone = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>
 	(event) => {
+		if(firstRun){
+			firstRun = false;
+			const savedMode = (() => {
+				try {
+					return JSON.parse(sessionStorage.getItem('statusbar')).mode;
+				} catch(e){}
+			})();
+			if(savedMode){
+				setDocType(savedMode);
+				setLineNumber(1);
+				setColNumber(1);
+				return;
+			}
+		}
 		const { detail } = event;
 		const { op, id, result } = detail;
 		// only care about service read with id
@@ -51,6 +66,9 @@ const operationDone = ({
 		const fileType = getFileType(defaultFile);
 		const mode = codemirrorModeFromFileType(fileType);
 		setDocType(mode);
+		sessionStorage.setItem('statusbar', JSON.stringify({
+			mode, line:1, col: 1
+		}));
 		setLineNumber(1);
 		setColNumber(1);
 	};
@@ -67,6 +85,11 @@ const fileSelect = ({
 		const fileType = getFileType(name);
 		const mode = codemirrorModeFromFileType(fileType);
 		setDocType(mode);
+		if(!firstRun){
+			sessionStorage.setItem('statusbar', JSON.stringify({
+				mode, line:1, col: 1
+			}));
+		}
 		setLineNumber(1);
 		setColNumber(1);
 	};
