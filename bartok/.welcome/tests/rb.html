@@ -1,8 +1,134 @@
-<html>
+<!--
 
-    <head>
-        <title>RUBY CODE EVAL DEMO</title>
-    </head>
+    https://opalrb.com/
+
+-->
+<html>
+<head>
+    <title>RUBY CODE EVAL DEMO</title>
+</head>
+<body>
+    <h3>RUBY CODE EVAL DEMO</h3>
+    <pre>
+
+INPUT:
+<code class="language-input language">
+<!--
+def title(s)
+  puts "~ #{s} ~\n" + '~' * (s.size+4) + "\n\n"
+  yield
+  puts "\n\n\n"
+end
+
+title "The basics" do
+  puts say = "I love Ruby"
+  puts say.sub('love', "*love*").upcase
+  3.times { puts "#{say.sub("love", "\u2764\ufe0f")}!" }
+end
+
+title "Interacting with the DOM" do
+  puts "The page title is #{`document`.JS[:title].inspect}."
+  puts "The current URL is #{`location`.JS[:href].inspect}."
+end
+
+title "Classes, objects and procs" do
+  class User
+    attr_accessor :name
+
+    def initialize(name)
+      @name = name
+    end
+
+    def admin?
+      @name == 'Joe'
+    end
+
+    def method_missing(name, *args, &block)
+      if name.start_with?('can_') && name.end_with?('?')
+        admin? ? true : false
+      end
+    end
+  end
+
+  bob = User.new('Bob')
+  joe = User.new('Joe')
+
+  user_is_admin = -> user do
+    "#{user.name} #{user.admin? ? 'is' : 'is not'} an admin."
+  end
+
+  user_can_swim = -> user, action do
+    "#{user.name} #{user.can_swim? ? 'can' : 'cannot'} swim."
+  end
+
+  puts user_is_admin.call joe
+  puts user_can_swim.call joe
+  puts user_is_admin.call bob
+  puts user_can_swim.call bob
+end
+-->
+</code>
+
+OUTPUT:
+<code class="language-output language">
+</code>
+
+</pre>
+</body>
+<script>
+    const inputDOM = document.querySelector('.language-input');
+    const outputDOM = document.querySelector('.language-output');
+
+    const appendScript = (url) => {
+        return new Promise((resolve, reject) => {
+            var script = document.createElement('script');
+            script.crossOrigin = "anonymous";
+            script.onload = resolve;
+            script.src = url;
+            document.head.appendChild(script);
+        });
+    };
+
+    let loading = true;
+    outputDOM.innerHTML = '\nloading...';
+
+    const doEach = (a) => {
+        if (loading) {
+            outputDOM.innerHTML = '\n';
+            loading = false;
+        }
+        outputDOM.innerHTML += a;
+    };
+
+    // TODO: is there a better way to tell Opal where to write?
+    window.process = {
+        stdout: {
+            write: doEach
+        }
+    };
+
+    const codeFromComment = Array.from(
+        document.querySelector('.language-input').childNodes
+    )
+        .filter(x => x.nodeType === 8)
+        .map(x => x.data).join('\n');
+    inputDOM.innerText = codeFromComment;
+
+    (async () => {
+        await appendScript("https://cdn.opalrb.com/opal/current/opal.js");
+        await appendScript("https://cdn.opalrb.com/opal/current/opal-parser.js")
+
+        // docs say to do this but it fails
+        //Opal.load('opal');
+        Opal.load('opal-parser');
+
+        // might be useful some day
+        //const source = Opal.compile(codeFromComment);
+
+        Opal.Kernel.$eval(codeFromComment);
+    })();
+</script>
+
 <style>
     .no-preview {
         position: absolute;
@@ -235,127 +361,4 @@
         box-sizing: border-box;
     }
 </style>
-
-<body>
-    <h3>RUBY CODE EVAL DEMO</h3>
-    <pre>
-
-INPUT:
-<code class="language-input language">
-<!--
-def title(s)
-  puts "~ #{s} ~\n" + '~' * (s.size+4) + "\n\n"
-  yield
-  puts "\n\n\n"
-end
-
-title "The basics" do
-  puts say = "I love Ruby"
-  puts say.sub('love', "*love*").upcase
-  3.times { puts "#{say.sub("love", "\u2764\ufe0f")}!" }
-end
-
-title "Interacting with the DOM" do
-  puts "The page title is #{`document`.JS[:title].inspect}."
-  puts "The current URL is #{`location`.JS[:href].inspect}."
-end
-
-title "Classes, objects and procs" do
-  class User
-    attr_accessor :name
-
-    def initialize(name)
-      @name = name
-    end
-
-    def admin?
-      @name == 'Joe'
-    end
-
-    def method_missing(name, *args, &block)
-      if name.start_with?('can_') && name.end_with?('?')
-        admin? ? true : false
-      end
-    end
-  end
-
-  bob = User.new('Bob')
-  joe = User.new('Joe')
-
-  user_is_admin = -> user do
-    "#{user.name} #{user.admin? ? 'is' : 'is not'} an admin."
-  end
-
-  user_can_swim = -> user, action do
-    "#{user.name} #{user.can_swim? ? 'can' : 'cannot'} swim."
-  end
-
-  puts user_is_admin.call joe
-  puts user_can_swim.call joe
-  puts user_is_admin.call bob
-  puts user_can_swim.call bob
-end
--->
-</code>
-
-OUTPUT:
-<code class="language-output language">
-</code>
-
-</pre>
-</body>
-<script>
-    const inputDOM = document.querySelector('.language-input');
-    const outputDOM = document.querySelector('.language-output');
-
-    const appendScript = (url) => {
-        return new Promise((resolve, reject) => {
-            var script = document.createElement('script');
-            script.crossOrigin = "anonymous";
-            script.onload = resolve;
-            script.src = url;
-            document.head.appendChild(script);
-        });
-    };
-
-    let loading = true;
-    outputDOM.innerHTML = '\nloading...';
-
-    const doEach = (a) => {
-        if (loading) {
-            outputDOM.innerHTML = '\n';
-            loading = false;
-        }
-        outputDOM.innerHTML += a;
-    };
-
-    // TODO: is there a better way to tell Opal where to write?
-    window.process = {
-        stdout: {
-            write: doEach
-        }
-    };
-
-    const codeFromComment = Array.from(
-        document.querySelector('.language-input').childNodes
-    )
-        .filter(x => x.nodeType === 8)
-        .map(x => x.data).join('\n');
-    inputDOM.innerText = codeFromComment;
-
-    (async () => {
-        await appendScript("https://cdn.opalrb.com/opal/current/opal.js");
-        await appendScript("https://cdn.opalrb.com/opal/current/opal-parser.js")
-
-        // docs say to do this but it fails
-        //Opal.load('opal');
-        Opal.load('opal-parser');
-
-        // might be useful some day
-        //const source = Opal.compile(codeFromComment);
-
-        Opal.Kernel.$eval(codeFromComment);
-    })();
-</script>
-
 </html>

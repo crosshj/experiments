@@ -13,6 +13,7 @@
 .icon-audio:before,
 .icon-babel:before,
 .icon-bat:before,
+.icon-brainfuck:before,
 .icon-bower:before,
 .icon-bsl:before,
 .icon-c-sharp:before,
@@ -203,6 +204,14 @@
 .icon-audio:before {
   content: '\E005';
   color: white;
+}
+.icon-brainfuck:before {
+  content: '\E078';
+  color: #ff7daa;
+  zoom: 1.2;
+  margin-right: -3px;
+  margin-top: -7.5px;
+  margin-left: -1px;
 }
 .icon-babel:before {
   content: '\E006';

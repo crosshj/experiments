@@ -1,10 +1,95 @@
 <!--
 
-https://github.com/viebel/klipse - does C++ and a bunch of other languages
-
+https://github.com/felixhao28/JSCPP
 
 -->
 <html>
+<body>
+    <h3>C++ CODE EVAL DEMO</h3>
+    <pre>
+
+INPUT:
+<code class="language-input language">
+<!--
+#include <iostream>
+
+inline void fibmul(int* f, int* g){
+    int tmp = f[0]*g[0] + f[1]*g[1];
+    f[1] = f[0]*g[1] + f[1]*(g[0] + g[1]);
+    f[0] = tmp;
+}
+
+int fibonacci(int n){
+    int f[] = { 1, 0 };
+    int g[] = { 0, 1 };
+    while (n > 0) {
+        if (n & 1) {
+            fibmul(f, g);
+            --n;
+        } else {
+            fibmul(g, g);
+            n >>= 1;
+        }
+    }
+    return f[1];
+}
+
+int main(){
+    for (int i = 0; i < 9; ++i){
+        cout << "fib(" << i << "): " << fibonacci(i) << endl;
+    }
+    return 0;
+}
+-->
+</code>
+
+OUTPUT:
+<code class="language-output language">
+</code>
+
+</pre>
+</body>
+<script>
+    const inputDOM = document.querySelector('.language-input');
+    const outputDOM = document.querySelector('.language-output');
+
+    const appendScript = (url, callback) => {
+        var script = document.createElement('script');
+        script.crossOrigin = "anonymous";
+        script.onload = callback;
+        script.src = url;
+        document.head.appendChild(script);
+    };
+    const scriptUrl = "https://felixhao28.github.io/JSCPP/dist/JSCPP.es5.min.js";
+
+    function scriptCallback() {
+        const input = "4321";
+
+        let loading = true;
+        outputDOM.innerHTML = '\nloading...';
+
+        var config = {
+            stdio: {
+                write: (a) => {
+                    if (loading) {
+                        outputDOM.innerHTML = '\n';
+                        loading = false;
+                    }
+                    outputDOM.innerHTML += a;
+                }
+            }
+        };
+        const codeFromComment = Array.from(document.querySelector('.language-input').childNodes)
+            .filter(x => x.nodeType === 8)
+            .map(x => x.data).join('\n');
+        inputDOM.innerText = codeFromComment;
+
+        var exitCode = JSCPP.run(codeFromComment, input, config);
+        outputDOM.innerHTML += `\nprogram exited with code ${exitCode}`;
+    }
+    appendScript(scriptUrl, scriptCallback);
+</script>
+
 <style>
     .no-preview {
         position: absolute;
@@ -222,91 +307,5 @@ https://github.com/viebel/klipse - does C++ and a bunch of other languages
         box-sizing: border-box;
     }
 </style>
-
-<body>
-    <h3>C++ CODE EVAL DEMO</h3>
-    <pre>
-
-INPUT:
-<code class="language-input language">
-<!--
-#include <iostream>
-
-inline void fibmul(int* f, int* g){
-    int tmp = f[0]*g[0] + f[1]*g[1];
-    f[1] = f[0]*g[1] + f[1]*(g[0] + g[1]);
-    f[0] = tmp;
-}
-
-int fibonacci(int n){
-    int f[] = { 1, 0 };
-    int g[] = { 0, 1 };
-    while (n > 0) {
-        if (n & 1) {
-            fibmul(f, g);
-            --n;
-        } else {
-            fibmul(g, g);
-            n >>= 1;
-        }
-    }
-    return f[1];
-}
-
-int main(){
-    for (int i = 0; i < 9; ++i){
-        cout << "fib(" << i << "): " << fibonacci(i) << endl;
-    }
-    return 0;
-}
--->
-</code>
-
-OUTPUT:
-<code class="language-output language">
-</code>
-
-</pre>
-</body>
-<script>
-    const inputDOM = document.querySelector('.language-input');
-    const outputDOM = document.querySelector('.language-output');
-
-    const appendScript = (url, callback) => {
-        var script = document.createElement('script');
-        script.crossOrigin = "anonymous";
-        script.onload = callback;
-        script.src = url;
-        document.head.appendChild(script);
-    };
-    const scriptUrl = "https://felixhao28.github.io/JSCPP/dist/JSCPP.es5.min.js";
-
-    function scriptCallback() {
-        const input = "4321";
-
-        let loading = true;
-        outputDOM.innerHTML = '\nloading...';
-
-        var config = {
-            stdio: {
-                write: (a) => {
-                    if (loading) {
-                        outputDOM.innerHTML = '\n';
-                        loading = false;
-                    }
-                    outputDOM.innerHTML += a;
-                }
-            }
-        };
-        const codeFromComment = Array.from(document.querySelector('.language-input').childNodes)
-            .filter(x => x.nodeType === 8)
-            .map(x => x.data).join('\n');
-        inputDOM.innerText = codeFromComment;
-
-        var exitCode = JSCPP.run(codeFromComment, input, config);
-        outputDOM.innerHTML += `\nprogram exited with code ${exitCode}`;
-    }
-    appendScript(scriptUrl, scriptCallback);
-</script>
 
 </html>

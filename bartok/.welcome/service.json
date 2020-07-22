@@ -37,6 +37,7 @@
         "javascript.js": {},
         "react2.jsx": {},
         "markdown2.md": {},
+        "brainfuck.bf": {},
         "clojure.cljs": {},
         "python.py": {},
         "svg-solar-system.svg": {},
@@ -232,6 +233,10 @@
       {
         "name": "clojure.cljs",
         "path": ".welcome/file-examples/clojure.cljs"
+      },
+      {
+        "name": "brainfuck.bf",
+        "path": ".welcome/file-examples/brainfuck.bf"
       },
       {
         "name": "python.py",

@@ -3,6 +3,7 @@ export default {
     "wav": "audio",
     "ogg": "audio",
     "bowerrc": "bower",
+    "bf": "brainfuck",
     "cs": "csharp",
     "c": "c",
     "h": "c",

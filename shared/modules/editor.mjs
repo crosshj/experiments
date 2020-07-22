@@ -100,6 +100,10 @@ const codeMirrorJs = (callback) => {
 };
 
 const codeMirrorModeJs = (mode, callback) => {
+	if(mode === "brainfuck"){ //because I am lazy and put it in clike mode
+		callback();
+		return;
+	}
 	if(mode === "default"){
 		callback();
 		return;
