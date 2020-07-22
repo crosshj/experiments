@@ -224,12 +224,33 @@ const removeTab = (parent) => (tabDef) => {
 // 	child && parent.removeChild(child)
 // };
 
+const scrollHorizontally = (el) => function (e) {
+  e = window.event || e;
+  e.preventDefault();
+  el.scrollLeft -= (e.wheelDelta || -e.detail);
+}
+
+function attachWheel(el) {
+  if (!el) {
+    return;
+  }
+
+  if (el.addEventListener) {
+    el.addEventListener('mousewheel', scrollHorizontally(el), false);
+    el.addEventListener('DOMMouseScroll', scrollHorizontally(el), false);
+  } else {
+    el.attachEvent('onmousewheel', scrollHorizontally(el));
+  }
+}
+
 const initTabs = (parent) => (tabDefArray=[]) => {
 	Array.from(parent.querySelectorAll('.tab'))
 		.map(removeTab(parent));
 	const init = true;
 	tabDefArray.map(createTab(parent, init));
 	setTimeout(() => {
+		const tabs = document.querySelector('#editor-tabs');
+		attachWheel(tabs);
 		document.querySelector('#editor-tabs-container .active').scrollIntoView();
 	}, 1000); //TODO: this sucks
 };
@@ -246,24 +267,59 @@ function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 	}
 	tabsContainer = document.createElement('div');
 	tabsContainer.innerHTML = `
+		<style>
+			#editor-tabs-container .scrollbar {
+				position: absolute;
+				width: 575px;
+				height: 3px;
+				left: 0px;
+				bottom: 0px;
+				background: transparent;
+				right: -3px;
+				width: auto;
+			}
+			#editor-tabs-container .slider {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				height: 3px;
+				will-change: transform;
+				width: 508px;
+			}
+			#editor-tabs-container:hover .slider {
+				background: #ffffff20;
+				display: none;
+			}
+		</style>
 		<div class="scrollable hide-native-scrollbar" id="editor-tabs-container">
 			<div id="editor-tabs" class="row no-margin">
-				<!-- div class="tab last active empty"></div -->
 			</div>
-			<div
-				class="invisible scrollbar horizontal fade"
-				style="position: absolute; width: 575px; height: 3px; left: 0px; bottom: 0px;"
-			>
-				<div
-					class="slider"
-					style="position: absolute; top: 0px; left: 0px; height: 3px; will-change: transform; width: 508px;"
-				>
+			<div class="invisible scrollbar horizontal fade">
+				<div class="slider">
 				</div>
 			</div>
 		</div>
 	`;
 
 	tabsList = tabsList || tabsContainer.querySelector('#editor-tabs');
+
+	/*
+
+	TODO:
+	when tabs change, update the width of slider
+
+	when editor tabs scroll position changes, move the slider with it
+
+	when this is done, change from display: none
+
+	ALSO:
+	there is something very screwed up happenging with tab bar
+	for example, when I try to add padding or margin to left/right of tabs, left works and right fails
+	I have tried mulitple ways of fixing this, including first-child/last-child and wrapping in a container div
+	nothing seems to work and I don't have time for the frustration right now
+
+	one idea I have not tried is to put padding divs to the left and right of tabs list; maybe later
+	*/
 
 	attachListener(tabsContainer, {
 		initTabs: initTabs(tabsList),
