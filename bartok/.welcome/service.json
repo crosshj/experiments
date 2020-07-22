@@ -44,6 +44,7 @@
         "graph-cytoscape.gml": {},
         "webgl-helmet.gltf": {},
         "webgl-duck.gltf": {},
+        "webgl-helloworld.gltf": {},
         "jupyter.ipynb": {},
         "jupyter2.ipynb": {},
         "jupyter3.ipynb": {},
@@ -247,6 +248,10 @@
       {
         "name": "graph-cytoscape.gml",
         "path": ".welcome/file-examples/graph-cytoscape.gml"
+      },
+      {
+        "name": "webgl-helloworld.gltf",
+        "path": ".welcome/file-examples/webgl-helloworld.gltf"
       },
       {
         "name": "webgl-helmet.gltf",

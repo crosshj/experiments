@@ -263,7 +263,7 @@ int main(){
 </code>
 
 OUTPUT:
-<code class="language-output">
+<code class="language-output language">
 </code>
 
 </pre>
@@ -291,7 +291,7 @@ OUTPUT:
             stdio: {
                 write: (a) => {
                     if (loading) {
-                        outputDOM.innerHTML = '';
+                        outputDOM.innerHTML = '\n';
                         loading = false;
                     }
                     outputDOM.innerHTML += a;
