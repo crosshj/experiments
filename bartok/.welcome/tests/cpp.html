@@ -154,7 +154,6 @@ https://github.com/viebel/klipse - does C++ and a bunch of other languages
     body {
         margin: 40px;
     }
-
     .CodeMirror-gutter-filler,
     .CodeMirror-cursors,
     .CodeMirror-vscrollbar,
@@ -164,26 +163,20 @@ https://github.com/viebel/klipse - does C++ and a bunch of other languages
     .CodeMirror-lines>div>.CodeMirror-measure {
         display: none !important;
     }
-
     .CodeMirror-code {
         display: block;
     }
-
     .CodeMirror-line {
         margin: 0;
     }
-
-    .klipse-result,
     code {
         color: #888;
     }
-
     h3 {
         margin-top: 3em;
         margin-bottom: 2em;
     }
-
-    .cljs {
+    .language {
         background: #2d2d2d;
         padding: 0px 10px 20px 10px;
         margin: 15px 0px -8px 0px;
@@ -193,44 +186,35 @@ https://github.com/viebel/klipse - does C++ and a bunch of other languages
         color: #ccc;
         display: block;
     }
-
-    .cljs-input {
+    .language-input {
         height: 200px;
     }
-
-    .cljs::-webkit-scrollbar {
+    .language::-webkit-scrollbar {
         width: 5px;
     }
-
-    .cljs::-webkit-scrollbar-track {
+    .language::-webkit-scrollbar-track {
         background: transparent;
     }
-
-    .cljs::-webkit-scrollbar-thumb {
+    .language::-webkit-scrollbar-thumb {
         background: #888;
     }
-
-    .cljs::-webkit-scrollbar-thumb:hover {
+    .language::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
-
-    .cljs-output span {
+    .language-output span {
         width: 10px;
         height: 10px;
         display: inline-block;
         overflow: hidden;
     }
-
     pre {
         margin-top: -3em;
     }
-
     span.mark {
         color: #E91E63;
         background: #E91E63;
         border-radius: 50%;
     }
-
     span.blank {
         color: #222;
         background: #444;
@@ -244,19 +228,17 @@ https://github.com/viebel/klipse - does C++ and a bunch of other languages
     <pre>
 
 INPUT:
-<code class="cljs-input cljs">
+<code class="language-input language">
 <!--
 #include <iostream>
 
-inline void fibmul(int* f, int* g)
-{
+inline void fibmul(int* f, int* g){
     int tmp = f[0]*g[0] + f[1]*g[1];
     f[1] = f[0]*g[1] + f[1]*(g[0] + g[1]);
     f[0] = tmp;
 }
 
-int fibonacci(int n)
-{
+int fibonacci(int n){
     int f[] = { 1, 0 };
     int g[] = { 0, 1 };
     while (n > 0) {
@@ -271,8 +253,7 @@ int fibonacci(int n)
     return f[1];
 }
 
-int main()
-{
+int main(){
     for (int i = 0; i < 9; ++i){
         cout << "fib(" << i << "): " << fibonacci(i) << endl;
     }
@@ -282,14 +263,14 @@ int main()
 </code>
 
 OUTPUT:
-<code class="cljs-output">
+<code class="language-output">
 </code>
 
 </pre>
 </body>
 <script>
-    const inputDOM = document.querySelector('.cljs-input');
-    const outputDOM = document.querySelector('.cljs-output');
+    const inputDOM = document.querySelector('.language-input');
+    const outputDOM = document.querySelector('.language-output');
 
     const appendScript = (url, callback) => {
         var script = document.createElement('script');
@@ -299,17 +280,6 @@ OUTPUT:
         document.head.appendChild(script);
     };
     const scriptUrl = "https://felixhao28.github.io/JSCPP/dist/JSCPP.es5.min.js";
-
-    var testCode =
-            "#include <iostream>" +
-            "using namespace std;" +
-            "int main() {" +
-            "    int a;" +
-            "    cin >> a;" +
-            "    cout << a << endl;" +
-            "    return 0;" +
-            "}"
-            ;
 
     function scriptCallback() {
         const input = "4321";
@@ -328,7 +298,7 @@ OUTPUT:
                 }
             }
         };
-        const codeFromComment = Array.from(document.querySelector('.cljs-input').childNodes)
+        const codeFromComment = Array.from(document.querySelector('.language-input').childNodes)
             .filter(x => x.nodeType === 8)
             .map(x => x.data).join('\n');
         inputDOM.innerText = codeFromComment;
