@@ -55,6 +55,7 @@
         "golang.go": {},
         "lisp.lisp": {},
         "php.php": {},
+        "prolog.pro": {},
         "ruby.rb": {},
         "styles.css": {},
         "styles.less": {},
@@ -303,6 +304,10 @@
       {
         "name": "lisp.lisp",
         "path": ".welcome/file-examples/lisp.lisp"
+      },
+      {
+        "name": "prolog.pro",
+        "path": ".welcome/file-examples/prolog.pro"
       },
       {
         "name": "php.php",

@@ -46,6 +46,7 @@
   - [ ] upload binary files
   - [ ] upload whole folder
   - [ ] pop out preview
+  - [ ] languages for preview
 
 ### panes
   - [ ] pane position/size remembered (on page reload)

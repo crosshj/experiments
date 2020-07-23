@@ -294,6 +294,9 @@ PREVIEW
 UNSORTED
 ========
 
+- node in the browser (and for that matter, the other language runtimes or emulators)
+  https://blog.cloudboost.io/how-to-run-node-js-apps-in-the-browser-3f077f34f8a5
+
 - https://www.x3dom.org/
 - http://create3000.de/x_ite/getting-started/#xhtml-dom-integration
 
