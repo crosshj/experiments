@@ -1,8 +1,6 @@
 <!--
 
-https://github.com/viebel/klipse - does common lisp
-
-https://jscl-project.github.io/jscl.js
+https://github.com/jscl-project/jscl
 
 -->
 <html>
@@ -97,7 +95,6 @@ OUTPUT:
     (async () => {
         const {code, doEach, doAfter } = await letsGo();
         const compiled = jscl.evaluateString(code);
-        window.foo = compiled;
         (new Array(10)).fill().forEach((x, i) => {
             compiled.fvalue(x => doAfter(`fib(${i}): ${x}\n`), i);
         });
