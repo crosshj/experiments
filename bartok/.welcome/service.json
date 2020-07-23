@@ -53,6 +53,7 @@
         "graph-d3.json": {},
         "graph-d3.2.json": {},
         "golang.go": {},
+        "lisp.lisp": {},
         "php.php": {},
         "ruby.rb": {},
         "styles.css": {},
@@ -102,6 +103,7 @@
         "cljs.html": {},
         "cpp.html": {},
         "lisp.html": {},
+        "php.html": {},
         "pro.html": {},
         "py.html": {},
         "rb.html": {},
@@ -133,6 +135,10 @@
       {
         "name": "py.html",
         "path": ".welcome/tests/py.html"
+      },
+      {
+        "name": "php.html",
+        "path": ".welcome/tests/php.html"
       },
       {
         "name": "pro.html",
@@ -293,6 +299,10 @@
       {
         "name": "golang.go",
         "path": ".welcome/file-examples/golang.go"
+      },
+      {
+        "name": "lisp.lisp",
+        "path": ".welcome/file-examples/lisp.lisp"
       },
       {
         "name": "php.php",

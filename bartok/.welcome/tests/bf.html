@@ -74,21 +74,6 @@ OUTPUT:
     let loading = true;
     outputDOM.innerHTML = '\nloading...';
 
-    const doEach = (a) => {
-        if (loading) {
-            outputDOM.innerHTML = '\n';
-            loading = false;
-        }
-        outputDOM.innerHTML += a;
-    };
-
-    // TODO: is there a better way to tell Opal where to write?
-    window.process = {
-        stdout: {
-            write: doEach
-        }
-    };
-
     const codeFromComment = Array.from(
         document.querySelector('.language-input').childNodes
     )
