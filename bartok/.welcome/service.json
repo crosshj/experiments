@@ -57,6 +57,7 @@
         "php.php": {},
         "prolog.pro": {},
         "ruby.rb": {},
+        "scheme.scm": {},
         "styles.css": {},
         "styles.less": {},
         "styles.scss": {},
@@ -316,6 +317,10 @@
       {
         "name": "ruby.rb",
         "path": ".welcome/file-examples/ruby.rb"
+      },
+      {
+        "name": "scheme.scm",
+        "path": ".welcome/file-examples/scheme.scm"
       },
       {
         "name": "styles.css",
