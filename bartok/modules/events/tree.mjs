@@ -510,10 +510,10 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 		if(tree){
 			try {
 				const storeTree = JSON.parse(sessionStorage.getItem('tree'));
-				console.log(JSON.stringify({
-					oldSelected: storeTree.selected,
-					newSelected: tree.selected
-				}, null, 2));
+				// console.log(JSON.stringify({
+				// 	oldSelected: storeTree.selected,
+				// 	newSelected: tree.selected
+				// }, null, 2));
 				// console.log(JSON.stringify({
 				// 	oldExpanded: storeTree.expanded,
 				// 	newExpanded: tree.expanded

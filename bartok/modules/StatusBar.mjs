@@ -98,7 +98,7 @@ function StatusBar(){
 			docType = 'Plain Text';
 		}
 
-		const capThese = ['css', 'html', 'json', 'xml', 'jsx', 'php'];
+		const capThese = ['css', 'html', 'json', 'xml', 'jsx', 'php', 'sql'];
 		if(docType.toLowerCase && capThese.includes(docType.toLowerCase())){
 			el.classList.add('uppercase');
 		}

@@ -81,6 +81,8 @@
             "/shared/vendor/codemirror/mode/javascript.js",
             "/shared/vendor/codemirror/mode/jsx.js",
             "/shared/vendor/codemirror/mode/xml.js",
+            "/shared/vendor/codemirror/mode/sql.js",
+            "/shared/vendor/codemirror/mode/commonlisp.js",
             "/shared/vendor/codemirror/mode/css.js",
             "/shared/vendor/codemirror/mode/clike.js",
             "/shared/vendor/codemirror/mode/htmlmixed.js",

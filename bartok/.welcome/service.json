@@ -61,6 +61,7 @@
         "styles.css": {},
         "styles.less": {},
         "styles.scss": {},
+        "sql.sql": {},
         "hyperscript.js": {},
         "image.png": {},
         "svg-lock.svg": {},
@@ -313,6 +314,10 @@
       {
         "name": "php.php",
         "path": ".welcome/file-examples/php.php"
+      },
+      {
+        "name": "sql.sql",
+        "path": ".welcome/file-examples/sql.sql"
       },
       {
         "name": "ruby.rb",

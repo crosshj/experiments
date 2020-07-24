@@ -137,6 +137,7 @@
 .icon-slim:before,
 .icon-smarty:before,
 .icon-spring:before,
+.icon-sql:before,
 .icon-stylelint:before,
 .icon-stylus:before,
 .icon-sublime:before,
@@ -162,7 +163,8 @@
 .icon-xml:before,
 .icon-yarn:before,
 .icon-yml:before,
-.icon-zip:before {
+.icon-zip:before,
+.icon-lisp:before {
   font-family: 'seti';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -545,6 +547,13 @@
   content: '\E057';
   color: white;
 }
+.icon-lisp:before {
+  content: 'λ';
+  font-family: monospace;
+  color: #93d493;
+  margin-left: 5.5px;
+  margin-right: -5.5px;
+}
 .icon-lock:before {
   content: '\E058';
   color: white;
@@ -720,6 +729,10 @@
 .icon-stylus:before {
   content: '\E083';
   color: white;
+}
+.icon-sql:before {
+  content: '\E01F';
+  color: #E91E63;
 }
 .icon-sublime:before {
   content: '\E084';

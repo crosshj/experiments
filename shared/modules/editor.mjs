@@ -147,6 +147,14 @@ const setupEditor = (text, opts) => {
 
 let stack = [];
 const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
+	let mode = opts.mode || "javascript";
+	try {
+		mode = opts.mode.name || mode;
+	} catch(e){}
+	if(mode === 'lisp'){
+		opts.mode = 'commonlisp';
+		mode = 'commonlisp';
+	}
 	if(window.EditorLoading){
 		stack.push({
 			text, opts,
@@ -159,11 +167,11 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		return;
 	}
 	if(window.Editor){
-		let mode = opts.mode || "javascript";
-		try {
-			mode = opts.mode.name || mode;
-		} catch(e){}
 		codeMirrorModeJs(mode, () => {
+			if(mode === 'sql'){
+				opts.mode = 'text/x-pgsql';
+			}
+
 			opts.mode = opts.mode.mimeType || opts.mode || mode;
 			window.Editor.toTextArea();
 			const theEditor = setupEditor(text, opts || {});

@@ -21,5 +21,4 @@
                             (* 2 f_m^2)
                             (if (oddp m) -2 2))))))))))
 
-;;; should probably output something like 1->9 results if this will be a standalone file
-;;; that is, it outputs something to a preview pane
+;;; todo: add driver code
