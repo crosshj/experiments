@@ -1,7 +1,9 @@
 /* http://todomvc.com/ - the bartok|react answer */
 
 const App = () => {
-  const { value, addTodo, checkItem, filterTodos } = useStore();
+  const {
+    value, addTodo, checkItem, filterTodos, replaceAll, reorder
+  } = useStore();
   const { todos=[], activeFilter='all' } = value || {};
 
   const add = (event) => {
@@ -10,15 +12,25 @@ const App = () => {
     event.preventDefault();
   };
 
+  const replace = (event, todos) => {
+      replaceAll(todos);
+      event.preventDefault();
+  };
+
   return (
     <div class="app">
       <Style />
       <Header name="⚡ todo ⚡"/>
       <div id="actions-top">
-        <UploadButton />
+        <UploadButton replace={replace} />
         <DownloadButton />
       </div>
-      <Body todos={todos} add={add} check={checkItem}/>
+      <Body
+        todos={todos}
+        add={add}
+        check={checkItem}
+        reorder={reorder}
+      />
       <Footer filter={filterTodos} active={activeFilter}/>
     </div>
   );
@@ -32,7 +44,17 @@ const Header = ({ name }) => {
   );
 };
 
-const Body = ({ todos=[], add, check }) => {
+const Body = ({ todos=[], add, check, reorder }) => {
+
+  const drop = (e) => {
+    const item = e.dataTransfer
+      .getData('text');
+    e.dataTransfer
+      .clearData();
+    e.target.classList.remove('dragOver')
+    const to = event.target.dataset.order;
+    reorder({ item, order: Number(to) - 0.1});
+  };
   return (
     <div class="todo-body">
       <div class="input-container">
@@ -43,13 +65,31 @@ const Body = ({ todos=[], add, check }) => {
       </div>
       <ul>
         {(todos||[]).map((todo, i) => (
-          <li class={todo.status} key={todo.value}>
+          <li
+            data-order={todo.order}
+            class={todo.status}
+            draggable="true"
+            onDragStart={ (e) => {
+              e.dataTransfer
+               .setData('text/plain', event.target.innerText);
+            }}
+            onDragOver={ (e) => {
+              e.preventDefault();
+              e.target.classList.add('dragOver');
+            }}
+            onDragLeave={ e => e.target.classList.remove('dragOver') }
+            onDrop={drop}
+            key={todo.value}
+          >
             <input
               type="checkbox"
+              droppable="false"
               defaultChecked={todo.status==="completed"}
               onChange={() => check(todo.value)}
             />
-            <span>{todo.value}</span>
+            <span
+              droppable="false"
+            >{todo.value}</span>
           </li>
         ))}
       </ul>
@@ -71,6 +111,9 @@ const Footer = ({ filter, active }) => {
 };
 
 const DownloadButton = () => {
+  const { value } = useStore({ filter: 'all'});
+  const { todos=[] } = value || {};
+
   const dateString = (new Date()).toISOString().slice(2,10).replace(/-/g, '')
     + '_'
     + (new Date()).toLocaleString("en-US", {
@@ -78,13 +121,14 @@ const DownloadButton = () => {
         hour: "2-digit",
       hour12: false
     }).replace(":", "");
+  const exportName = `TODO-${dateString}`;
 
-  function downloadMarkDown(exportObj, exportName){
-    const activeItems = exportObj
+  function downloadMarkDown(){
+    const activeItems = todos
       .filter(x => x.status === 'active')
       .map(x => `  - [ ] ${x.value}`)
       .join('\n');
-    const completedItems = exportObj
+    const completedItems = todos
       .filter(x => x.status !== 'active')
       .map(x => `  - [X] ${x.value}`)
       .join('\n');
@@ -105,9 +149,9 @@ ${completedItems}
     downloadAnchorNode.remove();
   }
 
-  function downloadObjectAsJson(exportObj, exportName){
+  function downloadObjectAsJson(){
     var dataStr = "data:text/json;charset=utf-8,"
-      + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+      + encodeURIComponent(JSON.stringify(todos, null, 2));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("target", "_blank");
@@ -117,32 +161,78 @@ ${completedItems}
     downloadAnchorNode.remove();
   }
 
-  const { value } = useStore({ filter: 'all'});
-  const { todos=[] } = value || {};
+  const clickHandler = downloadMarkDown || downloadObjectAsJson;
 
   return (
-    <div className="icon" title="Download all"
-      onClick={() => downloadMarkDown(todos, `TODO-${dateString}`)}
+    <div
+      className="icon"
+      title="Download all"
+      onClick={clickHandler}
     >
       ⭳
     </div>
   );
 };
 
-const UploadButton = () => {
-  const { value } = useStore();
-  const { todos=[], activeFilter='all' } = value || {};
+const UploadButton = ({ replace }) => {
+  const upload = (e) => {
+    e.preventDefault();
+    const confirmed = confirm('This overwrite your current todo list.  Continue?');
+    if(!confirmed){ return; }
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.setAttribute('accept', 'md');
+
+    const parseResults = ({ error, result }) => {
+      if(error){
+        console.error(error);
+        return;
+      }
+      const parsed = result
+        .split('\n')
+        .filter(x => (x||'').includes('- [X]') || (x||'').includes('- [ ]'))
+        .map((x, i) => {
+          if(x.includes('[X]')){
+            return {
+              value: x.split('[X] ')[1],
+              status: 'completed',
+              order: i
+            }
+          }
+          return {
+            value: x.split('[ ] ')[1],
+            status: 'active',
+            order: i
+          };
+        });
+
+
+      fileInput.value = '';
+      fileInput.remove && fileInput.remove();
+      replace(e, parsed);
+    };
+
+
+    fileInput.onchange = e => {
+      const readerOne = new FileReader();
+      readerOne.onerror = () => parseResults(readerOne);
+      readerOne.onload = () => parseResults(readerOne);
+      readerOne.readAsText(e.target.files[0]);
+    };
+
+    fileInput.click();
+  };
 
   return (
     <div className="icon" title="Upload Todo's"
-      onClick={() => alert('coming soon')}
+      onClick={upload}
     >
       ⭱
     </div>
   );
 };
 
-// state, using hooks
 function useStore({ filter }={}) {
   let [value, setValue] = useState(0);
 
@@ -152,6 +242,25 @@ function useStore({ filter }={}) {
       value = JSON.parse(ls);
     }
   }
+
+  const reorder = useCallback(({ item, order }) => {
+    const { todos = [], activeFilter='all' } = value;
+
+    todos.find(x => x.value === item).order = order;
+
+    setValue({
+      todos,
+      activeFilter
+    });
+  }, [value]);
+
+  const replaceAll = useCallback((submitted) => {
+    const { todos = [], activeFilter='all' } = value;
+    setValue({
+      todos: submitted,
+      activeFilter
+    });
+  }, [value]);
 
   const addTodo = useCallback((submitted) => {
     const { todos = [], activeFilter='all' } = value;
@@ -192,21 +301,30 @@ function useStore({ filter }={}) {
       activeFilter: undefined
     };
 
-  // sort by status, then alpha
-  state.todos = (state.todos||[]).sort((a, b) => {
+  // sort by status, then order, then alpha
+  state.todos = (state.todos||[])
+    .sort((a, b) => {
       if (a.status==="active" && b.status==="completed"){ return -1; }
       if (a.status==="completed" && b.status==="active") { return 1; }
+      if (a.order < b.order){ return -1; }
+      if (a.order > b.order){ return 1; }
       const A = a.value.toUpperCase();
       const B = b.value.toUpperCase();
       if (A < B) { return -1; }
       if (A > B) { return 1; }
       return 0;
-  });
+    })
+    .map((x, i) => {
+      x.order = i;
+      return x;
+    });
 
   localStorage.setItem('react-todo', JSON.stringify(value));
 
   return {
     value: state,
+    replaceAll,
+    reorder,
     addTodo,
     checkItem,
     filterTodos
@@ -321,12 +439,38 @@ const Style = () => {
         font-weight: 100;
       }
       li {
-        margin-bottom: 9px;
-        text-indent: -19px;
+        padding: 0px 50px 0px 18px;
+        margin-left: -39px;
+        margin-right: -17px;
+        display: flex;
+        height: 40px;
+        align-items: center;
+      }
+      li:after {
+        content: '≡';
+        position: absolute;
+        right: 56px;
+        font-stretch: ultra-expanded;
+        color: transparent;
+      }
+      li:hover {
+        color: black !important;
+        background: #999999;
+      }
+      li:hover:after,
+      li:hover span,
+      li:hover input {
+        color: inherit;
+      }
+      li:after,
+      li span {
+        pointer-events: none;
       }
       li.completed span {
-        /*text-decoration: line-through;*/
         color: #6e6e6e;
+      }
+      li.dragOver {
+          border-top: 1px solid;
       }
       input[type="checkbox"] {
         left: -18px;

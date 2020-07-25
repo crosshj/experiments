@@ -6,6 +6,8 @@ html, body {
   /* disable mac navigating forward or back */
   overscroll-behavior-x: none;
 
+  overflow: hidden;
+
   /* font-family: Consolas, 'Courier New', monospace; */
   font-family: -apple-system,BlinkMacSystemFont,sans-serif;
   font-size: 13px;
