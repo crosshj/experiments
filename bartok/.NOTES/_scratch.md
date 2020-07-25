@@ -1,3 +1,21 @@
+why I keep vscode open
+======================
+
+- no search in project
+- no search in file
+- cant CRUD/save a file with service worker
+
+- awkward integration with file system
+- buggy file management
+
+- can't dev/edit bartok in bartok
+
+- doesn't recall code collapse or scroll position
+- highlight is weird
+
+- service worker flow is not merged to main flow
+
+
 
 REALLY NEED THE FOLLOWING
 =========================
