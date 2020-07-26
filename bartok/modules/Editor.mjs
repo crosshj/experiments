@@ -141,6 +141,89 @@ const List = () => ({ services }) => {
 	return listDiv;
 };
 
+const Search = () => {
+	const searchDiv = document.createElement('div');
+	searchDiv.id = 'file-search';
+	searchDiv.innerHTML = `
+		<style>
+			#file-search {
+				visibility: hidden;
+				position: absolute;
+				background: var(--theme-subdued-color);
+				z-index: 5;
+				right: 0;
+				width: 95%;
+				height: 33px;
+				max-width: 38em;
+				box-shadow: 0 5px 3px 0px #000000;
+				border-left: 3px solid var(--main-theme-background-color);
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				cursor: default;
+				margin-right: 0.65em;
+			}
+			.collapse-handle {
+				width: 1.3em;
+				text-align: center;
+				font-stretch: expanded;
+				font-family: monospace;
+				font-size: 1.2em;
+			}
+			.search-field {
+				margin-left: 0;
+				flex: 1;
+				height: 75%;
+			}
+			.search-field input {
+				height: 100% !important;
+				background: var(--main-theme-background-color) !important;
+				margin: 0 !important;
+				border: 0 !important;
+				color: var(--main-theme-text-color);
+				padding-left: .5em !important;
+				padding-right: .5em !important;
+				font-size: 1.1em !important;
+				box-sizing: border-box !important;
+			}
+			.search-field input:focus {
+				border: 1px solid !important;
+				box-shadow: none !important;
+				border-color: var(--main-theme-highlight-color) !important;
+			}
+			.search-count {
+				margin-left: 0.5em;
+				margin-right: auto;
+				min-width: 5em;
+			}
+			.search-controls {
+				margin-right: 1em;
+				font-family: monospace;
+				font-size: 1.1em;
+			}
+			.search-controls span {
+				min-width: .8em;
+				display: inline-block;
+				cursor: pointer;
+				text-align: center;
+			}
+		</style>
+		<div class="collapse-handle">></div>
+		<div class="search-field"><input type="text" /></div>
+		<div class="search-count">
+			<span class="search-count-current">3</span>
+			<span>of</span>
+			<span class="search-count-total">5</span>
+		</div>
+		<div class="search-controls">
+			<span class="search-up">↑</span>
+			<span class="search-down">↓</span>
+			<span class="search-close">X</span>
+		</div>
+	`;
+	return searchDiv;
+};
+
 //const BLANK_CODE_PAGE = `${(new Array(99)).fill().join('\n')}`;
 const BLANK_CODE_PAGE = '';
 const inlineEditor = (ChangeHandler) => ({
@@ -174,6 +257,8 @@ const inlineEditor = (ChangeHandler) => ({
 			? [{ name, active: true }]
 			: undefined
 		));
+
+		editorDiv.appendChild(Search());
 
 		const editorTextArea = document.createElement('textarea');
 		editorTextArea.id = "service_code";
