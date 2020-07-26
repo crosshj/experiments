@@ -200,6 +200,7 @@ const Search = () => {
 				margin-right: 1em;
 				font-family: monospace;
 				font-size: 1.1em;
+				user-select: none;
 			}
 			.search-controls span {
 				min-width: .8em;

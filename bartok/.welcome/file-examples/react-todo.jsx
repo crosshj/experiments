@@ -364,6 +364,7 @@ const Style = () => {
       .todo-body ul {
         display: block;
         overflow: auto;
+        overflow-x: hidden;
         position: absolute;
         top: 130px;
         bottom: 2.4em;
@@ -443,8 +444,9 @@ const Style = () => {
         margin-left: -39px;
         margin-right: -17px;
         display: flex;
-        height: 40px;
+        min-height: 40px;
         align-items: center;
+        word-break: break-word;
       }
       li:after {
         content: '≡';

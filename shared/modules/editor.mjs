@@ -55,7 +55,7 @@ const cmVSCodeUrl = "../shared/css/vscode.codemirror.css";
 const codeMirrorJsUrl = "../shared/vendor/codemirror.js";
 const codeMirrorScrollPastUrl = "../shared/vendor/codemirror-scrollpastend.js";
 const codeMirrorShowInvisibles = "../shared/vendor/codemirror-show-invisibles.js"
-const codeMirrorSearchCursor = "../shared/vendor/codemirror-searchcursor.js";
+const codeMirrorSearch = "../shared/vendor/codemirror-search.js";
 
 const codeMirrorJsSyntaxUrl = "../shared/vendor/codemirror/mode/javascript.js";
 
@@ -90,7 +90,7 @@ const codeMirrorCss = (callback) => {
 const codeMirrorJs = (callback) => {
 	appendScript(codeMirrorJsUrl, () => {
 		appendScript(codeMirrorFoldBundleUrl, () => {
-			appendScript(codeMirrorSearchCursor, () => {
+			appendScript(codeMirrorSearch, () => {
 				appendScript(codeMirrorScrollPastUrl, () => {
 					appendScript(codeMirrorShowInvisibles, callback);
 				});

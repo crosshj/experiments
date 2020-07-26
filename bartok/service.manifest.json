@@ -76,7 +76,7 @@
             "/shared/vendor/codemirror/addons/_fold.bundle.js",
             "/shared/vendor/codemirror-scrollpastend.js",
             "/shared/vendor/codemirror-show-invisibles.js",
-            "/shared/vendor/codemirror-searchcursor.js",
+            "/shared/vendor/codemirror-search.js",
 
             "/shared/vendor/codemirror/mode/javascript.js",
             "/shared/vendor/codemirror/mode/jsx.js",
