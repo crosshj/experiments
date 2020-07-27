@@ -185,13 +185,15 @@ const Search = () => {
 				padding-right: .5em !important;
 				font-size: 1.1em !important;
 				box-sizing: border-box !important;
+				transition: unset !important;
 			}
 			.search-field input:focus {
 				border: 1px solid !important;
 				box-shadow: none !important;
-				border-color: var(--main-theme-highlight-color) !important;
+				border-color: rgb(var(--main-theme-highlight-color)) !important;
 			}
-			.search-count {
+			.search-count,
+			.search-no-results {
 				margin-left: 0.5em;
 				margin-right: auto;
 				min-width: 5em;
@@ -210,12 +212,15 @@ const Search = () => {
 			}
 		</style>
 		<div class="collapse-handle">></div>
-		<div class="search-field"><input type="text" /></div>
-		<div class="search-count">
-			<span class="search-count-current">3</span>
-			<span>of</span>
-			<span class="search-count-total">5</span>
+		<div class="search-field">
+			<input type="text" placeholder="Find" />
 		</div>
+		<div class="search-count hidden">
+			<span class="search-count-current">X</span>
+			<span>of</span>
+			<span class="search-count-total">Y</span>
+		</div>
+		<span class="search-no-results">No results</span>
 		<div class="search-controls">
 			<span class="search-up">↑</span>
 			<span class="search-down">↓</span>

@@ -55,6 +55,17 @@ const Body = ({ todos=[], add, check, reorder }) => {
     const to = event.target.dataset.order;
     reorder({ item, order: Number(to) - 0.1});
   };
+
+  const seperatorRowClass = ({ value }) => {
+    const seperators = [
+      '-----', '=====', '*****', '~~~~~', '#####'
+    ];
+    const isSeperator = seperators.find(x => value.includes(x));
+    return isSeperator
+      ? ' seperator'
+      : '';
+  };
+
   return (
     <div class="todo-body">
       <div class="input-container">
@@ -67,11 +78,11 @@ const Body = ({ todos=[], add, check, reorder }) => {
         {(todos||[]).map((todo, i) => (
           <li
             data-order={todo.order}
-            class={todo.status}
+            class={todo.status + seperatorRowClass(todo)}
             draggable="true"
             onDragStart={ (e) => {
               e.dataTransfer
-               .setData('text/plain', event.target.innerText);
+               .setData('text/plain', todo.value);
             }}
             onDragOver={ (e) => {
               e.preventDefault();
@@ -439,6 +450,36 @@ const Style = () => {
         user-select: none;
         font-weight: 100;
       }
+      li.seperator:before {
+        content: '';
+        display: block;
+        height: 1px;
+        background: repeating-linear-gradient(
+          to right,
+          #9999997a,
+          #9999997a 4px,
+          transparent 10px,
+          transparent 15px
+        );
+        position: absolute;
+        left: 10px;
+        right: 30px;
+      }
+      li.seperator:hover:before{
+        background: repeating-linear-gradient(
+          to right,
+          #00000059,
+          #00000059 4px,
+          transparent 10px,
+          transparent 15px
+        );
+      }
+      li.seperator input {
+        display: none;
+      }
+      li.seperator span {
+          display: none;
+      }
       li {
         padding: 0px 50px 0px 18px;
         margin-left: -39px;
@@ -447,11 +488,12 @@ const Style = () => {
         min-height: 40px;
         align-items: center;
         word-break: break-word;
+        position: relative;
       }
       li:after {
         content: '≡';
         position: absolute;
-        right: 56px;
+        right: 10px;
         font-stretch: ultra-expanded;
         color: transparent;
       }

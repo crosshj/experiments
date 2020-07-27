@@ -10,12 +10,17 @@ function ActionBar(){
 	actionBar.innerHTML = `
 	<style>
 		#project-splitter #actionbar {
-			flex: 1; display: flex; flex-direction: column;
+			flex: 1;
+			display: flex;
+			flex-direction: column;
 			width: 50px;
 			min-width: 50px;
 			max-width: 50px;
 			justify-content: space-between;
 			padding: 10px 0px;
+			background-color: var(--main-theme-background-color);
+			height: 100%;
+			z-index: 999999;
 		}
 		#actionbar a {
 			display: flex;

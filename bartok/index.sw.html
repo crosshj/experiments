@@ -339,12 +339,15 @@
       sheet.disabled = true;
       sheet.parentNode.removeChild(sheet);
 
-      document.body.classList.remove('loading')
+      document.body.classList.remove('loading');
+      document.body.style.backgroundColor = "rgb(29, 29, 29)";
 
       for(var i=0, len=components.length; i<len; i++){
         (await components[i]())();
       }
     };
+
+    window.loadUI = loadUI;
 
     const button = document.querySelector('#worker-message');
     button.addEventListener('click', loadUI);
@@ -361,9 +364,9 @@
 
     //TODO: should listen for message from iframe before deleting it
     setTimeout(x => {
-      document.body.removeChild(bootframe);
+      //document.body.removeChild(bootframe);
       callback && callback();
-    }, 5000);
+    }, 10000);
   }
   window.boot = bootIframe;
   const moduleCache = localStorage.getItem('moduleCache');
@@ -371,6 +374,8 @@
     boot(() => {
       document.location.reload();
     });
+  } else {
+    loadUI();
   }
 </script>
 

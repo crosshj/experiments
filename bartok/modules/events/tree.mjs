@@ -42,40 +42,6 @@ const fileTreeConvert = (input, converted=[]) => {
 	});
 };
 
-const treeMenu = ({ title }) => {
-	const treeMenu = document.querySelector('#explorer #tree-menu');
-	const menuInnerHTML = `
-		<div class="title-label">
-			<h2 title="${title}">${title}</h2>
-		</div>
-		<div class="title-actions">
-			<div class="monaco-toolbar">
-					<div class="monaco-action-bar animated">
-						<ul class="actions-container">
-								<li class="action-item hidden">
-									<a class="action-label icon explorer-action new-file" role="button" title="New File">
-									</a>
-								</li>
-								<li class="action-item hidden">
-									<a class="action-label icon explorer-action new-folder" role="button" title="New Folder">
-									</a>
-								</li>
-								<li class="action-item hidden">
-									<a class="action-label icon explorer-action refresh-explorer" role="button" title="Refresh Explorer">
-									</a>
-								</li>
-								<li class="action-item hidden">
-									<a class="action-label icon explorer-action collapse-explorer" role="button" title="Collapse Folders in Explorer">
-									</a>
-								</li>
-						</ul>
-					</div>
-			</div>
-		</div>
-	`;
-	treeMenu.innerHTML = menuInnerHTML;
-}
-
 function getFileType(fileName=''){
 	let type = 'default';
 	const extension = ((
@@ -268,7 +234,7 @@ const searchProject = ({ showSearch, hideSearch }) => {
 
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
 // new tree is created when: switch/open project, add file, ...
-function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch }){
+function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch, updateTreeMenu }){
 	const listener = async function (e) {
 		const { id, result, op } = e.detail;
 
@@ -348,7 +314,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch 
 			//converted[0].expanded = true;
 
 			const projectName = converted[0].name;
-			treeMenu({ title: projectName });
+			updateTreeMenu({ project: projectName });
 
 			const children = converted[0].children; // don't use "tree trunk" folder
 
@@ -365,7 +331,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch 
 			sessionStorage.setItem('tree', JSON.stringify({ data: childrenSorted }));
 		} else {
 			if(result && result[0] && result[0].name){
-				treeMenu({ title: result[0].name });
+				updateTreeMenu({ project: result[0].name });
 			}
 			childrenSorted = treeFromStorage.data;
 		}

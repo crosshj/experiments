@@ -68,7 +68,7 @@ function ContextPane() {
 	pointer-events: none; /* so clicks are never registered on this element */
 }
 .ContextMenu .list .item:hover {
-	background: var(--main-theme-highlight-color);
+	background: rgb(var(--main-theme-highlight-color));
 }
 .ContextMenu .list .item {
 	line-height: 0;

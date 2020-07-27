@@ -56,17 +56,21 @@ this file is a bundle of many search addons
         to: cm.state.search.posTo
       };
       const matches = cm.state.search.annotate.matches
+        .sort((a, b) => a.from.line - b.from.line)
         .map(x => `${x.from.line}-${x.from.ch}-${x.to.line}-${x.to.ch}`);
       let currentResult;
       const currentMatch = `${current.from.line}-${current.from.ch}-${current.to.line}-${current.to.ch}`;
-      for (let i = 0, len = matches.length; i < len; i++) {
-        if (matches[i] === currentMatch) {
-          currentResult = i + 1;
+      for (let i = 1, len = matches.length; i <= len; i++) {
+        if (matches[i-1] === currentMatch) {
+          currentResult = i;
         }
       }
-      return { matches, currentResult };
+      return {
+        current: currentResult,
+        total: matches.length,
+        currentResult, matches };
     } catch(e) {
-      return;
+      return {};
     }
   }
 
@@ -82,6 +86,8 @@ this file is a bundle of many search addons
     const searchInput = document.querySelector('#file-search input');
 
     const searchClose = document.querySelector('.search-close');
+    const searchCount =  document.querySelector('.search-count');
+    const searchNoResults = document.querySelector('.search-no-results');
     const searchCurrent =  document.querySelector('.search-count-current');
     const searchTotal =  document.querySelector('.search-count-total');
     const searchUp = document.querySelector('.search-up');
@@ -93,49 +99,67 @@ this file is a bundle of many search addons
     };
     searchUp.onclick = () => {
       CodeMirror.commands.findPersistentPrev(cm);
-      var { matches, currentResult } = searchDetails(cm);
-      searchCurrent.innerText = currentResult === 1
-            ? matches.length
-            : currentResult - 1;
+      const { current } = searchDetails(cm);
+      searchCurrent.innerText = current;
     }
     searchDown.onclick = () => {
       CodeMirror.commands.findPersistentNext(cm);
-      var { matches, currentResult } = searchDetails(cm);
-      searchCurrent.innerText = currentResult === matches.length
-            ? 1
-            : currentResult + 1;
+      const { current } = searchDetails(cm);
+      searchCurrent.innerText = current;
     }
 
     searchInput.focus();
     searchInput.select();
 
-
-
     let currentSearchTerm = '';
+    if(searchInput.value){
+      currentSearchTerm = searchInput.value;
+      callback(searchInput.value);
+      const { current, total } = searchDetails(cm);
+      if(total && total > 0){
+        searchCount.classList.remove('hidden');
+        searchNoResults.classList.add('hidden');
+      } else {
+        searchCount.classList.add('hidden');
+        searchNoResults.classList.remove('hidden');
+      }
+      searchTotal.innerText = total;
+      searchCurrent.innerText = current;
+    }
+
     CodeMirror.on(searchInput, "keydown", function(e) {
       if (options && options.onKeyDown && options.onKeyDown(e, searchInput.value, close)) {
         return;
       }
       if (e.keyCode == 27 || (options.closeOnEnter !== false && e.keyCode == 13)) {
+        callback('', e);
         searchInput.blur();
         CodeMirror.e_stop(e);
+        searchCount.classList.add('hidden');
+        searchNoResults.classList.remove('hidden');
+        CodeMirror.commands.clearSearch(cm);
         close();
         cm.focus();
       }
       if (e.keyCode == 13) {
         if(currentSearchTerm === searchInput.value){
           CodeMirror.commands.findPersistentNext(cm);
-          var { matches, currentResult } = searchDetails(cm);
-          searchCurrent.innerText = currentResult === matches.length
-            ? 1
-            : currentResult + 1;
+          var { current } = searchDetails(cm);
+          searchCurrent.innerText = current;
         } else {
+          CodeMirror.commands.clearSearch(cm);
           currentSearchTerm = searchInput.value;
           callback(searchInput.value, e);
-          var { matches, currentResult } = searchDetails(cm);
-          const numberOfResults = matches.length;
-          searchTotal.innerText = numberOfResults;
-          searchCurrent.innerText = currentResult;
+          var { current, total } = searchDetails(cm);
+          if(total && total > 0){
+            searchCount.classList.remove('hidden');
+            searchNoResults.classList.add('hidden');
+          } else {
+            searchCount.classList.add('hidden');
+            searchNoResults.classList.remove('hidden');
+          }
+          searchTotal.innerText = total;
+          searchCurrent.innerText = current;
         }
       }
     });
@@ -746,7 +770,8 @@ this file is a bundle of many search addons
       if (!cursor.find(rev)) return;
     }
     cm.setSelection(cursor.from(), cursor.to());
-    cm.scrollIntoView({from: cursor.from(), to: cursor.to()}, 20);
+    const { clientHeight } = cm.getScrollInfo()
+    cm.scrollIntoView({from: cursor.from(), to: cursor.to()}, clientHeight/2 - 50);
     state.posFrom = cursor.from(); state.posTo = cursor.to();
     if (callback) callback(cursor.from(), cursor.to())
   });}

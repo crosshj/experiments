@@ -17,8 +17,17 @@ function StatusBar(){
 			height: 22px;
 			font-size: 12px;
 			padding: 2px 10px;
+		}
+		#status-bar .bg {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
 			background: #1f476b;
 			background: #4f263d;
+			background: rgb(var(--main-theme-highlight-color));
+			filter: brightness(0.6);
 		}
 		#status-bar, #status-bar * {
 			cursor: default;
@@ -37,6 +46,8 @@ function StatusBar(){
 			text-transform: uppercase !important;
 		}
 	</style>
+
+	<div class="bg"></div>
 
 	<div class="statusbar-item statusbar-entry left" statusbar-entry-priority="10000" statusbar-entry-alignment="0">
 		<a title="">bartok v0.4</a>
