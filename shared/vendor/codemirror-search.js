@@ -92,18 +92,18 @@ this file is a bundle of many search addons
       cm.focus();
     };
     searchUp.onclick = () => {
+      CodeMirror.commands.findPersistentPrev(cm);
       var { matches, currentResult } = searchDetails(cm);
       searchCurrent.innerText = currentResult === 1
             ? matches.length
             : currentResult - 1;
-      CodeMirror.commands.findPersistentPrev(cm);
     }
     searchDown.onclick = () => {
+      CodeMirror.commands.findPersistentNext(cm);
       var { matches, currentResult } = searchDetails(cm);
       searchCurrent.innerText = currentResult === matches.length
             ? 1
             : currentResult + 1;
-      CodeMirror.commands.findPersistentNext(cm);
     }
 
     searchInput.focus();
@@ -124,11 +124,11 @@ this file is a bundle of many search addons
       }
       if (e.keyCode == 13) {
         if(currentSearchTerm === searchInput.value){
+          CodeMirror.commands.findPersistentNext(cm);
           var { matches, currentResult } = searchDetails(cm);
           searchCurrent.innerText = currentResult === matches.length
             ? 1
             : currentResult + 1;
-          CodeMirror.commands.findPersistentNext(cm);
         } else {
           currentSearchTerm = searchInput.value;
           callback(searchInput.value, e);

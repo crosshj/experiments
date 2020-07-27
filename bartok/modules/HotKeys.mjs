@@ -25,8 +25,13 @@ function triggerEvent(name){
 }
 
 function HotKeys(){
-
+	const useCapture = true;
 	document.addEventListener('keydown', function(event) {
+		if ((event.ctrlKey || event.metaKey) && event.key === 'F') {
+			triggerEvent("searchProject");
+			event.preventDefault();
+			return false;
+		}
 		if ((event.ctrlKey || event.metaKey) && event.key === 's') {
 			triggerEvent("update");
 			event.preventDefault();
@@ -38,7 +43,7 @@ function HotKeys(){
 			event.preventDefault();
 			return false;
 		}
-	});
+	}, useCapture);
 
 }
 

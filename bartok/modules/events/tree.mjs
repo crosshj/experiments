@@ -259,10 +259,16 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 	}
 };
 
+const searchProject = ({ showSearch, hideSearch }) => {
+	//TODO: keep track of search state
+
+	showSearch({ show: !hideSearch });
+};
+
 
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
 // new tree is created when: switch/open project, add file, ...
-function attachListener(treeView, JSTreeView, updateTree, { newFile }){
+function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch }){
 	const listener = async function (e) {
 		const { id, result, op } = e.detail;
 
@@ -358,6 +364,9 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 			childrenSorted = [...folders, ...files];
 			sessionStorage.setItem('tree', JSON.stringify({ data: childrenSorted }));
 		} else {
+			if(result && result[0] && result[0].name){
+				treeMenu({ title: result[0].name });
+			}
 			childrenSorted = treeFromStorage.data;
 		}
 
@@ -527,6 +536,32 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile }){
 		}
 		return result;
 	};
+
+	// triggered by Hot Key
+	attach({
+		name: 'Explorer',
+		eventName: 'operations',
+		listener: (event) => {
+			const { detail={} } = event;
+			const { operation } = detail;
+			if(operation !== "searchProject"){
+				return;
+			}
+			searchProject({ showSearch });
+		}
+	});
+	// triggered by Action Bar
+	attach({
+		name: 'Explorer',
+		eventName: 'showSearch',
+		listener: (event) => searchProject({ showSearch, hideSearch: false })
+	});
+
+	attach({
+		name: 'Explorer',
+		eventName: 'showServiceCode',
+		listener: (event) => searchProject({ showSearch, hideSearch: true })
+	});
 
 	attach({
 		name: 'Explorer',

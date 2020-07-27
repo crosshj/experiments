@@ -14,10 +14,11 @@ const templatesListener = ({ updateTemplates }) => (event) => {
 
 	const isUpdateRequest = operation === "update";
 	const isPersistRequest = operation === "persist";
+	const isSearchProject = operation === "searchProject";
 
 
 	// readAllServices and isPersist might be useful for service level templates
-	if(readAllServices || isUpdateRequest || isPersist || isPersistRequest){
+	if(isSearchProject || readAllServices || isUpdateRequest || isPersist || isPersistRequest){
 		return;
 	}
 

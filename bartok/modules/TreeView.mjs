@@ -22,7 +22,8 @@ const getTreeViewDOM = ({ contextHandler } = {}) => {
 	const _tree = document.createElement('div');
 	_tree.id = 'tree-view';
 
-	const showOpenService = true;
+	// TODO: this should be shown when we know that no service is selected
+	const showOpenService = false;
 	if(showOpenService){
 		const opener = document.createElement('div');
 		opener.innerHTML = `
@@ -53,13 +54,33 @@ const getTreeViewDOM = ({ contextHandler } = {}) => {
 		`;
 		_tree.appendChild(opener);
 	}
+	const search = document.createElement('div');
+	search.innerHTML = `
+		<style>
+		.tree-search {
+			display: flex;
+			flex-direction: column;
+			padding: 0px 20px;
+			margin-right: 17px;
+		}
+		.tree-search p {
+			white-space: normal;
+		}
+		</style>
+		<div class="tree-search" style="visibility:hidden; height: 0;">
+			<p>THIS IS WHERE PROJECT SEARCH GOES!</p>
+		</div>
+	`;
+
 	// _tree.classList.add(
 	// 	'sidenav', 'sidenav-fixed'
 	// );
 	const _treeMenu = document.createElement('div');
 	_treeMenu.id="tree-menu";
 	_treeMenu.classList.add("row", "no-margin");
+
 	explorerPane.appendChild(_treeMenu);
+	explorerPane.appendChild(search);
 	explorerPane.appendChild(_tree);
 
 	return _tree;
@@ -133,6 +154,20 @@ function newFile({ onDone }){
 
 window.newFile = newFile; //TODO: kill this some day
 
+const showSearch = (treeView) => ({ show }) => {
+	if(show){
+		treeView.style.visibility = 'hidden';
+		treeView.style.height = 0;
+		treeView.parentNode.querySelector('.tree-search').style.visibility = 'visible';
+		treeView.parentNode.querySelector('.tree-search').style.height = '';
+	} else {
+		treeView.style.visibility = 'visible';
+		treeView.style.height = '';
+		treeView.parentNode.querySelector('.tree-search').style.visibility = 'hidden';
+		treeView.parentNode.querySelector('.tree-search').style.height = 0;
+	}
+};
+
 function _TreeView(op){
 	if(op === "hide"){
 		const prevTreeView = document.querySelector('#tree-view');
@@ -144,7 +179,15 @@ function _TreeView(op){
 	const treeView = getTreeViewDOM();
 	treeView.style.display = "";
 
-	attachListener(treeView, JSTreeView, updateTree(treeView), { newFile });
+	attachListener(
+		treeView,
+		JSTreeView,
+		updateTree(treeView),
+		{
+			newFile,
+			showSearch: showSearch(treeView)
+		}
+	);
 }
 
 export default _TreeView;

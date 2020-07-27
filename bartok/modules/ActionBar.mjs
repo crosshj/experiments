@@ -1,4 +1,4 @@
-
+import { attach } from './Listeners.mjs';
 
 let actionBar;
 function ActionBar(){
@@ -80,7 +80,7 @@ function ActionBar(){
 					<!-- a></a -->
 					<i class="material-icons">code</i>
 				</li>
-				<li class="search hidden" role="button" title="Search">
+				<li class="search" role="button" title="Search">
 					<i class="material-icons">search</i>
 					<!-- a></a -->
 				</li>
@@ -123,7 +123,7 @@ function ActionBar(){
 		query: 'li.explorer',
 		action: 'showServiceCode'
 	}, {
-		query: 'li.search ',
+		query: 'li.search',
 		action: 'showSearch'
 	}, {
 		query: 'li.services',
@@ -134,9 +134,9 @@ function ActionBar(){
 		actionBar
 			.querySelector(event.query)
 			.addEventListener("click", (e) => {
-				if(event.action === "showSearch"){
-					return;
-				}
+				// if(event.action === "showSearch"){
+				// 	return;
+				// }
 				//debugger;
 				let target = e.target;
 				if(target.tagName == 'I'){
@@ -146,12 +146,30 @@ function ActionBar(){
 					.classList.remove('checked');
 				target.classList.add('checked');
 
+				//TODO: should trigger event here in a standard way!!!
+
 				const actionBarEvent = new CustomEvent(event.action, {
 					bubbles: true,
 					detail: { }
 				});
 				document.body.dispatchEvent(actionBarEvent);
 			});
+	});
+
+	attach({
+		name: 'ActionBar',
+		eventName: 'operations',
+		listener: (event) => {
+			const { detail={} } = event;
+			const { operation } = detail;
+			if(operation !== "searchProject"){
+				return;
+			}
+			actionBar.querySelector('.checked')
+				.classList.remove('checked');
+			actionBar.querySelector('li.search')
+				.classList.add('checked');
+		}
 	});
 
 }

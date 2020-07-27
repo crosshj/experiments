@@ -33,6 +33,11 @@ function attachListener({
 	});
 	attach({
 		name: 'Service Map',
+		eventName: 'showSearch',
+		listener: hideServiceMapHandler(hideServiceMap)
+	});
+	attach({
+		name: 'Service Map',
 		eventName: 'showServiceCode',
 		listener: hideServiceMapHandler(hideServiceMap)
 	});
