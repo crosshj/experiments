@@ -1,7 +1,7 @@
 why I keep vscode open
 ======================
 
-- [ ] no search in file
+- [X] no search in file
 - [ ] no search in project / folder
 - [ ] cant CRUD/save a file with service worker
 
@@ -14,6 +14,10 @@ why I keep vscode open
 - [ ] highlight is weird
 
 - [ ] service worker flow is not merged to main flow
+
+DEPLOY | VERSION CONTROL
+------------------------
+- https://app.diagrams.net/#G18h5403wK012mFwEuMETVVnQiyZmXPJOy
 
 
 
@@ -311,6 +315,8 @@ PREVIEW
 
 UNSORTED
 ========
+
+- https://markmap.js.org/repl/ - markdown as mindmap
 
 - node in the browser (and for that matter, the other language runtimes or emulators)
   https://blog.cloudboost.io/how-to-run-node-js-apps-in-the-browser-3f077f34f8a5

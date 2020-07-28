@@ -210,6 +210,9 @@ const Search = () => {
 				cursor: pointer;
 				text-align: center;
 			}
+			#file-search ::placeholder {
+				color: var(--main-theme-text-invert-color);
+			}
 		</style>
 		<div class="collapse-handle">></div>
 		<div class="search-field">
