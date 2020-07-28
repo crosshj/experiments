@@ -176,6 +176,7 @@ websocket from service worker?
 - collaboration
   - https://github.com/lesmana/webrtc-without-signaling-server
   - https://github.com/cjb/serverless-webrtc
+  - https://peerjs.com/
 - [X] read bartok web in bartok web
 - [ ] write bartok web in bartok web
 - require an npm package (and use it)
@@ -474,3 +475,12 @@ web assembly
 ============
 
 - https://www.toptal.com/virtual-reality/assemblyscript-and-webassembly-tutorial
+
+
+syntax highlighting, etc
+========================
+
+- https://highlightjs.org/static/demo/
+- https://highlightjs.org/usage/
+- https://ourcodeworld.com/articles/read/309/top-5-best-code-editor-plugins-written-in-javascript
+
