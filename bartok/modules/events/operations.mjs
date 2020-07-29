@@ -236,10 +236,25 @@ const operationsHandler = ({
 	getOperations, getReadAfter, getUpdateAfter,
 	performOperation, operationsListener
 }) => (event) => {
-	//find the operation
-	//wrangle context(state?)?
-	//execute operation with context
-	//debugger;
+	try {
+		const dummyFunc = () => {
+			debugger;
+			return {};
+		};
+		const updateAfter = getUpdateAfter(dummyFunc, dummyFunc, dummyFunc);
+		const readAfter = getReadAfter(dummyFunc);
+
+		const allOperations = getOperations(updateAfter, readAfter);
+		console.log({ allOperations, event })
+		const foundOp = allOperations.find(x => x.name === event.detail.operation);
+		const eventData = event.detail.body;
+		performOperation(foundOp, eventData, externalStateRequest);
+		//wrangle context(state?)?
+		//execute operation with context
+		//debugger;
+	} catch(e){
+		console.error(e);
+	}
 };
 
 const handlers = {

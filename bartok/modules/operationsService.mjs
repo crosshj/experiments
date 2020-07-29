@@ -129,6 +129,8 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 		delete op.config.body;
 	}
 
+	op.url = op.url.replace('bartok/', '');
+
 	//, externalStateRequest
 	const result = await externalStateRequest(op);
 

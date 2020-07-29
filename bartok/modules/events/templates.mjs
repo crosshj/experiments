@@ -15,10 +15,14 @@ const templatesListener = ({ updateTemplates }) => (event) => {
 	const isUpdateRequest = operation === "update";
 	const isPersistRequest = operation === "persist";
 	const isSearchProject = operation === "searchProject";
+	const isCreateProject = operation === 'create';
 
+	const ignoreThese = [
+		isSearchProject, readAllServices, isUpdateRequest, isPersist, isPersistRequest, isCreateProject
+	];
 
 	// readAllServices and isPersist might be useful for service level templates
-	if(isSearchProject || readAllServices || isUpdateRequest || isPersist || isPersistRequest){
+	if(ignoreThese.find(x => !!x)){
 		return;
 	}
 

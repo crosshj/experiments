@@ -179,13 +179,15 @@ let lsServices = [];
 // enter path expression; include regex for base path, eg. (.*)/.welcome/:path?
 // get the regex and add it to this
 const pathToRegex = {
-    '/service/create': (() => {
+    '/service/create/:id?': (() => {
         const regex = new RegExp(
-            /^((?:.*))\/service\/create(?:\/(?=$))?$/i
+            /^((?:.*))\/service\/create(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
         );
         return {
             match: url => regex.test(url),
-            params: () => ({})
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
         }
     })(),
     '/service/read/:id?': (() => {
@@ -199,8 +201,63 @@ const pathToRegex = {
             })
         }
     })(),
+    '/service/update/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/update(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/service/delete/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/delete(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/manage/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/manage(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/monitor/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/monitor(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/persist/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/persist(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
     '/.welcome/:path?': (() => {
-        // WARNING: this is actually the regex for (.*)/.welcome/(.*)
+        // NOTE: this is actually the regex for (.*)/.welcome/(.*)
         const regex = new RegExp(
             /^((?:.*))\/\.welcome\/((?:.*))(?:\/(?=$))?$/i
         );
@@ -286,7 +343,14 @@ fetch, cache, DB, storage - these should be passed in
 
 
     let app = fakeExpress();
-    app.post('/service/create', () => { });
+    app.post('/service/create/:id?', async (params, event) => {
+        const { id } = params;
+        if(!id){
+            return JSON.stringify({ params, event, error: 'id required for create!' }, null, 2);
+        }
+        console.log('/service/create/:id? triggered');
+        return JSON.stringify({ params, event }, null, 2);
+    });
     app.get('/service/read/:id?', async (params, event) => {
         //also, what if not "file service"?
         //also, what if "offline"?
@@ -356,12 +420,27 @@ fetch, cache, DB, storage - these should be passed in
         //const foo = await store.getItem("foo");
 
     });
-    app.post('/service/update', () => { });
-    app.post('/service/delete', () => { });
+    app.post('/service/update/:id?', async (params, event) => {
+        console.log('/service/update/:id? triggered');
+        return JSON.stringify({ params, event }, null, 2);
+    });
+    app.post('/service/delete/:id?', (params, event) => {
+        console.log('/service/delete/:id? triggered');
+        return JSON.stringify({ params, event }, null, 2);
+    });
 
-    app.get('/manage', () => { });
-    app.get('/monitor', () => { });
-    app.get('/persist', () => { });
+    app.get('/manage/:id?', async (params, event) => {
+        console.log('/manage/:id? triggered');
+        return JSON.stringify({ params, event }, null, 2);
+    });
+    app.get('/monitor/:id?', async (params, event) => {
+        console.log('/monitor/:id? triggered');
+        return JSON.stringify({ params, event }, null, 2);
+    });
+    app.get('/persist/:id?', async (params, event) => {
+        console.log('/monitor/:id? triggered');
+        return JSON.stringify({ params, event }, null, 2);
+    });
 
     app.get('/.welcome/:path?', async (params, event) => {
         /*

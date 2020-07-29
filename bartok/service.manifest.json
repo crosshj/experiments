@@ -4,7 +4,8 @@
     "modules": [
     {
         "resources": [
-            "/",
+            "./",
+            "./index.service.test.html",
             "./index.sw.html",
             "./index.html",
             "./settings.html",
@@ -12,7 +13,12 @@
 
             "/shared/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2",
             "/shared/fonts/seti.woff2",
-            "/shared/fonts/codicon.ttf"
+            "/shared/fonts/codicon.ttf",
+
+            "/shared/css/xterm.css",
+            "/shared/css/seti-icons.css",
+            "/shared/css/material-icons.css",
+            "/shared/css/materialize.min.css"
         ]
     },
     "NOTE: resources for example apps",
@@ -206,6 +212,21 @@
     "NOTE: external handlers",
     {
         "route": "\/service\/(.*)",
+        "type": "fetch",
+        "handler": "./modules/serviceRequestHandler.js"
+    },
+    {
+        "route": "\/manage\/(.*)",
+        "type": "fetch",
+        "handler": "./modules/serviceRequestHandler.js"
+    },
+    {
+        "route": "\/monitor\/(.*)",
+        "type": "fetch",
+        "handler": "./modules/serviceRequestHandler.js"
+    },
+    {
+        "route": "\/persist\/(.*)",
         "type": "fetch",
         "handler": "./modules/serviceRequestHandler.js"
     },
