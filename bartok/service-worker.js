@@ -25,8 +25,11 @@ const handlerStore = localforage
 		storeName: 'handlerStore',
 		description: 'used after app has booted when service worker is updated'
 	});
+
+
+
 (async() => {
-	//TODO: in install/activate, this probably won't work the way expected
+	//TODO: in install/activate handlers, this probably won't work the way expected
 	// ie, these handlers do not come back after SW is idle or terminated
 	await handlerStore
 		.iterate((value, key) => {

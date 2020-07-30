@@ -3,19 +3,30 @@ function getOperations(updateAfter, readAfter) {
 		url: ''
 	}, {
 		name: 'create',
-		url: 'service/create',
+		url: 'service/create/{id}',
 		config: {
-			method: 'POST',
-			name: 'test-service',
-			body: {
-				name: 'test-service'
-			}
+			method: 'POST'
+		},
+		eventToParams: ({ body = {} }) => {
+			const { id } = body;
+			if (!id) throw new Error('id is required when creating service');
+			return { id };
+		},
+		eventToBody: ({ body = {} }) => {
+			const { name, id } = body;
+			if (!name) throw new Error('name is required when creating service');
+			if (!id) throw new Error('id is required when creating service');
+			return JSON.stringify({ name, id }, null, 2);
 		},
 		after: updateAfter
 	}, {
 		name: 'read',
 		url: 'service/read/{id}',
-		after: readAfter
+		after: readAfter,
+		eventToParams: ({ body = {} }) => {
+			const { id='' } = body;
+			return { id };
+		}
 	}, {
 		name: 'update',
 		url: 'service/update',
@@ -41,8 +52,13 @@ function getOperations(updateAfter, readAfter) {
 	}];
 	operations.forEach(x => {
 		//x.url = `./${x.url}`;
-		if (x.config && x.config.body) {
-			x.config.body = JSON.stringify(x.config.body);
+		// if (x.config && x.config.body) {
+		// 	x.config.body = JSON.stringify(x.config.body);
+		// }
+		x.config = x.config || {};
+		x.config.headers = {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
 		}
 	});
 	return operations;
@@ -117,22 +133,34 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 	if(id !== '' && Number(id) === 0){
 		id = "0";
 	}
-	op.url = op.url.replace('{id}', id || '');
-	op.config = op.config || {};
-	op.config.headers = {
-		...{
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		}, ...((op.config || {}).headers || {})
-	};
-	if (op.config.method !== "POST") {
-		delete op.config.body;
-	}
+	// op.url = op.url.replace('{id}', id || '');
+	// op.config = op.config || {};
+	// op.config.headers = {
+	// 	...{
+	// 		'Accept': 'application/json',
+	// 		'Content-Type': 'application/json'
+	// 	}, ...((op.config || {}).headers || {})
+	// };
+	// if (op.config.method !== "POST") {
+	// 	delete op.config.body;
+	// }
 
 	op.url = op.url.replace('bartok/', '');
 
 	//, externalStateRequest
-	const result = await externalStateRequest(op);
+	//const result = await externalStateRequest(op);
+	if(operation.eventToBody){
+		op.config.body = operation.eventToBody(eventData);
+	}
+	if(operation.eventToParams){
+		const params = operation.eventToParams(eventData);
+		Object.keys(params).forEach(key => {
+			op.url = op.url.replace(`{${key}}`, params[key] || '');
+		});
+	}
+
+	const response = await fetch(op.url, op.config);
+	const result = await response.json();
 
 	if (op.after) {
 		op.after({ result });

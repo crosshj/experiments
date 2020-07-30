@@ -270,12 +270,42 @@ const pathToRegex = {
         }
     })()
 };
+
+const genericPath = (pathString) => {
+    const name = pathString.replace('/:path?','').replace('/', '');
+    const regex = new RegExp(
+        `^((?:.*))\/${name}\/((?:.*))(?:\/(?=$))?$`, 'i'
+    );
+    return {
+        match: url => regex.test(url),
+        params: url => ({
+            path: (regex.exec(url)[2]||"").split('?')[0],
+            query: (regex.exec(url)[2]||"").split('?')[1]
+        })
+    }
+};
+
 const fakeExpress = () => {
     const handlers = [];
-    const generic = (pathString, handler) => {
+    const generic = (method) => (pathString, handler) => {
         const path = pathToRegex[pathString];
-        if (!path) { return; }
-        handlers.push({ ...path, handler });
+        let alternatePath;
+        if (!path) {
+            alternatePath = genericPath(pathString);
+            console.log({ alternatePath });
+        }
+        const foundHandler = handlers.find(x => x.pathString === pathString && x.method === method);
+        if(foundHandler){
+            console.log(`Overwriting handler for ${method} : ${pathString}`);
+            foundHandler.handler = handler;
+            return;
+        }
+        handlers.push({
+            ...(path || alternatePath),
+            pathString,
+            method,
+            handler
+        });
     };
     const find = (url) => {
         const found = handlers.find(x => x.match(url));
@@ -289,13 +319,41 @@ const fakeExpress = () => {
         };
     };
     const app = {
-        get: generic,
-        post: generic,
+        get: generic('get'),
+        post: generic('post'),
         find
     };
     return app;
 };
 
+
+const flattenTree = (tree) => {
+    const results = [];
+    const recurse = (branch, parent = '/') => {
+        const leaves = Object.keys(branch);
+        leaves.map(key => {
+            const children = Object.keys(branch[key]);
+            if(!children || !children.length){
+                results.push({
+                    name: key,
+                    code: parent + key,
+                    path: parent + key
+                });
+            } else {
+                recurse(branch[key], `${parent}${key}/`);
+            }
+        });
+    };
+    recurse(tree);
+    return results;
+};
+
+async function getCodeFromStorageUsingTree(tree){
+    // flatten the tree (include path)
+    // pass back array of  { name: filename, code: path }
+    // UI should call network for file
+    return flattenTree(tree);
+}
 
 
 /*
@@ -335,21 +393,112 @@ fetch, cache, DB, storage - these should be passed in
             driver: driverOrder,
             name: 'serviceRequest',
             version: 1.0,
-            storeName: 'keyvaluepairs', // Should be alphanumeric, with underscores.
-            description: 'some description'
+            storeName: 'files', // Should be alphanumeric, with underscores.
+            description: 'contents of files'
+        });
+
+    const metaStore = localforage
+        .createInstance({
+            driver: driverOrder,
+            name: 'serviceRequest',
+            version: 1.0,
+            storeName: 'meta', // Should be alphanumeric, with underscores.
+            description: 'directory stucture, service type, etc'
         });
     //console.log({ driver: store.driver() })
+
+    const expressHandler = (base, msg) => async (params, event) => {
+        const { path } = params;
+        const file = await store.getItem(`./${base}/${path}`);
+        console.log({
+            path,
+            storeLoc: `./${base}/${path}`,
+            msg,
+            fileType: typeof file
+        });
+        //TODO: need to know file type so that it can be returned properly
+        return file
+            ? JSON.stringify(file, null, 2)
+            : 'could not find file ';
+    };
+
+    const addServiceHandler = async ({ name }) => {
+        const route = `/${name}/(.*)`;
+        const handler = "./modules/serviceRequestHandler.js";
+        const foundHandler = handlers.find(x => x.handlerName === handler);
+
+        const foundExactHandler = foundHandler && handlers
+            .find(x =>
+                x.handlerName === handler && x.routePattern === route
+            );
+		if(foundExactHandler){
+			console.log(`handler was already installed for ${foundExactHandler.routePattern} (boot)`);
+			return;
+        }
+		handlers.push({
+			type: foundHandler.type,
+			routePattern: route,
+			route: new RegExp(route),
+			handler: foundHandler.handler,
+			handlerName: handler,
+			handlerText: foundHandler.handlerText
+		});
+		await handlerStore.setItem(route, {
+            type,
+            route,
+			handlerName: handler,
+			handlerText: foundHandler.handlerText
+        });
+
+        app.get(`/${name}/:path?`, expressHandler(name, msg='served from fresh baked'));
+    };
 
 
 
     let app = fakeExpress();
     app.post('/service/create/:id?', async (params, event) => {
+        // event.request.arrayBuffer()
+        // event.request.blob()
+        // event.request.json()
+        // event.request.text()
+        // event.request.formData()
+
+        const { name } = (await event.request.json()) || {};
         const { id } = params;
         if(!id){
-            return JSON.stringify({ params, event, error: 'id required for create!' }, null, 2);
+            return JSON.stringify({ params, event, error: 'id required for service create!' }, null, 2);
+        }
+        if(!name){
+            return JSON.stringify({ params, event, error: 'name required for service create!' }, null, 2);
         }
         console.log('/service/create/:id? triggered');
-        return JSON.stringify({ params, event }, null, 2);
+        //return JSON.stringify({ params, event }, null, 2);
+
+        // create the service in store
+        await metaStore.setItem(id, {
+            name,
+            id,
+            tree: {
+                [name]: {
+                    "package.json": {}
+                }
+            }
+        });
+        store.setItem(`./${name}/package.json`, {
+            comment: 'this is an example package.json'
+        });
+
+        // make service available from service worker (via handler)
+        await addServiceHandler({ name });
+
+        // return current service
+        const services = defaultServices();
+
+        return JSON.stringify({
+            result: {
+                services: [ services.filter(x => Number(x.id) === 777) ]
+            }
+        }, null, 2);
     });
     app.get('/service/read/:id?', async (params, event) => {
         //also, what if not "file service"?
@@ -410,11 +559,20 @@ fetch, cache, DB, storage - these should be passed in
         // (currently doesn't do anything since app uses localStorage version of this)
         await store.setItem('lastService', params.id);
 
+        const foundService = await metaStore.getItem(params.id);
+
+        if(foundService){
+            foundService.code = await getCodeFromStorageUsingTree(foundService.tree);
+            return JSON.stringify({
+                result: [ foundService ]
+            }, null, 2);
+        }
+
         //todo: get this from store instead
         const lsServices = defaultServices() || [];
         const result = {
             result: lsServices.filter(x => Number(x.id) === Number(params.id))
-        }
+        };
         await fileSystemTricks({ result, store, cache });
         return  JSON.stringify(result, null, 2)
         //const foo = await store.getItem("foo");
@@ -466,6 +624,17 @@ fetch, cache, DB, storage - these should be passed in
        return await (await fetch(event.request.url)).text();
     });
 
+    (async () => {
+        const restoreToExpress = []
+        await metaStore
+            .iterate((value, key) => {
+                const { name } = value;
+                restoreToExpress.push({ name });
+            });
+        restoreToExpress.forEach(({ name }) => {
+            app.get(`/${name}/:path?`, expressHandler(name, msg='served from reconstituded'));
+        });
+    })();
 
     async function serviceAPIRequestHandler(event) {
         const serviceAPIMatch = app.find(event.request.url);

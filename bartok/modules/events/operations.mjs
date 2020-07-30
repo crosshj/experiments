@@ -247,8 +247,7 @@ const operationsHandler = ({
 		const allOperations = getOperations(updateAfter, readAfter);
 		console.log({ allOperations, event })
 		const foundOp = allOperations.find(x => x.name === event.detail.operation);
-		const eventData = event.detail.body;
-		performOperation(foundOp, eventData, externalStateRequest);
+		performOperation(foundOp, event.detail);
 		//wrangle context(state?)?
 		//execute operation with context
 		//debugger;

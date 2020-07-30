@@ -88,6 +88,8 @@ function getCodeFromService(service, file){
 			? currentService.code
 			: "";
 
+	//TODO: if file has a path, then fetch and return that
+
 	return {
 		name: currentService.name,
 		id: currentService.id,
