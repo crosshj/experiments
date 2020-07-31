@@ -491,3 +491,44 @@ syntax highlighting, etc
 - https://highlightjs.org/usage/
 - https://ourcodeworld.com/articles/read/309/top-5-best-code-editor-plugins-written-in-javascript
 
+
+
+languages
+=========
+https://learnworthy.net/top-10-most-popular-language-of-2019-according-to-github/
+https://madnight.github.io/githut/#/pull_requests/2020/2
+
+highest paid:
+  - Scala
+  - Clojure
+  - Go
+  - Erlang
+  - WebAssembly
+  - Kotlin
+  - Rust,
+  - F#
+  - Elixir
+
+most popular:
+  - Javascript
+  - Python
+  - Java
+  - PHP
+  - C#
+  - C++
+  - TypeScript
+  - Shell
+  - C
+  - Ruby
+
+fast growth:
+  - Dart         532%
+  - Rust         235%
+  - HCL          213% (config)
+  - Kotlin       182%
+  - TypeScript   161%
+  - PowerShell   154%
+  - Apex         154% (salesforce)
+  - Python       151%
+  - Assembly     149%
+  - Go           147%
