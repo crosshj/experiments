@@ -371,6 +371,7 @@
   window.boot = bootIframe;
   const moduleCache = localStorage.getItem('moduleCache');
   if(!moduleCache){
+    sessionStorage.clear();
     boot(() => {
       document.location.reload();
     });

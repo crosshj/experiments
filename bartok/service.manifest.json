@@ -11,6 +11,8 @@
             "./settings.html",
             "./bartok-logo.png",
 
+            "/shared/vendor/localforage.min.js",
+
             "/shared/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2",
             "/shared/fonts/seti.woff2",
             "/shared/fonts/codicon.ttf",

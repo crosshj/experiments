@@ -1,9 +1,9 @@
 why I keep vscode open
 ======================
 
-- [X] no search in file
 - [ ] no search in project / folder
 - [ ] cant CRUD/save a file with service worker
+- [ ] service worker flow is not merged to main flow
 
 - [ ] awkward integration with file system
 - [ ] buggy file management
@@ -13,12 +13,11 @@ why I keep vscode open
 - [ ] doesn't recall code collapse or scroll position
 - [ ] highlight is weird
 
-- [ ] service worker flow is not merged to main flow
+- [X] no search in file
 
 DEPLOY | VERSION CONTROL
 ------------------------
 - https://app.diagrams.net/#G18h5403wK012mFwEuMETVVnQiyZmXPJOy
-
 
 
 REALLY NEED THE FOLLOWING
@@ -475,6 +474,14 @@ web assembly
 ============
 
 - https://www.toptal.com/virtual-reality/assemblyscript-and-webassembly-tutorial
+
+
+searching for n language to wasm in-browser solutions
+=====================================================
+- https://play.rust-lang.org/
+- https://wasdk.github.io/WasmFiddle/
+- https://webassembly.studio/
+
 
 
 syntax highlighting, etc

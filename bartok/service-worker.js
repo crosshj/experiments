@@ -7,9 +7,11 @@ importScripts('/shared/vendor/localforage.min.js');
 self.addEventListener('install', installHandler);
 self.addEventListener('activate', activateHandler);
 self.addEventListener('fetch', fetchHandler);
+//self.addEventListener('foreignfetch', fetchHandler);
 self.addEventListener('message', messageHandler);
 self.addEventListener('sync', syncHandler);
 self.addEventListener('push', pushHandler);
+
 
 const handlers = [];
 const driverOrder = [
@@ -25,8 +27,6 @@ const handlerStore = localforage
 		storeName: 'handlerStore',
 		description: 'used after app has booted when service worker is updated'
 	});
-
-
 
 (async() => {
 	//TODO: in install/activate handlers, this probably won't work the way expected

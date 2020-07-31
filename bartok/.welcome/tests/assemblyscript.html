@@ -1,0 +1,212 @@
+<!--
+
+https://www.assemblyscript.org/
+
+-->
+<html>
+
+<head>
+    <title>ASSEMBLYSCRIPT EVAL DEMO</title>
+</head>
+
+<code_in>
+    <!--
+export function fib(n: i32): i32 {
+  let a = 0;
+  let b = 1;
+  if (n <= 0){
+    return a;
+  }
+  while (--n) {
+    const t = a + b;
+    a = b;
+    b = t;
+  }
+  return b;
+}
+-->
+</code_in>
+
+<body>
+    <h3></h3>
+    <pre>
+      <span>INPUT:</span>
+      <code class="language-input language">
+      </code>
+
+      OUTPUT:
+      <code class="language-output language">
+      </code>
+    </pre>
+</body>
+
+<script>
+    const scriptUrl = [
+        "https://cdn.jsdelivr.net/npm/binaryen@95.0.0-nightly.20200723/index.js",
+        "https://cdn.jsdelivr.net/npm/long@4.0.0/dist/long.js",
+        "https://cdn.jsdelivr.net/npm/assemblyscript@0.14.6/dist/assemblyscript.js",
+        "https://cdn.jsdelivr.net/npm/assemblyscript@0.14.6/dist/asc.js"
+    ];
+
+    function compile(source) {
+        return new Promise((resolve, reject) => {
+            const stdout = asc.createMemoryStream();
+            const sources = {
+                'module.ts': source
+            };
+            const outputs = {};
+            const options = [
+                'module.ts',
+                '--textFile', 'module.wat',
+                '--binaryFile', 'module.wasm'
+            ];
+            asc.main(options, {
+                stdout,
+                stderr: stdout,
+                readFile: name => !!sources[name] ? sources[name] : null,
+                writeFile: (name, contents) => outputs[name] = contents,
+                listFiles: () => []
+            }, err => {
+                let output = stdout.toString().trim()
+                if (output.length) {
+                    output = ';; ' + output.replace(/\n/g, '\n;; ') + '\n'
+                }
+                output = ';; INFO asc ' + options.join(' ') + '\n' + output
+                if (err) {
+                    reject(output + `(module\n ;; FAILURE ${err.message}\n)\n`);
+                    return;
+                }
+                resolve({ msg: output + outputs['module.wat'], outputs });
+            });
+        });
+    }
+
+    (async () => {
+        const { code, doEach, doAfter } = await letsGo(scriptUrl);
+
+        try {
+            const { msg, outputs } = await compile(code);
+            const importObj = {
+                env: {
+                    abort: () => {
+                        console.error('AssemblyScript Import Object Aborted!');
+                    }
+                }
+            };
+            var compiled = new WebAssembly.Module(outputs['module.wasm']);
+            var instance = new WebAssembly.Instance(compiled, importObj);
+            doEach('\n')
+            for (let i = 0; i < 10; ++i) {
+                doEach(`fib(${i}) = ${instance.exports.fib(i)}\n`);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    })();
+
+    async function letsGo(scriptUrl) {
+        document.querySelector('body h3').innerText = document.title;
+
+        const codeIn = document.querySelector('code_in');
+        const inputDOM = document.querySelector('.language-input');
+        const outputDOM = document.querySelector('.language-output');
+
+        const appendScript = (url) => {
+            return new Promise((resolve, reject) => {
+                var script = document.createElement('script');
+                script.crossOrigin = "anonymous";
+                script.onload = resolve;
+                script.src = url;
+                document.head.appendChild(script);
+            });
+        };
+
+        let loading = true;
+        outputDOM.innerHTML = '\nloading...';
+
+        const doEach = (a) => {
+            if (loading) {
+                outputDOM.innerHTML = '';
+                loading = false;
+            }
+            outputDOM.innerHTML += a;
+        };
+
+        const codeFromComment = Array.from(codeIn.childNodes)
+            .filter(x => x.nodeType === 8)
+            .map(x => x.data).join('\n');
+        inputDOM.innerText = codeFromComment;
+
+        if (Array.isArray(scriptUrl)) {
+            for (let i = 0, len = scriptUrl.length; i < len; i++) {
+                await appendScript(scriptUrl[i]);
+            }
+        } else {
+            await appendScript(scriptUrl);
+        }
+
+        return {
+            code: codeFromComment,
+            doEach,
+            doAfter: doEach
+        };
+    }
+</script>
+
+<style>
+    body {
+        margin: 40px;
+        overflow: hidden;
+        color: #ccc;
+        font-family: sans-serif;
+    }
+
+    code {
+        color: #888;
+    }
+
+    h3 {
+        margin-top: 3em;
+        margin-bottom: 2em;
+    }
+
+    .language {
+        min-height: 155px;
+        background: #2d2d2d;
+        padding: 0px 10px 20px 10px;
+        margin: 15px 0px -8px 0px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-size: 0.9em;
+        color: #ccc;
+        display: block;
+        max-height: 600px;
+    }
+
+    .language::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .language::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .language::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    .language::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    pre {
+        margin-top: -1em;
+        white-space: pre-line;
+    }
+
+    pre code {
+        white-space: pre;
+    }
+</style>
+
+</html>

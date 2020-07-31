@@ -1,6 +1,7 @@
 <body>
     <h3>test tool for all things service worker related</h3>
     <pre>
+- session Storage will be killed when a boot occurs (moduleCache is not present on start)
 - selectively refresh modules, files, etc
 - can integrate with browsersync?
 - when a service is created (via API):
@@ -12,6 +13,10 @@
     - adding serviceRequest handler causes
         - read serviceRequest meta store and add handler to fake express
         - that handler will pull files from serviceRequest files store
+- in order to refresh handlers (including service API)
+    - clear handler store, clear module cache, and restart service worker
+       OR
+    - build something in SW API that allows refreshing
 - for a running/installed service worker should message to:
     - bootstrap (already do)
     - list handlers
@@ -35,85 +40,51 @@
         indexDBdatabases = await indexedDB.databases();
     } catch(e){}
 
-    function deleteIndexDB(databaseName){
+    const appendScript = (url) => {
         return new Promise((resolve, reject) => {
-            var req = indexedDB.deleteDatabase(databaseName);
-            req.onsuccess = function () {
-                resolve("Deleted database successfully");
-            };
-            req.onerror = function () {
-                reject("Couldn't delete database");
-            };
-            req.onblocked = function () {
-                reject("Couldn't delete database due to the operation being blocked");
-            };
-            setTimeout(() => reject('database delete timed out after 5 secs'), 5000)
+            var script = document.createElement('script');
+            script.crossOrigin = "anonymous";
+            script.onload = resolve;
+            script.src = url;
+            document.head.appendChild(script);
         });
-    }
+    };
+
+    await appendScript('/shared/vendor/localforage.min.js');
+    var driverOrder = [
+        localforage.INDEXEDDB,
+        localforage.WEBSQL,
+        localforage.LOCALSTORAGE,
+    ];
+    const filesStore = localforage
+        .createInstance({
+            driver: driverOrder,
+            name: 'serviceRequest',
+            version: 1.0,
+            storeName: 'files',
+            description: 'contents of files'
+        });
+
+    const metaStore = localforage
+        .createInstance({
+            driver: driverOrder,
+            name: 'serviceRequest',
+            version: 1.0,
+            storeName: 'meta',
+            description: 'directory stucture, service type, etc'
+        });
+    const handlerStore = localforage
+        .createInstance({
+            driver: driverOrder,
+            name: 'serviceWorker',
+            version: 1.0,
+            storeName: 'handlerStore',
+            description: 'used after app has booted when service worker is updated'
+        });
 
 
     const actions = {
         "spacer0": "",
-        "reboot:  what does this entail?": {
-            handler: async (e, callback) => {
-
-            }
-        },
-        "tree cache (sessionStorage)": {
-            verb: 'CLEAR',
-            handler: async (e, callback) => {
-
-            }
-        },
-        "app cache: tree, tabs, editor (sessionSession)": {
-            verb: 'CLEAR',
-            handler: async (e, callback) => {
-
-            }
-        },
-        "service worker requests cache (cache Storage)": {
-            verb: 'CLEAR',
-            handler: async (e, callback) => {
-
-            }
-        },
-        "service worker handlers (indexedDB)": {
-            verb: 'CLEAR',
-            value: indexDBdatabases.find(x => x.name === 'serviceWorker') ? '[X]': '[ ]',
-            handler: async (e, callback) => {
-                try {
-                    await deleteIndexDB("serviceWorker");
-                } catch(e){
-                    console.error(e);
-                }
-            }
-        },
-        "serviceRequestHandler cache (indexedDB)": {
-            verb: 'CLEAR',
-            value: indexDBdatabases.find(x => x.name === 'serviceRequest') ? '[X]': '[ ]',
-            handler: async (e, callback) => {
-                try {
-                    await deleteIndexDB("serviceRequest");
-                } catch(e){
-                    console.error(e);
-                }
-            }
-        },
-        "localStorage reloadServices - headers['x-cache'] - /service/read (serviceRequestHandler)": {
-            verb: 'TOGGLE',
-            value: !!JSON.parse(localStorage.getItem('reloadServices')) ? 'true' : 'false',
-            handler: async (e, callback) => {
-                const current = JSON.parse(localStorage.getItem('reloadServices')||'false');
-                localStorage.setItem('reloadServices', !current);
-                document.location.reload();
-            }
-        },
-        "serviceRequestHandler << message service worker and ask for handlers": {
-            verb: 'RELOAD',
-            handler: async (e, callback) => {
-
-            }
-        },
         "service worker registration": {
             verb: 'REMOVE',
             value: swRegistrations && swRegistrations.length ? '[X]' : '[ ]',
@@ -129,16 +100,6 @@
                     await registration.unregister();
                 }
 
-                // try {
-                //     await deleteIndexDB("serviceWorker");
-                // } catch(e){
-                //     console.error(e);
-                // }
-                // try {
-                //     await deleteIndexDB("serviceRequest");
-                // } catch(e){
-                //     console.error(e);
-                // }
                 document.location.reload();
 
                 //heavy-handed approach which forces clients to refresh
@@ -166,6 +127,71 @@
             handler: async (e, callback) => {
                 localStorage.removeItem('moduleCache');
                 document.location.reload();
+            }
+        },
+        "handler Store - stores service worker handlers (indexedDB)": {
+            verb: 'CLEAR',
+            value: `[${(await handlerStore.keys()).length || ' '}]`,
+            handler: async (e, callback) => {
+                try {
+                    console.log('clearing handler store...');
+                    await handlerStore.clear();
+                    document.location.reload();
+                } catch(e){
+                    console.error(e);
+                }
+            }
+        },
+        "files Store - stores all files (indexedDB)": {
+            verb: 'CLEAR',
+            value: `[${(await filesStore.keys()).length || ' '}]`,
+            handler: async (e, callback) => {
+                try {
+                    console.log('clearing files store...');
+                    await filesStore.clear();
+                    document.location.reload();
+                } catch(e){
+                    console.error(e);
+                }
+            }
+        },
+        "meta Store - stores service information (indexedDB)": {
+            verb: 'CLEAR',
+            value: `[${(await metaStore.keys()).length || ' '}]`,
+            handler: async (e, callback) => {
+                try {
+                    console.log('clearing meta store...');
+                    await metaStore.clear();
+                    document.location.reload();
+                } catch(e){
+                    console.error(e);
+                }
+            }
+        },
+        "localStorage reloadServices - headers['x-cache'] - /service/read force refresh (serviceRequestHandler)": {
+            verb: 'TOGGLE',
+            value: !!JSON.parse(localStorage.getItem('reloadServices')) ? 'true' : 'false',
+            handler: async (e, callback) => {
+                const current = JSON.parse(localStorage.getItem('reloadServices')||'false');
+                localStorage.setItem('reloadServices', !current);
+                document.location.reload();
+            }
+        },
+        "serviceRequestHandler << message service worker and ask for handlers": {
+            verb: 'RELOAD',
+            handler: async (e, callback) => {
+
+            }
+        },
+        "reboot:  what does this entail?": {
+            handler: async (e, callback) => {
+
+            }
+        },
+        "service worker requests cache (cache Storage)": {
+            verb: 'CLEAR',
+            handler: async (e, callback) => {
+
             }
         },
         "spacer1": ''

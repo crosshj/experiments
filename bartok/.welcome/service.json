@@ -98,6 +98,7 @@
       "Readme.md": {},
       "service.json": {},
       "tests": {
+        "assemblyscript.html": {},
         "css-3d.html": {},
         "sw.clientServer.htm": {},
         "open.folder.html": {},
@@ -123,6 +124,10 @@
       }
     },
     "files": [
+      {
+        "name": "assemblyscript.html",
+        "path": ".welcome/tests/assemblyscript.html"
+      },
       {
         "name": "sql.html",
         "path": ".welcome/tests/sql.html"

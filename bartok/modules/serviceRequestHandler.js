@@ -381,6 +381,37 @@ fetch, cache, DB, storage - these should be passed in
 
 */
 
+class TemplateEngine {
+    templates=[];
+
+    add (name, template){
+        const newTemp = {
+            extensions: [],
+            body: template,
+            tokens: ['{{template_value}}'],
+            matcher: () => false //TODO: matchers are not currently implemented
+        };
+        newTemp.extensions.push(name.split('.').shift());
+        newTemp.convert = (contents) => {
+            let xfrmed = newTemp.body + '';
+            newTemp.tokens.forEach(t => {
+                xfrmed = xfrmed.replace(new RegExp(t, 'g'), contents)
+            });
+            return xfrmed;
+        };
+
+        this.templates.push(newTemp);
+    }
+
+    convert(filename, contents){
+        if(!this.templates.length) return false;
+        const ext = filename.split('.').pop();
+        const foundTemplate = this.templates.find(x => x.extensions.includes(ext));
+        if(!foundTemplate) return;
+        return foundTemplate.convert(contents);
+    }
+}
+
 (() => {
 
     var driverOrder = [
@@ -407,19 +438,51 @@ fetch, cache, DB, storage - these should be passed in
         });
     //console.log({ driver: store.driver() })
 
-    const expressHandler = (base, msg) => async (params, event) => {
-        const { path } = params;
-        const file = await store.getItem(`./${base}/${path}`);
-        console.log({
-            path,
-            storeLoc: `./${base}/${path}`,
-            msg,
-            fileType: typeof file
-        });
-        //TODO: need to know file type so that it can be returned properly
-        return file
-            ? JSON.stringify(file, null, 2)
-            : 'could not find file ';
+    const expressHandler = async (base, msg) => {
+        const templates = new TemplateEngine();
+
+        const templatesFromStorage = [];
+        await store
+            .iterate((value, key) => {
+                if(key.indexOf(`./${base}/.templates`) !== 0) return;
+                templatesFromStorage.push({ value, key });
+            });
+
+        templatesFromStorage.forEach(t => {
+            const { value, key } = t;
+            const name = key.split('/').pop();
+            templates.add(name, value);
+        })
+
+
+        return async (params, event) => {
+            const { path, query } = params;
+            const filename = path.split('/').pop()
+            const previewMode = (params.query||'').includes('preview');
+            let xformedFile;
+
+            const file = await store.getItem(`./${base}/${path}`);
+            let fileJSONString;
+            try {
+                fileJSONString = file
+                    ? JSON.stringify(file, null, 2)
+                    : '';
+            } catch(e){}
+
+            if(previewMode){
+                xformedFile = templates.convert(filename, fileJSONString);
+            }
+            console.log({
+                path,
+                storeLoc: `./${base}/${path}`,
+                xformedFile: xformedFile || 'not supported',
+                msg,
+                fileType: typeof file
+            });
+
+            //TODO: need to know file type so that it can be returned properly
+            return xformedFile || fileJSONString || file;
+        };
     };
 
     const addServiceHandler = async ({ name }) => {
@@ -449,8 +512,8 @@ fetch, cache, DB, storage - these should be passed in
 			handlerName: handler,
 			handlerText: foundHandler.handlerText
         });
-
-        app.get(`/${name}/:path?`, expressHandler(name, msg='served from fresh baked'));
+        const expHandler = await expressHandler(name, msg='served from fresh baked');
+        app.get(`/${name}/:path?`, expHandler);
     };
 
 
@@ -480,6 +543,9 @@ fetch, cache, DB, storage - these should be passed in
             id,
             tree: {
                 [name]: {
+                    '.templates': {
+                        'json.html': {}
+                    },
                     "package.json": {}
                 }
             }
@@ -487,6 +553,12 @@ fetch, cache, DB, storage - these should be passed in
         store.setItem(`./${name}/package.json`, {
             comment: 'this is an example package.json'
         });
+        store.setItem(`./${name}/.templates/json.html`, `
+        <html>
+            <p>basic json template output</p>
+            <pre>{{template_value}}</pre>
+        </html>
+        `);
 
         // make service available from service worker (via handler)
         await addServiceHandler({ name });
@@ -504,7 +576,11 @@ fetch, cache, DB, storage - these should be passed in
         //also, what if not "file service"?
         //also, what if "offline"?
 
-        const cache = event.request.headers.get('x-cache');
+        //THIS ENDPOINT SHOULD BE (but is not now) AS DUMB AS:
+        // - if id passed, return that id from DB
+        // - if no id passed (or * passed), return all services from DB
+
+        const cacheHeader = event.request.headers.get('x-cache');
 
         if(Number(params.id) === 0){
             const cache = await caches.open(cacheName);
@@ -568,12 +644,15 @@ fetch, cache, DB, storage - these should be passed in
             }, null, 2);
         }
 
-        //todo: get this from store instead
+        //TODO (AND WANRING): get this from store instead!!!
+        // currently will only return fake/default services
         const lsServices = defaultServices() || [];
         const result = {
-            result: lsServices.filter(x => Number(x.id) === Number(params.id))
+            result: params.id === '*' || !params.id
+                ? lsServices
+                : lsServices.filter(x => Number(x.id) === Number(params.id))
         };
-        await fileSystemTricks({ result, store, cache });
+        await fileSystemTricks({ result, store, cache: cacheHeader });
         return  JSON.stringify(result, null, 2)
         //const foo = await store.getItem("foo");
 
@@ -624,6 +703,7 @@ fetch, cache, DB, storage - these should be passed in
        return await (await fetch(event.request.url)).text();
     });
 
+    // NOTE: this is what happens when service request singleton is called into being
     (async () => {
         const restoreToExpress = []
         await metaStore
@@ -631,28 +711,36 @@ fetch, cache, DB, storage - these should be passed in
                 const { name } = value;
                 restoreToExpress.push({ name });
             });
-        restoreToExpress.forEach(({ name }) => {
-            app.get(`/${name}/:path?`, expressHandler(name, msg='served from reconstituded'));
-        });
+        for(let i=0, len=restoreToExpress.length; i<len; i++){
+            const {name} = restoreToExpress[i];
+            const expHandler = await expressHandler(name, msg='served from reconstituded');
+            app.get(`/${name}/:path?`, expHandler);
+        }
+        // TODO: should also add routes/paths/handlers to SW which have been created but are not there already
+        // could run in to problems with this ^^^ because those may be in the process of being added
     })();
 
     async function serviceAPIRequestHandler(event) {
         const serviceAPIMatch = app.find(event.request.url);
-        if (serviceAPIMatch) {
-            event.respondWith(
-                (async () => {
-                    const responseText = await serviceAPIMatch.exec(event);
-                    return new Response(responseText);
-                })()
-            );
-            return;
+        if (!serviceAPIMatch) {
+            return fetch(event.request.url);
         }
-
+        //TODO: should console log path here so it's known what handler is being used
+        event.respondWith(
+            (async () => {
+                const responseText = await serviceAPIMatch.exec(event);
+                let response;
+                if(event.request.url.includes('preview')){
+                    response = new Response(responseText, {headers:{'Content-Type': 'text/html'}});
+                } else {
+                    response = new Response(responseText);
+                }
+                return response;
+            })()
+        );
         // should be able to interact with instantiated services as well,
         // ie. all '.welcome' files should be available
         // each instantiated service should have its own store
-
-        return fetch(event.request.url);
     }
 
     return serviceAPIRequestHandler;
