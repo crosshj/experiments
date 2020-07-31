@@ -19,7 +19,7 @@
 
 ### ide | playground
   - online editor and web-based code share/run
-  - examples: plunker, codepen, stackblitz, runkit, glitch, observables, jupyter notebook
+  - examples: plunker, codepen, stackblitz, runkit, glitch, observables, iodide.io, jupyter notebook
 
 ### mindmap | knowledge management tool
   - example: dendron.so, roam, athens, foam, vscode-memo

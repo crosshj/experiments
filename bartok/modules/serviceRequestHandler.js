@@ -666,6 +666,8 @@ class TemplateEngine {
         return JSON.stringify({ params, event }, null, 2);
     });
 
+
+
     app.get('/manage/:id?', async (params, event) => {
         console.log('/manage/:id? triggered');
         return JSON.stringify({ params, event }, null, 2);
@@ -675,10 +677,13 @@ class TemplateEngine {
         return JSON.stringify({ params, event }, null, 2);
     });
     app.get('/persist/:id?', async (params, event) => {
-        console.log('/monitor/:id? triggered');
+        console.log('/persist/:id? triggered');
         return JSON.stringify({ params, event }, null, 2);
     });
 
+
+
+    // THIS SHOULD BE REGISTERED BY DEFAULT
     app.get('/.welcome/:path?', async (params, event) => {
         /*
         TODO: this route should instead be created dynamically instead of defined in this service
