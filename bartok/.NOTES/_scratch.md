@@ -19,6 +19,19 @@ DEPLOY | VERSION CONTROL
 ------------------------
 - https://app.diagrams.net/#G18h5403wK012mFwEuMETVVnQiyZmXPJOy
 
+READING/WRITING TO LOCAL FOLDER
+===============================
+
+- use node server running in BG
+  - have to have another window open
+  - requires server dev(?)
+  - https://www.npmjs.com/package/file-browser
+
+- write chrome extension which allows access to file system
+  - page contacts that extension to read/write files
+  - communicate with extension - https://medium.com/@AlonNola/communicating-between-webpages-and-chrome-extensions-f32c326bbfd9
+
+
 
 REALLY NEED THE FOLLOWING
 =========================

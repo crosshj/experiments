@@ -1,0 +1,17 @@
+{
+  "name": "basic-file-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "watch": "electromon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electromon": "^1.0.10",
+    "electron": "^9.1.2"
+  }
+}
