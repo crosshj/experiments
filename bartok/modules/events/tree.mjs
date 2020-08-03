@@ -303,12 +303,12 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 				}
 				return storeTree;
 			} catch(e){
-				debugger
+				//debugger
 			}
 		})();
 
 		let childrenSorted;
-		if(!tree && !refreshTree && !(treeFromStorage && treeFromStorage.data) ){
+		if(!tree || refreshTree || !(treeFromStorage && treeFromStorage.data) ){
 			const treeFromResult = getTree(result);
 			const converted = fileTreeConvert(treeFromResult);
 			//converted[0].expanded = true;
@@ -322,6 +322,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 				return;
 			}
 
+			// this sort will only be affective on root level
 			const files = children
 				.filter(x => result[0].code.find(y => y.name === x.name));
 			const folders = children

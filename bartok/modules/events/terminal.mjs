@@ -480,8 +480,129 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 
 };
 
+let queuedCommands = [];
+function execCommand({ command, loading, done }){
+	const [ op, ...args] = command.split(' ');
+	let filename, newName, _id, name, other;
+	let after, noDone;
+
+	const manageOps = [
+		"addFile", "renameFile", "deleteFile",
+		"renameProject"
+	];
+	const projectOps = [
+		"cancel", "create", "read", "update", "delete",
+		"manage", "monitor", "persist",
+		"fullscreen", "help"
+	];
+
+	const ops = [...manageOps, ...projectOps]
+
+	const isManageOp = manageOps
+		.map(x => x.toLowerCase())
+		.includes(op.toLowerCase());
+	const isProjectOp = projectOps
+		.map(x => x.toLowerCase())
+		.includes(op.toLowerCase());
+
+	if(isManageOp){
+		([ filename, newName ] = args);
+	}
+	if(isProjectOp){
+		([ _id, name, ...other] = args);
+	}
+	let id = Number(_id);
+
+	if(!isManageOp && !isProjectOp){
+		done(`${command}:  command not found!\nSupported: ${ops.join(', ')}\n`);
+		return;
+	}
+
+	if(['help'].includes(op)){
+		done(`\nThese might work:\n\n\r   ${
+			ops
+				.filter(x => x !== "help")
+				.join('\n\r   ')
+		}\n`);
+		return;
+	}
+
+	if(['fullscreen'].includes(op)){
+		document.documentElement.requestFullscreen();
+		return done();
+	}
+
+	const body = (id === 0 || !!id)
+		? { id }
+		: {
+			name: name || (document.body.querySelector('#service_name')||{}).value,
+			id: id || (document.body.querySelector('#service_id')||{}).value,
+			code: (window.Editor||{ getValue: ()=>{}}).getValue()
+		}
+
+	if(['read'].includes(op)){
+		body.id = id;
+		delete body.name;
+		delete body.code;
+		if((!id && id !== 0) || id === NaN){
+			body.id = "*";
+			after = ({ result }) => {
+				loading('DONE');
+				loading(`\n
+				${result.result.map(x => `${x.id.toString().padStart(5, ' ')}   ${x.name}`).join('\n')}
+				\n`.replace(/\t/g, ''));
+				done();
+			};
+			noDone = () => {}
+		}
+	}
+
+	if(['create'].includes(op)){
+		body.id = Number(id);
+		body.name = name;
+		body.code = (window.Editor||{ getValue: ()=>{}}).getValue()
+	}
+
+	const commandQueueId = Math.random().toString().replace('0.', '');
+	queuedCommands.push({
+		id: commandQueueId,
+		operation: op,
+		// MESSY/CONFUSING: done is a default handler, id after is specified then don't use done handler
+		done: !after ? () => done('DONE\n') : undefined,
+		after
+	});
+
+	const event = new CustomEvent('operations', {
+		bubbles: true,
+		detail: {
+			operation: op,
+			listener: commandQueueId,
+			filename, newName,
+			body
+		}
+	});
+	document.body.dispatchEvent(event);
+	isProjectOp && loading(`${command}: running... `);
+};
+
+const handleCommandQueue = (event) => {
+	const { detail } = event;
+	const { op, id, result, operation, listener } = detail;
+
+	const foundQueueItem = listener && queuedCommands.find(x => x.id === listener);
+	if(!foundQueueItem){
+		return false;
+	}
+	queuedCommands = queuedCommands.filter(x => x.id !== listener);
+	foundQueueItem.after && foundQueueItem.after({ result: { result } });
+	foundQueueItem.done && foundQueueItem.done();
+	return true;
+}
+
 let firstLoad = true;
 const operationDone = ({ viewUpdate }) => (event) => {
+	handleCommandQueue(event);
+
 	if(firstLoad){
 		const savedPreview = (() => {
 			try {
@@ -510,8 +631,8 @@ const operationDone = ({ viewUpdate }) => (event) => {
 
 	const defaultFile = getDefaultFile(result[0]);
 	const defaultFileContents = (result[0].code.find(x => x.name === defaultFile)||{}).code;
-	currentFileName = defaultFile;
-	currentFile = defaultFileContents;
+	currentFileName = defaultFile || '';
+	currentFile = defaultFileContents || '';
 
 	const isHTML = currentFile.includes('</html>') && ['htm', 'html'].find(x => { return currentFileName.includes('.'+x)});
 	const isSVG = currentFile.includes('</svg>') && ['svg'].find(x => { return currentFileName.includes('.'+x)});
@@ -704,6 +825,7 @@ function attachTrigger({ target, domEvents, type, selector, handler }){
 
 export {
 	attachEvents,
-	attachTrigger
+	attachTrigger,
+	execCommand
 };
 

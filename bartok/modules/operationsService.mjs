@@ -66,38 +66,41 @@ function getOperations(updateAfter, readAfter) {
 
 function getReadAfter(List, inlineEditor, getCodeFromService) {
 	return ({ result = {} } = {}) => {
-		const services = result.result;
-		if (services.length && !services[0].code) {
-			result.listOne = true;
-		}
-		if (services.length > 1 || result.listOne) {
-			document.querySelector('#project-splitter')
-				.style.display = "none";
-			List({ services });
-		}
-		else {
-			document.querySelector('#project-splitter')
-				.style.display = "";
-			const service = services[0];
-			if (!service) {
-				return inlineEditor({ code: "", name: "", id: "", filename: "" });
-			}
+		console.warn('Read After');
+		// const services = result.result;
+		// if (services.length && !services[0].code) {
+		// 	result.listOne = true;
+		// }
+		// if (services.length > 1 || result.listOne) {
+		// 	document.querySelector('#project-splitter')
+		// 		.style.display = "none";
+		// 	List({ services });
+		// 	return;
+		// }
+		// else {
+		// 	document.querySelector('#project-splitter')
+		// 		.style.display = "";
+		// 	const service = services[0];
+		// 	if (!service) {
+		// 		return inlineEditor({ code: "", name: "", id: "", filename: "" });
+		// 	}
 
-			const { code, name, id, filename } = getCodeFromService(services[0]);
-			inlineEditor({ code, name, id, filename });
-			const event = new CustomEvent('fileSelect', {
-				bubbles: true,
-				detail: {
-					name: filename
-				}
-			});
-			document.body.dispatchEvent(event);
-		}
+		// 	const { code, name, id, filename } = getCodeFromService(services[0]);
+		// 	inlineEditor({ code, name, id, filename });
+		// 	const event = new CustomEvent('fileSelect', {
+		// 		bubbles: true,
+		// 		detail: {
+		// 			name: filename
+		// 		}
+		// 	});
+		// 	document.body.dispatchEvent(event);
+		// }
 	};
 }
 
 function getUpdateAfter(setCurrentService) {
 	return ({ result }) => {
+		console.warn('Update After');
 		const services = result.result;
 		setCurrentService(services[0], null, 'set');
 	};
@@ -155,7 +158,12 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 	if(operation.eventToParams){
 		const params = operation.eventToParams(eventData);
 		Object.keys(params).forEach(key => {
-			op.url = op.url.replace(`{${key}}`, params[key] || '');
+			op.url = op.url.replace(
+				`{${key}}`,
+				!!params[key] || params[key] === 0 || params[key] === "0"
+					? params[key]
+					: ''
+			);
 		});
 	}
 
@@ -165,12 +173,21 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 	if (op.after) {
 		op.after({ result });
 	}
+	const currentServiceId = localStorage.getItem('lastService');
+	if(operation.name === "read" && id && id !== "*" && Number(id) !== Number(currentServiceId)){
+		localStorage.setItem('lastService', id);
+		sessionStorage.removeItem('tree');
+		sessionStorage.removeItem('editorFile');
+		sessionStorage.removeItem('tabs');
+		sessionStorage.removeItem('statusbar');
+	}
 	const event = new CustomEvent('operationDone', {
 		bubbles: true,
 		detail: {
 			op: operation.name,
 			id,
-			result: result.result
+			result: result.result,
+			listener: eventData.listener
 		}
 	});
 	document.body.dispatchEvent(event);

@@ -1,9 +1,9 @@
 why I keep vscode open
 ======================
 
-- [ ] no search in project / folder
 - [ ] cant CRUD/save a file with service worker
 - [ ] service worker flow is not merged to main flow
+- [ ] no search in project / folder
 
 - [ ] awkward integration with file system
 - [ ] buggy file management
@@ -11,13 +11,29 @@ why I keep vscode open
 - [ ] can't dev/edit bartok in bartok
 
 - [ ] doesn't recall code collapse or scroll position
-- [ ] highlight is weird
 
+- [X] highlight is weird (themeing and color issues)
 - [X] no search in file
 
+
+
+200801_1829 TODO
+================
+
+  - [IP] trying to get service worker fully fleshed out
+
+  - [1/2] make terminal not rely on callback pattern
+    - [X] instead, it should fire an event and only pop that event off pending queue when answer is heard
+    - [ ] should have a timeout with this
+
+  - [ ] seperate template listening and DOM updating from terminal code
+
+
 DEPLOY | VERSION CONTROL
-------------------------
+========================
 - https://app.diagrams.net/#G18h5403wK012mFwEuMETVVnQiyZmXPJOy
+
+
 
 READING/WRITING TO LOCAL FOLDER
 ===============================

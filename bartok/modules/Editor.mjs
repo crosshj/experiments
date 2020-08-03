@@ -398,17 +398,78 @@ const inlineEditor = (ChangeHandler) => ({
 	});
 }
 
+const showFileInEditor = (filename, contents) => {
+	const fileType = getFileType(filename);
+	return !['image', 'font'].includes(fileType);
+}
+
+let binaryPreview;
+const showBinaryPreview = ({
+	filename, path="."
+} = {}) => {
+	if(!binaryPreview){
+		const editorContainer = document.getElementById('editor-container');
+		binaryPreview = document.createElement('div');
+		binaryPreview.id = 'editor-preview';
+		editorContainer.appendChild(binaryPreview);
+	}
+	const fileType = getFileType(filename);
+	const style = `
+		<style>
+			#editor-preview {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding-bottom: 30%;
+				font-size: 2em;
+				color: var(--main-theme-text-invert-color);
+			}
+			#editor-preview .preview-image {
+				min-width: 50%;
+				image-rendering: pixelated;
+			}
+		</style>
+	`;
+	if( fileType === 'image'){
+		binaryPreview.innerHTML = style + `
+			<img class="preview-image" src="${path}/${filename}">
+		`;
+	} else {
+		binaryPreview.innerHTML = style + `
+			<pre>Unsupported File Type</pre>
+		`;
+	}
+	return binaryPreview;
+};
+
 function _Editor() {
+	const editor = inlineEditor(ChangeHandler);
+	let editorPreview, editorDom;
+
 	attachListener((filename) => {
 		const { code = "error", name, id, filename: defaultFile } = getCodeFromService(null, filename);
-		inlineEditor(ChangeHandler)({ code, name, id, filename: filename || defaultFile });
-	});
+		if(!showFileInEditor(filename, code)){
+			editor({ code: '', name, id, filename: filename || defaultFile });
+			editorDom = document.querySelector('.CodeMirror');
 
-	//inlineEditor(ChangeHandler)();
+			editorPreview = showBinaryPreview({ filename, code });
+			editorPreview && editorPreview.classList.remove('hidden');
+			editorDom && editorDom.classList.add('hidden');
+			return;
+		}
+
+		editor({ code, name, id, filename: filename || defaultFile });
+		editorDom = document.querySelector('.CodeMirror');
+
+		editorPreview && editorPreview.classList.add('hidden');
+		editorDom && editorDom.classList.remove('hidden');
+	});
 
 	//deprecate
 	return {
-		inlineEditor: inlineEditor(ChangeHandler),
+		inlineEditor: editor,
 		List: List()
 	}
 }

@@ -348,13 +348,24 @@ const flattenTree = (tree) => {
     return results;
 };
 
-async function getCodeFromStorageUsingTree(tree){
+async function getCodeFromStorageUsingTree(tree, store){
     // flatten the tree (include path)
-    // pass back array of  { name: filename, code: path }
-    // UI should call network for file
-    return flattenTree(tree);
-}
+    // pass back array of  { name: filename, code: path, path }
+    const files = flattenTree(tree);
 
+    // UI should call network(sw) for file
+    // BUT for now, will bundle entire filesystem with its contents
+    for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        file.code = await store.getItem('.' + file.path);
+        // OMG, live it up in text-only world... for now (templates code expects text format)
+        file.code = typeof file.code === "object"
+            ? JSON.stringify(file.code, null, 2)
+            : file.code;
+    }
+
+    return files; // aka code array
+}
 
 /*
 
@@ -413,6 +424,7 @@ class TemplateEngine {
 }
 
 (() => {
+    console.warn('Service Request Handler - init');
 
     var driverOrder = [
         localforage.INDEXEDDB,
@@ -439,6 +451,7 @@ class TemplateEngine {
     //console.log({ driver: store.driver() })
 
     const expressHandler = async (base, msg) => {
+        console.log(`registering fake express handler for ${base}`);
         const templates = new TemplateEngine();
 
         const templatesFromStorage = [];
@@ -485,7 +498,7 @@ class TemplateEngine {
         };
     };
 
-    const addServiceHandler = async ({ name }) => {
+    const addServiceHandler = async ({ name, msg }) => {
         const route = `/${name}/(.*)`;
         const handler = "./modules/serviceRequestHandler.js";
         const foundHandler = handlers.find(x => x.handlerName === handler);
@@ -497,22 +510,26 @@ class TemplateEngine {
 		if(foundExactHandler){
 			console.log(`handler was already installed for ${foundExactHandler.routePattern} (boot)`);
 			return;
+        } else {
+            handlers.push({
+                type: foundHandler.type,
+                routePattern: route,
+                route: new RegExp(route),
+                handler: foundHandler.handler,
+                handlerName: handler,
+                handlerText: foundHandler.handlerText
+            });
         }
-		handlers.push({
-			type: foundHandler.type,
-			routePattern: route,
-			route: new RegExp(route),
-			handler: foundHandler.handler,
-			handlerName: handler,
-			handlerText: foundHandler.handlerText
-		});
-		await handlerStore.setItem(route, {
+        // question: if handler is found in SW state, should store be updated?
+        await handlerStore.setItem(route, {
             type,
             route,
 			handlerName: handler,
 			handlerText: foundHandler.handlerText
         });
-        const expHandler = await expressHandler(name, msg='served from fresh baked');
+
+        // question: if handler is found in SW state, should serviceRequestHandler state be updated?
+        const expHandler = await expressHandler(name, msg);
         app.get(`/${name}/:path?`, expHandler);
     };
 
@@ -551,6 +568,7 @@ class TemplateEngine {
             }
         });
         store.setItem(`./${name}/package.json`, {
+            main: 'package.json',
             comment: 'this is an example package.json'
         });
         store.setItem(`./${name}/.templates/json.html`, `
@@ -561,7 +579,7 @@ class TemplateEngine {
         `);
 
         // make service available from service worker (via handler)
-        await addServiceHandler({ name });
+        await addServiceHandler({ name, msg: 'served from fresh baked' });
 
         // return current service
         const services = defaultServices();
@@ -624,10 +642,31 @@ class TemplateEngine {
             return JSON.stringify(bartokCode, null, 2);
         }
 
+        const defaults = defaultServices();
+
+
         //if not id, return all services
-        if (!params.id) {
+        if (!params.id || params.id === '*') {
+            //TODO: include Fuig Service here, too!!!
+            const savedServices = [];
+            await metaStore
+                .iterate((value, key) => {
+                    savedServices.push(value);
+                });
+
+            //TODO: may not want to return all code!!!
+            for(var i=0, len=savedServices.length; i<len; i++){
+                const service = savedServices[i];
+                const code = await getCodeFromStorageUsingTree(service.tree, store);
+                service.code = code;
+            }
+            console.log({ defaults, savedServices });
+
+            const allServices = [...defaults, ...savedServices]
+                .sort((a, b) => Number(a.id) - Number(b.id));
+
             return JSON.stringify({
-                result: defaultServices()
+                result: allServices
             }, null, 2);
         }
 
@@ -638,7 +677,7 @@ class TemplateEngine {
         const foundService = await metaStore.getItem(params.id);
 
         if(foundService){
-            foundService.code = await getCodeFromStorageUsingTree(foundService.tree);
+            foundService.code = await getCodeFromStorageUsingTree(foundService.tree, store);
             return JSON.stringify({
                 result: [ foundService ]
             }, null, 2);
@@ -718,14 +757,15 @@ class TemplateEngine {
             });
         for(let i=0, len=restoreToExpress.length; i<len; i++){
             const {name} = restoreToExpress[i];
-            const expHandler = await expressHandler(name, msg='served from reconstituded');
-            app.get(`/${name}/:path?`, expHandler);
+            await addServiceHandler({ name, msg: 'served from reconstituded' });
         }
         // TODO: should also add routes/paths/handlers to SW which have been created but are not there already
         // could run in to problems with this ^^^ because those may be in the process of being added
     })();
 
     async function serviceAPIRequestHandler(event) {
+        console.warn('Service Request Handler - usage');
+
         const serviceAPIMatch = app.find(event.request.url);
         if (!serviceAPIMatch) {
             return fetch(event.request.url);

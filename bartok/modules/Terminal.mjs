@@ -5,109 +5,10 @@ import "../../shared/vendor/xterm-addon-fit.js";
 import { debounce } from "../../shared/modules/utilities.mjs";
 
 import motd from "./motd.mjs";
-import { attachEvents, attachTrigger } from './events/terminal.mjs';
+import { attachEvents, attachTrigger, execCommand } from './events/terminal.mjs';
 import { templateJSX, templateSVC3, transform } from './Templates.mjs';
 
 let EventTrigger;
-
-function tryExecCommand({ command, loading, done }){
-		const [ op, ...args] = command.split(' ');
-		let filename, newName, _id, name, other;
-		let after, noDone;
-
-		const manageOps = [
-			"addFile", "renameFile", "deleteFile",
-			"renameProject"
-		];
-		const projectOps = [
-			"cancel", "create", "read", "update", "delete",
-			"manage", "monitor", "persist",
-			"fullscreen", "help"
-		];
-
-		const ops = [...manageOps, ...projectOps]
-
-		const isManageOp = manageOps
-			.map(x => x.toLowerCase())
-			.includes(op.toLowerCase());
-		const isProjectOp = projectOps
-			.map(x => x.toLowerCase())
-			.includes(op.toLowerCase());
-
-		if(isManageOp){
-			([ filename, newName ] = args);
-		}
-		if(isProjectOp){
-			([ _id, name, ...other] = args);
-		}
-		let id = Number(_id);
-
-		if(!isManageOp && !isProjectOp){
-			done(`${command}:  command not found!\nSupported: ${ops.join(', ')}\n`);
-			return;
-		}
-
-		if(['help'].includes(op)){
-			done(`\nThese might work:\n\n\r   ${
-				ops
-					.filter(x => x !== "help")
-					.join('\n\r   ')
-			}\n`);
-			return;
-		}
-
-		if(['fullscreen'].includes(op)){
-			document.documentElement.requestFullscreen();
-			return done();
-		}
-
-		const body = (id === 0 || !!id)
-			? { id }
-			: {
-				name: name || (document.body.querySelector('#service_name')||{}).value,
-				id: id || (document.body.querySelector('#service_id')||{}).value,
-				code: (window.Editor||{ getValue: ()=>{}}).getValue()
-			}
-
-		if(['read'].includes(op)){
-			body.id = id;
-			delete body.name;
-			delete body.code;
-			if(!id || id === NaN){
-				body.id = "*";
-				after = ({ result }) => {
-					loading('DONE');
-					loading(`\n
-					${result.result.map(x => `${x.id.toString().padStart(5, ' ')}   ${x.name}`).join('\n')}
-					\n`.replace(/\t/g, ''));
-					done();
-				};
-				noDone = () => {}
-			}
-		}
-
-		if(['create'].includes(op)){
-			body.id = Number(id);
-			body.name = name;
-			body.code = (window.Editor||{ getValue: ()=>{}}).getValue()
-		}
-
-		const event = new CustomEvent('operations', {
-			bubbles: true,
-			detail: {
-				operation: op,
-				listener: Math.random().toString().replace('0.', ''),
-				filename, newName,
-				done: noDone || done,
-				after,
-				body
-			}
-		});
-		document.body.dispatchEvent(event);
-
-		//TODO: listen for when it's done
-		isProjectOp && loading(`${command}: running... `);
-	};
 
 function _Terminal(){
 	const options = {
@@ -297,9 +198,8 @@ function _Terminal(){
 			return;
 		}
 
-
 		term.write('\n');
-		tryExecCommand({
+		execCommand({
 			command,
 			loading: (m) => term.write(m),
 			done: (m) => {
