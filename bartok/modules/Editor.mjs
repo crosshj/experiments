@@ -7,14 +7,13 @@ import { getCodeFromService } from './state.mjs'
 
 import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
 
+const getExtension = (fileName) => ((
+	fileName.match(/\.[0-9a-z]+$/i) || []
+)[0] || '').replace(/^\./, '');
+
 function getFileType(fileName = '') {
 	let type = 'default';
-	const extension = ((
-		fileName.match(/\.[0-9a-z]+$/i) || []
-	)[0] || ''
-	).replace(/^\./, '');
-
-	//console.log(extension)
+	const extension = getExtension(fileName);
 	if (ext[extension]) {
 		type = ext[extension];
 	}
@@ -413,6 +412,7 @@ const showBinaryPreview = ({
 		binaryPreview.id = 'editor-preview';
 		editorContainer.appendChild(binaryPreview);
 	}
+	const extension = getExtension(fileName);
 	const fileType = getFileType(filename);
 	const style = `
 		<style>
@@ -435,6 +435,29 @@ const showBinaryPreview = ({
 	if( fileType === 'image'){
 		binaryPreview.innerHTML = style + `
 			<img class="preview-image" src="${path}/${filename}">
+		`;
+	} else if (fileType === "audio"){
+		binaryPreview.innerHTML = `
+			<figure>
+				<figcaption>${filename}</figcaption>
+				<audio
+					controls
+					src="${path}/${filename}"
+				>
+					Your browser does not support the
+					<code>audio</code> element.
+				</audio>
+			</figure>
+		`;
+	} else if (fileType === "video") {
+		binaryPreview.innerHTML = `
+			<video controls width="250">
+				<source
+					src="${path}/${filename}"
+					type="video/${extension}"
+				>
+				Sorry, your browser doesn't support embedded videos.
+			</video>
 		`;
 	} else {
 		binaryPreview.innerHTML = style + `
