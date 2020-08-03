@@ -38,10 +38,10 @@ DEPLOY | VERSION CONTROL
 READING/WRITING TO LOCAL FOLDER
 ===============================
 
-- use node server running in BG
-  - have to have another window open
-  - requires server dev(?)
-  - https://www.npmjs.com/package/file-browser
+- [X] use node server running in BG
+  - have to have another window open << have not found a way around keeping a terminal open
+  - requires server dev(?) << use electron
+  - https://www.npmjs.com/package/file-browser << not using this
 
 - write chrome extension which allows access to file system
   - page contacts that extension to read/write files
@@ -77,13 +77,13 @@ create|update|delete for service API in serviceHandler
   - need this before service worker fork can be merged
 
 reset page for ui
-  - kill tree cache (sessionStorage)
-  - kill all the recalled things (above)
-  - kill service worker cache (or maybe don't use this)
-  - kill service worker (which will be reloaded with boot())
-  - kill moduleCache (localStorage) (maybe should be sessionStorage)
-  - reloadServices true versus false
-  - kill/reload serviceHandler
+  - [X] kill tree cache (sessionStorage)
+  - [X] kill all the recalled things (above)
+  - [ ] kill service worker cache (or maybe don't use this)
+  - [X] kill service worker (which will be reloaded with boot())
+  - [X] kill moduleCache (localStorage) (maybe should be sessionStorage)
+  - [X] reloadServices true versus false
+  - [ ] kill/reload serviceHandler
 
 BUG: loading page shows loading bar multiple times
 
@@ -91,6 +91,9 @@ TODO
 ====
 
 - rephrase all tasks in terms of money and/or time
+  - started work on Bartok on March 15, 2020
+  - hourly pay rate ~=
+  - average amount of time per day on bartok ~=
 
 - how much would I pay to use bartok (trick question)?
 - how much would you have to pay me to use bartok (trick question)?
