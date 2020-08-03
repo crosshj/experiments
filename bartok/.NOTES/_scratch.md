@@ -68,7 +68,7 @@ recall all things
   - [X] editor tabs (remember open, selected, and scroll position)
   - [X] editor (load last loaded file)
   - [X] preview (load last loaded preview)
-  - [ ] panes (window width same as previous, recall positions)
+  - [X] panes (window width same as previous, recall positions)
 
 connect all context menu items
   - huge list...

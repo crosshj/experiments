@@ -6,7 +6,73 @@ https://iamakulov.com/notes/resize-scroll/
 
 */
 
+function saveAllPositions(op){
+	// explorer
+	//   ----   left/right << --- pixels
+	// editor
+	//   ----   left/right << --- percentage
+	// terminal
 
+	try {
+		if(op === 'resize' && restoreAllPositions()){
+			return;
+		}
+
+		const seperator1 = document.getElementById("seperator1");
+		const seperator2 = document.getElementById("seperator2");
+
+		const windowWidth = document.documentElement.clientWidth;
+		const nearest100 = Math.round(windowWidth / 100) * 100;
+
+		sessionStorage.setItem(`panes-${nearest100}`, [
+			seperator1.style.left.replace('px', ''),
+			seperator2.style.left.replace('%', '')
+		].join(','));
+	} catch(e){
+		console.error(e);
+	}
+}
+
+function restoreAllPositions(){
+		try {
+		const windowWidth = document.documentElement.clientWidth;
+		const nearest100 = Math.round(windowWidth / 100) * 100;
+		const storedPanePositions = sessionStorage.getItem(`panes-${nearest100}`);
+		if(!storedPanePositions){
+			return false;
+		}
+		const [sep1, sep2] = storedPanePositions.split(',');
+		if(!sep1 || !sep2){
+			return false;
+		}
+		const explorerPane = document.getElementById("explorer");
+		const explorerCover = document.getElementById("explorer-cover");
+
+		const editorPane = document.getElementById("editor");
+		const editorCover = document.getElementById("editor-cover");
+
+		const terminalPane = document.getElementById("terminal");
+		const terminalCover = document.getElementById("terminal-cover");
+
+		const seperator1 = document.getElementById("seperator1");
+		const seperator2 = document.getElementById("seperator2");
+
+		explorerPane.style.right = windowWidth - sep1 + 'px';
+		explorerCover.style.right = windowWidth - sep1 + 'px';
+		seperator1.style.left = sep1 + 'px';
+		editorPane.style.left = sep1 + 'px';
+		editorCover.style.left = sep1 + 'px';
+
+		editorPane.style.right = 100 - sep2 + '%';
+		editorCover.style.right = 100 - sep2 + '%';
+		seperator2.style.left = sep2 + '%';
+		terminalPane.style.left = sep2 + '%';
+		terminalCover.style.left = sep2 + '%';
+		return true;
+	}catch(e){
+		console.error(e);
+	}
+}
 
 // function is used for dragging and moving
 function dragElement(element, direction, handler, first, second, firstUnder, secondUnder, all) {
@@ -132,6 +198,8 @@ function dragElement(element, direction, handler, first, second, firstUnder, sec
 		};
 		setExplorerRightEdge();
 
+		saveAllPositions();
+
 		window.termResize && window.termResize();
 		dragging = false;
 	}
@@ -219,6 +287,8 @@ function onResize(){
 		const rightOffset = windowWidth - handleLeft;
 		explorerPane.style.right = rightOffset + 'px';
 		explorerCover.style.right = rightOffset + 'px';
+
+		saveAllPositions('resize');
 	} catch(e){
 		console.log(e);
 	}
@@ -340,7 +410,8 @@ function Panes() {
 	// terminalCover.style.width = terminal.offsetWidth + "px";
 
 	onResize();
-	attachListeners()
+	attachListeners();
+	restoreAllPositions();
 }
 
 export default Panes;
