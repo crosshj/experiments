@@ -98,6 +98,9 @@
       "Readme.md": {},
       "service.json": {},
       "tests": {
+        "_dimensional.md": {},
+        "_mirrors.md": {},
+        "_sort.flashing.md": {},
         "assemblyscript.html": {},
         "css-3d.html": {},
         "sw.clientServer.htm": {},
@@ -124,6 +127,18 @@
       }
     },
     "files": [
+      {
+        "name": "_dimensional.md",
+        "path": ".welcome/tests/_dimensional.md"
+      },
+      {
+        "name": "_mirrors.md",
+        "path": ".welcome/tests/_mirrors.md"
+      },
+      {
+        "name": "_sort.flashing.md",
+        "path": ".welcome/tests/_sort.flashing.md"
+      },
       {
         "name": "assemblyscript.html",
         "path": ".welcome/tests/assemblyscript.html"

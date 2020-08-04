@@ -100,10 +100,10 @@ const folderSelectHandler = (e) => {
 		split = [name||next]
 	}
 
-	Array.from(
-		document.querySelectorAll('#tree-view .selected')||[]
-	)
-		.forEach(x => x.classList.remove('selected'));
+	// Array.from(
+	// 	document.querySelectorAll('#tree-view .selected')||[]
+	// )
+	// 	.forEach(x => x.classList.remove('selected'));
 
 	const leaves = Array.from(
 		document.querySelectorAll('#tree-view .tree-leaf-content')||[]
@@ -116,7 +116,7 @@ const folderSelectHandler = (e) => {
 		if(!found){ return; }
 		if(i === split.length-1){
 				tree.selected = spl;
-				found.classList.add('selected');
+				//found.classList.add('selected');
 		}
 		const expando = found.querySelector('.tree-expando');
 		expando && expando.classList.remove('closed');
@@ -269,7 +269,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 			clientWidth: currentExplorer.clientWidth
 		};
 		//currentExplorer.style.width = currentExplorer.clientWidth;
-		currentExplorer.style.minWidth = currentExplorer.clientWidth + 'px';
+		//currentExplorer.style.minWidth = currentExplorer.clientWidth + 'px';
 
 		const refreshTree = tree && tree.id !== id;
 		if(refreshTree){
@@ -329,7 +329,12 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 				.filter(x => !result[0].code.find(y => y.name === x.name));
 
 			childrenSorted = [...folders, ...files];
-			sessionStorage.setItem('tree', JSON.stringify({ data: childrenSorted }));
+			if(!(treeFromStorage && treeFromStorage.data)){
+				sessionStorage.setItem('tree', JSON.stringify({ data: childrenSorted }));
+			} else {
+				selected = treeFromStorage.selected;
+				expanded = treeFromStorage.expanded;
+			}
 		} else {
 			if(result && result[0] && result[0].name){
 				updateTreeMenu({ project: result[0].name });
@@ -369,7 +374,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 			const storeTree = JSON.parse(sessionStorage.getItem('tree'));
 			storeTree.expanded = storeTree.expanded || [];
 			storeTree.expanded.push(folderName);
-			storeTree.selected = folderName;
+			//storeTree.selected = folderName;
 			sessionStorage.setItem('tree', JSON.stringify(storeTree));
 			triggerFolderSelect(e);
 		});
@@ -380,7 +385,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 			//const folderPath = e.target.dataset.path + folderName;
 			tree.expanded = tree.expanded.filter(x => x !== folderName);
 			const storeTree = JSON.parse(sessionStorage.getItem('tree'));
-			storeTree.selected = folderName;
+			//storeTree.selected = folderName;
 			storeTree.expanded = storeTree.expanded || [];
 			storeTree.expanded = storeTree.expanded.filter(x => x !== folderName);
 			sessionStorage.setItem('tree', JSON.stringify(storeTree));
