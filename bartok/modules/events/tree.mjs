@@ -324,9 +324,56 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 
 			// this sort will only be affective on root level
 			const files = children
-				.filter(x => result[0].code.find(y => y.name === x.name));
+				.filter(x => result[0].code.find(y => y.name === x.name))
+				.sort((a, b) => {
+					if (a.name.toLowerCase() > b.name.toLowerCase()) {
+						return 1;
+					}
+					if (b.name.toLowerCase() > a.name.toLowerCase()) {
+						return -1;
+					}
+					return 0;
+				});
 			const folders = children
-				.filter(x => !result[0].code.find(y => y.name === x.name));
+				.filter(x => !result[0].code.find(y => y.name === x.name))
+				.sort((a, b) => {
+					if (a.name.toLowerCase() > b.name.toLowerCase()) {
+						return 1;
+					}
+					if (b.name.toLowerCase() > a.name.toLowerCase()) {
+						return -1;
+					}
+					return 0;
+				});
+
+			function sortChildren(folder){
+				const folders = folder.children
+					.filter(x => x.children.length > 0)
+					.map(sortChildren)
+					.sort((a, b) => {
+						if (a.name.toLowerCase() > b.name.toLowerCase()) {
+							return 1;
+						}
+						if (b.name.toLowerCase() > a.name.toLowerCase()) {
+							return -1;
+						}
+						return 0;
+					});
+				const files = folder.children
+					.filter(x => x.children.length <= 0)
+					.sort((a, b) => {
+						if (a.name.toLowerCase() > b.name.toLowerCase()) {
+							return 1;
+						}
+						if (b.name.toLowerCase() > a.name.toLowerCase()) {
+							return -1;
+						}
+						return 0;
+					});
+				folder.children = [...folders, ...files];
+				return folder;
+			}
+			folders.forEach(sortChildren);
 
 			childrenSorted = [...folders, ...files];
 			if(!(treeFromStorage && treeFromStorage.data)){
