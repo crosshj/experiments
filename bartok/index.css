@@ -149,9 +149,10 @@ iframe::-webkit-scrollbar-track{
   /* --main-theme-highlight-color: #40f7ac; */
   /* --main-theme-highlight-color: #026292; */
   /* --main-theme-highlight-color: #2b5046; */
-  /* --main-theme-highlight-color: 20, 160, 210; */
-  --main-theme-highlight-color: 20, 201, 210;
-  --main-theme-highlight-color-FOR-PICKER: rgb(20, 201, 210);
+  --main-theme-highlight-color: 20, 160, 210;
+  /* --main-theme-highlight-color: 20, 201, 210; */
+  /* --main-theme-highlight-color: 64, 210, 20; */
+  --main-theme-highlight-color-FOR-PICKER: rgb(88, 88, 88);
   /* --main-theme-background-color: #363238; */
   /* --main-theme-background-color: #3b3b3b; */
   --main-theme-background-color: #363636; /* #2d2d2d */
@@ -469,6 +470,21 @@ nav a.sidenav-trigger i,
   background: #eee;
 }
 
+.CodeMirror .folded:before {
+  content: '';
+  display: block;
+  background: rgba(var(--main-theme-highlight-color), 0.1);
+  position: absolute;
+  left: 0px;
+  right: -10px;
+  top: -1px;
+  bottom: -1px;
+  border: 1px solid;
+  color: rgba(var(--main-theme-highlight-color), 0.06);
+  user-select: none;
+  pointer-events: none;
+  box-sizing: content-box;
+}
 
 
 .CodeMirror-gutter{
@@ -1010,10 +1026,25 @@ notes-section.loading:after {
   height: 100%;
 }
 
-.activeline {
-  outline: 1px solid #444;
-  background: #222;
-  width: 105%;
+.CodeMirror .activeline:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0px;
+  right: -11px;
+  top: -1px;
+  bottom: -1px;
+  user-select: none;
+  pointer-events: none;
+  box-sizing: content-box;
+  /* outline: 1px solid var(--main-theme-background-color); */
+  border: 1px solid var(--main-theme-background-color);
+  background: var(--main-theme-background-dark-color);
+  position: absolute !important;
+  left: 0;
+  right: -11px;
+  border-right: 0;
+  border-left: 0;
 }
 
 .CodeMirror-linenumber {

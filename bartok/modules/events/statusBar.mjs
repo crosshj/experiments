@@ -12,7 +12,6 @@ function getFileType(fileName = '') {
 	)[0] || ''
 	).replace(/^\./, '');
 
-	//console.log(extension)
 	if (ext[extension]) {
 		type = ext[extension];
 	}
@@ -98,14 +97,14 @@ const fileClose = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>
 	(event) => {
-		console.log('status bar listen for fileClose');
+		//console.log('status bar listen for fileClose');
 	};
 
 const fileChange = ({
 	setLineNumber, setColNumber, setTabSize, setDocType
 }) =>
 	(event) => {
-		console.log('status bar listen for fileChange');
+		//console.log('status bar listen for fileChange');
 	};
 
 const click = ({
@@ -116,7 +115,7 @@ const click = ({
 		if(!statusBarDom.contains(event.target)){ return true; }
 		event.preventDefault();
 
-		console.log('status bar listen for click');
+		//console.log('status bar listen for click');
 	};
 
 const cursorActivity = ({

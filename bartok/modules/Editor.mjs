@@ -232,6 +232,14 @@ const Search = () => {
 	return searchDiv;
 };
 
+/*
+	NOTE:
+
+	name ==> service name (parent of this file)
+	id ==> service id
+	filename ==> name of this file
+*/
+
 //const BLANK_CODE_PAGE = `${(new Array(99)).fill().join('\n')}`;
 const BLANK_CODE_PAGE = '';
 const inlineEditor = (ChangeHandler) => ({
@@ -379,7 +387,9 @@ const inlineEditor = (ChangeHandler) => ({
 		foldGutter: true,
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		foldOptions: {
-			widget: (from, to) => { return '...'; },
+			widget: (from, to) => {
+				return '...';
+			},
 			minFoldSize: 3
 		}
 	}, (error, editor) => {
@@ -394,6 +404,66 @@ const inlineEditor = (ChangeHandler) => ({
 		editor.on("scrollCursorIntoView", onScrollCursor)
 		editor.setOption("styleActiveLine", { nonEmpty: true });
 		editor.setOption("extraKeys", extraKeys);
+
+		let editorState = {
+			unfolded: [],
+			scroll: 0
+		};
+		const stateStorageKey = `state::${name}::${filename}`;
+		try {
+			const storedState = JSON.parse(sessionStorage.getItem(stateStorageKey));
+			if(storedState && storedState.unfolded){
+				editorState = storedState;
+			}
+		} catch(e) {}
+
+		editor.on('fold', (cm, from, to) => {
+			cm.addLineClass(from.line, 'wrap', 'folded')
+		});
+		editor.on('unfold', (cm, from, to) => {
+			cm.removeLineClass(from.line, 'wrap', 'folded')
+		});
+
+		let cursor = 0;
+		editor.eachLine(editor.firstLine(), editor.lastLine(), function(line) {
+			// todo: store these exceptions in user config?
+			const shouldNotFold = [
+				'<html>',
+				'<!--',
+				'code_in',
+				"# welcome!"
+			].find(x => line.text.includes(x));
+
+			if(shouldNotFold){
+				cursor++;
+				return;
+			}
+			// children of the folded
+			const alreadyFolded = editor.isFolded({ line: cursor, ch: 0 });
+			if(alreadyFolded){
+				cursor++;
+				return;
+			}
+
+			editor.foldCode({line: cursor, ch: 0}, null, "fold");
+			cursor++;
+		});
+
+		editorState.unfolded.forEach(line => editor.foldCode({line, ch: 0}, null, "unfold"));
+
+		editor.on('fold', (cm, from, to) => {
+			editorState.unfolded = editorState.unfolded.filter(x => x !== from.line);
+			sessionStorage.setItem(stateStorageKey, JSON.stringify(editorState));
+		});
+
+		editor.on('unfold', (cm, from, to) => {
+			if(editorState.unfolded.includes(from.line)){
+				return;
+			}
+			editorState.unfolded.push(from.line);
+			sessionStorage.setItem(stateStorageKey, JSON.stringify(editorState));
+		});
+
 	});
 }
 
@@ -412,7 +482,7 @@ const showBinaryPreview = ({
 		binaryPreview.id = 'editor-preview';
 		editorContainer.appendChild(binaryPreview);
 	}
-	const extension = getExtension(fileName);
+	const extension = getExtension(filename);
 	const fileType = getFileType(filename);
 	const style = `
 		<style>

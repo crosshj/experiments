@@ -92,7 +92,6 @@ function StatusBar(){
 			docType = 'TypeScript';
 		}
 		if(type.name && type.name.includes('html')){
-			console.log({ type });
 			docType = 'html';
 		}
 		if(type === 'default'){
