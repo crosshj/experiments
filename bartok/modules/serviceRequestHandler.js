@@ -399,14 +399,15 @@ class TemplateEngine {
         const newTemp = {
             extensions: [],
             body: template,
-            tokens: ['{{template_value}}'],
+            tokens: ['{{template_value}}', '{{markdown}}', '{{template_input}}'],
             matcher: () => false //TODO: matchers are not currently implemented
         };
         newTemp.extensions.push(name.split('.').shift());
         newTemp.convert = (contents) => {
             let xfrmed = newTemp.body + '';
             newTemp.tokens.forEach(t => {
-                xfrmed = xfrmed.replace(new RegExp(t, 'g'), contents)
+                xfrmed = xfrmed.replace(new RegExp(t, 'g'), contents);
+                //xfrmed = xfrmed.replace(t, contents);
             });
             return xfrmed;
         };
@@ -470,16 +471,20 @@ class TemplateEngine {
 
         return async (params, event) => {
             const { path, query } = params;
-            const filename = path.split('/').pop()
+            const filename = path.split('/').pop();
             const previewMode = (params.query||'').includes('preview');
             let xformedFile;
 
             const file = await store.getItem(`./${base}/${path}`);
             let fileJSONString;
             try {
-                fileJSONString = file
-                    ? JSON.stringify(file, null, 2)
-                    : '';
+                if(typeof file !== 'string'){
+                    fileJSONString = file
+                        ? JSON.stringify(file, null, 2)
+                        : '';
+                } else {
+                    fileJSONString = file;
+                }
             } catch(e){}
 
             if(previewMode){
@@ -723,33 +728,35 @@ class TemplateEngine {
 
 
     // THIS SHOULD BE REGISTERED BY DEFAULT
-    app.get('/.welcome/:path?', async (params, event) => {
-        /*
-        TODO: this route should instead be created dynamically instead of defined in this service
-        based on reading services & determining which are "file system services"
-        */
-       console.log({ params })
+    // app.get('/.welcome/:path?', async (params, event) => {
+    //     /*
+    //     TODO: this route should instead be created dynamically instead of defined in this service
+    //     based on reading services & determining which are "file system services"
+    //     */
+    //    console.log({ params })
 
-       /*
-        TODO:
-        expect something like this:
+    //    /*
+    //     TODO:
+    //     expect something like this:
 
-        http://localhost:3000/bartok/.welcome/Readme.md?preview=true&edit=true
-        should render document using a template and include editor to the left
+    //     http://localhost:3000/bartok/.welcome/Readme.md?preview=true&edit=true
+    //     should render document using a template and include editor to the left
 
-        http://localhost:3000/bartok/.welcome/Readme.md?preview=true
-        should preview document, no editing
+    //     http://localhost:3000/bartok/.welcome/Readme.md?preview=true
+    //     should preview document, no editing
 
-        http://localhost:3000/bartok/.welcome/Readme.md?edit=true
-        should allow editing and saving of document, no preview
-       */
+    //     http://localhost:3000/bartok/.welcome/Readme.md?edit=true
+    //     should allow editing and saving of document, no preview
+    //    */
 
-       return await (await fetch(event.request.url)).text();
-    });
+    //    return await (await fetch(event.request.url)).text();
+    // });
 
     // NOTE: this is what happens when service request singleton is called into being
     (async () => {
-        const restoreToExpress = []
+        const restoreToExpress = [
+            { name: '.welcome' }
+        ];
         await metaStore
             .iterate((value, key) => {
                 const { name } = value;

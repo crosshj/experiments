@@ -75,6 +75,7 @@ useDefault: false
       overflow: hidden;
       color: #ccc;
       font-family: sans-serif;
+      background: #1a1a1a;
     }
     #container {
       height: 100vh; width: 100%;
@@ -224,7 +225,7 @@ useDefault: false
 
       const output = converter.makeHtml(
         templateInput
-        .replace('{{markdown}}', '')
+        .replace('{{' + 'markdown' + '}}', '')
         .replace(/\/b\s/g, '<br/>')
       ).replace(/disabled/g, '');
       contain.innerHTML = output;

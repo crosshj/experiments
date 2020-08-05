@@ -92,7 +92,7 @@ Misc: other models
   }
   text {
     fill: var(--text-color);
-    font-size: 3;
+    font-size: 4;
     letter-spacing: 1
   }
   text.vertical {
