@@ -110,19 +110,19 @@ TODO 200714_1902
   - [X] editor code folding
     - https://codemirror.net/doc/manual.html#addon_foldcode
   - [ ] editor collaborative
-  - [ ] fix: closing (and opening?) a folder should not save that folder as selected
+  - [X] fix: closing (and opening?) a folder should not save that folder as selected
   - [ ] folders open when contained file is selected
   - [ ] full screen for preview
   - [ ] mini map
-  - [ ] preview binary files: image, font, audio, video
-  - [ ] preview uses service worker
+  - [X] preview binary files: image, font, audio, video
+  - [X] preview uses service worker
   - [ ] react template loading spinner
-  - [ ] recall open files
-  - [ ] recall pane sizes
+  - [X] recall open files
+  - [X] recall pane sizes
   - [ ] recall pinned preview
   - [ ] recall scroll position per file
-  - [ ] recall selected file
-  - [ ] search in file
+  - [X] recall selected file
+  - [X] search in file
   - [ ] search in folder
   - [ ] share service
   - [ ] shared libs should load in offline mode
@@ -132,8 +132,8 @@ TODO 200714_1902
   - [ ] todo export to bartok file system
   - [ ] todo groups
   - [ ] todo item edit
-  - [ ] todo priority
-  - [ ] todos import
+  - [X] todo priority
+  - [X] todos import
   - [ ] upload a folder
   - [ ] upload binary files
   - [X] export todo's: JSON
@@ -193,12 +193,12 @@ websocket from service worker?
 - share
 - export zip
 - import zip
-- images/binary files
+- [X] images/binary files
 - open preview in new window / share
 - web build system / service layer
 - services graph / service selection
 - [X] codemirror elegance & bug where editor shows blank
-- non editor tabs
+- [X] non editor tabs
 - template creation flow & overall template design
 	- allow preview to interact with other bartok web components
 - settings
@@ -224,7 +224,7 @@ I want to be able to do little experiments
 ---------------
 Examples of little experiments:
 	- broken clock right twice a day
-	- simluate a collection of people as faulty mirrors
+	- [ ] simluate a collection of people as faulty mirrors
 	- architect stage of some project
 	- emulate kubernetes, explore kubernetes pattern
 	- services with central config service pattern
@@ -314,13 +314,13 @@ SORTED
 FILE CHANGES
 ------------
  - only keep changed tabs open, reuse previous/unchanged tabs
- - tabs stay open across reload
+ - [X] tabs stay open across reload
  - scroll/cursor position remembered
  - allow closing last tab
 
 PACKAGE.JSON / CONFIG
 ---------------------
- - service should get its name from package.json
+ - [X] service should get its name from package.json
  - package.json should be ideal and not strict?
    - (comments, unquoted, single quotes, trailing commas, etc)
  - package.json should be service.json? .bartok.yml ?
@@ -395,7 +395,7 @@ UNSORTED
 - explorer can be hidden more beautifully, will auto-show and dismiss
 - terminal/preview can be hidden or take up full screen
 
-- link files - files which store links and show them in preview
+- [ ] link files - files which store links and show them in preview
 
 - mini-map / preview within files
 
@@ -533,7 +533,7 @@ https://madnight.github.io/githut/#/pull_requests/2020/2
 
 highest paid:
   - Scala
-  - Clojure
+  - [X] Clojure
   - Go
   - Erlang
   - WebAssembly
@@ -543,16 +543,16 @@ highest paid:
   - Elixir
 
 most popular:
-  - Javascript
-  - Python
+  - [X] Javascript
+  - [X] Python
   - Java
-  - PHP
+  - [X] PHP
   - C#
-  - C++
+  - [X] C++
   - TypeScript
   - Shell
   - C
-  - Ruby
+  - [X] Ruby
 
 fast growth:
   - Dart         532%
