@@ -39,7 +39,7 @@ Example: Political Identity Modelling
     </g>
   </svg>
 
-Thougths
+Thoughts
 ========
 The addition of an extra dimension makes it possible to make a finer point about political identity.  Something is gained; probably more than what is mentioned here.
 

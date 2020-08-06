@@ -10,7 +10,8 @@ why I keep vscode open
 
 - [ ] can't dev/edit bartok in bartok
 
-- [ ] doesn't recall code collapse or scroll position
+- [ ] doesn't recall scroll position
+- [X] doesn't recall code collapse
 
 - [X] highlight is weird (themeing and color issues)
 - [X] no search in file

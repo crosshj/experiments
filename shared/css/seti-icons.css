@@ -205,7 +205,7 @@
 }
 .icon-audio:before {
   content: '\E005';
-  color: white;
+  color: #ca84ca;
 }
 .icon-brainfuck:before {
   content: '\E078';
@@ -780,7 +780,7 @@
 }
 .icon-video:before {
   content: '\E08F';
-  color: white;
+  color: #fb0bb1;
 }
 .icon-vue:before {
   content: '\E090';

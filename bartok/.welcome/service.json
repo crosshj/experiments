@@ -35,6 +35,8 @@
         "svcv3.html": {}
       },
       "file-examples": {
+        "video.mp4": {},
+        "audio.mp3": {},
         "svg-bartok.svg": {},
         "typescript.ts": {},
         "javascript.js": {},
@@ -132,7 +134,14 @@
       }
     },
     "files": [
-
+      {
+        "name": "video.mp4",
+        "path": ".welcome/file-examples/video.mp4"
+      },
+      {
+        "name": "audio.mp3",
+        "path": ".welcome/file-examples/audio.mp3"
+      },
       {
         "name": "react-import.jsx",
         "path": ".welcome/tests/react-import.jsx"

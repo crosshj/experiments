@@ -429,12 +429,20 @@ const inlineEditor = (ChangeHandler) => ({
 			// todo: store these exceptions in user config?
 			const shouldNotFold = [
 				'<html>',
+				'<head>',
+				'<svg',
 				'<!--',
 				'code_in',
 				"# welcome!"
 			].find(x => line.text.includes(x));
 
-			if(shouldNotFold){
+			const isfirstLineOfJSON = (
+				filename.includes('.json') ||
+				filename.includes('.gltf') ||
+				filename.includes('.ipynb')
+			) && cursor === 0;
+
+			if(shouldNotFold || isfirstLineOfJSON){
 				cursor++;
 				return;
 			}
@@ -469,7 +477,8 @@ const inlineEditor = (ChangeHandler) => ({
 
 const showFileInEditor = (filename, contents) => {
 	const fileType = getFileType(filename);
-	return !['image', 'font'].includes(fileType);
+	console.log({ fileType, filename });
+	return !['image', 'font', 'audio', 'video'].includes(fileType);
 }
 
 let binaryPreview;
@@ -510,6 +519,19 @@ const showBinaryPreview = ({
 			#editor-preview .preview-image {
 				min-width: 50%;
 				image-rendering: pixelated;
+				object-fit: contain;
+				margin-bottom: -15%;
+			}
+			audio {
+				filter: invert(0.7) contrast(1.5);
+			}
+			audio:focus {
+				outline: 0;
+				border: 1px solid #444;
+				border-radius: 50px;
+			}
+			video {
+				max-width: 95%;
 			}
 		</style>
 	`;
@@ -518,21 +540,29 @@ const showBinaryPreview = ({
 			<img class="preview-image" src="${url}">
 		`;
 	} else if (fileType === "audio"){
-		binaryPreview.innerHTML = `
+		binaryPreview.innerHTML = style + `
 			<figure>
-				<figcaption>${filename}</figcaption>
-				<audio
-					controls
-					src="${url}"
-				>
-					Your browser does not support the
-					<code>audio</code> element.
-				</audio>
+			<audio
+				controls
+				loop
+				autoplay
+				controlsList="play timeline volume"
+				src="${url}"
+			>
+				Your browser does not support the
+				<code>audio</code> element.
+			</audio>
 			</figure>
 		`;
 	} else if (fileType === "video") {
-		binaryPreview.innerHTML = `
-			<video controls width="250">
+		binaryPreview.innerHTML = style + `
+			<video
+				controls
+				loop
+				autoplay
+				controlsList="play timeline volume"
+				disablePictureInPicture
+			>
 				<source
 					src="${url}"
 					type="video/${extension}"

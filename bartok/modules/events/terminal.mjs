@@ -774,7 +774,7 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 	// write(`\n${PROMPT}`);
 
 	const stateBoundViewUpdate = ({ supported, view, type, doc, docName, locked }) => {
-		if(!supported){
+		if(!supported || docName.includes('.json')){
 			return viewUpdate({ supported, view, type, doc, docName, locked });
 		}
 		const state = getState();

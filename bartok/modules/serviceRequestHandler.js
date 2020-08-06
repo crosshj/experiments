@@ -131,12 +131,21 @@ async function getFileContents({ filename, store, cache }) {
     const storeAsBlob = [
         "image/", "audio/", "video/", "wasm"
     ];
+    const storeAsBlobBlacklist = [
+        'image/svg'
+    ];
+    const fileNameBlacklist = [
+        '.ts' // mistaken as video/mp2t
+    ];
     const fetched = await fetch(filename);
     const contentType = fetched.headers.get('Content-Type');
 
-    contents = storeAsBlob.find(x => contentType.includes(x))
-        ? await fetched.blob()
-        : await fetched.text();
+    contents =
+        storeAsBlob.find(x => contentType.includes(x)) &&
+        !storeAsBlobBlacklist.find(x => contentType.includes(x)) &&
+        !fileNameBlacklist.find(x => filename.includes(x))
+            ? await fetched.blob()
+            : await fetched.text();
     store.setItem(filename, contents);
 
     return contents;
@@ -803,6 +812,11 @@ class TemplateEngine {
 
                 if(event.request.url.includes('.mjs')){
                     response = new Response(file, {headers:{'Content-Type': 'text/javascript' }});
+                    return response;
+                }
+
+                if(event.request.url.includes('.svg')){
+                    response = new Response(file, {headers:{'Content-Type': 'image/svg' }});
                     return response;
                 }
 

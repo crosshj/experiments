@@ -96,7 +96,7 @@ iframe::-webkit-scrollbar-track{
   font-family: Consolas, 'Courier New', monospace;
   font-size: 12px;
   letter-spacing: 0.05px;
-  line-height: 16px;
+  line-height: 18px;
 }
 
 /* .CodeMirror-sizer {
@@ -467,20 +467,18 @@ nav a.sidenav-trigger i,
 .CodeMirror {
   /* height: 100%; */
   /* font-size: 12px; */
-  background: #eee;
-}
-
+  background: #eee;}
 .CodeMirror .folded:before {
   content: '';
   display: block;
-  background: rgba(var(--main-theme-highlight-color), 0.1);
+  background: rgba(var(--main-theme-highlight-color), 0.07);
   position: absolute;
   left: 0px;
   right: -10px;
-  top: -1px;
-  bottom: -1px;
-  border: 1px solid;
-  color: rgba(var(--main-theme-highlight-color), 0.06);
+  top: 0px;
+  bottom: 0px;
+  /* border: 1px solid; */
+  /* color: rgba(var(--main-theme-highlight-color), 0.01); */
   user-select: none;
   pointer-events: none;
   box-sizing: content-box;
