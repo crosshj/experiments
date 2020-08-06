@@ -128,9 +128,17 @@ async function getFileContents({ filename, store, cache }) {
     if (cachedFile && cache !== 'reload') {
         return cachedFile;
     }
+    const storeAsBlob = [
+        "image/", "audio/", "video/", "wasm"
+    ];
     const fetched = await fetch(filename);
-    contents = await fetched.text();
+    const contentType = fetched.headers.get('Content-Type');
+
+    contents = storeAsBlob.find(x => contentType.includes(x))
+        ? await fetched.blob()
+        : await fetched.text();
     store.setItem(filename, contents);
+
     return contents;
 }
 
@@ -292,7 +300,7 @@ const fakeExpress = () => {
         let alternatePath;
         if (!path) {
             alternatePath = genericPath(pathString);
-            console.log({ alternatePath });
+            //console.log({ alternatePath });
         }
         const foundHandler = handlers.find(x => x.pathString === pathString && x.method === method);
         if(foundHandler){
@@ -490,13 +498,18 @@ class TemplateEngine {
             if(previewMode){
                 xformedFile = templates.convert(filename, fileJSONString);
             }
-            console.log({
-                path,
-                storeLoc: `./${base}/${path}`,
-                xformedFile: xformedFile || 'not supported',
-                msg,
-                fileType: typeof file
-            });
+            // console.log({
+            //     path,
+            //     storeLoc: `./${base}/${path}`,
+            //     xformedFile: xformedFile || 'not supported',
+            //     msg,
+            //     fileType: typeof file
+            // });
+
+            // most likely a blob
+            if(file && file.type && file.size){
+                return file;
+            }
 
             //TODO: need to know file type so that it can be returned properly
             return xformedFile || fileJSONString || file;
@@ -665,7 +678,7 @@ class TemplateEngine {
                 const code = await getCodeFromStorageUsingTree(service.tree, store);
                 service.code = code;
             }
-            console.log({ defaults, savedServices });
+            //console.log({ defaults, savedServices });
 
             const allServices = [...defaults, ...savedServices]
                 .sort((a, b) => Number(a.id) - Number(b.id));
@@ -780,12 +793,23 @@ class TemplateEngine {
         //TODO: should console log path here so it's known what handler is being used
         event.respondWith(
             (async () => {
-                const responseText = await serviceAPIMatch.exec(event);
+                const file = await serviceAPIMatch.exec(event);
                 let response;
+
+                if(file && file.type){ //most likely a blob
+                    response = new Response(file, {headers:{'Content-Type': file.type }});
+                    return response;
+                }
+
+                if(event.request.url.includes('.mjs')){
+                    response = new Response(file, {headers:{'Content-Type': 'text/javascript' }});
+                    return response;
+                }
+
                 if(event.request.url.includes('preview')){
-                    response = new Response(responseText, {headers:{'Content-Type': 'text/html'}});
+                    response = new Response(file, {headers:{'Content-Type': 'text/html'}});
                 } else {
-                    response = new Response(responseText);
+                    response = new Response(file);
                 }
                 return response;
             })()

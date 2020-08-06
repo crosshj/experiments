@@ -82,7 +82,6 @@
             description: 'used after app has booted when service worker is updated'
         });
 
-
     const actions = {
         "spacer0": "",
         "service worker registration": {
@@ -155,6 +154,18 @@
                 }
             }
         },
+        "service worker requests cache (cache Storage)": {
+            verb: 'CLEAR',
+            value: `[${(await caches.keys()).length || ' '}]`,
+            handler: async (e, callback) => {
+                const cacheKeys = await caches.keys();
+                for (let i = 0; i < cacheKeys.length; i++) {
+                    const key = cacheKeys[i];
+                    await caches.delete(key);
+                }
+                document.location.reload();
+            }
+        },
         "meta Store - stores service information (indexedDB)": {
             verb: 'CLEAR',
             value: `[${(await metaStore.keys()).length || ' '}]`,
@@ -184,12 +195,6 @@
             }
         },
         "reboot:  what does this entail?": {
-            handler: async (e, callback) => {
-
-            }
-        },
-        "service worker requests cache (cache Storage)": {
-            verb: 'CLEAR',
             handler: async (e, callback) => {
 
             }

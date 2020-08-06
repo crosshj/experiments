@@ -92,8 +92,8 @@ Misc: other models
   }
   text {
     fill: var(--text-color);
-    font-size: 4;
-    letter-spacing: 1
+    font-size: .25em;
+    letter-spacing: .05em;
   }
   text.vertical {
     writing-mode: vertical-lr;
@@ -103,19 +103,19 @@ Misc: other models
   }
 </style>
 
-<svg style="width:0; height:0">
-    <defs>
-      <marker
-        id="arrow"
-        markerHeight="12"
-        markerUnits="strokeWidth"
-        markerWidth="12"
-        orient="auto-start-reverse"
-        refX="0"
-        refY="3"
-        viewBox="0 0 20 20"
-      >
-        <path d="m0,0l0,6l9,-3l-9,-3z" id="svg_1"/>
-      </marker>
-    </defs>
-</svg>
+  <svg style="width:0; height:0">
+      <defs>
+        <marker
+          id="arrow"
+          markerHeight="12"
+          markerUnits="strokeWidth"
+          markerWidth="12"
+          orient="auto-start-reverse"
+          refX="0"
+          refY="3"
+          viewBox="0 0 20 20"
+        >
+          <path d="m0,0l0,6l9,-3l-9,-3z" id="svg_1"/>
+        </marker>
+      </defs>
+  </svg>

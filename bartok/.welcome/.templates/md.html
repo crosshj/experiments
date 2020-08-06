@@ -4,235 +4,269 @@ useDefault: false
 
 -->
 
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Markdown</title>
+  <meta name="description"
+    content="Using rxjs with react in a fluxy (reduxy) and about-as-minimal-as-can-get kind of way">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/shared/css/github-markdown.min.css" />
+  <base target="_blank">
+</head>
+
+<style>
+  .markdown-body code,
+  .markdown-body pre {
+    color: #6d89a0;
+  }
+
+  .no-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5vw;
+    color: #666;
+  }
+
+  #markdown-input {
+    display: none;
+  }
+
+  body:before {
+    content: '';
+    display: block;
+    height: 35px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    z-index: 1;
+    background: #1d1d1deb;
+  }
+
+  body:after {
+    content: '';
+    display: block;
+    height: 5px;
+    position: absolute;
+    left: 0px;
+    top: 35px;
+    right: 0px;
+    z-index: 1;
+    background: linear-gradient(180deg, #1d1d1deb, transparent);
+  }
+
+  body {
+    margin: 0px;
+    height: calc(100vh - 40px);
+    width: calc(100% + 17px);
+    overflow: hidden;
+    color: #ccc;
+    font-family: sans-serif;
+    background: #1a1a1a;
+  }
+
+  #container {
+    height: 100vh;
+    width: 100%;
+    overflow: auto;
+    padding: 30px;
+    margin-bottom: 20px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    overflow-x: hidden;
+  }
+
+  #container.markdown-body img {
+    width: calc(100% + 60px);
+    max-width: calc(100% + 60px);
+    max-height: 400px;
+    object-fit: cover;
+    object-position: center;
+    margin-left: -30px;
+    background-color: transparent !important;
+  }
+
+  #container.markdown-body hr {
+    border: 1px dotted #999;
+    border-top: 0px;
+    margin-left: -30px;
+    background-color: transparent;
+  }
+
+  #container.markdown-body {
+    box-sizing: border-box;
+    color: #acb5be;
+  }
+
+  #container>*:last-child {
+    margin-bottom: 200px !important;
+  }
+
+  #container.markdown-body * {
+    border-color: #777 !important;
+  }
+
+  blockquote {
+    margin: 0;
+    border-left: 5px solid #7a7a7a;
+    font-style: italic;
+    padding: 1px 20px;
+    text-align: left;
+  }
+
+  .selected:after {
+    content: '';
+    display: block;
+    background: #e2961d;
+    position: absolute;
+    left: -100px;
+    right: 0px;
+    top: -10px;
+    bottom: -10px;
+    z-index: -1;
+  }
+
+  .selected {
+    color: black;
+    position: relative;
+    width: calc(100% + 30px);
+    /*font-size: 35px !important;*/
+  }
+
+  li.selected,
+  ul.selected,
+  h1.selected,
+  h2.selected,
+  h3.selected,
+  h4.selected,
+  h5.selected,
+  h6.selected {
+    zoom: 1.5 !important;
+    margin-left: 0.5%;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  li.selected,
+  ul.selected {
+    zoom: 2 !important;
+  }
+
+  #container.markdown-body input[type=checkbox] {
+    visibility: hidden !important;
+    position: relative !important;
+    color: inherit !important;
+  }
+
+  #container.markdown-body input[type=checkbox]:before {
+    visibility: visible !important;
+    position: absolute !important;
+    font-size: 24px !important;
+    top: -12px !important;
+    left: -3px !important;
+    content: '☐' !important;
+  }
+
+  #container.markdown-body input[type=checkbox]:checked:before {
+    content: '✓' !important;
+    color: #8BC34A !important;
+  }
+
+  #container.markdown-body .selected input[type=checkbox]:checked:before {
+    color: black !important;
+  }
+
+  #container.markdown-body .highlight pre,
+  #container.markdown-body pre {
+    background-color: #ffffff11;
+  }
+</style>
+
+<body>
+  <div id="container">
+    <div class="no-preview">No preview available.</div>
+  </div>
+</body>
+
 <textarea readonly hidden id="markdown-input">
-  {{markdown}}
+{{markdown}}
 </textarea>
 
 <textarea readonly hidden id="markdown-default">
-  ## demo markdown
-   - one
-   - two
-   - three
+    ## demo markdown
+    - one
+    - two
+    - three
 
-  <script>
-    console.log('templates can have scripts in them')
-  </script>
+    <script>
+      console.log('templates can have scripts in them')
+    </script>
 </textarea>
 
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>htm + preact</title>
-    <meta name="description" content="Using rxjs with react in a fluxy (reduxy) and about-as-minimal-as-can-get kind of way">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="mobile-web-app-capable" content="yes">
+<script src="/shared/vendor/showdown.1.9.1.min.js"></script>
+<script>
+    (function () {
+      //const comments = Array.from(document.childNodes)
+      //  .filter(x => x.nodeType == Node.COMMENT_NODE)
+      //  .map(x => {
+      //    try { return JSON.parse(x.data); } catch(e){ console.log(e); return x; }
+      //  });
+      //console.log({ comments });
 
-    <script src="/shared/vendor/showdown.1.9.1.min.js"></script>
-    <link rel="stylesheet" href="/shared/css/github-markdown.min.css" />
-    <base href="./.welcome/" target="_blank">
-  </head>
-
-  <style>
-    .markdown-body code, .markdown-body pre {
-      color: #6d89a0;
-    }
-    .no-preview {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 5vw; color: #666;
-    }
-    #markdown-input { display: none; }
-    body:before {
-        content: '';
-        display: block;
-        height: 35px;
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        right: 0px;
-        z-index: 1;
-        background: #1d1d1deb;
-    }
-    body:after {
-        content: '';
-        display: block;
-        height: 5px;
-        position: absolute;
-        left: 0px;
-        top: 35px;
-        right: 0px;
-        z-index: 1;
-        background: linear-gradient(180deg, #1d1d1deb, transparent);
-    }
-    body {
-      margin: 0px;
-      height: calc(100vh - 40px);
-      width: calc(100% + 17px);
-      overflow: hidden;
-      color: #ccc;
-      font-family: sans-serif;
-      background: #1a1a1a;
-    }
-    #container {
-      height: 100vh; width: 100%;
-      overflow: auto;
-      padding: 30px;
-      margin-bottom: 20px;
-      padding-top: 40px;
-      padding-bottom: 40px;
-      overflow-x: hidden;
-    }
-    #container.markdown-body img {
-      width: calc(100% + 60px);
-      max-width: calc(100% + 60px);
-      max-height: 400px;
-      object-fit: cover;
-      object-position: center;
-      margin-left: -30px;
-      background-color: transparent !important;
-    }
-    #container.markdown-body hr {
-      border: 1px dotted #999;
-      border-top: 0px;
-      margin-left: -30px;
-      background-color: transparent;
-    }
-    #container.markdown-body {
-      box-sizing: border-box;
-      color: #acb5be;
-    }
-    #container > *:last-child {
-      margin-bottom: 200px!important;
-    }
-    #container.markdown-body * {
-      border-color: #777 !important;
-    }
-    blockquote {
-      margin: 0;
-      border-left: 5px solid #7a7a7a;
-      font-style: italic;
-      padding: 1px 20px;
-      text-align: left;
-    }
-    .selected:after {
-      content: '';
-      display: block;
-      background: #e2961d;
-      position: absolute;
-      left: -100px;
-      right: 0px;
-      top: -10px;
-      bottom: -10px;
-      z-index: -1;
-    }
-    .selected {
-      color: black;
-      position: relative;
-      width: calc(100% + 30px);
-      /*font-size: 35px !important;*/
-    }
-    li.selected,ul.selected,
-    h1.selected, h2.selected,h3.selected,
-    h4.selected, h5.selected, h6.selected {
-      zoom: 1.5 !important;
-      margin-left: 0.5%;
-      margin-top: 10px !important;
-      margin-bottom: 10px !important;
-    }
-    li.selected,ul.selected {
-      zoom: 2 !important;
-    }
-    #container.markdown-body input[type=checkbox] {
-      visibility: hidden !important;
-      position: relative !important;
-      color: inherit !important;
-    }
-    #container.markdown-body input[type=checkbox]:before {
-      visibility: visible !important;
-      position: absolute !important;
-      font-size: 24px !important;
-      top: -12px !important;
-      left: -3px !important;
-      content: '☐' !important;
-    }
-
-    #container.markdown-body input[type=checkbox]:checked:before {
-      content: '✓' !important;
-      color: #8BC34A !important;
-    }
-    #container.markdown-body .selected input[type=checkbox]:checked:before {
-      color: black !important;
-    }
-    #container.markdown-body .highlight pre,
-    #container.markdown-body pre {
-      background-color: #ffffff11;
-    }
-  </style>
-
-  <body>
-    <div id="container">
-      <div class="no-preview">No preview available.</div>
-    </div>
-  </body>
-
-  <script>
-    (function(){
-       //const comments = Array.from(document.childNodes)
-       //  .filter(x => x.nodeType == Node.COMMENT_NODE)
-       //  .map(x => {
-       //    try { return JSON.parse(x.data); } catch(e){ console.log(e); return x; }
-       //  });
-       //console.log({ comments });
-
-       const mdInputEl = document.getElementById('markdown-input');
-       const templateInput = mdInputEl.innerHTML
-         .trim()
-         .replace(/&gt;/g, '>')
-         .replace(/&lt;/g, '<');
-       mdInputEl.innerHTML = '';
-       const comment = document.createComment('\n'+templateInput+'\n');
-       mdInputEl.appendChild(comment);
+      const mdInputEl = document.getElementById('markdown-input');
+      const templateInput = mdInputEl.innerHTML
+        .trim()
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<');
+      mdInputEl.innerHTML = '';
+      const comment = document.createComment('\n' + templateInput + '\n');
+      mdInputEl.appendChild(comment);
 
       //console.log({templateInput});
 
-      if(templateInput === ('{{' + 'markdown' + '}}')){
+      if (templateInput === ('{{' + 'markdown' + '}}')) {
         console.error('no template input - markdown will not be previewed');
         return;
       }
-      if(templateInput.includes('</html>')){
+      if (templateInput.includes('</html>')) {
         console.log(templateInput)
         console.error('markdown should not have an </html> tag in it')
         return;
       }
       const contain = document.getElementById('container')
-      if(!contain){
+      if (!contain) {
         return;
       }
       contain.classList.add('markdown-body');
       const converterOpts = {
-          headerLevelStart: 1,
-          tasklists: true,
-          smoothLivePreview: true,
-          simpleLineBreaks: true,
-          disableForced4SpacesIndentedSublists: true,
-          //extensions: [taskListEnablerExtension]
+        headerLevelStart: 1,
+        tasklists: true,
+        smoothLivePreview: true,
+        simpleLineBreaks: true,
+        disableForced4SpacesIndentedSublists: true,
+        //extensions: [taskListEnablerExtension]
       };
       const converter = new showdown.Converter(converterOpts);
 
       const output = converter.makeHtml(
         templateInput
-        .replace('{{' + 'markdown' + '}}', '')
-        .replace(/\/b\s/g, '<br/>')
+          .replace('{{' + 'markdown' + '}}', '')
+          .replace(/\/b\s/g, '<br/>')
       ).replace(/disabled/g, '');
       contain.innerHTML = output;
       const scripts = Array.from(contain.querySelectorAll('script'));
       scripts.map(x => eval(x.innerText))
 
-      if(templateInput.includes('<!-- no-select -->')){
+      if (templateInput.includes('<!-- no-select -->')) {
         return;
       }
 
@@ -243,43 +277,43 @@ useDefault: false
       });
 
       document.addEventListener('keydown', (e) => {
-         if(e.key === 'ArrowDown'){
-           const selected = document.querySelector('.selected');
-           selected && selected.classList.remove('selected');
-           let next = selected && selected.nextElementSibling
-             ? selected.nextElementSibling
-             : selected && selected.parentNode.nextElementSibling
-           if(next && next.tagName === 'UL'){
-             next = next.children[0];
-           }
-           next && next.classList.add('selected');
-           e.preventDefault();
-           e.stopPropagation();
-           return false;
-         }
-         if(e.key === 'ArrowUp'){
-           const selected = document.querySelector('.selected');
-           selected && selected.classList.remove('selected');
-           let next = selected && selected.previousElementSibling
-             ? selected.previousElementSibling
-             : selected && selected.parentNode.previousElementSibling
-           if(next && next.tagName === 'UL'){
-             next = next.children[0];
-           }
-           next && next.classList.add('selected');
-           e.preventDefault();
-           e.stopPropagation();
-           return false;
-         }
-       });
+        if (e.key === 'ArrowDown') {
+          const selected = document.querySelector('.selected');
+          selected && selected.classList.remove('selected');
+          let next = selected && selected.nextElementSibling
+            ? selected.nextElementSibling
+            : selected && selected.parentNode.nextElementSibling
+          if (next && next.tagName === 'UL') {
+            next = next.children[0];
+          }
+          next && next.classList.add('selected');
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+        if (e.key === 'ArrowUp') {
+          const selected = document.querySelector('.selected');
+          selected && selected.classList.remove('selected');
+          let next = selected && selected.previousElementSibling
+            ? selected.previousElementSibling
+            : selected && selected.parentNode.previousElementSibling
+          if (next && next.tagName === 'UL') {
+            next = next.children[0];
+          }
+          next && next.classList.add('selected');
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      });
 
       contain && contain.classList.add("markdown-body");
 
       const firstSelectable = contain && Array.from(contain.children)
-        .find(x => ['H1','H2','H3','H4','H5','H6'].includes(x.tagName))
+        .find(x => ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(x.tagName))
       firstSelectable && firstSelectable.classList.add('selected');
 
     })();
-  </script>
+</script>
 
 </html>

@@ -18,6 +18,7 @@
       </div>
 </body>
 
+<script src="/shared/vendor/json5v-2.0.0.min.js"></script>
 <script>
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -93,7 +94,15 @@
             return;
         }
         const manifestUrl = 'service.manifest.json';
-        const manifest = await( await fetch(manifestUrl, { cache: "no-store" })).json();
+        let manifestResponseText, manifest;
+        try {
+            const manifestRes = await fetch(manifestUrl, { cache: "no-store" });
+            manifestResponseText = await manifestRes.text();
+            manifest = JSON5.parse(manifestResponseText);
+        } catch(e){
+            console.error(e);
+            console.error(manifestResponseText);
+        }
         if (!manifest) {
             console.error('bootstrap fail: could not find service manifest');
             return;

@@ -49,46 +49,6 @@ OUTPUT:
 
 </pre>
 </body>
-<script>
-    const inputDOM = document.querySelector('.language-input');
-    const outputDOM = document.querySelector('.language-output');
-
-    const appendScript = (url, callback) => {
-        var script = document.createElement('script');
-        script.crossOrigin = "anonymous";
-        script.onload = callback;
-        script.src = url;
-        document.head.appendChild(script);
-    };
-    const scriptUrl = "https://felixhao28.github.io/JSCPP/dist/JSCPP.es5.min.js";
-
-    function scriptCallback() {
-        const input = "4321";
-
-        let loading = true;
-        outputDOM.innerHTML = '\nloading...';
-
-        var config = {
-            stdio: {
-                write: (a) => {
-                    if (loading) {
-                        outputDOM.innerHTML = '\n';
-                        loading = false;
-                    }
-                    outputDOM.innerHTML += a;
-                }
-            }
-        };
-        const codeFromComment = Array.from(document.querySelector('.language-input').childNodes)
-            .filter(x => x.nodeType === 8)
-            .map(x => x.data).join('\n');
-        inputDOM.innerText = codeFromComment;
-
-        var exitCode = JSCPP.run(codeFromComment, input, config);
-        outputDOM.innerHTML += `\nprogram exited with code ${exitCode}`;
-    }
-    appendScript(scriptUrl, scriptCallback);
-</script>
 
 <style>
     .no-preview {
@@ -134,6 +94,7 @@ OUTPUT:
         overflow: hidden;
         color: #ccc;
         font-family: sans-serif;
+        background: #1a1a1a;
     }
 
     #container {
@@ -307,5 +268,46 @@ OUTPUT:
         box-sizing: border-box;
     }
 </style>
+
+<script>
+    const inputDOM = document.querySelector('.language-input');
+    const outputDOM = document.querySelector('.language-output');
+
+    const appendScript = (url, callback) => {
+        var script = document.createElement('script');
+        script.crossOrigin = "anonymous";
+        script.onload = callback;
+        script.src = url;
+        document.head.appendChild(script);
+    };
+    const scriptUrl = "https://felixhao28.github.io/JSCPP/dist/JSCPP.es5.min.js";
+
+    function scriptCallback() {
+        const input = "4321";
+
+        let loading = true;
+        outputDOM.innerHTML = '\nloading...';
+
+        var config = {
+            stdio: {
+                write: (a) => {
+                    if (loading) {
+                        outputDOM.innerHTML = '\n';
+                        loading = false;
+                    }
+                    outputDOM.innerHTML += a;
+                }
+            }
+        };
+        const codeFromComment = Array.from(document.querySelector('.language-input').childNodes)
+            .filter(x => x.nodeType === 8)
+            .map(x => x.data).join('\n');
+        inputDOM.innerText = codeFromComment;
+
+        var exitCode = JSCPP.run(codeFromComment, input, config);
+        outputDOM.innerHTML += `\nprogram exited with code ${exitCode}`;
+    }
+    appendScript(scriptUrl, scriptCallback);
+</script>
 
 </html>

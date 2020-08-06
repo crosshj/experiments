@@ -13,40 +13,12 @@
     </div>
 </body>
 
-<script>
-    const files = localStorage.getItem('prevFiles');
-    if (files) {
-        document.getElementById("file-content")
-            .innerHTML = `
-        <p>selected (from cache):</p>
-        <div class="container">
-          <pre>${JSON.parse(files).join('\n')}</pre>
-        </div>
-        `;
-    }
-    function readFolder(e) {
-        const files = Array.from(e.target.files)
-            .map(x => x.webkitRelativePath);
-        localStorage.setItem("prevFiles", JSON.stringify(files));
-        document.getElementById("file-content")
-            .innerHTML = `
-          <p>selected:</p>
-          <div class="container">
-            <pre>${files.join('\n')}</pre>
-          </div>
-          `;
-        //console.log(e.target.files);
-    }
-
-    document.getElementById('file-input')
-        .addEventListener('change', readFolder, false);
-</script>
-
 <style>
     body {
         margin: 100px 50px;
         color: white;
         font-family: sans-serif;
+        background: #1a1a1a;
     }
 
     .container {
@@ -102,5 +74,34 @@
         color: #00ffe7;
     }
 </style>
+
+<script>
+    const files = localStorage.getItem('prevFiles');
+    if (files) {
+        document.getElementById("file-content")
+            .innerHTML = `
+        <p>selected (from cache):</p>
+        <div class="container">
+          <pre>${JSON.parse(files).join('\n')}</pre>
+        </div>
+        `;
+    }
+    function readFolder(e) {
+        const files = Array.from(e.target.files)
+            .map(x => x.webkitRelativePath);
+        localStorage.setItem("prevFiles", JSON.stringify(files));
+        document.getElementById("file-content")
+            .innerHTML = `
+          <p>selected:</p>
+          <div class="container">
+            <pre>${files.join('\n')}</pre>
+          </div>
+          `;
+        //console.log(e.target.files);
+    }
+
+    document.getElementById('file-input')
+        .addEventListener('change', readFolder, false);
+</script>
 
 </html>

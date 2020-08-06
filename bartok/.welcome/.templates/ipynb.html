@@ -2,27 +2,15 @@
 -->
 
 <!DOCTYPE html>
-
-<textarea readonly hidden id="markdown-input">
-  {{markdown}}
-</textarea>
-
 <html>
   <head>
     <meta charset="utf-8">
-    <title>htm + preact</title>
+    <title>Jupyter Notebook</title>
     <meta name="description" content="Using rxjs with react in a fluxy (reduxy) and about-as-minimal-as-can-get kind of way">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
 
-    <script src="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/ansi_up.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/prism.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jsvine/notebookjs@master/notebook.js"></script>
     <!-- link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css" integrity="sha256-gzohnzxILb7OZZch6c8mySnK1r0yFviwmBR+1E5O0RM=" crossorigin="anonymous" / -->
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/css/vendor/prism.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/css/vendor/notebook.css" />
@@ -117,6 +105,17 @@
       <div class="no-preview">No preview available.</div>
     </div>
   </body>
+
+  <textarea readonly hidden id="markdown-input">
+    {{markdown}}
+  </textarea>
+
+  <script src="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/ansi_up.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/jsvine/notebookjs@master/notebook.js"></script>
 
   <script>
     (function(){

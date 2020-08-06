@@ -219,17 +219,17 @@ Image syntax is very much like link syntax.
 
 Inline (titles are optional):
 
-  ![alt text](.welcome/lame.png "Title")
+  ![alt text](/bartok/.welcome/lame.png "Title")
 
 Reference-style:
 
   ![alt text][id]
 
-  [id]: .welcome/lame.png "Title"
+  [id]: /bartok/.welcome/lame.png "Title"
 
 Both of the above examples produce the same output:
 
-  <img src=".welcome/lame.png" alt="alt text" title="Title" />
+  <img src="/bartok/.welcome/lame.png" alt="alt text" title="Title" />
 
 
 

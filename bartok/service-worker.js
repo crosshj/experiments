@@ -3,11 +3,12 @@
 const cacheName = 'v0.3.1';
 
 importScripts('/shared/vendor/localforage.min.js');
+importScripts('/shared/vendor/json5v-2.0.0.min.js');
 
 self.addEventListener('install', installHandler);
 self.addEventListener('activate', activateHandler);
 self.addEventListener('fetch', fetchHandler);
-//self.addEventListener('foreignfetch', fetchHandler);
+self.addEventListener('foreignfetch', fetchHandler);
 self.addEventListener('message', messageHandler);
 self.addEventListener('sync', syncHandler);
 self.addEventListener('push', pushHandler);
@@ -97,12 +98,13 @@ function fetchHandler(event) {
 	// 	return;
 	// }
 
-	if (
-		!event.request.url.includes('/bartok/') &&
-		!event.request.url.includes('/shared/')
-	) {
-		return;
-	}
+	// if (
+	// 	!event.request.url.includes('/bartok/') &&
+	// 	!event.request.url.includes('/shared/')
+	// ) {
+	// 	return;
+	// }
+
 	event.respondWith(
 		caches.match(event.request)
 	);
@@ -175,11 +177,12 @@ function pushHandler(event) {
 async function bootstrapHandler({ manifest }, bootstrapMessageEach) {
 	//console.log({ manifest});
 	const manifestResponse = await fetch(manifest);
-	const _manifest = await manifestResponse.json();
-	const _source = new Response(JSON.stringify(_manifest, null, 2), {
-		status: manifestResponse.status,
-		statusText: manifestResponse.statusText,
-		headers: manifestResponse.headers
+	const _manifest = JSON5.parse(await manifestResponse.text());
+	const _source = new Response(
+		JSON.stringify(_manifest, null, 2), {
+			status: manifestResponse.status,
+			statusText: manifestResponse.statusText,
+			headers: manifestResponse.headers
 	});
 	await caches.open(cacheName)
 		.then(function (cache) {

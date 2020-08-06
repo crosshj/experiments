@@ -86,18 +86,6 @@ OUTPUT:
 
 </pre>
 </body>
-<script>
-    (async () => {
-        const {code, doEach, doAfter } = await letsGo();
-        const phpEngine = uniter.createEngine('PHP');
-        phpEngine.getStdout()
-            .on('data', doEach);
-        phpEngine.getStderr()
-            .on('data', doEach);
-        phpEngine.execute(code, 'my_script.php')
-            .fail(doAfter);
-    })();
-</script>
 
 <style>
     .language-input {
@@ -147,6 +135,7 @@ OUTPUT:
         overflow: hidden;
         color: #ccc;
         font-family: sans-serif;
+        background: #1a1a1a;
     }
 
     #container {
@@ -330,5 +319,18 @@ OUTPUT:
         box-sizing: border-box;
     }
 </style>
+
+<script>
+    (async () => {
+        const {code, doEach, doAfter } = await letsGo();
+        const phpEngine = uniter.createEngine('PHP');
+        phpEngine.getStdout()
+            .on('data', doEach);
+        phpEngine.getStderr()
+            .on('data', doEach);
+        phpEngine.execute(code, 'my_script.php')
+            .fail(doAfter);
+    })();
+</script>
 
 </html>

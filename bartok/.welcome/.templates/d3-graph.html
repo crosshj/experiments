@@ -1,10 +1,12 @@
-<textarea readonly hidden id="markdown-input">
-  {{markdown}}
-</textarea>
-
 <!DOCTYPE html>
-<meta charset="utf-8">
-<script src="https://d3js.org/d3.v5.min.js"></script>
+<head>
+  <meta charset="utf-8">
+  <title>d3 Graph</title>
+  <meta name="description" content="d3 Graph">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+</head>
+
 <style>
   body {
     margin-top: 35px;
@@ -58,6 +60,12 @@
 </style>
 
 <body></body>
+
+<textarea readonly hidden id="markdown-input">
+  {{markdown}}
+</textarea>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
 
 <script>
   (function(){

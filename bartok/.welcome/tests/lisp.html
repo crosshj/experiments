@@ -91,15 +91,6 @@ OUTPUT:
 
 </pre>
 </body>
-<script>
-    (async () => {
-        const {code, doEach, doAfter } = await letsGo();
-        const compiled = jscl.evaluateString(code);
-        (new Array(10)).fill().forEach((x, i) => {
-            compiled.fvalue(x => doAfter(`fib(${i}): ${x}\n`), i);
-        });
-    })();
-</script>
 
 <style>
     .language-input {
@@ -149,6 +140,7 @@ OUTPUT:
         overflow: hidden;
         color: #ccc;
         font-family: sans-serif;
+        background: #1a1a1a;
     }
 
     #container {
@@ -332,5 +324,15 @@ OUTPUT:
         box-sizing: border-box;
     }
 </style>
+
+<script>
+    (async () => {
+        const {code, doEach, doAfter } = await letsGo();
+        const compiled = jscl.evaluateString(code);
+        (new Array(10)).fill().forEach((x, i) => {
+            compiled.fvalue(x => doAfter(`fib(${i}): ${x}\n`), i);
+        });
+    })();
+</script>
 
 </html>

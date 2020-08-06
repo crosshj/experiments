@@ -6,6 +6,7 @@
     "version": 0.5,
     "tree": {
       "package.json": {},
+      "lame.png": {},
       ".NOTES": {
         "releases": {
           "bartokv0.0.md": {},
@@ -29,7 +30,9 @@
         "d3-graph.html": {},
         "gltf.html": {},
         "ipynb.html": {},
-        "md.html": {}
+        "jsx.html": {},
+        "md.html": {},
+        "svcv3.html": {}
       },
       "file-examples": {
         "svg-bartok.svg": {},
@@ -114,6 +117,8 @@
         "pro.html": {},
         "py.html": {},
         "rb.html": {},
+        "react-import.jsx": {},
+        "react-imported.mjs": {},
         "scm.html": {},
         "sql.html": {}
       },
@@ -127,6 +132,19 @@
       }
     },
     "files": [
+
+      {
+        "name": "react-import.jsx",
+        "path": ".welcome/tests/react-import.jsx"
+      },
+      {
+        "name": "react-imported.mjs",
+        "path": ".welcome/tests/react-imported.mjs"
+      },
+      {
+        "name": "lame.png",
+        "path": ".welcome/lame.png"
+      },
       {
         "name": "_dimensional.md",
         "path": ".welcome/tests/_dimensional.md"
@@ -222,6 +240,14 @@
       {
         "name": "package.json",
         "path": ".welcome/package.json"
+      },
+      {
+        "name": "jsx.html",
+        "path": ".welcome/.templates/jsx.html"
+      },
+      {
+        "name": "svcv3.html",
+        "path": ".welcome/.templates/svcv3.html"
       },
       {
         "name": "d3-graph.html",
