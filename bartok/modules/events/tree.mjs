@@ -142,6 +142,8 @@ const contextMenuHandler = ({ treeView, showMenu }) => (e) => {
 	}, 'seperator', {
 		name: 'Open in Preview'
 	}, {
+		name: 'Open in New Window'
+	}, {
 		name: 'Open in Terminal'
 	}, 'seperator', {
 		name: 'Copy'

@@ -8,6 +8,7 @@ import {
 
 import { getState, getCurrentFile, getCurrentService } from '../state.mjs';
 import { getDefaultFile } from '../state.mjs';
+import { getCurrentFolder } from '../state.mjs';
 
 let locked;
 let lsLocked = localStorage.getItem("previewLocked");
@@ -225,7 +226,9 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 		return;
 	}
 
-	let code = currentFile;
+	let code = typeof currentFile === "string"
+		? currentFile
+		: '';
 	const name = currentFileName;
 	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return name.includes('.'+x)});
 	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return name.includes('.'+x)});
@@ -295,6 +298,10 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		return;
 	}
 
+	code = typeof code === "string"
+		? code
+		: '';
+
 	// bind and conditionally trigger render
 	// for instance, should not render some files
 	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return (next||name).includes('.'+x)});
@@ -354,6 +361,10 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 const fileChangeHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
 	let { name, id, file='', code='' } = detail;
+
+	code = typeof code === "string"
+		? code
+		: '';
 
 	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return file.includes('.'+x)});
 	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return file.includes('.'+x)});
@@ -428,48 +439,51 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 
 	if(!currentFile){ return; }
 
-	const isHTML = currentFile.includes('</html>') && ['htm', 'html'].find(x => { return currentFileName.includes('.'+x)});
-	const isSVG = currentFile.includes('</svg>') && ['svg'].find(x => { return currentFileName.includes('.'+x)});
-	const isJSX = (currentFileName).includes('jsx');
-	const isSVC3 = currentFile.includes('/* svcV3 ');
-	const hasTemplate = isSupported({ name: currentFileName, contents: currentFile });
-
 	let code;
-	//debugger;
+	code = typeof currentFile === "string"
+		? currentFile
+		: '';
+
+	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return currentFileName.includes('.'+x)});
+	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return currentFileName.includes('.'+x)});
+	const isJSX = (currentFileName).includes('jsx');
+	const isSVC3 = code.includes('/* svcV3 ');
+	const hasTemplate = isSupported({ name: currentFileName, contents: code });
+
 	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
 		code = `<div class="no-preview">No preview available.</div>`;
 	}
 	const doc = isHTML || isJSX || isSVC3 || hasTemplate
-	? currentFile
-	: `
-	<html>
-		<style>
-			.no-preview {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				font-size: 5vw;
-				color: #666;
-			}
-			body {
-				margin: 0px;
-				margin-top: 40px;
-				height: calc(100vh - 40px);
-				overflow: hidden;
-				color: #ccc;
-				font-family: sans-serif;
-			}
-		</style>
-		<body>
-			<pre>${code}</pre>
-		</body>
-	</html>
-`;
+		? code
+		: `
+		<html>
+			<style>
+				.no-preview {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 5vw;
+					color: #666;
+				}
+				body {
+					margin: 0px;
+					margin-top: 40px;
+					height: calc(100vh - 40px);
+					overflow: hidden;
+					color: #ccc;
+					font-family: sans-serif;
+				}
+			</style>
+			<body>
+				<pre>${code}</pre>
+			</body>
+		</html>
+	`;
 
 	viewUpdate({
 		type, locked, supported: hasTemplate,
@@ -634,10 +648,15 @@ const operationDone = ({ viewUpdate }) => (event) => {
 	currentFileName = defaultFile || '';
 	currentFile = defaultFileContents || '';
 
-	const isHTML = currentFile.includes('</html>') && ['htm', 'html'].find(x => { return currentFileName.includes('.'+x)});
-	const isSVG = currentFile.includes('</svg>') && ['svg'].find(x => { return currentFileName.includes('.'+x)});
+	let code;
+	code = typeof currentFile === "string"
+		? currentFile
+		: '';
+
+	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return currentFileName.includes('.'+x)});
+	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return currentFileName.includes('.'+x)});
 	const isJSX = (currentFileName).includes('jsx');
-	const isSVC3 = currentFile.includes('/* svcV3 ');
+	const isSVC3 = code.includes('/* svcV3 ');
 
 	const hasTemplate = isSupported({
 		name: defaultFile,
@@ -754,41 +773,74 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 	// write('\rEvent system attached.\n');
 	// write(`\n${PROMPT}`);
 
+	const stateBoundViewUpdate = ({ supported, view, type, doc, docName, locked }) => {
+		if(!supported){
+			return viewUpdate({ supported, view, type, doc, docName, locked });
+		}
+		const state = getState();
+		let url;
+		try{
+			url = state.paths
+				.find(x => x.name === docName)
+				.path
+				.replace('/welcome/', '/.welcome/')
+				.replace(/^\//, './')
+			+ '?preview=true';
+		} catch(e){}
+
+		return viewUpdate({ supported, view, type, doc, docName, locked, url });
+	};
+
 	attach({
 		name: 'Terminal',
 		eventName: 'viewSelect',
-		listener: viewSelectHandler({ viewUpdate })
+		listener: viewSelectHandler({ viewUpdate: stateBoundViewUpdate })
 	});
 
 	attach({
 		name: 'Terminal',
 		eventName: 'fileSelect',
-		listener: fileSelectHandler({ viewUpdate, getCurrentService })
+		listener: fileSelectHandler({
+			viewUpdate: stateBoundViewUpdate,
+			getCurrentService
+		})
 	});
 	attach({
 		name: 'Terminal',
 		eventName: 'fileClose',
-		listener: fileSelectHandler({ viewUpdate, getCurrentService })
+		listener: fileSelectHandler({
+			viewUpdate: stateBoundViewUpdate,
+			getCurrentService
+		})
 	});
 	attach({
 		name: 'Terminal',
 		eventName: 'fileChange',
-		listener: fileChangeHandler({ viewUpdate, getCurrentService })
+		listener: fileChangeHandler({
+			viewUpdate: stateBoundViewUpdate,
+			getCurrentService
+		})
 	});
 	attach({
 		name: 'Terminal',
 		eventName: 'termMenuAction',
-		listener: terminalActionHandler({ terminalActions, viewUpdate })
+		listener: terminalActionHandler({
+			terminalActions: stateBoundViewUpdate,
+			viewUpdate
+		})
 	});
 	attach({
 		name: 'Terminal',
 		eventName: 'operationDone',
-		listener: operationDone({viewUpdate})
+		listener: operationDone({ viewUpdate: stateBoundViewUpdate })
 	});
 	attach({
 		name: 'Terminal',
 		eventName: 'operations',
-		listener: operations({ viewUpdate, getCurrentService })
+		listener: operations({
+			viewUpdate: stateBoundViewUpdate,
+			getCurrentService
+		})
 	});
 	attach({
 		name: 'Terminal',

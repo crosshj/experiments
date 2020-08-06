@@ -1,5 +1,5 @@
 
-import { hello } from '/bartok/.welcome/tests/react-imported.mjs';
+import { hello } from './react-imported.mjs';
 
 const App = () =>{
     return (

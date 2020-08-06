@@ -3,7 +3,7 @@ import EditorTabs from './EditorTabs.mjs';
 import { attachListener, ChangeHandler, CursorActivityHandler } from './events/editor.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
 
-import { getCodeFromService } from './state.mjs'
+import { getCodeFromService , getState} from './state.mjs'
 
 import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
 
@@ -482,6 +482,17 @@ const showBinaryPreview = ({
 		binaryPreview.id = 'editor-preview';
 		editorContainer.appendChild(binaryPreview);
 	}
+
+	const state = getState();
+	let url;
+	try{
+		url = state.paths
+			.find(x => x.name === filename)
+			.path
+			.replace('/welcome/', '/.welcome/')
+			.replace(/^\//, './');
+	} catch(e){}
+
 	const extension = getExtension(filename);
 	const fileType = getFileType(filename);
 	const style = `
@@ -504,7 +515,7 @@ const showBinaryPreview = ({
 	`;
 	if( fileType === 'image'){
 		binaryPreview.innerHTML = style + `
-			<img class="preview-image" src="${path}/${filename}">
+			<img class="preview-image" src="${url}">
 		`;
 	} else if (fileType === "audio"){
 		binaryPreview.innerHTML = `
@@ -512,7 +523,7 @@ const showBinaryPreview = ({
 				<figcaption>${filename}</figcaption>
 				<audio
 					controls
-					src="${path}/${filename}"
+					src="${url}"
 				>
 					Your browser does not support the
 					<code>audio</code> element.
@@ -523,7 +534,7 @@ const showBinaryPreview = ({
 		binaryPreview.innerHTML = `
 			<video controls width="250">
 				<source
-					src="${path}/${filename}"
+					src="${url}"
 					type="video/${extension}"
 				>
 				Sorry, your browser doesn't support embedded videos.

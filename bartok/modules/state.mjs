@@ -4,6 +4,27 @@ let currentService;
 let currentFile;
 let currentFolder;
 
+const flattenTree = (tree) => {
+    const results = [];
+    const recurse = (branch, parent = '/') => {
+        const leaves = Object.keys(branch);
+        leaves.map(key => {
+            const children = Object.keys(branch[key]);
+            if(!children || !children.length){
+                results.push({
+                    name: key,
+                    code: parent + key,
+                    path: parent + key
+                });
+            } else {
+                recurse(branch[key], `${parent}${key}/`);
+            }
+        });
+    };
+    recurse(tree);
+    return results;
+};
+
 function getDefaultFile(service){
 	let defaultFile;
 	try {
@@ -105,7 +126,13 @@ const state = {
 
 function getState(){
 	//TODO: should probably pull only latest state change
-	return JSON.parse(JSON.stringify(state));
+	let paths;
+	try {
+		paths = flattenTree(currentService.tree);
+	} catch(e) {
+
+	}
+	return JSON.parse(JSON.stringify({ ...state, paths }));
 }
 
 function setState(change){

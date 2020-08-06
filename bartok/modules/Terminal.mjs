@@ -285,10 +285,18 @@ function _Terminal(){
 
 	let alreadyUpdatedOnce;
 	function updateIframeRaw({ url, src}){
+		console.log({ url })
+
 		previewContainer.removeChild(previewIframe);
 		previewIframe = document.createElement('iframe');
 		previewContainer.appendChild(previewIframe);
 
+		alreadyUpdatedOnce = true;
+
+		if(url){
+			previewIframe.src = url;
+			return;
+		}
 		const iframeDoc = previewIframe.contentWindow.document
 		//previewIframe.contentWindow.location.href="about:blank";
 
@@ -301,12 +309,11 @@ function _Terminal(){
 
 		// yet another way of doing it
 		//iframeDoc.srcdoc = doc;
-		alreadyUpdatedOnce = true;
 	}
 
 	const updateIframe = debounce(updateIframeRaw, 300);
 
-	function viewUpdate({ supported, view, type, doc, docName, locked }){
+	function viewUpdate({ supported, view, type, doc, docName, locked, url }){
 		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
 		if(!supported && !doc) debugger
 		let src = supported
@@ -334,7 +341,7 @@ function _Terminal(){
 			} else {
 				previewControls.forEach(pc => pc.classList.remove('hidden'));
 				if(!locked || !alreadyUpdatedOnce) {
-					updateIframe({ src });
+					updateIframe({ src, url });
 				}
 
 				previewContainer.classList.remove('hidden');
@@ -350,7 +357,7 @@ function _Terminal(){
 			"forceRefreshOnPersist",
 			"operationDone"
 		].includes(type)){
-			updateIframeRaw({ src });
+			updateIframeRaw({ src, url });
 			return;
 		}
 		if(
@@ -360,7 +367,7 @@ function _Terminal(){
 			type === "fileChange"
 		){
 			if(!locked || !alreadyUpdatedOnce){
-				updateIframeRaw({ src });
+				updateIframeRaw({ src, url });
 			}
 			return;
 		}
