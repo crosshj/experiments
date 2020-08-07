@@ -27,6 +27,7 @@
         "OVERVIEW.md": {}
       },
       ".templates": {
+        "bf.html": {},
         "d3-graph.html": {},
         "gltf.html": {},
         "ipynb.html": {},
@@ -106,23 +107,23 @@
         "_dimensional.md": {},
         "_mirrors.md": {},
         "_sort.flashing.md": {},
-        "assemblyscript.html": {},
         "css-3d.html": {},
         "sw.clientServer.htm": {},
         "open.folder.html": {},
         "wasm.binaryen.html": {},
-        "bf.html": {},
-        "cljs.html": {},
-        "cpp.html": {},
-        "lisp.html": {},
-        "php.html": {},
-        "pro.html": {},
-        "py.html": {},
-        "rb.html": {},
         "react-import.jsx": {},
         "react-imported.mjs": {},
-        "scm.html": {},
-        "sql.html": {}
+        "language-assemblyscript.html": {},
+        "language-bf.html": {},
+        "language-cljs.html": {},
+        "language-cpp.html": {},
+        "language-lisp.html": {},
+        "language-php.html": {},
+        "language-pro.html": {},
+        "language-py.html": {},
+        "language-rb.html": {},
+        "language-scm.html": {},
+        "language-sql.html": {}
       },
       "WIP": {
         "angular9.html": {},
@@ -167,48 +168,48 @@
         "path": ".welcome/tests/_sort.flashing.md"
       },
       {
-        "name": "assemblyscript.html",
-        "path": ".welcome/tests/assemblyscript.html"
+        "name": "language-assemblyscript.html",
+        "path": ".welcome/tests/language-assemblyscript.html"
       },
       {
-        "name": "sql.html",
-        "path": ".welcome/tests/sql.html"
+        "name": "language-sql.html",
+        "path": ".welcome/tests/language-sql.html"
       },
       {
-        "name": "scm.html",
-        "path": ".welcome/tests/scm.html"
+        "name": "language-scm.html",
+        "path": ".welcome/tests/language-scm.html"
       },
       {
-        "name": "rb.html",
-        "path": ".welcome/tests/rb.html"
+        "name": "language-rb.html",
+        "path": ".welcome/tests/language-rb.html"
       },
       {
-        "name": "py.html",
-        "path": ".welcome/tests/py.html"
+        "name": "language-py.html",
+        "path": ".welcome/tests/language-py.html"
       },
       {
-        "name": "php.html",
-        "path": ".welcome/tests/php.html"
+        "name": "language-php.html",
+        "path": ".welcome/tests/language-php.html"
       },
       {
-        "name": "pro.html",
-        "path": ".welcome/tests/pro.html"
+        "name": "language-pro.html",
+        "path": ".welcome/tests/language-pro.html"
       },
       {
-        "name": "lisp.html",
-        "path": ".welcome/tests/lisp.html"
+        "name": "language-lisp.html",
+        "path": ".welcome/tests/language-lisp.html"
       },
       {
-        "name": "cpp.html",
-        "path": ".welcome/tests/cpp.html"
+        "name": "language-cpp.html",
+        "path": ".welcome/tests/language-cpp.html"
       },
       {
-        "name": "cljs.html",
-        "path": ".welcome/tests/cljs.html"
+        "name": "language-cljs.html",
+        "path": ".welcome/tests/language-cljs.html"
       },
       {
-        "name": "bf.html",
-        "path": ".welcome/tests/bf.html"
+        "name": "language-bf.html",
+        "path": ".welcome/tests/language-bf.html"
       },
       {
         "name": "wasm.binaryen.html",
@@ -249,6 +250,10 @@
       {
         "name": "package.json",
         "path": ".welcome/package.json"
+      },
+      {
+        "name": "bf.html",
+        "path":".welcome/.templates/bf.html"
       },
       {
         "name": "jsx.html",

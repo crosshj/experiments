@@ -43,13 +43,13 @@
 ### meta
   - [X] service worker and IndexDB (localforage)
   - [ ] edit bartok in bartok
-  - [ ] upload binary files
+  - [X] upload binary files
   - [ ] upload whole folder
   - [ ] pop out preview
   - [ ] languages for preview
 
 ### panes
-  - [ ] pane position/size remembered (on page reload)
+  - [X] pane position/size remembered (on page reload)
   - [ ] close/hide panes and remember this (on page reload)
 
 ### explorer
