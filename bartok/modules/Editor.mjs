@@ -520,7 +520,8 @@ const showBinaryPreview = ({
 				min-width: 50%;
 				image-rendering: pixelated;
 				object-fit: contain;
-				margin-bottom: -15%;
+				margin-bottom: -20%;
+				padding: 0.7em;
 			}
 			audio {
 				filter: invert(0.7) contrast(1.5);

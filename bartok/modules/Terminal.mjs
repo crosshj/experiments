@@ -81,6 +81,20 @@ function _Terminal(){
 		li.action-item.preview-control.checked a.lock-panel-action {
 			filter: brightness(.55) sepia(1) contrast(5);
 		}
+		#terminal-menu li.full-screen a {
+			-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z'/%3E%3C/svg%3E") no-repeat 50% 50%;
+		}
+		#terminal-menu li.full-screen.full-screen-exit a {
+			-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z'/%3E%3C/svg%3E") no-repeat 50% 50% !important;
+		}
+		#terminal-menu li.full-screen a:before {
+			content: '■';
+			font-size: 62px;
+			position: relative;
+		}
+		#terminal:fullscreen {
+			padding-right: 18px;
+		}
 	</style>
 	<div class="composite-bar panel-switcher-container">
 		 <div class="monaco-action-bar">
@@ -117,6 +131,13 @@ function _Terminal(){
 							<li class="action-item" role="presentation"><a class="hidden action-label icon terminal-action kill" role="button" title="Kill Terminal"></a></li>
 							<li class="action-item" role="presentation"><a class="hidden action-label icon maximize-panel-action" role="button" title="Maximize Panel Size"></a></li>
 
+							<li class="action-item full-screen"
+								role="presentation"
+								data-type="full-screen"
+							>
+								<a class="action-label icon full-screen-panel-action" data-type="full-screen" role="button" title="Preview Full Screen"></a>
+							</li>
+
 							<li class="action-item ${pvControlsClass("lock")}"
 								role="presentation"
 								data-type="lock"
@@ -124,7 +145,7 @@ function _Terminal(){
 								<a class="action-label icon lock-panel-action" data-type="lock" role="button" title="Lock Preview"></a>
 							</li>
 
-							<li class="action-item hidden" role="presentation">
+							<li class="action-item" role="presentation">
 								<a class="disabled action-label icon hide-panel-action" role="button" title="Close Panel">
 								</a>
 							</li>
@@ -373,9 +394,28 @@ function _Terminal(){
 		}
 	}
 
-	function terminalActions({ view, type, doc, docName, locked }){
+	let terminalFullScreen = false;
+	function terminalActions({ action, view, type, doc, docName, locked }){
+		if(action === "full-screen"){
+			if (!document.fullscreenEnabled) {
+				console.error('fullscreen not supported');
+				return;
+			}
+			const terminalDiv = document.getElementById('terminal');
+			const terminalMenuFSItem = document.querySelector('.action-item.full-screen');
+			if(terminalFullScreen){
+				terminalFullScreen = false;
+				terminalMenuFSItem.classList.remove('full-screen-exit');
+				document.exitFullscreen();
+			} else {
+				terminalFullScreen=true;
+				terminalMenuFSItem.classList.add('full-screen-exit');
+				terminalDiv.requestFullscreen();
+			}
+			return;
+		}
 		updateLockIcon(locked);
-		//console.log({ view, type, doc, docName, locked });
+		console.log({ action, view, type, doc, docName, locked });
 		//termMenuAction
 	}
 

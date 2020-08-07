@@ -1,4 +1,7 @@
 <html>
+  <head>
+    <base href="/bartok/.welcome/test/" target="_blank">
+  </head>
   <style>
     body {
       display: flex;
@@ -11,8 +14,10 @@
     }
     .image-container {
       width:80%;
-      height:100px;
+      min-height:100px;
       position: relative;
+      margin: 5px;
+      max-width: 30em;
     }
     img {
       width: 100%;
@@ -33,10 +38,15 @@
       text-align: center;
     }
     .explanation {
-      margin-top: -70%;
       margin-bottom: 40px;
       font-family: monospace;
     }
+
+    ::-webkit-scrollbar { width: 5px;}
+    ::-webkit-scrollbar-track { background: transparent;}
+    ::-webkit-scrollbar-thumb { background: #888;}
+    ::-webkit-scrollbar-thumb:hover { background: #555;}
+
   </style>
 
   <!-- div class="image-container">
@@ -47,20 +57,23 @@
     <h1>Bartok can preview files like..</h1>
     <p>
     This is a test for Bartok UI system.
-    If the image shows below, then a file called ./lame.png exists in
-    the Bartok Client File System and is being delivered by a Service Worker.
+    If the image shows below, then a file called ../file-examples/image.png
+    exists in the Bartok Client File System and is being delivered by a Service
+    Worker.
     </p>
     <p>
     If the Bartok Service Worker is not in place to handle these requests, then
     a grey box will show "MISSING IMAGE"
     </p>
     <p>
-      Why so "lame" with the lame.png?  Because the original intent was for this to load
-      from service worker, but that's not in place yet.  Still, OMG it's so COOOL!!!
+    Below, the first image should be visible and the last image should be missing.
     </p>
   </div>
   <div class="image-container">
-    <img src="./.welcome/lame.png">
+    <img src="../file-examples/image.png">
+  </div>
+  <div class="image-container">
+    <img src="../missing_image.png">
   </div>
 
 </html>

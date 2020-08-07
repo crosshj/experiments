@@ -453,7 +453,7 @@ const Style = () => {
       li.seperator:before {
         content: '';
         display: block;
-        height: 1px;
+        height: 2px;
         background: repeating-linear-gradient(
           to right,
           #9999997a,

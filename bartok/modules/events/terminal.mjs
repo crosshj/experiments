@@ -426,7 +426,12 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 		localStorage.setItem("previewLocked", !locked);
 		locked = !locked;
 	}
+
 	terminalActions({ type, detail, locked, ...event.detail });
+
+	if(action === 'full-screen'){
+		return;
+	}
 
 	if(locked){
 		return;
@@ -825,8 +830,8 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 		name: 'Terminal',
 		eventName: 'termMenuAction',
 		listener: terminalActionHandler({
-			terminalActions: stateBoundViewUpdate,
-			viewUpdate
+			terminalActions,
+			viewUpdate: stateBoundViewUpdate
 		})
 	});
 	attach({
