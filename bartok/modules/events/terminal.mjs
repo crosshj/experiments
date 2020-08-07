@@ -765,7 +765,7 @@ const contextMenuHandler = ({ showMenu }={}) => (e) => {
 const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 	const { which, parent, data } = (e.detail || {});
 	if(parent !== 'Terminal'){
-		console.error('Terminal ignored a context-select event');
+		console.log('Terminal ignored a context-select event');
 		return;
 	}
 };

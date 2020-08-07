@@ -1,5 +1,5 @@
 import { attach } from '../Listeners.mjs';
-import { getDefaultFile } from '../state.mjs';
+import { getDefaultFile, getState } from '../state.mjs';
 
 import ext from '../../../shared/icons/seti/ext.json.mjs';
 
@@ -185,7 +185,7 @@ const contextMenuHandler = ({ treeView, showMenu }) => (e) => {
 const contextMenuSelectHandler = ({ newFile }) => (e) => {
 	const { which, parent, data } = (e.detail || {});
 	if(parent !== 'TreeView'){
-		console.error('TreeView ignored a context-select event');
+		console.log('TreeView ignored a context-select event');
 		return;
 	}
 	if(which === 'New File'){
@@ -209,7 +209,7 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 		console.log({ data });
 		const { name, type } = data;
 		if(!["folder", "file"].includes(type)){
-			console.error('cannot delete object of unkown type');
+			console.error('cannot delete object of unknown type');
 			return;
 		}
 		const detail = { body: {} }; //TODO: sucks that body is needed!!!
@@ -224,6 +224,51 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 
 		const event = new CustomEvent('operations', { bubbles: true, detail });
 		document.body.dispatchEvent(event);
+		return;
+	}
+
+	if(which === "Copy Path"){
+		const state = getState();
+		const { name } = data;
+		let url;
+		try{
+			url = state.paths
+				.find(x => x.name === name)
+				.path
+				.replace('/welcome/', '/.welcome/')
+				.replace(/^\//, './');
+		} catch(e){}
+		if(!url) {
+			console.log('TODO: make Copy Path work with folders!');
+			return;
+		}
+		const path = new URL(url, document.baseURI).href;
+		navigator.clipboard.writeText(path)
+			.then(x => console.log(`Wrote path to clipboard: ${path}`))
+			.catch(e => {
+				console.error(`Error writing path to clipboard: ${path}`)
+				console.error(e);
+			});
+	}
+
+	if(which === "Open in New Window"){
+		const state = getState();
+		const { name } = data;
+		let url;
+		try{
+			url = state.paths
+				.find(x => x.name === name)
+				.path
+				.replace('/welcome/', '/.welcome/');
+		} catch(e){}
+		if(!url) return;
+		const query = [
+			'.svg', '.less', '.scss', '.css', '.js', '.json', '.templates'
+		].find(x => url.includes(x))
+			? ''
+			: '?preview=true';
+
+		window.open(url+query);
 	}
 };
 

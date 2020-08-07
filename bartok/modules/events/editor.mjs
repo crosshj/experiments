@@ -74,7 +74,7 @@ const contextMenuHandler = ({ showMenu }={}) => (e) => {
 const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 	const { which, parent, data } = (e.detail || {});
 	if(parent !== 'Editor'){
-		console.error('Editor ignored a context-select event');
+		console.log('Editor ignored a context-select event');
 		return;
 	}
 };

@@ -218,7 +218,7 @@ const contextMenuHandler = ({ event, showMenu }) => {
 const contextMenuSelectHandler = ({ event, newFile }) => {
 	const { which, parent, data } = (event.detail || {});
 	if(parent !== 'Tab Bar'){
-		console.error('Tab Bar ignored a context-select event');
+		console.log('Tab Bar ignored a context-select event');
 		return;
 	}
 };
