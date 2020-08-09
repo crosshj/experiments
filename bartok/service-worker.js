@@ -84,6 +84,7 @@ function fetchHandler(event) {
 
 	if (
 		event.request.url.includes('index.bootstrap') ||
+		event.request.url.includes('localhost:3333/tree') ||
 		event.request.url.includes('browser-sync/socket.io')
 	) {
 		return;
