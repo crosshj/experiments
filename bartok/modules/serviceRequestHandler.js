@@ -346,8 +346,98 @@ const genericPath = (pathString) => {
     }
 };
 
-const fakeExpress = () => {
-    const handlers = [];
+class TemplateEngine {
+    templates=[];
+
+    add (name, template){
+        const newTemp = {
+            extensions: [],
+            body: template,
+            tokens: ['{{template_value}}', '{{markdown}}', '{{template_input}}'],
+            matcher: () => false //TODO: matchers are not currently implemented
+        };
+        newTemp.extensions.push(name.split('.').shift());
+        newTemp.convert = (contents) => {
+            let xfrmed = newTemp.body + '';
+            newTemp.tokens.forEach(t => {
+                xfrmed = xfrmed.replace(new RegExp(t, 'g'), contents);
+                //xfrmed = xfrmed.replace(t, contents);
+            });
+            return xfrmed;
+        };
+
+        this.templates.push(newTemp);
+    }
+
+    convert(filename, contents){
+        if(!this.templates.length) return false;
+        const ext = filename.split('.').pop();
+        const foundTemplate = this.templates.find(x => x.extensions.includes(ext));
+        if(!foundTemplate) return;
+        return foundTemplate.convert(contents);
+    }
+}
+
+const fakeExpress = ({ store, handlerStore, metaStore }) => {
+    const expressHandler = async (base, msg) => {
+        console.log(`registering fake express handler for ${base}`);
+        const templates = new TemplateEngine();
+
+        const templatesFromStorage = [];
+        await store
+            .iterate((value, key) => {
+                if(key.indexOf(`./${base}/.templates`) !== 0) return;
+                templatesFromStorage.push({ value, key });
+            });
+
+        templatesFromStorage.forEach(t => {
+            const { value, key } = t;
+            const name = key.split('/').pop();
+            templates.add(name, value);
+        })
+
+
+        return async (params, event) => {
+            const { path, query } = params;
+            const filename = path.split('/').pop();
+            const previewMode = (params.query||'').includes('preview');
+            let xformedFile;
+
+            const file = await store.getItem(`./${base}/${path}`);
+            let fileJSONString;
+            try {
+                if(typeof file !== 'string'){
+                    fileJSONString = file
+                        ? JSON.stringify(file, null, 2)
+                        : '';
+                } else {
+                    fileJSONString = file;
+                }
+            } catch(e){}
+
+            if(previewMode){
+                xformedFile = templates.convert(filename, fileJSONString);
+            }
+            // console.log({
+            //     path,
+            //     storeLoc: `./${base}/${path}`,
+            //     xformedFile: xformedFile || 'not supported',
+            //     msg,
+            //     fileType: typeof file
+            // });
+
+            // most likely a blob
+            if(file && file.type && file.size){
+                return file;
+            }
+
+            //TODO: need to know file type so that it can be returned properly
+            return xformedFile || fileJSONString || file;
+        };
+    };
+
+    // be careful!  handlers could be a variable in parent(service worker) scope
+    const _handlers = [];
     const generic = (method) => (pathString, handler) => {
         const path = pathToRegex[pathString];
         let alternatePath;
@@ -355,23 +445,86 @@ const fakeExpress = () => {
             alternatePath = genericPath(pathString);
             //console.log({ alternatePath });
         }
-        const foundHandler = handlers.find(x => x.pathString === pathString && x.method === method);
+        const foundHandler = _handlers.find(x => x.pathString === pathString && x.method === method);
         if(foundHandler){
             console.log(`Overwriting handler for ${method} : ${pathString}`);
             foundHandler.handler = handler;
             return;
         }
-        handlers.push({
+        _handlers.push({
             ...(path || alternatePath),
             pathString,
             method,
             handler
         });
     };
-    const find = (url) => {
-        const found = handlers.find(x => x.match(url));
+
+
+
+    const addServiceHandler = async ({ name, msg }) => {
+        const route = `/${name}/(.*)`;
+        const handler = "./modules/serviceRequestHandler.js";
+
+        // handlers here are service worker handlers
+        const foundHandler = handlers.find(x => x.handlerName === handler);
+        const foundExactHandler = foundHandler && handlers
+            .find(x =>
+                x.handlerName === handler && x.routePattern === route
+            );
+		if(foundExactHandler){
+			console.log(`sw handler was already installed for ${foundExactHandler.routePattern} (boot)`);
+        } else {
+            handlers.push({
+                type: foundHandler.type,
+                routePattern: route,
+                route: new RegExp(route),
+                handler: foundHandler.handler,
+                handlerName: handler,
+                handlerText: foundHandler.handlerText
+            });
+            // question: if handler is found in SW state, should store be updated?
+            await handlerStore.setItem(route, {
+                type,
+                route,
+                handlerName: handler,
+                handlerText: foundHandler.handlerText
+            });
+        }
+
+        // question: if handler is found in SW state, should serviceRequestHandler state be updated?
+        const expHandler = await expressHandler(name, msg);
+        generic('get')(`/${name}/:path?`, expHandler);
+        // ^^^ this should add handler to epxress _handlers
+    };
+    const restorePrevious = async ({ metaStore }) => {
+        const restoreToExpress = [];
+        await metaStore
+            .iterate((value, key) => {
+                let { name } = value;
+                if(name === "welcome"){
+                    name = '.welcome'
+                }
+                restoreToExpress.push({ name });
+            });
+        for(let i=0, len=restoreToExpress.length; i<len; i++){
+            const {name} = restoreToExpress[i];
+            await addServiceHandler({ name, msg: 'served from reconstituded' });
+        }
+        // TODO: should also add routes/paths/handlers to SW which have been created but are not there already
+        // could run in to problems with this ^^^ because those may be in the process of being added
+    };
+
+
+
+    const find = async (url) => {
+        let found = _handlers.find(x => x.match(url));
         if (!found) {
-            return;
+            await restorePrevious({ metaStore });
+            found = _handlers.find(x => x.match(url));
+
+            if(!found){
+                return;
+            }
         }
         return {
             exec: async (event) => {
@@ -379,7 +532,9 @@ const fakeExpress = () => {
             }
         };
     };
+
     const app = {
+        addServiceHandler,
         get: generic('get'),
         post: generic('post'),
         find
@@ -450,37 +605,7 @@ fetch, cache, DB, storage - these should be passed in
 
 */
 
-class TemplateEngine {
-    templates=[];
 
-    add (name, template){
-        const newTemp = {
-            extensions: [],
-            body: template,
-            tokens: ['{{template_value}}', '{{markdown}}', '{{template_input}}'],
-            matcher: () => false //TODO: matchers are not currently implemented
-        };
-        newTemp.extensions.push(name.split('.').shift());
-        newTemp.convert = (contents) => {
-            let xfrmed = newTemp.body + '';
-            newTemp.tokens.forEach(t => {
-                xfrmed = xfrmed.replace(new RegExp(t, 'g'), contents);
-                //xfrmed = xfrmed.replace(t, contents);
-            });
-            return xfrmed;
-        };
-
-        this.templates.push(newTemp);
-    }
-
-    convert(filename, contents){
-        if(!this.templates.length) return false;
-        const ext = filename.split('.').pop();
-        const foundTemplate = this.templates.find(x => x.extensions.includes(ext));
-        if(!foundTemplate) return;
-        return foundTemplate.convert(contents);
-    }
-}
 
 (() => {
     console.warn('Service Request Handler - init');
@@ -498,7 +623,6 @@ class TemplateEngine {
             storeName: 'files', // Should be alphanumeric, with underscores.
             description: 'contents of files'
         });
-
     const metaStore = localforage
         .createInstance({
             driver: driverOrder,
@@ -509,101 +633,9 @@ class TemplateEngine {
         });
     //console.log({ driver: store.driver() })
 
-    const expressHandler = async (base, msg) => {
-        console.log(`registering fake express handler for ${base}`);
-        const templates = new TemplateEngine();
+    // handlerStore comes from SW context
+    let app = fakeExpress({ store, handlerStore, metaStore });
 
-        const templatesFromStorage = [];
-        await store
-            .iterate((value, key) => {
-                if(key.indexOf(`./${base}/.templates`) !== 0) return;
-                templatesFromStorage.push({ value, key });
-            });
-
-        templatesFromStorage.forEach(t => {
-            const { value, key } = t;
-            const name = key.split('/').pop();
-            templates.add(name, value);
-        })
-
-
-        return async (params, event) => {
-            const { path, query } = params;
-            const filename = path.split('/').pop();
-            const previewMode = (params.query||'').includes('preview');
-            let xformedFile;
-
-            const file = await store.getItem(`./${base}/${path}`);
-            let fileJSONString;
-            try {
-                if(typeof file !== 'string'){
-                    fileJSONString = file
-                        ? JSON.stringify(file, null, 2)
-                        : '';
-                } else {
-                    fileJSONString = file;
-                }
-            } catch(e){}
-
-            if(previewMode){
-                xformedFile = templates.convert(filename, fileJSONString);
-            }
-            // console.log({
-            //     path,
-            //     storeLoc: `./${base}/${path}`,
-            //     xformedFile: xformedFile || 'not supported',
-            //     msg,
-            //     fileType: typeof file
-            // });
-
-            // most likely a blob
-            if(file && file.type && file.size){
-                return file;
-            }
-
-            //TODO: need to know file type so that it can be returned properly
-            return xformedFile || fileJSONString || file;
-        };
-    };
-
-    const addServiceHandler = async ({ name, msg }) => {
-        const route = `/${name}/(.*)`;
-        const handler = "./modules/serviceRequestHandler.js";
-        const foundHandler = handlers.find(x => x.handlerName === handler);
-
-        const foundExactHandler = foundHandler && handlers
-            .find(x =>
-                x.handlerName === handler && x.routePattern === route
-            );
-		if(foundExactHandler){
-			console.log(`handler was already installed for ${foundExactHandler.routePattern} (boot)`);
-			return;
-        } else {
-            handlers.push({
-                type: foundHandler.type,
-                routePattern: route,
-                route: new RegExp(route),
-                handler: foundHandler.handler,
-                handlerName: handler,
-                handlerText: foundHandler.handlerText
-            });
-        }
-        // question: if handler is found in SW state, should store be updated?
-        await handlerStore.setItem(route, {
-            type,
-            route,
-			handlerName: handler,
-			handlerText: foundHandler.handlerText
-        });
-
-        // question: if handler is found in SW state, should serviceRequestHandler state be updated?
-        const expHandler = await expressHandler(name, msg);
-        app.get(`/${name}/:path?`, expHandler);
-    };
-
-
-
-    let app = fakeExpress();
     app.post('/service/create/:id?', async (params, event) => {
         // event.request.arrayBuffer()
         // event.request.blob()
@@ -647,7 +679,7 @@ class TemplateEngine {
         `);
 
         // make service available from service worker (via handler)
-        await addServiceHandler({ name, msg: 'served from fresh baked' });
+        await app.addServiceHandler({ name, msg: 'served from fresh baked' });
 
         // return current service
         const services = defaultServices();
@@ -786,6 +818,19 @@ class TemplateEngine {
             const storageFiles = await getCodeFromStorageUsingTree(body.tree, store);
             const updateAsStore = getCodeAsStorage(body.tree, body.code);
 
+            const allServiceFiles = [];
+            await store
+                .iterate((value, key) => {
+                    if(( new RegExp( name === 'welcome'
+                            ? '^./.welcome/'
+                            : '^./' + name + '/')
+                        ).test(key)
+                    ){
+                        const path = key.replace('./', '/').replace('/.welcome/', '/welcome/');
+                        allServiceFiles.push({ key, value, path });
+                    }
+                });
+
             const filesToUpdate = [];
             const filesToDelete = [];
 
@@ -793,6 +838,10 @@ class TemplateEngine {
             for (let i = 0; i < updateAsStore.length; i++) {
                 const file = updateAsStore[i];
                 const storageFile = storageFiles.find(x => x.path === file.key);
+                if(file && (!storageFile || !storageFile.code)){
+                    filesToUpdate.push(file);
+                    continue;
+                }
                 if(typeof storageFile.code !== 'string'){
                     continue;
                 }
@@ -802,22 +851,27 @@ class TemplateEngine {
                 filesToUpdate.push(file);
             }
             // delete any storage files that are not in service
-            for (let i = 0; i < storageFiles.length; i++) {
-                const storageFile = storageFiles[i];
-                const found = updateAsStore.find(x => x.value.name === storageFile.name);
+            for (let i = 0; i < allServiceFiles.length; i++) {
+                const serviceFile = allServiceFiles[i];
+                const found = updateAsStore.find(x => x.key === serviceFile.path);
                 if(found) continue;
-                filesToDelete.push(storageFile.name);
+                filesToDelete.push(serviceFile.key);
             }
 
             for (let i = 0; i < filesToUpdate.length; i++) {
                 const update = filesToUpdate[i];
                 console.log(`should update ${update.key}`);
-                await store.setItem('.' + update.key.replace('/welcome/', '/.welcome/'), update.value.code.code);
+
+                await store.setItem('.' + update.key.replace('/welcome/', '/.welcome/'),
+                    update.value.code
+                        ? update.value.code.code || update.value.code
+                        : '\n\n'
+                );
             }
             for (let i = 0; i < filesToDelete.length; i++) {
                 const key = filesToDelete[i];
-                console.log(`should delete ${key}`);
-                //await store.removeItem(key);
+                console.log(`should remove ${key}`)
+                await store.removeItem(key);
             }
 
             return JSON.stringify({
@@ -848,55 +902,10 @@ class TemplateEngine {
         return JSON.stringify({ params, event }, null, 2);
     });
 
-
-
-    // THIS SHOULD BE REGISTERED BY DEFAULT
-    // app.get('/.welcome/:path?', async (params, event) => {
-    //     /*
-    //     TODO: this route should instead be created dynamically instead of defined in this service
-    //     based on reading services & determining which are "file system services"
-    //     */
-    //    console.log({ params })
-
-    //    /*
-    //     TODO:
-    //     expect something like this:
-
-    //     http://localhost:3000/bartok/.welcome/Readme.md?preview=true&edit=true
-    //     should render document using a template and include editor to the left
-
-    //     http://localhost:3000/bartok/.welcome/Readme.md?preview=true
-    //     should preview document, no editing
-
-    //     http://localhost:3000/bartok/.welcome/Readme.md?edit=true
-    //     should allow editing and saving of document, no preview
-    //    */
-
-    //    return await (await fetch(event.request.url)).text();
-    // });
-
-    // NOTE: this is what happens when service request singleton is called into being
-    (async () => {
-        const restoreToExpress = [
-            { name: '.welcome' }
-        ];
-        await metaStore
-            .iterate((value, key) => {
-                const { name } = value;
-                restoreToExpress.push({ name });
-            });
-        for(let i=0, len=restoreToExpress.length; i<len; i++){
-            const {name} = restoreToExpress[i];
-            await addServiceHandler({ name, msg: 'served from reconstituded' });
-        }
-        // TODO: should also add routes/paths/handlers to SW which have been created but are not there already
-        // could run in to problems with this ^^^ because those may be in the process of being added
-    })();
-
     async function serviceAPIRequestHandler(event) {
         console.warn('Service Request Handler - usage');
 
-        const serviceAPIMatch = app.find(event.request.url);
+        const serviceAPIMatch = await app.find(event.request.url);
         if (!serviceAPIMatch) {
             return fetch(event.request.url);
         }

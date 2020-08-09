@@ -194,6 +194,28 @@ const contextMenuHandler = ({ treeView, showMenu }) => (e) => {
 	return false;
 };
 
+const getParent = (data) => {
+	let parent;
+	if(data.type === 'folder'){
+		try {
+			const state = getState({ folderPaths: true });
+			parent = state.paths
+				.find(x => x.name === data.name)
+				.path;
+		}catch(e){}
+	} else {
+		try{
+			const state = getState();
+			parent = state.paths
+				.find(x => x.name === data.name)
+				.path
+				.split('/').slice(0, -1)
+				.join('/');
+		} catch(e){}
+	}
+	return parent;
+}
+
 const contextMenuSelectHandler = ({ newFile }) => (e) => {
 	const { which, parent, data } = (e.detail || {});
 	if(parent !== 'TreeView'){
@@ -201,25 +223,7 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 		return;
 	}
 	if(which === 'New File'){
-		let parent;
-
-		if(data.type === 'folder'){
-			try {
-				const state = getState({ folderPaths: true });
-				parent = state.paths
-					.find(x => x.name === data.name)
-					.path;
-			}catch(e){}
-		} else {
-			try{
-				const state = getState();
-				parent = state.paths
-					.find(x => x.name === data.name)
-					.path
-					.split('/').slice(0, -1)
-					.join('/');
-			} catch(e){}
-		}
+		const parent = getParent(data);
 
 		return newFile({
 			parent,
@@ -240,8 +244,10 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 	}
 
 	if(which === 'Delete'){
-		console.log({ data });
+		const parent = getParent(data);
+		console.log({ data, parent });
 		const { name, type } = data;
+
 		if(!["folder", "file"].includes(type)){
 			console.error('cannot delete object of unknown type');
 			return;
@@ -255,6 +261,7 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 			detail.operation = 'deleteFile';
 			detail.filename = name;
 		}
+		detail.parent = parent;
 
 		const event = new CustomEvent('operations', { bubbles: true, detail });
 		document.body.dispatchEvent(event);

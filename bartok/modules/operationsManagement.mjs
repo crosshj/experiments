@@ -169,9 +169,11 @@ function renameFile(e, currentService, currentFile){
 
 function deleteFile(e, currentService, currentFile){
 	//console.log('deleteFile');
-	const { filename=currentFile } = e.detail;
+	let { filename, parent } = e.detail;
 	let manageOp, currentServiceCode, treeEntryDeleted;
-
+	if(parent){
+		filename = parent + '/' + filename;
+	}
 
 	try {
 		const split = filename.split('/').filter(x => !!x);
@@ -179,11 +181,14 @@ function deleteFile(e, currentService, currentFile){
 
 		let alreadyDeleted;
 		if(file){
-			const parentPath = split.filter(x => x !== file ).join('/');
+			let parentPath = split.filter(x => x !== file ).join('/');
 			const rootFolderName = Object.keys(currentService.tree)[0];
+			parentPath = parentPath.replace(new RegExp(`^${rootFolderName}/`), '');
+
 			const root = currentService.tree[rootFolderName];
 			const { parentObject } = getContextFromPath(root, parentPath);
-			delete parentObject[file];
+			const context = parentObject[parentPath.split('/').pop()];
+			delete context[file];
 			alreadyDeleted = true;
 		}
 		!alreadyDeleted && (

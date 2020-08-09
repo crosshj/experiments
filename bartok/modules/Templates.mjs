@@ -224,6 +224,9 @@ const convertRaw = (raw) => {
     tokens: [],
     matcher: () => false //TODO: matchers are not currently implemented
   };
+  if(!raw || !raw.name || !raw.code){
+    return newTemp;
+  }
   newTemp.extensions.push(raw.name.split('.')[0]);
   newTemp.tokens = [...new Set(raw.code.match(/{{.*}}/g))]
     .map(x => x.replace(/{{|}}/g,''));
@@ -275,6 +278,9 @@ const isSupported = ({ name, contents }, returnMatched) => {
 };
 
 const transform = ({ name, contents }) => {
+  if(name.includes('.htm')){
+    return contents;
+  }
   const template = isSupported({ name, contents }, 'returnMatched');
   if(!template){
     console.error('could not find a template that matched this file!');
