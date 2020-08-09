@@ -1,4 +1,5 @@
 import { attach } from '../Listeners.mjs';
+import { debounce } from "../../../shared/modules/utilities.mjs";
 
 const flattenTree = (tree) => {
 	const results = [];
@@ -228,7 +229,7 @@ const readFolderHandler = ({
 	);
 };
 
-const fileChangeHandler = (...args) => (event) => {
+const fileChangeHandler = (...args) => debounce((event) => {
 	const { getState, getOperations, performOperation } = args[0];
 	const state = getState();
 	const operations = getOperations();
@@ -240,7 +241,7 @@ const fileChangeHandler = (...args) => (event) => {
 	performOperation(changeOp, {
 		path, code
 	});
-};
+}, 300);
 
 // ----------------------------------------------------------------------------------------------------------
 
@@ -282,21 +283,33 @@ const operationsHandler = ({
 	performOperation, operationsListener
 }) => (event) => {
 	try {
+		// deprecate from dummyFunc -> updateAfter -> readAfter;
 		const dummyFunc = () => {};
 		const updateAfter = getUpdateAfter(dummyFunc, dummyFunc, dummyFunc);
 		const readAfter = getReadAfter(dummyFunc);
-
 		const allOperations = getOperations(updateAfter, readAfter);
-		console.log({ allOperations, event })
+
+		const manageOp = managementOp(event);
+		if(manageOp){
+			const currentService = getCurrentService();
+			const currentFile = getCurrentFile();
+			const manOp = manageOp(event, currentService, currentFile);
+			if(!manOp || !manOp.operation === "updateProject"){
+				console.error('assumption is that all management ops result in operation = updateProject');
+				return;
+			}
+			const foundOp = allOperations.find(x => x.name === 'update');
+			return updateServiceHandler({ getCurrentService, getState, performOperation, foundOp });
+		}
+
+
 		const foundOp = allOperations.find(x => x.name === event.detail.operation);
 		if(!foundOp){
 			return;
 		}
-
 		if(foundOp.name === 'update'){
 			return updateServiceHandler({ getCurrentService, getState, performOperation, foundOp });
 		}
-
 		performOperation(foundOp, event.detail);
 		//wrangle context(state?)?
 		//execute operation with context

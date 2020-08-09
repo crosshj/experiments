@@ -86,7 +86,7 @@
       document.head.appendChild(script);
     };
     const appendBabel = () => {
-      const babelUrl = "../shared/vendor/babel.min.js";
+      const babelUrl = "/shared/vendor/babel.min.js";
       const babelAppendCallback = () => {
         const output = Babel.transform(input, {
           presets: ['env', 'stage-3'],

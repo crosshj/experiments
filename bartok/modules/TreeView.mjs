@@ -198,13 +198,24 @@ const updateTree = (treeView) => (change, { name, id, file }) => {
 			}
 		});
 }
-function newFile({ onDone }){
+function treeDomNodeFromPath(path){
+	const leaves = Array.from(document.querySelectorAll('#tree-view .tree-leaf-content'));
+	const name = path.split('/').pop()
+	const found = leaves.find(x => JSON.parse(x.dataset.item).name === name)
+	return found;
+}
+function newFile({ parent, onDone }){
 	if(!onDone){
 		return console.error('newFile requires an onDone event handler');
 	}
-	const nearbySibling = document.body
-		.querySelector('#tree-view > .tree-leaf > .tree-leaf-content:not(.folder)')
-		.parentNode;
+	const parentDOM = treeDomNodeFromPath(parent);
+	const expando = parentDOM.querySelector('.tree-expando');
+	expando.classList.remove('closed');
+	expando.classList.add('expanded', 'open');
+	const childLeaves = parentDOM.parentNode.querySelector('.tree-child-leaves');
+	childLeaves.classList.remove('hidden');
+
+	const nearbySibling = childLeaves.querySelector('.tree-leaf');
 	const paddingLeft = nearbySibling
 		.querySelector('.tree-leaf-content')
 		.style.paddingLeft;
@@ -227,7 +238,7 @@ function newFile({ onDone }){
 		newFileNode.parentNode.removeChild(newFileNode);
 
 		if(!filename){ return; }
-		onDone(filename);
+		onDone(filename, parent);
 	};
 	fileNameInput.addEventListener("blur", finishInput);
 	fileNameInput.addEventListener("keyup", finishInput);

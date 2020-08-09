@@ -6,6 +6,18 @@ import ext from '../../../shared/icons/seti/ext.json.mjs';
 
 let tree;
 
+const flatten = (obj) => {
+	const array = Array.isArray(obj) ? obj : [obj];
+	return array.reduce((acc, value) => {
+		acc.push(value);
+		if (value.children) {
+			acc = [ ...acc, ...flatten(value.children) ];
+			//delete value.children;
+		}
+		return acc;
+	}, []);
+};
+
 const getTree = (result) => {
 	let resultTree = {
 		"index.js": {}
@@ -161,7 +173,7 @@ const contextMenuHandler = ({ treeView, showMenu }) => (e) => {
 			? e.target
 			: e.target.closest('.tree-leaf-content');
 		data = {
-			name: treeLeafContent.innerText,
+			name: treeLeafContent.querySelector('.tree-leaf-text').innerText,
 			type: treeLeafContent.classList.contains('folder') ? 'folder' : 'file'
 		};
 	} catch(e) {}
@@ -189,14 +201,36 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 		return;
 	}
 	if(which === 'New File'){
+		let parent;
+
+		if(data.type === 'folder'){
+			try {
+				const state = getState({ folderPaths: true });
+				parent = state.paths
+					.find(x => x.name === data.name)
+					.path;
+			}catch(e){}
+		} else {
+			try{
+				const state = getState();
+				parent = state.paths
+					.find(x => x.name === data.name)
+					.path
+					.split('/').slice(0, -1)
+					.join('/');
+			} catch(e){}
+		}
+
 		return newFile({
-			onDone: (filename) => {
+			parent,
+			onDone: (filename, parent) => {
 				if(!filename){ return; }
 				const event = new CustomEvent('operations', {
 					bubbles: true,
 					detail: {
 						operation: 'addFile',
 						filename,
+						parent,
 						body: {} //TODO: sucks that body is needed!!!
 					}
 				});
@@ -331,18 +365,6 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 			tree && tree.off();
 			tree = undefined;
 		}
-
-		const flatten = (obj) => {
-			const array = Array.isArray(obj) ? obj : [obj];
-			return array.reduce((acc, value) => {
-				acc.push(value);
-				if (value.children) {
-					acc = [ ...acc, ...flatten(value.children) ];
-					//delete value.children;
-				}
-				return acc;
-			}, []);
-		  }
 
 		const treeFromStorage = (() => {
 			try {

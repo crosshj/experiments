@@ -88,8 +88,11 @@ function uberManageOp({
 
 
 function addFile(e, currentService, currentFile) {
-	const { filename } = e.detail;
+	let { filename, parent } = e.detail;
 	let manageOp, currentServiceCode, treeEntryAdded;
+	if(parent){
+		filename = parent + '/' + filename;
+	}
 
 	try {
 		const split = filename.split('/').filter(x => !!x);
@@ -99,17 +102,19 @@ function addFile(e, currentService, currentFile) {
 		currentServiceCode = JSON.parse(JSON.stringify(currentService.code));
 		currentServiceCode.push({
 			name: file || filename,
-			code: ""
+			code: "\n\n\n"
 		});
 
 		let alreadyPlaced;
 		if(file){
-			const parentPath = split.filter(x => x !== file ).join('/');
+			let parentPath = split.filter(x => x !== file ).join('/');
 			const rootFolderName = Object.keys(currentService.tree)[0];
+			parentPath = parentPath.replace(new RegExp(`^${rootFolderName}/`), '');
+
 			const root = currentService.tree[rootFolderName];
 			const { parentObject } = getContextFromPath(root, parentPath);
-			const context = parentObject[parentPath];
-			context[file] = {}
+			const context = parentObject[parentPath.split('/').pop()];
+			context[file] = {};
 			alreadyPlaced = true;
 		}
 		!alreadyPlaced && (
@@ -378,10 +383,7 @@ function managementOp(e, currentService, currentFile, currentFolder) {
 	if (!thisOps.includes(operation)) {
 		return;
 	}
-	const manageOp = ops[operation]
-		? ops[operation](e, currentService, currentFile, currentFolder)
-		: undefined;
-	return manageOp;
+	return ops[operation];
 }
 
 export {

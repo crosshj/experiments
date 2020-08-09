@@ -648,8 +648,19 @@ const operationDone = ({ viewUpdate }) => (event) => {
 	const { op, id, result, operation } = detail;
 
 	if(op === 'change'){
-		const { path } = result;
+		const { path, code } = result;
+
+		console.log(result);
 		if(locked){
+			return;
+		}
+		const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return path.includes('.'+x)});
+		const hasTemplate = isSupported({
+			name: path,
+			contents: code
+		});
+		const supported = hasTemplate || isHTML;
+		if(!supported){
 			return;
 		}
 		viewUpdate({
@@ -685,6 +696,8 @@ const operationDone = ({ viewUpdate }) => (event) => {
 	});
 
 	const supported = hasTemplate || isHTML || isJSX || isSVC3;
+
+
 	viewUpdate({
 		supported,
 		type: 'operationDone',

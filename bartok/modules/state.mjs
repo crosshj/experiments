@@ -4,7 +4,7 @@ let currentService;
 let currentFile;
 let currentFolder;
 
-const flattenTree = (tree) => {
+const flattenTree = (tree, folderPaths) => {
     const results = [];
     const recurse = (branch, parent = '/') => {
         const leaves = Object.keys(branch);
@@ -17,6 +17,12 @@ const flattenTree = (tree) => {
                     path: parent + key
                 });
             } else {
+				if(folderPaths){
+					results.push({
+						name: key,
+						path: parent + key
+					});
+				}
                 recurse(branch[key], `${parent}${key}/`);
             }
         });
@@ -124,11 +130,11 @@ const state = {
 	changedFiles: {}
 };
 
-function getState(){
+function getState({ folderPaths }={}){
 	//TODO: should probably pull only latest state change
 	let paths;
 	try {
-		paths = flattenTree(currentService.tree);
+		paths = flattenTree(currentService.tree, folderPaths);
 	} catch(e) {
 
 	}

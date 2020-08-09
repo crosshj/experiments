@@ -776,11 +776,12 @@ class TemplateEngine {
         try {
             const { id } = params;
             const body = await event.request.json();
+            const { name } = body;
 
             // enable this when sure about correctness
-            // await metaStore.setItem(id, {
-            //     name, id, tree: body.tree
-            // });
+            await metaStore.setItem(id, {
+                name, id, tree: body.tree
+            });
 
             const storageFiles = await getCodeFromStorageUsingTree(body.tree, store);
             const updateAsStore = getCodeAsStorage(body.tree, body.code);
