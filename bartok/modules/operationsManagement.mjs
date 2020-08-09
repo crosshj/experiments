@@ -88,7 +88,7 @@ function uberManageOp({
 
 
 function addFile(e, currentService, currentFile) {
-	let { filename, parent } = e.detail;
+	let { filename, parent, listener } = e.detail;
 	let manageOp, currentServiceCode, treeEntryAdded;
 	if(parent){
 		filename = parent + '/' + filename;
@@ -113,7 +113,7 @@ function addFile(e, currentService, currentFile) {
 
 			const root = currentService.tree[rootFolderName];
 			const { parentObject } = getContextFromPath(root, parentPath);
-			const context = parentObject[parentPath.split('/').pop()];
+			const context = parentObject[parentPath.split('/').pop()] || parentObject;
 			context[file] = {};
 			alreadyPlaced = true;
 		}
@@ -123,7 +123,8 @@ function addFile(e, currentService, currentFile) {
 
 		treeEntryAdded = true;
 		manageOp = {
-			operation: "updateProject"
+			operation: "updateProject",
+			listener
 		};
 	}
 	catch (e) {
@@ -169,7 +170,7 @@ function renameFile(e, currentService, currentFile){
 
 function deleteFile(e, currentService, currentFile){
 	//console.log('deleteFile');
-	let { filename, parent } = e.detail;
+	let { filename, parent, listener } = e.detail;
 	let manageOp, currentServiceCode, treeEntryDeleted;
 	if(parent){
 		filename = parent + '/' + filename;
@@ -187,7 +188,7 @@ function deleteFile(e, currentService, currentFile){
 
 			const root = currentService.tree[rootFolderName];
 			const { parentObject } = getContextFromPath(root, parentPath);
-			const context = parentObject[parentPath.split('/').pop()];
+			const context = parentObject[parentPath.split('/').pop()] || parentObject;
 			delete context[file];
 			alreadyDeleted = true;
 		}
@@ -200,7 +201,8 @@ function deleteFile(e, currentService, currentFile){
 		currentServiceCode = currentService.code.filter(x => x.name !== (file || filename));
 
 		manageOp = {
-			operation: "updateProject"
+			operation: "updateProject",
+			listener
 		};
 	} catch (e) {
 		console.log('could not delete file');

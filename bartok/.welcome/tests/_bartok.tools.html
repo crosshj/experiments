@@ -37,7 +37,9 @@
   `.replace(/        /g, '');
 </script>
 
-<script>(async () => {
+<script>
+document.addEventListener("DOMContentLoaded", async function(event) {
+
     let swRegistrations;
     if ('serviceWorker' in navigator) {
         swRegistrations = await navigator.serviceWorker.getRegistrations();
@@ -292,7 +294,7 @@
     }
     actionsList.appendChild(fragment);
 
-})(); // async
+}); // dom loaded
 </script>
 
 <style>

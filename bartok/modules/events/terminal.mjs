@@ -359,6 +359,7 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	}
 };
 
+//DEPRECATE
 const fileChangeHandler = ({ viewUpdate }) => (event) => {
 	const { type, detail } = event;
 	let { name, id, file='', code='' } = detail;
@@ -604,7 +605,7 @@ function execCommand({ command, loading, done }){
 		}
 	});
 	document.body.dispatchEvent(event);
-	isProjectOp && loading(`${command}: running... `);
+	//isProjectOp && loading(`${command}: running... `);
 };
 
 const handleCommandQueue = (event) => {

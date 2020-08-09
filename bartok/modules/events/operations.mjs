@@ -245,7 +245,7 @@ const fileChangeHandler = (...args) => debounce((event) => {
 
 // ----------------------------------------------------------------------------------------------------------
 
-const updateServiceHandler = ({ getCurrentService, getState, performOperation, foundOp }) => {
+const updateServiceHandler = ({ getCurrentService, getState, performOperation, foundOp, manOp }) => {
 	try {
 		const service = getCurrentService();
 		const state = getState();
@@ -265,6 +265,10 @@ const updateServiceHandler = ({ getCurrentService, getState, performOperation, f
 		const eventData = {
 			body
 		};
+
+		if(manOp && manOp.listener){
+			eventData.listener = manOp.listener;
+		}
 
 		const results = performOperation(foundOp, eventData);
 		return results;
@@ -299,7 +303,7 @@ const operationsHandler = ({
 				return;
 			}
 			const foundOp = allOperations.find(x => x.name === 'update');
-			return updateServiceHandler({ getCurrentService, getState, performOperation, foundOp });
+			return updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp });
 		}
 
 
