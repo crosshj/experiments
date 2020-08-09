@@ -6,7 +6,7 @@ import {
     setCurrentService,
     getCurrentFile, getCurrentService,
     getCurrentFolder, setCurrentFolder,
-    resetState
+    getState, resetState
 } from './state.mjs';
 import {
     getOperations, getReadAfter, getUpdateAfter,
@@ -18,7 +18,7 @@ async function Operations() {
         managementOp, externalStateRequest,
         getCurrentFile, getCurrentService,
         getCurrentFolder, setCurrentFolder,
-        resetState,
+        getState, resetState,
         getOperations, getReadAfter, getUpdateAfter,
         performOperation, operationsListener
     });

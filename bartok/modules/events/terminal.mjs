@@ -352,7 +352,8 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		backupForLock.currentFileName = next||name;
 	}
 	if(doc && currentView === "preview"){
-		const viewArgs = { supported: hasTemplate, type, locked, doc, docName: next || name, ...event.detail };
+		const supported = hasTemplate || isHTML || isJSX || isSVC3;
+		const viewArgs = { supported, type, locked, doc, docName: next || name, ...event.detail };
 		sessionStorage.setItem('preview', JSON.stringify(viewArgs));
 		viewUpdate(viewArgs);
 	}
@@ -415,7 +416,8 @@ const fileChangeHandler = ({ viewUpdate }) => (event) => {
 		backupForLock.currentFileName = file;
 	}
 	if(doc && currentView === "preview"){
-		viewUpdate({ supported: hasTemplate, type, locked, doc, docName: file, ...event.detail });
+		const supported = hasTemplate || isHTML || isJSX || isSVC3;
+		viewUpdate({ supported, type, locked, doc, docName: file, ...event.detail });
 	}
 };
 
@@ -490,8 +492,9 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 		</html>
 	`;
 
+	const supported = hasTemplate || isHTML || isJSX || isSVC3;
 	viewUpdate({
-		type, locked, supported: hasTemplate,
+		type, locked, supported,
 		doc,
 		docName: currentFileName,
 		...event.detail
@@ -643,6 +646,19 @@ const operationDone = ({ viewUpdate }) => (event) => {
 	}
 	const { detail } = event;
 	const { op, id, result, operation } = detail;
+
+	if(op === 'change'){
+		const { path } = result;
+		if(locked){
+			return;
+		}
+		viewUpdate({
+			type: 'forceRefreshOnPersist',
+			wait: 1
+		});
+		return;
+	}
+
 	// only care about service read with id
 	if(op !== "read" || !id){
 		return;
@@ -668,12 +684,9 @@ const operationDone = ({ viewUpdate }) => (event) => {
 		contents: defaultFileContents
 	});
 
-	const supported = [
-		isHTML, isSVG, isJSX, isSVC3
-	].find(x => !!x);
-
+	const supported = hasTemplate || isHTML || isJSX || isSVC3;
 	viewUpdate({
-		supported: hasTemplate,
+		supported,
 		type: 'operationDone',
 		locked,
 		doc: (supported || hasTemplate) ? defaultFileContents : NO_PREVIEW,
@@ -713,7 +726,6 @@ const operations = ({ viewUpdate, getCurrentService }) => (event) => {
 		: getFileFromService(name);
 	const hasTemplate = isSupported({ name, contents });
 	if(locked && currentFileName !== name){
-		debugger
 		backupForLock.currentFile = contents;
 		backupForLock.currentFileName = name;
 		return;
@@ -722,9 +734,15 @@ const operations = ({ viewUpdate, getCurrentService }) => (event) => {
 	currentFile = contents;
 	currentFileName = name;
 
+	const isHTML = contents.includes('</html>') && ['htm', 'html'].find(x => { return name.includes('.'+x)});
+	const isJSX = (name).includes('jsx');
+	const isSVC3 = contents.includes('/* svcV3 ');
+
+	const supported = hasTemplate || isHTML || isJSX || isSVC3;
 	viewUpdate({
-		supported: hasTemplate,
+		supported,
 		type: 'forceRefreshOnPersist',
+		wait: 1000,
 		locked,
 		doc: contents || NO_PREVIEW,
 		docName: name,
@@ -818,14 +836,14 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 			getCurrentService
 		})
 	});
-	attach({
-		name: 'Terminal',
-		eventName: 'fileChange',
-		listener: fileChangeHandler({
-			viewUpdate: stateBoundViewUpdate,
-			getCurrentService
-		})
-	});
+	// attach({
+	// 	name: 'Terminal',
+	// 	eventName: 'fileChange',
+	// 	listener: fileChangeHandler({
+	// 		viewUpdate: stateBoundViewUpdate,
+	// 		getCurrentService
+	// 	})
+	// });
 	attach({
 		name: 'Terminal',
 		eventName: 'termMenuAction',

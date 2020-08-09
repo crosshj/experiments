@@ -1,69 +1,3 @@
-function getOperations(updateAfter, readAfter) {
-	const operations = [{
-		url: ''
-	}, {
-		name: 'create',
-		url: 'service/create/{id}',
-		config: {
-			method: 'POST'
-		},
-		eventToParams: ({ body = {} }) => {
-			const { id } = body;
-			if (!id) throw new Error('id is required when creating service');
-			return { id };
-		},
-		eventToBody: ({ body = {} }) => {
-			const { name, id } = body;
-			if (!name) throw new Error('name is required when creating service');
-			if (!id) throw new Error('id is required when creating service');
-			return JSON.stringify({ name, id }, null, 2);
-		},
-		after: updateAfter
-	}, {
-		name: 'read',
-		url: 'service/read/{id}',
-		after: readAfter,
-		eventToParams: ({ body = {} }) => {
-			const { id='' } = body;
-			return { id };
-		}
-	}, {
-		name: 'update',
-		url: 'service/update',
-		config: {
-			method: 'POST'
-		},
-		after: updateAfter
-	}, {
-		name: 'delete',
-		url: 'service/delete',
-		config: {
-			method: 'POST'
-		},
-	}, {
-		name: 'manage',
-		url: 'manage'
-	}, {
-		name: 'monitor',
-		url: 'monitor'
-	}, {
-		name: 'persist',
-		url: 'persist'
-	}];
-	operations.forEach(x => {
-		//x.url = `./${x.url}`;
-		// if (x.config && x.config.body) {
-		// 	x.config.body = JSON.stringify(x.config.body);
-		// }
-		x.config = x.config || {};
-		x.config.headers = {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		}
-	});
-	return operations;
-}
-
 function getReadAfter(List, inlineEditor, getCodeFromService) {
 	return ({ result = {} } = {}) => {
 		console.warn('Read After');
@@ -106,6 +40,98 @@ function getUpdateAfter(setCurrentService) {
 	};
 }
 
+function getOperations(updateAfter, readAfter) {
+	const operations = [{
+		name: '', url: '', config: {}
+	}, {
+		name: 'create',
+		url: 'service/create/{id}',
+		config: {
+			method: 'POST'
+		},
+		eventToParams: ({ body = {} }) => {
+			const { id } = body;
+			if (!id) throw new Error('id is required when creating service');
+			return { id };
+		},
+		eventToBody: ({ body = {} }) => {
+			const { name, id } = body;
+			if (!name) throw new Error('name is required when creating service');
+			if (!id) throw new Error('id is required when creating service');
+			return JSON.stringify({ name, id }, null, 2);
+		},
+		after: updateAfter
+	}, {
+		name: 'read',
+		url: 'service/read/{id}',
+		after: readAfter,
+		eventToParams: ({ body = {} }) => {
+			const { id='' } = body;
+			return { id };
+		}
+	}, {
+		name: 'update',
+		url: 'service/update/{id}',
+		config: {
+			method: 'POST'
+		},
+		after: updateAfter,
+		eventToParams: ({ body = {} }) => {
+			const { id='' } = body;
+			return { id };
+		},
+		eventToBody: ({ body = {} }) => {
+			const { name, id } = body;
+			if (!name) throw new Error('name is required when updating service');
+			if (!id) throw new Error('id is required when updating service');
+			return JSON.stringify(body, null, 2);
+		},
+	}, {
+		name: 'change',
+		url: 'service/change',
+		config: {
+			method: 'POST'
+		},
+		eventToBody: ({ path, code } = {}) => {
+			if (!path) throw new Error('path is required when changing service files');
+			if (!code) throw new Error('code is required when changing service files');
+			return JSON.stringify({ path, code }, null, 2);
+		},
+	}, {
+		name: 'delete',
+		url: 'service/delete/{id}',
+		config: {
+			method: 'POST'
+		},
+		eventToParams: ({ body = {} }) => {
+			const { id='' } = body;
+			return { id };
+		}
+	}, {
+		name: 'manage',
+		url: 'manage'
+	}, {
+		name: 'monitor',
+		url: 'monitor'
+	}, {
+		name: 'persist',
+		url: 'persist'
+	}];
+	operations.forEach(x => {
+		//x.url = `./${x.url}`;
+		// if (x.config && x.config.body) {
+		// 	x.config.body = JSON.stringify(x.config.body);
+		// }
+		x.config = x.config || {};
+		x.config.headers = {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		}
+	});
+	return operations;
+}
+
+
 async function performOperation(operation, eventData = {}, externalStateRequest) {
 
 	const { body = {}, after } = eventData;
@@ -136,7 +162,6 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 	if(id !== '' && Number(id) === 0){
 		id = "0";
 	}
-	// op.url = op.url.replace('{id}', id || '');
 	// op.config = op.config || {};
 	// op.config.headers = {
 	// 	...{

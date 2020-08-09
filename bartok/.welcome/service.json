@@ -104,6 +104,7 @@
       "Readme.md": {},
       "service.json": {},
       "tests": {
+        "_bartok.tools.html": {},
         "_dimensional.md": {},
         "_mirrors.md": {},
         "_sort.flashing.md": {},
@@ -135,6 +136,10 @@
       }
     },
     "files": [
+      {
+        "name": "_bartok.tools.html",
+        "path": ".welcome/tests/_bartok.tools.html"
+      },
       {
         "name": "video.mp4",
         "path": ".welcome/file-examples/video.mp4"

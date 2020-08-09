@@ -228,19 +228,61 @@ const readFolderHandler = ({
 	);
 };
 
+const fileChangeHandler = (...args) => (event) => {
+	const { getState, getOperations, performOperation } = args[0];
+	const state = getState();
+	const operations = getOperations();
+	const changeOp = (operations||[]).find(x => x.name === 'change');
+
+	const { file, code } = event.detail;
+	const path = '.' + (state.paths.find(x => x.name === file)||{ path: ''}).path.replace('/welcome/', '/.welcome/');
+
+	performOperation(changeOp, {
+		path, code
+	});
+};
+
+// ----------------------------------------------------------------------------------------------------------
+
+const updateServiceHandler = ({ getCurrentService, getState, performOperation, foundOp }) => {
+	try {
+		const service = getCurrentService();
+		const state = getState();
+
+		//TODO: maybe some day get fancy and only send changes
+		// for now, just update all service files that have changed and send whole service
+		Object.keys(state.changedFiles)
+			.forEach(chKey => {
+				const [ serviceId, serviceName, filename ] = chKey.split('|');
+				const changes = state.changedFiles[chKey];
+
+				const foundFile = service.code.find(x => x.name === filename);
+				foundFile.code = changes[changes.length-1];
+			});
+		const body = service;
+
+		const eventData = {
+			body
+		};
+
+		const results = performOperation(foundOp, eventData);
+		return results;
+	}catch(e) {
+		console.error('error updating service');
+		console.error(e);
+	}
+}
+
 const operationsHandler = ({
 	managementOp, externalStateRequest,
 	getCurrentFile, getCurrentService,
 	getCurrentFolder, setCurrentFolder,
-	resetState,
+	getState, resetState,
 	getOperations, getReadAfter, getUpdateAfter,
 	performOperation, operationsListener
 }) => (event) => {
 	try {
-		const dummyFunc = () => {
-			debugger;
-			return {};
-		};
+		const dummyFunc = () => {};
 		const updateAfter = getUpdateAfter(dummyFunc, dummyFunc, dummyFunc);
 		const readAfter = getReadAfter(dummyFunc);
 
@@ -250,6 +292,11 @@ const operationsHandler = ({
 		if(!foundOp){
 			return;
 		}
+
+		if(foundOp.name === 'update'){
+			return updateServiceHandler({ getCurrentService, getState, performOperation, foundOp });
+		}
+
 		performOperation(foundOp, event.detail);
 		//wrangle context(state?)?
 		//execute operation with context
@@ -268,7 +315,8 @@ const handlers = {
 	renameFolderHandler,
 	moveFolderHandler,
 	moveFileHandler,
-	operationsHandler
+	operationsHandler,
+	fileChangeHandler
 };
 
 function attachListeners(...args){
@@ -281,6 +329,7 @@ function attachListeners(...args){
 		});
 	};
 	Object.keys(handlers).map(mapListeners);
+
 }
 
 export {

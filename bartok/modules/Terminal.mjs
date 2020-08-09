@@ -333,8 +333,17 @@ function _Terminal(){
 	}
 
 	const updateIframe = debounce(updateIframeRaw, 300);
+	const reloadIframe = debounce((wait) => {
+		setTimeout(() => {
+			previewIframe.contentWindow.location.reload();
+		}, wait);
+	}, 300);
 
-	function viewUpdate({ supported, view, type, doc, docName, locked, url }){
+	function viewUpdate({ supported, view, type, doc, docName, locked, url, wait=1000 }){
+		if(type ==="forceRefreshOnPersist"){
+			reloadIframe(wait);
+			return;
+		}
 		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
 		if(!supported && !doc) debugger
 		let src = supported

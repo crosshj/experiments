@@ -259,16 +259,24 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 			url = state.paths
 				.find(x => x.name === name)
 				.path
-				.replace('/welcome/', '/.welcome/');
+				.replace('/welcome/', '/.welcome/')
+				.replace(/^\//, './');;
 		} catch(e){}
 		if(!url) return;
-		const query = [
+		const path = new URL(url, document.baseURI).href;
+
+		const shouldExclude = [
 			'.svg', '.less', '.scss', '.css', '.js', '.json', '.templates'
-		].find(x => url.includes(x))
+		].find(x => path.includes(x));
+		// this overrides excludes
+		const shouldInclude = ['.jsx']
+			.find(x => path.includes(x));
+
+		const query = shouldExclude && !shouldInclude
 			? ''
 			: '?preview=true';
 
-		window.open(url+query);
+		window.open(path+query);
 	}
 };
 

@@ -1,3 +1,23 @@
+const flattenTree = (tree) => {
+    const results = [];
+    const recurse = (branch, parent = '/') => {
+        const leaves = Object.keys(branch);
+        leaves.map(key => {
+            const children = Object.keys(branch[key]);
+            if(!children || !children.length){
+                results.push({
+                    name: key,
+                    code: parent + key,
+                    path: parent + key
+                });
+            } else {
+                recurse(branch[key], `${parent}${key}/`);
+            }
+        });
+    };
+    recurse(tree);
+    return results;
+};
 
 function exampleReact() {
     return `
@@ -120,7 +140,7 @@ const dummyService = (_id, _name) => ({
     tree: defaultTree(_name)
 });
 
-async function getFileContents({ filename, store, cache }) {
+async function getFileContents({ filename, store, cache, storagePath }) {
     const cachedFile = await store.getItem(filename);
     let contents;
 
@@ -146,13 +166,17 @@ async function getFileContents({ filename, store, cache }) {
         !fileNameBlacklist.find(x => filename.includes(x))
             ? await fetched.blob()
             : await fetched.text();
-    store.setItem(filename, contents);
+    if(storagePath){
+        store.setItem('.' + storagePath.replace('/welcome/', '/.welcome/'), contents);
+    } else {
+        store.setItem(filename, contents);
+    }
 
     return contents;
 }
 
 //TODO: this is intense, but save a more granular approach for future
-async function fileSystemTricks({ result, store, cache }) {
+async function fileSystemTricks({ result, store, cache, metaStore }) {
     if (!result.result[0].code.find) {
         const parsed = JSON.parse(result.result[0].code);
         result.result[0].code = parsed.files;
@@ -180,13 +204,22 @@ async function fileSystemTricks({ result, store, cache }) {
         }
     }
     const len = result.result[0].code.length;
+    const flat = flattenTree(result.result[0].tree);
+
     for (var i = 0; i < len; i++) {
         const item = result.result[0].code[i];
         if (!item.code && item.path) {
             const filename = './' + item.path;
-            item.code = await getFileContents({ filename, store, cache });
+            const storagePath = (flat.find(x => x.name === item.name)||{}).path;
+            item.code = await getFileContents({ filename, store, cache, storagePath });
         }
     }
+
+    await metaStore.setItem(result.result[0].id+'', {
+        name: result.result[0].name,
+        id: result.result[0].id,
+        tree: result.result[0].tree
+    });
 }
 
 let lsServices = [];
@@ -221,6 +254,17 @@ const pathToRegex = {
     '/service/update/:id?': (() => {
         const regex = new RegExp(
             /^((?:.*))\/service\/update(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/service/change': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/change(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
         );
         return {
             match: url => regex.test(url),
@@ -343,28 +387,6 @@ const fakeExpress = () => {
     return app;
 };
 
-
-const flattenTree = (tree) => {
-    const results = [];
-    const recurse = (branch, parent = '/') => {
-        const leaves = Object.keys(branch);
-        leaves.map(key => {
-            const children = Object.keys(branch[key]);
-            if(!children || !children.length){
-                results.push({
-                    name: key,
-                    code: parent + key,
-                    path: parent + key
-                });
-            } else {
-                recurse(branch[key], `${parent}${key}/`);
-            }
-        });
-    };
-    recurse(tree);
-    return results;
-};
-
 async function getCodeFromStorageUsingTree(tree, store){
     // flatten the tree (include path)
     // pass back array of  { name: filename, code: path, path }
@@ -374,14 +396,33 @@ async function getCodeFromStorageUsingTree(tree, store){
     // BUT for now, will bundle entire filesystem with its contents
     for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        file.code = await store.getItem('.' + file.path);
+        let code;
+        if(file.path.includes('/welcome/')){
+            code = await store.getItem('.' + file.path.replace('/welcome/', '/.welcome/'));
+        } else {
+            code = await store.getItem('.' + file.path);
+        }
+        file.code = code;
         // OMG, live it up in text-only world... for now (templates code expects text format)
-        file.code = typeof file.code === "object"
-            ? JSON.stringify(file.code, null, 2)
+        file.code = file.size
+            ? null
             : file.code;
     }
 
     return files; // aka code array
+}
+
+// this makes a service from UI look like files got from storage
+function getCodeAsStorage(tree, files){
+    const flat = flattenTree(tree);
+    for (let index = 0; index < flat.length; index++) {
+        const file = flat[index];
+        flat[index] = {
+            key: file.path,
+            value: files.find(x => x.name === file.path.split('/').pop())
+        };
+    }
+    return flat;
 }
 
 /*
@@ -718,14 +759,73 @@ class TemplateEngine {
                 ? lsServices
                 : lsServices.filter(x => Number(x.id) === Number(params.id))
         };
-        await fileSystemTricks({ result, store, cache: cacheHeader });
+        await fileSystemTricks({ result, store, metaStore, cache: cacheHeader });
         return  JSON.stringify(result, null, 2)
         //const foo = await store.getItem("foo");
 
     });
+    app.post('/service/change', async (params, event) => {
+        const body = await event.request.json();
+        const { path, code } = body;
+        //TODO: in the future (maybe) store these changes to a change holding area
+        await store.setItem(path, code);
+        return JSON.stringify({ result: { path, code }}, null,2)
+    });
+
     app.post('/service/update/:id?', async (params, event) => {
-        console.log('/service/update/:id? triggered');
-        return JSON.stringify({ params, event }, null, 2);
+        try {
+            const { id } = params;
+            const body = await event.request.json();
+
+            // enable this when sure about correctness
+            // await metaStore.setItem(id, {
+            //     name, id, tree: body.tree
+            // });
+
+            const storageFiles = await getCodeFromStorageUsingTree(body.tree, store);
+            const updateAsStore = getCodeAsStorage(body.tree, body.code);
+
+            const filesToUpdate = [];
+            const filesToDelete = [];
+
+            // update or create all files in update
+            for (let i = 0; i < updateAsStore.length; i++) {
+                const file = updateAsStore[i];
+                const storageFile = storageFiles.find(x => x.path === file.key);
+                if(typeof storageFile.code !== 'string'){
+                    continue;
+                }
+                if(file.value.code === storageFile.code){
+                    continue;
+                }
+                filesToUpdate.push(file);
+            }
+            // delete any storage files that are not in service
+            for (let i = 0; i < storageFiles.length; i++) {
+                const storageFile = storageFiles[i];
+                const found = updateAsStore.find(x => x.value.name === storageFile.name);
+                if(found) continue;
+                filesToDelete.push(storageFile.name);
+            }
+
+            for (let i = 0; i < filesToUpdate.length; i++) {
+                const update = filesToUpdate[i];
+                console.log(`should update ${update.key}`);
+                await store.setItem('.' + update.key.replace('/welcome/', '/.welcome/'), update.value.code.code);
+            }
+            for (let i = 0; i < filesToDelete.length; i++) {
+                const key = filesToDelete[i];
+                console.log(`should delete ${key}`);
+                //await store.removeItem(key);
+            }
+
+            return JSON.stringify({
+                result: [ body ]
+            }, null, 2);
+        } catch(e){
+            console.error(e);
+            return JSON.stringify({ error: e }, null, 2);;
+        }
     });
     app.post('/service/delete/:id?', (params, event) => {
         console.log('/service/delete/:id? triggered');
@@ -802,30 +902,30 @@ class TemplateEngine {
         //TODO: should console log path here so it's known what handler is being used
         event.respondWith(
             (async () => {
-                const file = await serviceAPIMatch.exec(event);
+                const res = await serviceAPIMatch.exec(event);
                 let response;
 
-                if(file && file.type){ //most likely a blob
-                    response = new Response(file, {headers:{'Content-Type': file.type }});
+                if(res && res.type){ //most likely a blob
+                    response = new Response(res, {headers:{'Content-Type': res.type }});
                     return response;
                 }
 
                 if(event.request.url.includes('.mjs')){
-                    response = new Response(file, {headers:{'Content-Type': 'text/javascript' }});
+                    response = new Response(res, {headers:{'Content-Type': 'text/javascript' }});
                     return response;
                 }
 
                 if(event.request.url.includes('.svg')){
-                    response = new Response(file, {headers:{'Content-Type': 'image/svg' }});
+                    response = new Response(res, {headers:{'Content-Type': 'image/svg' }});
                     return response;
                 }
 
                 if(event.request.url.includes('preview')){
-                    response = new Response(file, {headers:{'Content-Type': 'text/html'}});
-                } else {
-                    response = new Response(file);
+                    response = new Response(res, {headers:{'Content-Type': 'text/html'}});
+                    return response;
                 }
-                return response;
+
+                return new Response(res);
             })()
         );
         // should be able to interact with instantiated services as well,
