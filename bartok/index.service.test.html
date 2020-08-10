@@ -1,42 +1,55 @@
 <html>
 
 <body>
-    <h3>test tool for all things service worker related</h3>
-    <pre>
-- session Storage will be killed when a boot occurs (moduleCache is not present on start)
-- selectively refresh modules, files, etc
-- can integrate with browsersync?
-- when a service is created (via API):
-    - add handler to serviceWorker handlerStore
-    - add service to serviceRequest meta store
-    - add default files to serviceRequest files store
-- when service worker comes online
-    - add handlers from serviceWorker handlerStore
-    - adding serviceRequest handler causes
-        - read serviceRequest meta store and add handler to fake express
-        - that handler will pull files from serviceRequest files store
-- in order to refresh handlers (including service API)
-    - clear handler store, clear module cache, and restart service worker
-       OR
-    - build something in SW API that allows refreshing
-- for a running/installed service worker should message to:
-    - bootstrap (already do)
-    - list handlers
-    - add handler
-    - replace handler
-    - delete handler
-    - delete cache(?)
-    </pre>
-    <ul id="actions-list"></ul>
+    <div class="container">
+      <ul id="actions-list"></ul>
+      <pre></pre>
+    </div>
 </body>
 
+<script>
+   const notesPre = document.querySelector('pre');
+   notesPre.innerText = `
+        - sessionStorage killed on boot (moduleCache is not present on start)
+        - selectively refresh modules, files, etc
+        - can integrate with browsersync?
+        - when a service is created (via API):
+            - add handler to serviceWorker handlerStore
+            - add service to serviceRequest meta store
+            - add default files to serviceRequest files store
+        - when service worker comes online
+            - add handlers from serviceWorker handlerStore
+            - adding serviceRequest handler causes
+                - read serviceRequest meta store and add handler to fake express
+                - that handler will pull files from serviceRequest files store
+        - in order to refresh handlers (including service API)
+            - clear handler store, clear module cache, and restart service worker
+               OR
+            - build something in SW API that allows refreshing
+        - for a running/installed service worker should message to:
+            - bootstrap (already do)
+            - list handlers
+            - add handler
+            - replace handler
+            - delete handler
+            - delete cache(?)
 
+  `.replace(/        /g, '');
+</script>
 
-<script>(async () => {
+<script>
+document.addEventListener("DOMContentLoaded", async function(event) {
+
     let swRegistrations;
-    if ('serviceWorker' in navigator) {
-        swRegistrations = await navigator.serviceWorker.getRegistrations();
+    try {
+        if ('serviceWorker' in navigator) {
+            swRegistrations = await navigator.serviceWorker.getRegistrations();
+        }
+    }catch(e){
+        // hopefully cope with document in invalid state issue/bug
+        document.location.reload();
     }
+
     let indexDBdatabases;
     try {
         indexDBdatabases = await indexedDB.databases();
@@ -66,7 +79,6 @@
             storeName: 'files',
             description: 'contents of files'
         });
-
     const metaStore = localforage
         .createInstance({
             driver: driverOrder,
@@ -85,9 +97,9 @@
         });
 
     const actions = {
-        "spacer0": "",
         "service worker registration": {
             verb: 'UNREGISTER',
+            background: '#752c37',
             value: swRegistrations && swRegistrations.length ? '[X]' : '[ ]',
             handler: async (e, callback) => {
                 localStorage.removeItem('moduleCache');
@@ -124,6 +136,7 @@
         },
         "moduleCache - used by index.sw (localStorage) ": {
             verb: 'CLEAR',
+            background: '#604739',
             value: !!localStorage.getItem('moduleCache') ? '[X]' : '[ ]',
             handler: async (e, callback) => {
                 localStorage.removeItem('moduleCache');
@@ -143,6 +156,24 @@
                 }
             }
         },
+        "meta Store - stores service information (indexedDB)": {
+            verb: 'CLEAR',
+            background: '#564356',
+            value: `[${(await metaStore.keys()).length || ' '}]`,
+            handler: async (e, callback) => {
+                try {
+                    console.log('clearing meta store...');
+                    await metaStore.clear();
+                    const valueNode = e.target.parentNode
+                      .querySelector('.value');
+                    valueNode.innerText = `[${
+                        (await metaStore.keys()).length || ' '
+                    }]`;
+                } catch(e){
+                    console.error(e);
+                }
+            }
+        },
         "files Store - stores all files (indexedDB)": {
             verb: 'CLEAR',
             value: `[${(await filesStore.keys()).length || ' '}]`,
@@ -150,7 +181,12 @@
                 try {
                     console.log('clearing files store...');
                     await filesStore.clear();
-                    document.location.reload();
+                    const valueNode = e.target.parentNode
+                      .querySelector('.value');
+                    valueNode.innerText = `[${
+                      (await filesStore.keys()).length || ' '
+                    }]`;
+                    e.target.blur()
                 } catch(e){
                     console.error(e);
                 }
@@ -168,20 +204,7 @@
                 document.location.reload();
             }
         },
-        "meta Store - stores service information (indexedDB)": {
-            verb: 'CLEAR',
-            value: `[${(await metaStore.keys()).length || ' '}]`,
-            handler: async (e, callback) => {
-                try {
-                    console.log('clearing meta store...');
-                    await metaStore.clear();
-                    document.location.reload();
-                } catch(e){
-                    console.error(e);
-                }
-            }
-        },
-        "localStorage reloadServices - headers['x-cache'] - /service/read force refresh (serviceRequestHandler)": {
+       "localStorage reloadServices - headers['x-cache'] - /service/read force refresh (serviceRequestHandler)": {
             verb: 'TOGGLE',
             value: !!JSON.parse(localStorage.getItem('reloadServices')) ? 'true' : 'false',
             handler: async (e, callback) => {
@@ -191,12 +214,15 @@
             }
         },
         "serviceRequestHandler << message service worker and ask for handlers": {
-            verb: 'RELOAD',
+            verb: 'TODO',
+            background: '#282828',
             handler: async (e, callback) => {
 
             }
         },
         "reboot:  what does this entail?": {
+            verb: 'TODO',
+            background: '#282828',
             handler: async (e, callback) => {
 
             }
@@ -239,6 +265,8 @@
         }
     })
 
+    actions["spacer2"] = '';
+
     const actionsList = document.getElementById('actions-list');
 
     var fragment = new DocumentFragment();
@@ -265,7 +293,7 @@
                 <span class="description">${actionName.replace(':id?', '')}</span>
                 ${fieldsEl}
             </div>
-            <button>${thisAction.verb || "EXECUTE"}</button>
+            <button style="background:${thisAction.background||""}">${thisAction.verb || "EXECUTE"}</button>
         `;
         li.querySelector('button').onclick = (e) => {
             const callback = (error, data) => error
@@ -277,7 +305,7 @@
     }
     actionsList.appendChild(fragment);
 
-})(); // async
+}); // dom loaded
 </script>
 
 <style>
@@ -285,20 +313,34 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        background: #333;
+        background: #222;
         color: #b1b1b1;
         font-family: sans-serif;
-        font-size: 1.1rem;
+        font-size: 0.9rem;
         font-weight: lighter;
         padding-bottom: 200px;
     }
+    .container {
+        position: absolute;
+        top: 40px;
+        bottom: 0px;
+        overflow-y: scroll;
+        left: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     ::-webkit-scrollbar {
-       display: none;
+        display: none;
     }
     ul {
         margin: 0;
         padding: 0;
-        width: 43rem;
+        width: 100%;
+        max-width: 58em;
+        list-style-type: none;
+        padding-top: 40px;
     }
     li {
         list-style: none;
@@ -307,6 +349,7 @@
         margin: 12px 0;
         display: flex;
         justify-content: space-between;
+        background: #333;
     }
     li.spacer {
         background: transparent;
@@ -318,17 +361,19 @@
     }
     span.value {
         display: inline-block;
-        min-width: 4rem;
+        min-width: 2rem;
         text-align: center;
         font-family: monospace;
         color: #fff7;
     }
     pre {
-        /* white-space: pre-line; */
-        width: 41rem;
-        background: #222222;
+        white-space: pre-wrap;
+        background: #333;
         padding: 21px;
         box-sizing: content-box;
+        width: 94%;
+        max-width: 68em;
+        margin-bottom: 100px;
     }
     button {
         background: #4d7b5b88;
@@ -362,4 +407,3 @@
 </style>
 
 </html>
-

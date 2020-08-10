@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", async function(event) {
     const actions = {
         "service worker registration": {
             verb: 'UNREGISTER',
+            background: '#752c37',
             value: swRegistrations && swRegistrations.length ? '[X]' : '[ ]',
             handler: async (e, callback) => {
                 localStorage.removeItem('moduleCache');
@@ -157,6 +158,7 @@ document.addEventListener("DOMContentLoaded", async function(event) {
         },
         "meta Store - stores service information (indexedDB)": {
             verb: 'CLEAR',
+            background: '#564356',
             value: `[${(await metaStore.keys()).length || ' '}]`,
             handler: async (e, callback) => {
                 try {
