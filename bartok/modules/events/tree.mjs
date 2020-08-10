@@ -274,15 +274,18 @@ const contextMenuSelectHandler = ({ newFile, newFolder }) => (e) => {
 			return;
 		}
 		const detail = { body: {} }; //TODO: sucks that body is needed!!!
+
 		if(type === "folder"){
 			detail.operation = 'deleteFolder';
 			detail.folderName = name;
+			detail.parent = parent
+				.replace(new RegExp(`/${data.name}$`, 'g'), '');
 		}
 		if(type === "file"){
 			detail.operation = 'deleteFile';
 			detail.filename = name;
+			detail.parent = parent;
 		}
-		detail.parent = parent;
 
 		const event = new CustomEvent('operations', { bubbles: true, detail });
 		document.body.dispatchEvent(event);

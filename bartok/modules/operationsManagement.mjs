@@ -306,38 +306,44 @@ function renameFolder(e, currentService, currentFile){
 		: undefined;
 }
 
-function deleteFolder(e, currentService, currentFile){
+function deleteFolder(e, currentService){
 	// console.log('deleteFolder');
-	// console.log(e.detail);
-	const { folderName } = e.detail;
+	let { folderName, parent, listener } = e.detail;
+	if(parent){
+		folderName = parent + '/' + folderName;
+	}
 
 	//TODO: is either current selected folder or parent of currentFile
 	const currentFolder = "/";
 
 	// delete all child files
 	const rootFolderName = Object.keys(currentService.tree)[0];
+	folderName = folderName.replace(new RegExp(`^/${rootFolderName}`), '');
 	const root = currentService.tree[rootFolderName];
+
 	const { folderName: folder, parentObject} = getContextFromPath(root, folderName);
 	const children = flattenTree(parentObject[folder])
 		.map(x => x.name);
-	// console.log({ children });
-	// console.log(currentService.code.map(x => x.name))
+
 	const currentServiceCode = currentService.code
 		.filter(c => !children.includes(c.name));
-	// console.log(currentServiceCode.map(x => x.name))
 	currentService.code = currentServiceCode;
 
 	const folderdeleted = uberManageOp({
+		deleteOldTree: true,
+		oldName: folderName,
+
 		currentFolder,
 		currentService,
-		oldName: folderName,
 		newName: '',
 		createNewTree: false,
-		deleteOldTree: true,
 		createNewFile: false,
 		deleteOldFile: false
 	});
 
+	if(manageOp){
+		manageOp.listener = listener;
+	}
 	return folderdeleted
 		? manageOp
 		: undefined;
