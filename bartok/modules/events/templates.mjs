@@ -29,7 +29,9 @@ const templatesListener = ({ updateTemplates }) => (event) => {
 	}
 
 	if(!readOneService && !isUpdate){
-		return console.error('templates listener error reading templates');
+		// TODO: fix this - this is stupid, templates should just figure out what it's listening for and STFU
+		//console.error('templates listener error reading templates');
+		return;
 	}
 
 	const { code, id, name, tree } = result[0];

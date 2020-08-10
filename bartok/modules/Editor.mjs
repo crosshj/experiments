@@ -309,7 +309,6 @@ const inlineEditor = (ChangeHandler) => ({
 		const line = cursor.line + 1;
 		const column = cursor.ch + 1;
 		updateLineInfo(instance, line);
-		//console.log({ line, col });
 		// STATUS_CURRENT_LINE.textContent = cursor.line + 1;
 		CursorActivityHandler({ line, column });
 	};
@@ -323,8 +322,6 @@ const inlineEditor = (ChangeHandler) => ({
 
 	const fileType = getFileType(filename);
 	const mode = codemirrorModeFromFileType(fileType);
-	//console.log({ mode });
-
 
 	function isSelectedRange(ranges, from, to) {
 		for (var i = 0; i < ranges.length; i++)
@@ -357,7 +354,6 @@ const inlineEditor = (ChangeHandler) => ({
 		if (fullWord) {
 			cm.state.sublimeFindFullWord = cm.doc.sel;
 		}
-		console.log('this should have happneed');
 		return false;
 	}
 	const extraKeys = {
@@ -394,7 +390,7 @@ const inlineEditor = (ChangeHandler) => ({
 		}
 	}, (error, editor) => {
 		if(error){
-			console.log(error);
+			console.error(error);
 			return;
 		}
 		editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
@@ -477,7 +473,6 @@ const inlineEditor = (ChangeHandler) => ({
 
 const showFileInEditor = (filename, contents) => {
 	const fileType = getFileType(filename);
-	console.log({ fileType, filename });
 	return !['image', 'font', 'audio', 'video'].includes(fileType);
 }
 

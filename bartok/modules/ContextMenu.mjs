@@ -73,6 +73,11 @@ function ContextPane() {
 .ContextMenu .list .item {
 	line-height: 0;
 }
+.ContextMenu .list .item.disabled {
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.4;
+}
 .ContextMenu .list .context-seperator {
 	margin: calc(var(--sep-height) / 2) 0px;
 	color: #4a4a4a;
@@ -96,7 +101,7 @@ function ContextPane() {
 	const menuItem = (item) => item === 'seperator'
 	? `<li class="context-seperator"></li>`
 	: `
-		<li class="item" data-text="${item.name}">
+		<li class="item${ item.disabled ? ' disabled' : ''}" data-text="${item.name}">
 			<button name="${item.name}" class="">
 				<div class="linkContent">
 					<span class="itemText">${item.name}</span>
@@ -147,11 +152,12 @@ function ContextPane() {
 
 		//attach a listener to body that hides menu and detaches itself
 		const menuClickListener = (event) => {
+			const menuWasClicked = Menu.contains(event.target);
+			if(menuWasClicked && event.target.tagName !== 'LI'){ return; }
+
 			hideMenu();
 			document.body.removeEventListener('click', menuClickListener, false);
-			const menuWasClicked = Menu.contains(event.target);
 			if(!menuWasClicked){ return; }
-			if(event.target.tagName !== 'LI'){ debugger; }
 
 			triggerMenuEvent({
 				which: event.target.dataset.text,

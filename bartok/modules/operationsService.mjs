@@ -34,7 +34,8 @@ function getReadAfter(List, inlineEditor, getCodeFromService) {
 
 function getUpdateAfter(setCurrentService) {
 	return ({ result }) => {
-		console.warn('Update After');
+		//TODO: why is this even needed?
+		//console.warn('Update After');
 		const services = result.result;
 		setCurrentService(services[0], null, 'set');
 	};

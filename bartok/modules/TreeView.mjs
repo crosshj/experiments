@@ -214,7 +214,6 @@ function newFile({ parent, onDone }){
 	expando.classList.add('expanded', 'open');
 	const childLeaves = parentDOM.parentNode.querySelector('.tree-child-leaves');
 	childLeaves.classList.remove('hidden');
-
 	const nearbySibling = childLeaves.querySelector('.tree-leaf');
 	const paddingLeft = nearbySibling
 		.querySelector('.tree-leaf-content')
@@ -247,6 +246,49 @@ function newFile({ parent, onDone }){
 	//TODO: when ENTER is pressed, create real file (or add a cool error box)
 	nearbySibling.parentNode.insertBefore(newFileNode, nearbySibling);
 	fileNameInput.focus();
+}
+function newFolder({ parent, onDone }){
+	if(!onDone){
+		return console.error('newFolder requires an onDone event handler');
+	}
+	const parentDOM = treeDomNodeFromPath(parent);
+	const expando = parentDOM.querySelector('.tree-expando');
+	expando.classList.remove('closed');
+	expando.classList.add('expanded', 'open');
+	const childLeaves = parentDOM.parentNode.querySelector('.tree-child-leaves');
+	childLeaves.classList.remove('hidden');
+	const nearbySibling = childLeaves.querySelector('.tree-leaf');
+	const paddingLeft = nearbySibling
+		.querySelector('.tree-leaf-content')
+		.style.paddingLeft;
+	const newFolderNode = htmlToElement(`
+		<div class="tree-leaf new">
+			<div class="tree-leaf-content" style="padding-left: ${paddingLeft};">
+				<div class="tree-leaf-text icon-default">
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+				</div>
+			</div>
+		</div>
+	`);
+	const folderNameInput = newFolderNode.querySelector('input');
+	const finishInput = (event) => {
+		if (event.key && event.key !== "Enter") { return; }
+		const foldername = folderNameInput.value;
+
+		folderNameInput.removeEventListener('blur', finishInput);
+		folderNameInput.removeEventListener('keyup', finishInput);
+		newFolderNode.parentNode.removeChild(newFolderNode);
+
+		if(!foldername){ return; }
+		onDone(foldername, parent);
+	};
+	folderNameInput.addEventListener("blur", finishInput);
+	folderNameInput.addEventListener("keyup", finishInput);
+
+	//TODO: focus input, when input loses focus create real folder
+	//TODO: when ENTER is pressed, create real folder (or add a cool error box)
+	nearbySibling.parentNode.insertBefore(newFolderNode, nearbySibling);
+	folderNameInput.focus();
 }
 
 window.newFile = newFile; //TODO: kill this some day
@@ -307,7 +349,7 @@ function _TreeView(op){
 		JSTreeView,
 		updateTree(treeView),
 		{
-			newFile,
+			newFile, newFolder,
 			showSearch: showSearch(treeView),
 			updateTreeMenu
 		}

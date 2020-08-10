@@ -17,6 +17,28 @@ why I keep vscode open
 - [X] no search in file
 
 
+2020-08-10 Issues & TODO
+========================
+
+# problem with deleting a file directly after creating it
+
+# event handler is already finished
+  - clear: meta store, handler store, module cache
+  - unregister and stop service worker
+  - refresh page
+
+  error in console, but all else seems to be fine:
+  VM6:916 Uncaught (in promise) DOMException: Failed to execute 'respondWith' on 'FetchEvent': The event handler is already finished.
+      at Object.serviceAPIRequestHandler [as handler] (eval at registerModule (http://localhost:3000/bartok/service-worker.js:227:22), <anonymous>:916:15)
+
+    STACK:
+    serviceAPIRequestHandler @ VM6:916
+    async function (async)
+    serviceAPIRequestHandler @ VM6:911
+    fetchHandler @ service-worker.js:82
+
+
+
 
 200801_1829 TODO
 ================

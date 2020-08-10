@@ -822,6 +822,10 @@ notes-section.loading:after {
   white-space: nowrap;
 }
 
+.tree-leaf.hidden-leaf {
+  display: none;
+}
+
 #tree-view > .tree-leaf:last-child {
   margin-bottom: 50px;
 }

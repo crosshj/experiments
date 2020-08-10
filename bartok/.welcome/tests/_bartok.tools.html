@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async function(event) {
             storeName: 'files',
             description: 'contents of files'
         });
-
     const metaStore = localforage
         .createInstance({
             driver: driverOrder,
@@ -130,6 +129,7 @@ document.addEventListener("DOMContentLoaded", async function(event) {
         },
         "moduleCache - used by index.sw (localStorage) ": {
             verb: 'CLEAR',
+            background: '#604739',
             value: !!localStorage.getItem('moduleCache') ? '[X]' : '[ ]',
             handler: async (e, callback) => {
                 localStorage.removeItem('moduleCache');
@@ -206,12 +206,15 @@ document.addEventListener("DOMContentLoaded", async function(event) {
             }
         },
         "serviceRequestHandler << message service worker and ask for handlers": {
-            verb: 'RELOAD',
+            verb: 'TODO',
+            background: '#282828',
             handler: async (e, callback) => {
 
             }
         },
         "reboot:  what does this entail?": {
+            verb: 'TODO',
+            background: '#282828',
             handler: async (e, callback) => {
 
             }
@@ -282,7 +285,7 @@ document.addEventListener("DOMContentLoaded", async function(event) {
                 <span class="description">${actionName.replace(':id?', '')}</span>
                 ${fieldsEl}
             </div>
-            <button>${thisAction.verb || "EXECUTE"}</button>
+            <button style="background:${thisAction.background||""}">${thisAction.verb || "EXECUTE"}</button>
         `;
         li.querySelector('button').onclick = (e) => {
             const callback = (error, data) => error
@@ -396,4 +399,3 @@ document.addEventListener("DOMContentLoaded", async function(event) {
 </style>
 
 </html>
-

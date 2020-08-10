@@ -193,7 +193,7 @@ const contextMenuHandler = ({ event, showMenu }) => {
 	]
 		.map(x => x === 'seperator'
 			? 'seperator'
-			: { name: x }
+			: { name: x, disabled: true }
 		);
 	let data;
 	try {
@@ -218,7 +218,7 @@ const contextMenuHandler = ({ event, showMenu }) => {
 const contextMenuSelectHandler = ({ event, newFile }) => {
 	const { which, parent, data } = (event.detail || {});
 	if(parent !== 'Tab Bar'){
-		console.log('Tab Bar ignored a context-select event');
+		//console.log('Tab Bar ignored a context-select event');
 		return;
 	}
 };

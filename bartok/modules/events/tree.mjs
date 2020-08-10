@@ -156,13 +156,16 @@ const contextMenuHandler = ({ treeView, showMenu }) => (e) => {
 	}, {
 		name: 'Open in New Window'
 	}, {
-		name: 'Open in Terminal'
+		name: 'Open in Terminal',
+		disabled: true
 	}, 'seperator', {
-		name: 'Copy'
+		name: 'Copy',
+		disabled: true
 	}, {
 		name: 'Copy Path'
 	}, 'seperator',  {
-		name: 'Rename'
+		name: 'Rename',
+		disabled: true
 	},{
 		name: 'Delete'
 	}];
@@ -216,15 +219,14 @@ const getParent = (data) => {
 	return parent;
 }
 
-const contextMenuSelectHandler = ({ newFile }) => (e) => {
+const contextMenuSelectHandler = ({ newFile, newFolder }) => (e) => {
 	const { which, parent, data } = (e.detail || {});
 	if(parent !== 'TreeView'){
-		console.log('TreeView ignored a context-select event');
+		//console.log('TreeView ignored a context-select event');
 		return;
 	}
 	if(which === 'New File'){
 		const parent = getParent(data);
-
 		return newFile({
 			parent,
 			onDone: (filename, parent) => {
@@ -243,9 +245,28 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 		});
 	}
 
+	if(which === "New Folder"){
+		const parent = getParent(data);
+		return newFolder({
+			parent,
+			onDone: (folderName, parent) => {
+				if(!folderName){ return; }
+				const event = new CustomEvent('operations', {
+					bubbles: true,
+					detail: {
+						operation: 'addFolder',
+						folderName,
+						parent,
+						body: {} //TODO: sucks that body is needed!!!
+					}
+				});
+				document.body.dispatchEvent(event);
+			},
+		});
+	}
+
 	if(which === 'Delete'){
 		const parent = getParent(data);
-		console.log({ data, parent });
 		const { name, type } = data;
 
 		if(!["folder", "file"].includes(type)){
@@ -319,6 +340,8 @@ const contextMenuSelectHandler = ({ newFile }) => (e) => {
 
 		window.open(path+query);
 	}
+
+
 };
 
 const searchProject = ({ showSearch, hideSearch }) => {
@@ -330,7 +353,9 @@ const searchProject = ({ showSearch, hideSearch }) => {
 
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
 // new tree is created when: switch/open project, add file, ...
-function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch, updateTreeMenu }){
+function attachListener(treeView, JSTreeView, updateTree, {
+	newFile, newFolder, showSearch, updateTreeMenu
+}){
 	const listener = async function (e) {
 		const { id, result, op } = e.detail;
 
@@ -474,6 +499,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 		}
 
 		const newTree = new JSTreeView(childrenSorted, 'tree-view');
+
 		newTree.id = id;
 		newTree.selected = selected;
 		newTree.expanded = expanded;
@@ -702,7 +728,7 @@ function attachListener(treeView, JSTreeView, updateTree, { newFile, showSearch,
 	attach({
 		name: 'Explorer',
 		eventName: 'contextmenu-select',
-		listener: contextMenuSelectHandler({ newFile })
+		listener: contextMenuSelectHandler({ newFile, newFolder })
 	});
 }
 

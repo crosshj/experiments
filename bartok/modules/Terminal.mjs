@@ -46,7 +46,6 @@ function _Terminal(){
 	const fitAddon = new (FitAddon.FitAddon)();
 	term.loadAddon(fitAddon);
 
-	//console.log({ term, Terminal });
 	const termContainer = document.createElement('div');
 	termContainer.classList.add('term-contain');
 
@@ -306,8 +305,6 @@ function _Terminal(){
 
 	let alreadyUpdatedOnce;
 	function updateIframeRaw({ url, src}){
-		console.log({ url })
-
 		previewContainer.removeChild(previewIframe);
 		previewIframe = document.createElement('iframe');
 		previewContainer.appendChild(previewIframe);
@@ -424,8 +421,6 @@ function _Terminal(){
 			return;
 		}
 		updateLockIcon(locked);
-		console.log({ action, view, type, doc, docName, locked });
-		//termMenuAction
 	}
 
 

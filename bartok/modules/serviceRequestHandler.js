@@ -418,13 +418,6 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
             if(previewMode){
                 xformedFile = templates.convert(filename, fileJSONString);
             }
-            // console.log({
-            //     path,
-            //     storeLoc: `./${base}/${path}`,
-            //     xformedFile: xformedFile || 'not supported',
-            //     msg,
-            //     fileType: typeof file
-            // });
 
             // most likely a blob
             if(file && file.type && file.size){
@@ -838,6 +831,9 @@ fetch, cache, DB, storage - these should be passed in
             for (let i = 0; i < updateAsStore.length; i++) {
                 const file = updateAsStore[i];
                 const storageFile = storageFiles.find(x => x.path === file.key);
+                if(file.key.includes('/.keep')){
+                    continue;
+                }
                 if(file && (!storageFile || !storageFile.code)){
                     filesToUpdate.push(file);
                     continue;
@@ -845,7 +841,7 @@ fetch, cache, DB, storage - these should be passed in
                 if(typeof storageFile.code !== 'string'){
                     continue;
                 }
-                if(file.value.code === storageFile.code){
+                if(file.value && file.value.code === storageFile.code){
                     continue;
                 }
                 filesToUpdate.push(file);
@@ -853,6 +849,9 @@ fetch, cache, DB, storage - these should be passed in
             // delete any storage files that are not in service
             for (let i = 0; i < allServiceFiles.length; i++) {
                 const serviceFile = allServiceFiles[i];
+                if(serviceFile.key.includes('/.keep')){
+                    continue;
+                }
                 const found = updateAsStore.find(x => x.key === serviceFile.path);
                 if(found) continue;
                 filesToDelete.push(serviceFile.key);
@@ -862,10 +861,14 @@ fetch, cache, DB, storage - these should be passed in
                 const update = filesToUpdate[i];
                 console.log(`should update ${update.key}`);
 
-                await store.setItem('.' + update.key.replace('/welcome/', '/.welcome/'),
-                    update.value.code
-                        ? update.value.code.code || update.value.code
-                        : '\n\n'
+                let code;
+                try { code = update.value.code.code } catch(e) {}
+                try { code = code || update.value.code } catch(e) {}
+                try { code = code || '\n\n' } catch(e) {}
+
+                await store.setItem(
+                    '.' + update.key.replace('/welcome/', '/.welcome/'),
+                    code
                 );
             }
             for (let i = 0; i < filesToDelete.length; i++) {

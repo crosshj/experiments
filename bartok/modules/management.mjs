@@ -247,7 +247,9 @@ function addFolder(e, currentService, currentFile){
 				parentObject, folderName
 			));
 		}
-		parentObject[folderName] = {};
+		parentObject[folderName] = {
+			'.keep': {}
+		};
 		folderAdded = true;
 		manageOp = {
 			operation: "updateProject"

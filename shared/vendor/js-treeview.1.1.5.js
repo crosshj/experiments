@@ -69,6 +69,9 @@ export default (function () {
       var text = document.createElement('div');
       var expando = document.createElement('div');
       leaf.setAttribute('class', 'tree-leaf');
+      if(item.name === '.keep'){
+        leaf.classList.add('hidden-leaf')
+      }
       content.setAttribute('class', 'tree-leaf-content');
       content.setAttribute('data-item', JSON.stringify(item));
       text.setAttribute('class', 'tree-leaf-text');

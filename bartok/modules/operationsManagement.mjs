@@ -130,6 +130,7 @@ function addFile(e, currentService, currentFile) {
 	catch (e) {
 		console.log('could not add file');
 		console.log(e);
+		return;
 	}
 	if(manageOp && currentServiceCode && treeEntryAdded){
 		currentService.code = currentServiceCode;
@@ -207,6 +208,7 @@ function deleteFile(e, currentService, currentFile){
 	} catch (e) {
 		console.log('could not delete file');
 		console.log(e);
+		return;
 	}
 	if(manageOp && currentServiceCode && treeEntryDeleted){
 		currentService.code = currentServiceCode;
@@ -247,11 +249,15 @@ function renameProject(e, currentService, currentFile){
 
 function addFolder(e, currentService, currentFile){
 	//console.log('addFolder');
-	let { folderName, parent } = e.detail;
+	let { folderName, parent, listener } = e.detail;
 	let manageOp, currentServiceCode, folderAdded;
+	if(parent){
+		folderName = parent + '/' + folderName;
+	}
 	try {
-		//TODO: guard against empty/improper filename
+		//TODO: guard against empty/improper folder name
 		const rootFolderName = Object.keys(currentService.tree)[0];
+		folderName	= folderName.replace(new RegExp(`^/${rootFolderName}`), '');
 		let parentObject = currentService.tree[rootFolderName];
 
 		if(folderName.includes('/')){
@@ -259,17 +265,21 @@ function addFolder(e, currentService, currentFile){
 				parentObject, folderName
 			));
 		}
-		parentObject[folderName] = {};
+		// adding child of .keep make sure this is a folder
+		// TODO: remove .keep if adding a child folder or file
+		// TODO: add .keep if deleting last child folder or file
+		parentObject[folderName] = {
+			'.keep': {}
+		};
 		folderAdded = true;
 		manageOp = {
-			operation: "updateProject"
+			operation: "updateProject",
+			listener
 		};
 	} catch (e) {
 		console.log('could not add folder');
 		console.log(e);
-	}
-	if(manageOp && currentServiceCode && treeEntryDeleted){
-		currentService.code = currentServiceCode;
+		return;
 	}
 	return manageOp;
 }

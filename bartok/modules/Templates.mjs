@@ -237,8 +237,6 @@ const convertRaw = (raw) => {
 let templates = [];
 // get/save all the templates
 function updateTemplates(rawTemplates){
-  console.log('updateTemplates');
-  //console.log({ templates: rawTemplates });
   templates = rawTemplates.map(convertRaw);
 }
 

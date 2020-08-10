@@ -769,10 +769,10 @@ const contextMenuHandler = ({ showMenu }={}) => (e) => {
 	if(!terminalDom.contains(e.target)){ return true; }
 	e.preventDefault();
 
-	const listItems = ['TERMINAL CONTEXT', 'seperator', 'one', 'two', 'seperator', 'three', 'four', 'seperator', 'five', 'six']
+	const listItems = ['TERMINAL', 'seperator', 'todo', 'todo', 'seperator', 'todo', 'todo']
 		.map(x => x === 'seperator'
 			? 'seperator'
-			: { name: x }
+			: { name: x, disabled: true }
 		);
 	let data;
 	try {
@@ -797,7 +797,7 @@ const contextMenuHandler = ({ showMenu }={}) => (e) => {
 const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 	const { which, parent, data } = (e.detail || {});
 	if(parent !== 'Terminal'){
-		console.log('Terminal ignored a context-select event');
+		//console.log('Terminal ignored a context-select event');
 		return;
 	}
 };

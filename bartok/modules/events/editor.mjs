@@ -49,7 +49,7 @@ const contextMenuHandler = ({ showMenu }={}) => (e) => {
 	]
 		.map(x => x === 'seperator'
 			? 'seperator'
-			: { name: x }
+			: { name: x, disabled: true }
 		);
 	let data;
 	try {
@@ -74,7 +74,7 @@ const contextMenuHandler = ({ showMenu }={}) => (e) => {
 const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 	const { which, parent, data } = (e.detail || {});
 	if(parent !== 'Editor'){
-		console.log('Editor ignored a context-select event');
+		//console.log('Editor ignored a context-select event');
 		return;
 	}
 };

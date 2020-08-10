@@ -24,14 +24,9 @@ async function Operations() {
     });
 
     // APPLICATION STATE BOOTSTRAP
-    const operations = getOperations((...args) => {
-        console.log('bootstrap update after');
-        console.log(args);
-        //debugger;
-    }, (...args) => {
-
-        console.log('bootstrap read after');
-        //console.log(args);
+    const operations = getOperations(
+        () => {},
+        (...args) => {
         const { result = {} } = args[0] || {};
         const services = result.result;
 
