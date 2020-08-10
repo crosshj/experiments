@@ -41,9 +41,15 @@
 document.addEventListener("DOMContentLoaded", async function(event) {
 
     let swRegistrations;
-    if ('serviceWorker' in navigator) {
-        swRegistrations = await navigator.serviceWorker.getRegistrations();
+    try {
+        if ('serviceWorker' in navigator) {
+            swRegistrations = await navigator.serviceWorker.getRegistrations();
+        }
+    }catch(e){
+        // hopefully cope with document in invalid state issue/bug
+        document.location.reload();
     }
+
     let indexDBdatabases;
     try {
         indexDBdatabases = await indexedDB.databases();

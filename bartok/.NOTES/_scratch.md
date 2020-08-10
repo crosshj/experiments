@@ -371,6 +371,10 @@ PREVIEW
 UNSORTED
 ========
 
+- inline controls for codemirror - https://github.com/enjalot/Inlet
+
+- show binary files as HEX, show preview in side (instead)
+
 - https://markmap.js.org/repl/ - markdown as mindmap
 
 - node in the browser (and for that matter, the other language runtimes or emulators)

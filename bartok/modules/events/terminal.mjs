@@ -650,8 +650,6 @@ const operationDone = ({ viewUpdate }) => (event) => {
 
 	if(op === 'change'){
 		const { path, code } = result;
-
-		console.log(result);
 		if(locked){
 			return;
 		}
