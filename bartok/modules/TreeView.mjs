@@ -7,37 +7,53 @@ function htmlToElement(html) {
 	var template = document.createElement('template');
 	html = html.trim(); // Never return a text node of whitespace as the result
 	template.innerHTML = html;
+	//also would be cool to remove indentation from all lines
 	return template.content.firstChild;
 }
 
 const ProjectOpener = () => {
-	const opener = document.createElement('div');
-	opener.innerHTML = `
-		<style>
-		.service-opener {
-			display: flex;
-			flex-direction: column;
-			padding: 0px 20px;
-			margin-right: 17px;
-		}
-		.service-opener button {
-			color: white;
-			background: #0e639c;
-			border: 0;
-			padding: 10px;
-		}
-		.service-opener p {
-			white-space: normal;
-		}
-		</style>
+	const opener = htmlToElement(`
 		<div class="service-opener">
-			<p>No service selected.</p>
-			<button>Open Service</button>
-			<p>Note: this button doesn't work, lol! Some day it will!</p>
-			<button>Create New Service</button>
-			<p>Note: this button ALSO doesn't work, lol! Some day it will!</p>
+			<style>
+				.service-opener > div {
+					display: flex;
+					flex-direction: column;
+					padding: 0px 20px;
+					margin-right: 17px;
+				}
+				.service-opener button {
+					color: inherit;
+					background: rgba(var(--main-theme-highlight-color), 0.4);
+					font-size: 1.1em;
+					border: 0;
+					padding: 10px;
+					margin-top: 3.5em;
+					cursor: pointer;
+				}
+				.service-opener  p {
+					white-space: normal;
+					margin-bottom: 0;
+				}
+				.service-opener .opener-note {
+					font-style: italic;
+					opacity: 0.8;
+				}
+				.service-opener .opener-note:before {
+					content: 'NOTE: '
+				}
+			</style>
+			<div>
+				<p>Looks like you have nothing to edit. Choose from the options below to get started.</p>
+
+				<button>Open Folder</button>
+				<p>You can upload a folder from your computer into local browser memory.</p>
+				<p class="opener-note">Your code will not this browser unless you arrange for that to happen.</p>
+
+				<button>Connect to a Provider</button>
+				<p>Specify a provider and you can read from and write to locations outside this browser.</p>
+			</div>
 		</div>
-	`;
+	`);
 	return opener;
 };
 
@@ -147,29 +163,37 @@ const Search = () => {
 	return search;
 };
 
-const getTreeViewDOM = ({ contextHandler } = {}) => {
-	const explorerPane = document.body.querySelector('#explorer');
-	const prevTreeView = document.querySelector('#tree-view');
-	if(prevTreeView){
-		explorerPane.classList.remove('pane-loading');
-		return prevTreeView;
+let treeView, opener;
+const getTreeViewDOM = ({ showOpenService  } = {}) => {
+	if(opener && showOpenService){
+		opener.classList.remove('hidden');
+		const treeMenuLabel = document.querySelector('#tree-menu .title-label h2');
+		treeMenuLabel.innerText = 'NO FOLDER OPENED';
+	} else if(opener) {
+		opener.classList.add('hidden');
+	}
+	if(treeView){
+		return treeView;
 	}
 
-	//explorerPane.classList.add('pane-loading');
-	const _tree = document.createElement('div');
-	_tree.id = 'tree-view';
-
-	// TODO: this should be shown when we know that no service is selected
-	const showOpenService = false;
+	treeView = document.createElement('div');
+	treeView.id = 'tree-view';
+	opener = ProjectOpener();
 	if(showOpenService){
-		_tree.appendChild(ProjectOpener());
-	}6
+		const treeMenuLabel = document.querySelector('#tree-menu .title-label h2');
+		treeMenuLabel.innerText = 'NO FOLDER OPENED';
+	} else {
+		opener.classList.add('hidden');
+	}
+	treeView.appendChild(opener);
 
+	const explorerPane = document.body.querySelector('#explorer');
 	explorerPane.appendChild(TreeMenu());
 	explorerPane.appendChild(Search());
-	explorerPane.appendChild(_tree);
+	explorerPane.appendChild(treeView);
+	explorerPane.classList.remove('pane-loading');
 
-	return _tree;
+	return treeView;
 };
 
 const updateTree = (treeView) => (change, { name, id, file }) => {
@@ -198,12 +222,14 @@ const updateTree = (treeView) => (change, { name, id, file }) => {
 			}
 		});
 }
+
 function treeDomNodeFromPath(path){
 	const leaves = Array.from(document.querySelectorAll('#tree-view .tree-leaf-content'));
 	const name = path.split('/').pop()
 	const found = leaves.find(x => JSON.parse(x.dataset.item).name === name)
 	return found;
 }
+
 function newFile({ parent, onDone }){
 	if(!onDone){
 		return console.error('newFile requires an onDone event handler');
@@ -247,6 +273,8 @@ function newFile({ parent, onDone }){
 	nearbySibling.parentNode.insertBefore(newFileNode, nearbySibling);
 	fileNameInput.focus();
 }
+window.newFile = newFile; //TODO: kill this some day
+
 function newFolder({ parent, onDone }){
 	if(!onDone){
 		return console.error('newFolder requires an onDone event handler');
@@ -291,7 +319,11 @@ function newFolder({ parent, onDone }){
 	folderNameInput.focus();
 }
 
-window.newFile = newFile; //TODO: kill this some day
+function showServiceChooser(treeview){
+	return () => {
+		getTreeViewDOM({ showOpenService: true  })
+	};
+}
 
 let projectName;
 const updateTreeMenu = ({ title, project }) => {
@@ -351,7 +383,8 @@ function _TreeView(op){
 		{
 			newFile, newFolder,
 			showSearch: showSearch(treeView),
-			updateTreeMenu
+			updateTreeMenu,
+			showServiceChooser: showServiceChooser(treeView)
 		}
 	);
 }

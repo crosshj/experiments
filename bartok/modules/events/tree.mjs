@@ -357,7 +357,7 @@ const searchProject = ({ showSearch, hideSearch }) => {
 //TODO: code that creates a tree should live in ../TreeView and be passed here!!
 // new tree is created when: switch/open project, add file, ...
 function attachListener(treeView, JSTreeView, updateTree, {
-	newFile, newFolder, showSearch, updateTreeMenu
+	newFile, newFolder, showSearch, updateTreeMenu, showServiceChooser
 }){
 	const listener = async function (e) {
 		const { id, result, op } = e.detail;
@@ -669,6 +669,11 @@ function attachListener(treeView, JSTreeView, updateTree, {
 		return result;
 	};
 
+	attach({
+		name: 'Explorer',
+		eventName: 'noServiceSelected',
+		listener: (event) => showServiceChooser()
+	});
 	// triggered by Hot Key
 	attach({
 		name: 'Explorer',

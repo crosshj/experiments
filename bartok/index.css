@@ -820,6 +820,7 @@ notes-section.loading:after {
   font-weight: 300;
   user-select: none;
   white-space: nowrap;
+  font-size: 1.03em;
 }
 
 .tree-leaf.hidden-leaf {
@@ -843,7 +844,7 @@ notes-section.loading:after {
   background: inherit;
   z-index: 1;
 
-  align-items: center; /* ??? */
+  align-items: center; /* ??? */;
 }
 #tree-menu .title-label {
   line-height: 35px;

@@ -756,7 +756,8 @@ fetch, cache, DB, storage - these should be passed in
             //console.log({ defaults, savedServices });
 
             const allServices = [...defaults, ...savedServices]
-                .sort((a, b) => Number(a.id) - Number(b.id));
+                .sort((a, b) => Number(a.id) - Number(b.id))
+                .map(x => ({ id: x.id, name: x.name }));
 
             return JSON.stringify({
                 result: allServices

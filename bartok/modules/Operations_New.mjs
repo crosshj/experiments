@@ -23,21 +23,35 @@ async function Operations() {
         performOperation, operationsListener
     });
 
+    const lastService = localStorage.getItem('lastService');
+    if(!lastService && ![0, "0"].includes(lastService)){
+        console.warn('--- NO SERVICE SELECTED');
+        const event = new CustomEvent('noServiceSelected', {
+            bubbles: true,
+            detail: {}
+        });
+        document.body.dispatchEvent(event);
+        return;
+    }
+
     // APPLICATION STATE BOOTSTRAP
     const operations = getOperations(
         () => {},
         (...args) => {
-        const { result = {} } = args[0] || {};
-        const services = result.result;
+            const { result = {} } = args[0] || {};
+            const services = result.result;
 
-        //TODO: should really be firing a service read done event (or similar)
-        const { filename: name } = setCurrentService(services[0]);
-        const event = new CustomEvent('fileSelect', {
-            bubbles: true,
-            detail: { name }
-        });
-        document.body.dispatchEvent(event);
+            //TODO: should really be firing a service read done event (or similar)
+            const { filename: name } = setCurrentService(services[0]);
+            const event = new CustomEvent('fileSelect', {
+                bubbles: true,
+                detail: { name }
+            });
+            document.body.dispatchEvent(event);
     });
+
+    //const operations = getOperations(()=>{}, ()=>{});
+
 
     // TODO: this should go away at some point!!!
     // request a list of services from server (and determine if server is accessible)
@@ -45,9 +59,9 @@ async function Operations() {
     //console.log({ foundOp });
     //await performOperation(foundOp, { body: { id: '' } }, externalStateRequest);
 
-    const lastService = localStorage.getItem('lastService');
     //console.log({ lastService });
-    await performOperation(foundOp, { body: { id: lastService ? Number(lastService) : "0" } }, externalStateRequest);
+    const eventData = { body: { id: lastService } };
+    await performOperation(foundOp, { body: { id: lastService } }, externalStateRequest);
 
 }
 

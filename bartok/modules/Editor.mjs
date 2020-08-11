@@ -471,6 +471,60 @@ const inlineEditor = (ChangeHandler) => ({
 	});
 }
 
+let nothingOpen;
+const showNothingOpen = () => {
+	if(!nothingOpen){
+		const editorContainer = document.getElementById('editor-container');
+		nothingOpen = document.createElement('div');
+		nothingOpen.id = 'editor-empty';
+		editorContainer.appendChild(nothingOpen);
+	}
+	const style = `
+		<style>
+			.layer {
+				fill: red;
+			}
+			#editor-empty {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				background: #1e1e1e;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			#editor-empty-logo {
+				opacity: 0.5;
+				color: #0a0a0a;
+				stroke: currentColor;
+				fill: currentColor;
+				width: 20em;
+				margin-top: -14em;
+				stroke-width: 4px;
+				transform: rotateZ(0.65deg);
+			}
+			.editor-empty-blurb {
+				visibility: hidden;
+			}
+		</style>
+	`;
+	const logo = `
+	<svg viewBox="17 -4 164 164" id="editor-empty-logo">
+		<g display="inline">
+			<path d="m107.92716,36.94508l0.95003,75.70511q0.43081,20.89989 -8.2886,28.93939a17.79142,17.79142 0 0 1 -5.62624,3.50444a26.0076,26.0076 0 0 1 -9.05414,1.83369a25.65472,25.65472 0 0 1 -5.99571,-0.53686a17.93757,17.93757 0 0 1 -7.97647,-3.87325q-5.37316,-4.58798 -5.51145,-11.29708a8.56719,8.56719 0 0 1 0.46363,-3.06124a7.69904,7.69904 0 0 1 1.7347,-2.78065a8.1837,8.1837 0 0 1 2.21745,-1.6709a7.12818,7.12818 0 0 1 3.1023,-0.75751q3.04976,-0.06286 5.31721,1.90423a6.54734,6.54734 0 0 1 2.31551,4.69287a8.41542,8.41542 0 0 1 0.01667,0.38455a9.9962,9.9962 0 0 1 -0.17825,2.17434q-0.33206,1.6539 -1.27337,2.88173a6.44928,6.44928 0 0 1 -0.02982,0.03873a6.49737,6.49737 0 0 1 -1.61735,1.50169a5.69668,5.69668 0 0 1 -2.23968,0.83533a7.63846,7.63846 0 0 0 1.94997,2.72157a9.66705,9.66705 0 0 0 0.86605,0.69883a7.27496,7.27496 0 0 0 3.49986,1.31186a9.52902,9.52902 0 0 0 1.25767,0.05468q2.77495,-0.0572 4.58481,-1.07112q1.39415,-0.78104 2.3667,-2.67558a12.1472,12.1472 0 0 0 0.54265,-1.22836q1.81667,-4.68495 1.74149,-18.0017a214.86231,214.86231 0 0 0 -0.04299,-3.207l-0.95065,-75.70447q-0.2388,-11.58509 2.8317,-18.91706a19.04305,19.04305 0 0 1 11.19336,-11.14967a26.89948,26.89948 0 0 1 9.05539,-1.77311a24.95083,24.95083 0 0 1 6.1505,0.58928a18.02376,18.02376 0 0 1 7.73051,3.82333a16.27309,16.27309 0 0 1 3.72013,4.41961a14.41251,14.41251 0 0 1 1.8213,6.87685a8.56719,8.56719 0 0 1 -0.46363,3.06124a7.69904,7.69904 0 0 1 -1.7347,2.78065a8.1837,8.1837 0 0 1 -2.21745,1.6709a7.12818,7.12818 0 0 1 -3.1023,0.75751q-3.04914,0.06285 -5.31721,-1.90423a7.78648,7.78648 0 0 1 -1.33237,-1.46589a5.40563,5.40563 0 0 1 -0.98662,-3.00135a12.54318,12.54318 0 0 1 0.128,-2.15644q0.18065,-1.17841 0.60929,-2.11824a5.89841,5.89841 0 0 1 0.91456,-1.4341q1.65528,-1.90487 3.17664,-2.18304a2.98293,2.98293 0 0 1 0.13391,-0.02088q-1.98924,-4.71772 -6.65943,-4.90888a9.93998,9.93998 0 0 0 -0.61184,-0.00613q-5.15393,0.10624 -7.30488,5.27607q-2.07951,4.99841 -1.8924,17.5918a151.92781,151.92781 0 0 0 0.01553,0.87445z"
+			/>
+			<path d="m100.36909,153.77804q-20.74665,0 -38.19824,-10.25128q-17.45159,-10.25128 -27.82491,-27.82491q-10.37332,-17.57363 -10.37332,-38.32027q0,-20.50257 10.37332,-38.0762q10.37332,-17.57363 27.82491,-27.82491q17.45159,-10.25128 38.19824,-10.25128q20.50257,0 37.95416,10.37332q17.45159,10.37332 27.70287,27.82491q10.25128,17.45159 10.25128,37.95416q0,20.74665 -10.25128,38.32027q-10.25128,17.57363 -27.70287,27.82491q-17.45159,10.25128 -37.95416,10.25128zm0,-4.39341q19.28218,0 35.75745,-9.64109q16.47528,-9.64109 26.11637,-26.2384q9.64109,-16.59732 9.64109,-36.12357q0,-19.52625 -9.64109,-36.00153q-9.64109,-16.47528 -26.11637,-26.11637q-16.47528,-9.64109 -35.75745,-9.64109q-19.52625,0 -36.12357,9.64109q-16.59732,9.64109 -26.2384,26.11637q-9.64109,16.47528 -9.64109,36.00153q0,19.52625 9.64109,36.12357q9.64109,16.59732 26.2384,26.2384q16.59732,9.64109 36.12357,9.64109z"
+			/>
+		</g>
+	</svg>
+	`;
+	nothingOpen.innerHTML = style + logo + '<p class="editor-empty-blurb">TODO: No file open!</p>';
+	return nothingOpen;
+};
+
 const showFileInEditor = (filename, contents) => {
 	const fileType = getFileType(filename);
 	return !['image', 'font', 'audio', 'video'].includes(fileType);
@@ -576,16 +630,32 @@ const showBinaryPreview = ({
 
 function _Editor() {
 	const editor = inlineEditor(ChangeHandler);
-	let editorPreview, editorDom;
+	let editorPreview, editorDom, nothingOpenDom;
 
-	attachListener((filename) => {
+	attachListener((filename, mode) => {
+		if(mode === "nothingOpen"){
+			//TODO: does this HAVE to be ran in this case?
+			editor({ code: '', name: '', id: '', filename: '' });
+			editorDom = document.querySelector('.CodeMirror');
+
+			nothingOpenDom = showNothingOpen();
+			nothingOpenDom && nothingOpenDom.classList.remove('hidden');
+
+			editorPreview && editorPreview.classList.add('hidden');
+			editorDom && editorDom.classList.add('hidden');
+			return;
+		}
+
 		const { code = "error", name, id, filename: defaultFile } = getCodeFromService(null, filename);
+
 		if(!showFileInEditor(filename, code)){
 			editor({ code: '', name, id, filename: filename || defaultFile });
 			editorDom = document.querySelector('.CodeMirror');
 
 			editorPreview = showBinaryPreview({ filename, code });
 			editorPreview && editorPreview.classList.remove('hidden');
+
+			nothingOpenDom && nothingOpenDom.classList.add('hidden');
 			editorDom && editorDom.classList.add('hidden');
 			return;
 		}
@@ -593,6 +663,7 @@ function _Editor() {
 		editor({ code, name, id, filename: filename || defaultFile });
 		editorDom = document.querySelector('.CodeMirror');
 
+		nothingOpenDom && nothingOpenDom.classList.add('hidden');
 		editorPreview && editorPreview.classList.add('hidden');
 		editorDom && editorDom.classList.remove('hidden');
 	});

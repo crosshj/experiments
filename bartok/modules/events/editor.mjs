@@ -37,6 +37,7 @@ const CursorActivityHandler = ({ line, column }) => {
 
 const contextMenuHandler = ({ showMenu }={}) => (e) => {
 	const editorDom = document.querySelector('#editor .CodeMirror');
+	if(!editorDom){ return true; }
 	if(!editorDom.contains(e.target)){ return true; }
 	e.preventDefault();
 
@@ -82,7 +83,12 @@ const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 let firstLoad = true;
 function attachListener(switchEditor){
 	const listener = async function (e) {
+		if(e.type === "noServiceSelected"){
+			switchEditor(null, "nothingOpen");
+			return;
+		}
 		const { name, next } = e.detail;
+
 		let savedFileName;
 		if(e.type === "fileClose" && !next){
 			return;
@@ -97,6 +103,11 @@ function attachListener(switchEditor){
 		}
 		switchEditor(savedFileName || next || name);
 	};
+	attach({
+		name: 'Editor',
+		eventName: 'noServiceSelected',
+		listener
+	});
 	attach({
 		name: 'Editor',
 		eventName: 'fileSelect',

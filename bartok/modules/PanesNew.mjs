@@ -341,7 +341,10 @@ function Panes() {
 	splitter.id = "project-splitter";
 	splitter.classList.add('splitter');
 
-	const explorerRight = 100 * (1 - (250 / document.documentElement.clientWidth));
+	const explorerRight = 100 * (1 - (300 / document.documentElement.clientWidth));
+
+	const editorRight = 40;
+	const terminalLeft = 100 - editorRight;
 
 	splitter.innerHTML = `
 		<style>
@@ -376,15 +379,15 @@ function Panes() {
 
 		<div id="explorer" style="position: absolute; left: 50px; right: ${explorerRight}%;"></div>
 		<div class="seperator" id="seperator1" style="position: absolute; left: ${100-explorerRight}%;"></div>
-		<div id="editor" style="position: absolute; left: ${100-explorerRight}%; right: 38%;"></div>
-		<div class="seperator" id="seperator2" style="position: absolute; left: 62%;"></div>
-		<div id="terminal" style="position: absolute; left: 62%; right: 0;"></div>
+		<div id="editor" style="position: absolute; left: ${100-explorerRight}%; right: ${editorRight}%;"></div>
+		<div class="seperator" id="seperator2" style="position: absolute; left: ${terminalLeft}%;"></div>
+		<div id="terminal" style="position: absolute; left: ${terminalLeft}%; right: 0;"></div>
 
 		<div id="cover-container">
 			<div id="actionbar-cover" class="pane-cover" style="background: transparent;"></div>
 			<div id="explorer-cover" class="pane-cover" style="position: absolute; left: 50px; right: ${explorerRight}%;"></div>
-			<div id="editor-cover" class="pane-cover" style="position: absolute; left: ${100-explorerRight}%; right: 38%;"></div>
-			<div id="terminal-cover" class="pane-cover"style="position: absolute; left: 62%; right: 0;"></div>
+			<div id="editor-cover" class="pane-cover" style="position: absolute; left: ${100-explorerRight}%; right: ${editorRight}%;"></div>
+			<div id="terminal-cover" class="pane-cover"style="position: absolute; left: ${terminalLeft}%; right: 0;"></div>
 		</div>
 
 		<div id="services"></div>
