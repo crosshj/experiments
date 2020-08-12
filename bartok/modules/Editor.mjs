@@ -492,6 +492,8 @@ const showNothingOpen = () => {
 				flex-direction: column;
 				justify-content: center;
 				align-items: center;
+				overflow: hidden;
+				min-width: 160px;
 			}
 			#editor-empty-logo {
 				opacity: .5;

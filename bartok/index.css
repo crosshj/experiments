@@ -546,6 +546,7 @@ ul.editor-controls li:hover {
   /* height: 100%; */
   height: calc(100% - 30px);
   background: transparent;
+  min-width: 250px;
 }
 
 #editor-tabs-container {

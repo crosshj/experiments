@@ -337,6 +337,10 @@ function _Terminal(){
 	};
 
 	function viewUpdate({ supported, view, type, doc, docName, locked, url, wait=1000 }){
+		if(!supported && doc && doc.includes('<!-- NO_PREVIEW -->')){
+			updateIframeRaw({ src: doc });
+			return;
+		}
 		if(type ==="forceRefreshOnPersist"){
 			reloadIframe(wait);
 			return;

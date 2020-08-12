@@ -174,11 +174,6 @@ const createTab = (parent, init) => (tabDef) => {
 	if(!remainingTabs.length){
 		return;
 	}
-	if(remainingTabs.length === 1){
-		remainingTabs[0].classList.add('last');
-	} else {
-		remainingTabs[0].classList.remove('last');
-	}
 };
 
 const updateTab = (parent) => (tabDef) => {
@@ -206,9 +201,6 @@ const removeTab = (parent) => (tabDef) => {
 	const remainingTabs = Array.from(parent.querySelectorAll('.tab'));
 	if(!remainingTabs.length){
 		return;
-	}
-	if(remainingTabs.length <= 1){
-		remainingTabs[0].classList.add('last');
 	}
 	//TODO: scroll parent to put newly active tab in view
 };
@@ -251,7 +243,10 @@ const initTabs = (parent) => (tabDefArray=[]) => {
 	setTimeout(() => {
 		const tabs = document.querySelector('#editor-tabs');
 		attachWheel(tabs);
-		document.querySelector('#editor-tabs-container .active').scrollIntoView();
+		const activeTab = document.querySelector('#editor-tabs-container .active');
+		if(activeTab){
+			activeTab.scrollIntoView();
+		}
 	}, 1000); //TODO: this sucks
 };
 

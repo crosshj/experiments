@@ -104,9 +104,11 @@
     function getStyle() {
         const style = [
             '.cm-whitespace::before {',
-            'position: absolute;',
-            'pointer-events: none;',
-            'color: #404F7D;',
+                'position: absolute;',
+                'pointer-events: none;',
+                //'color: #404F7D;',
+                'color: rgba(var( --main-theme-highlight-color),0.4);',
+                'filter: brightness(5);',
             '}',
         ].join('');
 

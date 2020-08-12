@@ -29,6 +29,7 @@ let backupForLock = {
 const PROMPT = '\x1B[38;5;14m \r∑ \x1B[0m';
 
 const NO_PREVIEW = `
+<!-- NO_PREVIEW -->
 <html>
 	<style>
 		.no-preview {
@@ -40,7 +41,7 @@ const NO_PREVIEW = `
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			font-size: 5vw;
+			font-size: 1.5em;
 			color: #666;
 		}
 		body {
@@ -253,7 +254,7 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 					display: flex;
 					justify-content: center;
 					align-items: center;
-					font-size: 5vw;
+					font-size: 1.5em;
 					color: #666;
 				}
 				body {
@@ -286,6 +287,8 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	const { op, id, name, next } = detail;
 	if(type==="fileClose" && !next){
 		//TODO: this should be a bit more nuanced
+		sessionStorage.setItem('preview', 'noPreview');
+		viewUpdate({ supported: false, doc: NO_PREVIEW });
 		return;
 	}
 	let code;
@@ -327,7 +330,7 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 					display: flex;
 					justify-content: center;
 					align-items: center;
-					font-size: 5vw;
+					font-size: 1.5em;
 					color: #666;
 				}
 				body {
@@ -351,11 +354,17 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		backupForLock.currentFile = doc;
 		backupForLock.currentFileName = next||name;
 	}
+	if(!doc && currentView === "preview"){
+		sessionStorage.setItem('preview', 'noPreview');
+		viewUpdate({ supported: false, doc: NO_PREVIEW });
+		return;
+	}
 	if(doc && currentView === "preview"){
 		const supported = hasTemplate || isHTML || isJSX || isSVC3;
 		const viewArgs = { supported, type, locked, doc, docName: next || name, ...event.detail };
 		sessionStorage.setItem('preview', JSON.stringify(viewArgs));
 		viewUpdate(viewArgs);
+		return;
 	}
 };
 
@@ -392,7 +401,7 @@ const fileChangeHandler = ({ viewUpdate }) => (event) => {
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				font-size: 5vw;
+				font-size: 1.5em;
 				color: #666;
 			}
 			body {
@@ -475,7 +484,7 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 					display: flex;
 					justify-content: center;
 					align-items: center;
-					font-size: 5vw;
+					font-size: 1.5em;
 					color: #666;
 				}
 				body {
@@ -628,14 +637,20 @@ const operationDone = ({ viewUpdate }) => (event) => {
 
 	if(firstLoad){
 		const savedPreview = (() => {
+			let preview = sessionStorage.getItem('preview');
 			try {
-				return JSON.parse(
-					sessionStorage.getItem('preview')
-				);
+				preview = JSON.parse(preview);
 			} catch(e){}
+
+			return preview;
 		})();
 		firstLoad = false;
 		firstLoadSelect = false;
+		if(savedPreview === 'noPreview'){
+			viewUpdate({ supported: false, doc: NO_PREVIEW });
+			return;
+		}
+
 		if(savedPreview){
 			currentFile = savedPreview.doc;
 			currentFileName = savedPreview.docName;

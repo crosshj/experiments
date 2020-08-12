@@ -106,9 +106,9 @@ const fileSelectHandler = ({
 	const firstLoad = tabs.length < 1;
 	// TODO: need a finer defintion of first load
 	// because all tabs may be exited later in usage
-	if(firstLoad){
-		return;
-	}
+	// if(firstLoad){
+	// 	return;
+	// }
 
 	const { name, changed } = event.detail;
 	let id;

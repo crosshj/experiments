@@ -88,15 +88,20 @@ function attachListener(switchEditor){
 			return;
 		}
 		const { name, next } = e.detail;
-
 		let savedFileName;
 		if(e.type === "fileClose" && !next){
+			savedFileName = sessionStorage.setItem('editorFile', 'noFileSelected');
+			switchEditor(null, "nothingOpen");
 			return;
 		}
 		const isFileSelect = e.type === "fileSelect";
 		if(firstLoad && isFileSelect){
 			savedFileName = sessionStorage.getItem('editorFile');
 			firstLoad = false;
+			if(savedFileName === 'noFileSelected'){
+				switchEditor(null, "nothingOpen");
+				return;
+			}
 		}
 		if(!savedFileName){
 			sessionStorage.setItem('editorFile', next || name);
