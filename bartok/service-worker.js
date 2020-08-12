@@ -85,7 +85,10 @@ function fetchHandler(event) {
 	if (
 		event.request.url.includes('index.bootstrap') ||
 		event.request.url.includes('localhost:3333/tree') ||
-		event.request.url.includes('browser-sync/socket.io')
+
+		event.request.url.includes('browser-sync/socket.io') ||
+		event.request.url.includes('browser-sync/browser-sync-client') ||
+		event.request.url.includes('?browsersync=') // this is how css gets injected
 	) {
 		return;
 	}
@@ -254,7 +257,14 @@ try {
 
 	if (resources) {
 		await Promise.all(resources.map(async resourceUrl => {
-			const response = await fetch(resourceUrl);
+			const opts = {};
+			if(resourceUrl.includes('.htm')){
+				opts.headers = opts.headers || {};
+				opts.headers['Accept'] = opts.headers['Accept'] || '';
+				opts.headers['Accept'] = 'text/html,' + opts.headers['Accept'];
+			}
+			const response = await fetch(resourceUrl, opts);
+
 			return await caches.open(cacheName)
 				.then(function (cache) {
 					cache.put(resourceUrl, response);

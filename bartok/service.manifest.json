@@ -27,6 +27,17 @@
             "/shared/css/materialize.min.css"
         ]
     },
+    "NOTE: the next bit is needed by old index.html only - FIGURE IT OUT",
+    {
+        "resources": [
+            "./index.js",
+            "/shared/modules/theme.mjs",
+            "/shared/vendor/materialize.min.js",
+            "modules/PanesNew.mjs",
+            "modules/management.mjs",
+            "modules/operations.mjs"
+        ]
+    },
     "NOTE: resources for example apps",
     {
         "resources": [
@@ -174,7 +185,7 @@
             "/shared/vendor/xterm-addon-fit.js"
         ]
     }, {
-        "route": "./modules/Hotkeys.mjs",
+        "route": "./modules/HotKeys.mjs",
         "type": "domComponent",
         "source": "modules/HotKeys.mjs"
     }, {

@@ -12,6 +12,10 @@ const path = require('path');
 const packageJson = require(path.resolve(process.cwd(), 'package.json'));
 
 module.exports = {
+    port: 3222,
+    ui: {
+        port: 3223
+    },
     server: {
         baseDir: "..",
         directory: false
