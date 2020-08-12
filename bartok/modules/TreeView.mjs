@@ -27,7 +27,7 @@ const ProjectOpener = () => {
 					font-size: 1.1em;
 					border: 0;
 					padding: 10px;
-					margin-top: 3.5em;
+					margin-top: 3em;
 					cursor: pointer;
 				}
 				.service-opener  p {
@@ -43,14 +43,14 @@ const ProjectOpener = () => {
 				}
 			</style>
 			<div>
-				<p>Looks like you have nothing to edit. Choose from the options below to get started.</p>
+				<p>You have nothing to edit. Pick an option below to get started.</p>
+				<p class="opener-note">Your work will stay in this browser unless you arrange otherwise.</p>
 
 				<button>Open Folder</button>
-				<p>You can upload a folder from your computer into local browser memory.</p>
-				<p class="opener-note">Your code will not this browser unless you arrange for that to happen.</p>
+				<p>Upload from your computer into local browser memory.</p>
 
 				<button>Connect to a Provider</button>
-				<p>Specify a provider and you can read from and write to locations outside this browser.</p>
+				<p>Specify a service to read from and write to.</p>
 			</div>
 		</div>
 	`);

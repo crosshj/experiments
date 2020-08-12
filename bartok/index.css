@@ -149,10 +149,12 @@ iframe::-webkit-scrollbar-track{
   /* --main-theme-highlight-color: #40f7ac; */
   /* --main-theme-highlight-color: #026292; */
   /* --main-theme-highlight-color: #2b5046; */
-  --main-theme-highlight-color: 20, 160, 210;
+  /* --main-theme-highlight-color: 20, 160, 210; */
+  --main-theme-highlight-color: 32, 150, 140;
+
   /* --main-theme-highlight-color: 20, 201, 210; */
   /* --main-theme-highlight-color: 64, 210, 20; */
-  --main-theme-highlight-color-FOR-PICKER: rgb(88, 88, 88);
+  --main-theme-highlight-color-FOR-PICKER: rgb(32, 150, 140);
   /* --main-theme-background-color: #363238; */
   /* --main-theme-background-color: #3b3b3b; */
   --main-theme-background-color: #363636; /* #2d2d2d */
