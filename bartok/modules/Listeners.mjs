@@ -7,7 +7,7 @@ function attach({
 	if(listeners[listenerName]){
 		return;
 	}
-	document.body.addEventListener(eventName, listener, options);
+	window.addEventListener(eventName, listener, options);
 	listeners[listenerName] = listener;
 }
 
@@ -15,7 +15,7 @@ function remove({
 	name, eventName, options
 }){
 	const listenerName = `${eventName}__${name}`;
-	document.body.removeEventListener(eventName, listeners[listenerName], options);
+	window.removeEventListener(eventName, listeners[listenerName], options);
 	delete listeners[listenerName];
 }
 
@@ -34,7 +34,7 @@ function trigger({ type, params, source }){
 		bubbles: true,
 		detail: { ...params, ...{ source }}
 	});
-	document.body.dispatchEvent(event);
+	window.dispatchEvent(event);
 }
 
 export {

@@ -45,8 +45,9 @@
   - [ ] edit bartok in bartok
   - [X] upload binary files
   - [ ] upload whole folder
-  - [ ] pop out preview
+  - [X] pop out preview
   - [ ] languages for preview
+  - [X] search icon (magnifer) should be connected to somehting
 
 ### panes
   - [X] pane position/size remembered (on page reload)

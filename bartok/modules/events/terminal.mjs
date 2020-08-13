@@ -282,9 +282,13 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		firstLoadSelect = false;
 		return;
 	}
-
 	const { type, detail } = event;
 	const { op, id, name, next } = detail;
+	if(type==="fileClose" && locked){
+		viewUpdate({ locked });
+		return;
+	}
+
 	if(type==="fileClose" && !next){
 		//TODO: this should be a bit more nuanced
 		sessionStorage.setItem('preview', 'noPreview');

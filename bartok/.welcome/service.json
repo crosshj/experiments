@@ -108,6 +108,7 @@
         "_dimensional.md": {},
         "_mirrors.md": {},
         "_sort.flashing.md": {},
+        "color-picker.html": {},
         "css-3d.html": {},
         "sw.clientServer.htm": {},
         "open.folder.html": {},
@@ -136,6 +137,10 @@
       }
     },
     "files": [
+      {
+        "name": "color-picker.html",
+        "path": ".welcome/tests/color-picker.html"
+      },
       {
         "name": "_bartok.tools.html",
         "path": ".welcome/tests/_bartok.tools.html"

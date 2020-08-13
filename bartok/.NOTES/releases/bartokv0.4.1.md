@@ -12,14 +12,12 @@
   - [ ] !!! connect to server UI
   - [ ] !!! bartok version at bottom left should be connected to real something
   - [ ] !!! settings icon (gear) should be connected to something
-  - [ ] !!! search icon (magnifer) should be connected to somehting
 
 ### panes
   - nothing
 
 ### explorer
   - [ ] !!! hook up new file icon
-  - [ ] !!! hook up new folder action
   - [ ] rename project/service
   - [ ] open parent folders when file/folder selected
     - selected from tabs
