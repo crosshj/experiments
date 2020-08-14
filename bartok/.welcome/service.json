@@ -125,7 +125,8 @@
         "language-py.html": {},
         "language-rb.html": {},
         "language-scm.html": {},
-        "language-sql.html": {}
+        "language-sql.html": {},
+        "language-sql-fetch.html": {}
       },
       "WIP": {
         "angular9.html": {},
@@ -184,6 +185,10 @@
       {
         "name": "language-sql.html",
         "path": ".welcome/tests/language-sql.html"
+      },
+      {
+        "name": "language-sql-fetch.html",
+        "path": ".welcome/tests/language-sql-fetch.html"
       },
       {
         "name": "language-scm.html",

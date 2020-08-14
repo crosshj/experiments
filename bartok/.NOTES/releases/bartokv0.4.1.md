@@ -18,6 +18,7 @@
 
 ### explorer
   - [ ] !!! hook up new file icon
+  - [ ] !!! hook up new folder action
   - [ ] rename project/service
   - [ ] open parent folders when file/folder selected
     - selected from tabs

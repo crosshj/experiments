@@ -94,7 +94,12 @@ function fetchHandler(event) {
 	}
 
 	// do not use or update cache
-	if (event.request.cache === 'no-store') {
+	if (event.request.cache === 'no-store' ||
+		(
+			event.request.headers.get('pragma') === 'no-cache' &&
+			event.request.headers.get('cache-control') === 'no-cache'
+		)
+	) {
 		return;
 	}
 	// if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {

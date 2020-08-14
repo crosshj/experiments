@@ -1,4 +1,5 @@
 const { readFileSync } = require('fs');
+const request = require('request');
 //const path = require("path");
 
 const appHTML = readFileSync('app.html', 'utf8');
@@ -22,7 +23,7 @@ const file = require('./handlers/file.js');
   server.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    //res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,pragma,cache-control');
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
   });
@@ -30,6 +31,11 @@ const file = require('./handlers/file.js');
   server.get('/tree', tree({ dialog, win }));
 
   server.get('/file*', file({ dialog, win }));
+
+  server.get('/proxy/*', (req, res) => {
+    const _path = (req.params || {})['0'];
+    request(_path).pipe(res);
+  })
 
   server.get('/', (req, res) => {
     res.send(appHTML);
