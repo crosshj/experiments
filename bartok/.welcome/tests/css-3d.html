@@ -22,6 +22,7 @@
       overflow: hidden;
       background: #1a1a1a;
     }
+    .hidden { display: none; }
     .header-page {
       display: none;
     }
@@ -62,11 +63,220 @@
     }
   </style>
 
-  <body>
+  <style id="diamond-style">
+    #diamond {
+      position: relative;
+      color: #55aacc;
+      font-size: 150px;
+      animation-name: spinner;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: 10s;
+      transform-style: preserve-3d;
+      transform:
+        translate(0, -0.4em)
+        rotate3d(0, 1, 0, 180deg)
+        rotate3d(1, 0, 0, 15deg);
+      filter: blur(2);
+    }
+    @keyframes spinner {
+      from {
+        transform:
+          translate(0, -0.4em)
+          rotate3d(0, 1, 0, 0deg)
+          rotate3d(1, 0, 0, 25deg);
+      }
+      to {
+        transform:
+          translate(0, -0.4em)
+          rotate3d(0, 1, 0, -360deg)
+          rotate3d(1, 0, 0, 25deg);
+      }
+    }
 
-    <div id="Zcube">
+    #diamond > *{
+      position: absolute;
+      background: currentColor;
+      transform-style: preserve-3d;
+    }
+
+    #diamond .top {
+      transform-origin: center;
+      transform:
+        translate3d(-0.77em,-1.02em,0)
+        rotate3d(0,0,1, 90deg)
+        rotate3d(0,1,0, 90deg);
+      width: 1.55em;
+      height: 0.88em;
+      opacity: 0.8;
+    }
+    #diamond .top:before,
+    #diamond .top:after {
+      content: "";
+      position: absolute;
+      background: transparent;
+      border-left: 0.772em solid transparent;
+      border-right: 0.772em solid transparent;
+    }
+    #diamond .top:before {
+      bottom: 100%;
+      border-bottom: 0.455em solid;
+    }
+    #diamond .top:after {
+      top: 100%;
+      border-top: 0.455em solid;
+    }
+
+    #diamond .side > div {
+      position: absolute;
+      transform-style: preserve-3d;
+      transform: translate3d(-0.58em, -0.65em, -1em);
+    }
+    #diamond .side > div div {
+      opacity: 1;
+      background: currentColor;
+    }
+    #diamond .side.two { transform: rotate3d(0, 1, 0, 60deg); }
+    #diamond .side.three { transform: rotate3d(0, 1, 0, 120deg); }
+    #diamond .side.four { transform: rotate3d(0, 1, 0, 180deg); }
+    #diamond .side.five { transform: rotate3d(0, 1, 0, -120deg); }
+    #diamond .side.six { transform: rotate3d(0, 1, 0, -60deg); }
+
+    #diamond .side > div div:nth-child(1) {
+      width: 1.16em;
+      height: 0.46em;
+      transform-origin: bottom;
+      transform: rotate3d(1, 0, 0, -30deg);
+      clip-path: polygon(
+        11.6% 0,
+        0 100%,
+        100% 100%,
+        88% 0
+      );
+      margin-bottom: -1px;
+      opacity: 0.9;
+    }
+    #diamond .side > div div:nth-child(2) {
+      width: 1.16em;
+      height: 0.45em;
+      margin-bottom: -1px;
+      opacity: 0.95;
+    }
+    #diamond .side > div div:nth-child(3) {
+      width: 1.16em;
+      height: 1.55em;
+      transform-origin: top;
+      perspective: 300px;
+      transform: rotate3d(1, 0, 0, 40deg);
+      clip-path: polygon(100% 0, 0 0, 50% 100%);
+      opacity: 0.93;
+    }
+
+    .top {
+      filter: contrast(0.6) brightness(1.4);
+    }
+
+    .one > div div:nth-child(1){
+      filter: contrast(0.9) brightness(1.3);
+    }
+    .one > div div:nth-child(2){
+      filter: contrast(0.9) brightness(1.1);
+    }
+    .one > div div:nth-child(3) {
+      filter: contrast(0.9) brightness(0.85);
+    }
+
+    .two > div div:nth-child(1){
+      filter: brightness(0.85);
+    }
+    .two > div div:nth-child(2){
+      filter: brightness(0.75);
+    }
+    .two > div div:nth-child(3) {
+      filter: brightness(0.575);
+    }
+
+    .three > div div:nth-child(1){
+      filter: brightness(0.6);
+    }
+    .three > div div:nth-child(2){
+      filter: brightness(0.53);
+    }
+    .three > div div:nth-child(3) {
+      filter: brightness(0.49);
+    }
+
+    .four > div div:nth-child(1){
+      filter: brightness(0.85);
+    }
+    .four > div div:nth-child(2){
+      filter: brightness(0.75);
+    }
+    .four > div div:nth-child(3) {
+      filter: brightness(0.575);
+    }
+
+    .five > div div:nth-child(1){
+      filter: contrast(0.9) brightness(1.4);
+    }
+    .five > div div:nth-child(2){
+      filter: contrast(1) brightness(1.05);
+    }
+    .five > div div:nth-child(3) {
+      filter: contrast(0.9) brightness(.69);
+    }
+
+    .six > div div:nth-child(1){
+      filter: contrast(0.85) brightness(1.5);
+    }
+    .six > div div:nth-child(2){
+      filter: contrast(1) brightness(1.05);
+    }
+    .six > div div:nth-child(3) {
+      filter: contrast(0.9) brightness(.8);
+    }
+
+  </style>
+
+  <body>
+    <div id="Zcube" class="hidden">
       <div id="square">X</div>
       <div id="highlight"></div>
+    </div>
+
+    <div id="diamond">
+      <div class="top"></div>
+      <div class="side one">
+        <div>
+          <div></div> <div></div> <div></div>
+        </div>
+      </div>
+      <div class="side two">
+        <div>
+          <div></div> <div></div> <div></div>
+        </div>
+      </div>
+      <div class="side three">
+        <div>
+          <div></div> <div></div> <div></div>
+        </div>
+      </div>
+      <div class="side four">
+        <div>
+          <div></div> <div></div> <div></div>
+        </div>
+      </div>
+      <div class="side five">
+        <div>
+          <div></div> <div></div> <div></div>
+        </div>
+      </div>
+      <div class="side six">
+        <div>
+          <div></div> <div></div> <div></div>
+        </div>
+      </div>
+
     </div>
 
   </body>

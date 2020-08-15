@@ -110,6 +110,7 @@
         "_sort.flashing.md": {},
         "color-picker.html": {},
         "css-3d.html": {},
+        "css-doodle.html": {},
         "sw.clientServer.htm": {},
         "open.folder.html": {},
         "wasm.binaryen.html": {},
@@ -138,6 +139,10 @@
       }
     },
     "files": [
+      {
+        "name": "css-doodle.html",
+        "path": ".welcome/tests/css-doodle.html"
+      },
       {
         "name": "color-picker.html",
         "path": ".welcome/tests/color-picker.html"

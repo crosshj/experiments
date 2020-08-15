@@ -46,6 +46,7 @@
             "/shared/vendor/preact.standalone.module.js",
             "/shared/vendor/babel.min.js",
             "/shared/vendor/biwascheme-0.7.0-min.js",
+            "/shared/vendor/css-doodle.0.6.1.min.js",
 
             "https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.2.1/rxjs.umd.min.js",
             "https://cdnjs.cloudflare.com/ajax/libs/core-js/2.5.7/core.js",
