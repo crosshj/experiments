@@ -26,7 +26,7 @@ function getTabsToUpdate(name) {
 function triggerCloseTab(event){
 	let name;
 	try{
-		name = event.target.closest('.tab').innerText.trim()
+		name = event.target.dataset.name.trim()
 	} catch(e) {
 		console.log('error trying to handle close tab click');
 		console.log(e);
@@ -223,6 +223,20 @@ const contextMenuSelectHandler = ({ event, newFile }) => {
 	}
 };
 
+const systemDocsHandler = ({
+	event, container, initTabs, createTab, updateTab, removeTab
+}) => {
+	const systemDocsTabEvent = {
+		detail: {
+			name: `system::` + event.type
+		}
+	};
+	fileSelectHandler({
+		event: systemDocsTabEvent,
+		container, initTabs, createTab, updateTab, removeTab
+	});
+}
+
 const handlers = {
 	'click': clickHandler,
 	'fileSelect': fileSelectHandler,
@@ -230,7 +244,9 @@ const handlers = {
 	'fileChange': fileChangeHandler,
 	'operationDone': operationDoneHandler,
 	'contextmenu': contextMenuHandler,
-	'contextmenu-select': contextMenuSelectHandler
+	'contextmenu-select': contextMenuSelectHandler,
+	'add-service-folder': systemDocsHandler,
+	'connect-service-provider': systemDocsHandler
 };
 
 function attachListener(
@@ -241,10 +257,22 @@ function attachListener(
 		//console.log(event.type)
 		// await something here??
 		const showMenu = () => window.showMenu;
+
 		handlers[event.type] && handlers[event.type]({
 			event, container, initTabs, createTab, updateTab, removeTab, showMenu
 		});
 	};
+
+	attach({
+		name: 'Tab Bar',
+		eventName: 'add-service-folder',
+		listener
+	});
+	attach({
+		name: 'Tab Bar',
+		eventName: 'connect-service-provider',
+		listener
+	});
 
 	attach({
 		name: 'Tab Bar',

@@ -146,12 +146,27 @@ const createTab = (parent, init) => (tabDef) => {
 	tabDef.changed && tab.classList.add('changed');
 
 	const fileType = getFileType(tabDef.name);
+	let systemType, systemName, systemClass;
+	if(tabDef.name.includes('system::')){
+		systemType = 'config';
+		systemName = {
+			'add-service-folder': 'Open Folder',
+			'connect-service-provider': 'Connect to a Provider'
+		}[tabDef.name.replace('system::', '')];
+		systemClass = 'italic';
+	}
 	tab.innerHTML = `
-		<span style="pointer-events: none;" class="icon-${fileType}">${tabDef.name}</span>
+		<span style="pointer-events: none;"
+			class="${systemClass?systemClass+' ':''}icon-${systemType||fileType}"
+		>${systemName||tabDef.name}</span>
 		<div class="tab-close"><div class="monaco-action-bar animated">
 			<ul class="actions-container" role="toolbar" aria-label="Tab actions">
 				<li class="action-item" role="presentation">
-					<a class="action-label icon close-editor-action" role="button" title="Close">
+					<a class="action-label icon close-editor-action"
+						data-name="${tabDef.name}"
+						role="button"
+						title="Close"
+					>
 					</a>
 				</li>
 			</ul>

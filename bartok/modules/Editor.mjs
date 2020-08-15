@@ -2,10 +2,16 @@ import Editor from '../../shared/modules/editor.mjs';
 import EditorTabs from './EditorTabs.mjs';
 import { attachListener, ChangeHandler, CursorActivityHandler } from './events/editor.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
-
 import { getCodeFromService , getState} from './state.mjs'
-
 import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
+
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim(); // Never return a text node of whitespace as the result
+	template.innerHTML = html;
+	//also would be cool to remove indentation from all lines
+	return template.content.firstChild;
+}
 
 const getExtension = (fileName) => ((
 	fileName.match(/\.[0-9a-z]+$/i) || []
@@ -230,6 +236,15 @@ const Search = () => {
 		</div>
 	`;
 	return searchDiv;
+};
+
+const SystemDocs = () => {
+	return htmlToElement(`
+		<div id="editor-system-doc">
+			this is a system document!
+			<div class="thisSystemDoc"></div>
+		</div>
+	`.replace(/		/g,''));
 };
 
 /*
@@ -524,7 +539,7 @@ const showNothingOpen = () => {
 	const logo = `
 	<svg viewBox="-4 -4 172 150" id="editor-empty-logo">
 		<g>
-			<title>final</title>
+			<title>Do or do not.  There is no try.</title>
 			<path d="m0.66613,141.12654l40.94759,-22.96759l39.55286,22.95911l-80.50045,0.00848z" stroke="#000000" stroke-width="0" opacity=".3"></path>
 			<path d="m81.32664,141.18317l41.77172,-23.74405l40.66986,23.45933l-82.44158,0.28472z" stroke-width="0" opacity=".1"></path>
 			<path d="m-8.80672,124.5856l39.68109,-24.32103l39.94988,23.98956l-79.63097,0.33147z" stroke-width="0" transform="rotate(120.005 31.0088 112.425)" opacity=".15"></path>
@@ -647,11 +662,36 @@ const showBinaryPreview = ({
 	return binaryPreview;
 };
 
+let systemDocsDOM;
+const showSystemDocsView = ({ filename }) => {
+	if(!systemDocsDOM){
+		const editorContainer = document.getElementById('editor-container');
+		systemDocsDOM = SystemDocs();
+		editorContainer.appendChild(systemDocsDOM);
+	}
+	systemDocsDOM.querySelector('.thisSystemDoc').innerHTML = `
+		name: ${filename}
+	`;
+};
+
 function _Editor() {
 	const editor = inlineEditor(ChangeHandler);
-	let editorPreview, editorDom, nothingOpenDom;
+	let editorPreview, editorDom, nothingOpenDom, systemDocsView;
 
 	attachListener((filename, mode) => {
+		if(mode === 'systemDoc'){
+			//TODO: does this HAVE to be ran in this case?
+			editor({ code: '', name: '', id: '', filename: '' });
+			editorDom = document.querySelector('.CodeMirror');
+
+			editorPreview && editorPreview.classList.add('hidden');
+			editorDom && editorDom.classList.add('hidden');
+			nothingOpenDom && nothingOpenDom.classList.add('hidden');
+
+			systemDocsView = showSystemDocsView({ filename });
+			return;
+		}
+
 		if(mode === "nothingOpen"){
 			//TODO: does this HAVE to be ran in this case?
 			editor({ code: '', name: '', id: '', filename: '' });
@@ -662,6 +702,7 @@ function _Editor() {
 
 			editorPreview && editorPreview.classList.add('hidden');
 			editorDom && editorDom.classList.add('hidden');
+			systemDocsView && systemDocsView.classList.add('hidden');
 			return;
 		}
 
@@ -674,17 +715,19 @@ function _Editor() {
 			editorPreview = showBinaryPreview({ filename, code });
 			editorPreview && editorPreview.classList.remove('hidden');
 
-			nothingOpenDom && nothingOpenDom.classList.add('hidden');
 			editorDom && editorDom.classList.add('hidden');
+			nothingOpenDom && nothingOpenDom.classList.add('hidden');
+			systemDocsView && systemDocsView.classList.add('hidden');
 			return;
 		}
 
 		editor({ code, name, id, filename: filename || defaultFile });
 		editorDom = document.querySelector('.CodeMirror');
 
-		nothingOpenDom && nothingOpenDom.classList.add('hidden');
 		editorPreview && editorPreview.classList.add('hidden');
 		editorDom && editorDom.classList.remove('hidden');
+		nothingOpenDom && nothingOpenDom.classList.add('hidden');
+		systemDocsView && systemDocsView.classList.add('hidden');
 	});
 
 	//deprecate

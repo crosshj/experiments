@@ -120,6 +120,9 @@ iframe::-webkit-scrollbar-track{
 .hidden {
   display: none !important;
 }
+.italic {
+  font-style: italic;
+}
 
 :root {
   --sidenav-full-width: 175px;

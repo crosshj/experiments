@@ -1,4 +1,4 @@
-import { attach } from '../Listeners.mjs';
+import { attach, attachTrigger } from '../Listeners.mjs';
 import { getDefaultFile, getState } from '../state.mjs';
 
 import ext from '../../../shared/icons/seti/ext.json.mjs';
@@ -740,7 +740,9 @@ function attachListener(treeView, JSTreeView, updateTree, {
 	});
 }
 
+const connectTrigger = (args) => attachTrigger({ ...args, name: 'Tree' });
 
 export {
-	attachListener
+	attachListener,
+	connectTrigger
 };

@@ -83,6 +83,13 @@ const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 let firstLoad = true;
 function attachListener(switchEditor){
 	const listener = async function (e) {
+		if([
+			'add-service-folder', 'connect-service-provider'
+			].includes(e.type)
+		){
+			switchEditor(e.type, "systemDoc");
+			return;
+		}
 		if(e.type === "noServiceSelected"){
 			switchEditor(null, "nothingOpen");
 			return;
@@ -108,6 +115,16 @@ function attachListener(switchEditor){
 		}
 		switchEditor(savedFileName || next || name);
 	};
+	attach({
+		name: 'Editor',
+		eventName: 'add-service-folder',
+		listener
+	});
+	attach({
+		name: 'Editor',
+		eventName: 'connect-service-provider',
+		listener
+	});
 	attach({
 		name: 'Editor',
 		eventName: 'noServiceSelected',

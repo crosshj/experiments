@@ -1,7 +1,9 @@
 import JSTreeView from "../../shared/vendor/js-treeview.1.1.5.js";
 //import JSTreeView from "https://dev.jspm.io/js-treeview@1.1.5";
 
-import { attachListener } from './events/tree.mjs';
+import { attachListener, connectTrigger } from './events/tree.mjs';
+
+let treeView, opener;
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -12,7 +14,7 @@ function htmlToElement(html) {
 }
 
 const ProjectOpener = () => {
-	const opener = htmlToElement(`
+	let _opener = htmlToElement(`
 		<div class="service-opener">
 			<style>
 				.service-opener > div {
@@ -42,19 +44,34 @@ const ProjectOpener = () => {
 					content: 'NOTE: '
 				}
 			</style>
-			<div>
+			<div class="service-opener-actions">
 				<p>You have nothing to edit. Pick an option below to get started.</p>
 				<p class="opener-note">Your work will stay in this browser unless you arrange otherwise.</p>
 
-				<button>Open Folder</button>
+				<button id="add-service-folder">Open Folder</button>
 				<p>Upload from your computer into local browser memory.</p>
 
-				<button>Connect to a Provider</button>
+				<button id="connect-service-provider">Connect to a Provider</button>
 				<p>Specify a service to read from and write to.</p>
 			</div>
 		</div>
 	`);
-	return opener;
+
+	const openerActions = _opener.querySelector('.service-opener-actions');
+	connectTrigger({
+		eventName: 'add-service-folder',
+		filter: e => openerActions.contains(e.target)
+			&& e.target.tagName === "BUTTON"
+			&& e.target.id === 'add-service-folder'
+	});
+	connectTrigger({
+		eventName: 'connect-service-provider',
+		filter: e => openerActions.contains(e.target)
+			&& e.target.tagName === "BUTTON"
+			&& e.target.id === 'connect-service-provider'
+	});
+
+	return _opener;
 };
 
 const TreeMenu = () => {
@@ -163,7 +180,6 @@ const Search = () => {
 	return search;
 };
 
-let treeView, opener;
 const getTreeViewDOM = ({ showOpenService  } = {}) => {
 	if(opener && showOpenService){
 		opener.classList.remove('hidden');
