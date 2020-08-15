@@ -17,12 +17,20 @@ why I keep vscode open
 - [X] no search in file
 
 
+### browsersysnc integration
+- http://localhost:3222/browser-sync/browser-sync-client.js
+- https://www.browsersync.io/docs/options/#option-socket
+- https://www.google.com/search?q=browsersync+without+websocket+polling
+- https://github.com/BrowserSync/browser-sync/issues/684#resolving_polling_url
+- https://github.com/BrowserSync/browser-sync/issues/599#option-to-stop-polling
+
+
 2020-08-10 Issues & TODO
 ========================
 
-# problem with deleting a file directly after creating it
+### problem with deleting a file directly after creating it
 
-# event handler is already finished
+### event handler is already finished
   - clear: meta store, handler store, module cache
   - unregister and stop service worker
   - refresh page
