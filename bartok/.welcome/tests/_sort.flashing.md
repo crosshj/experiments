@@ -13,6 +13,8 @@ Given n number of items alternating between two colors with a different period o
   - moving cells or blobs
   - growing blobs
 - do the same thing with 2d/3d matrix
+- also consider that cycles have a start offset, ie. flashing may not start at same time
+- draw waves for cycles and match based on this
 
 
 ### Sorted by period

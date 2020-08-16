@@ -36,11 +36,15 @@ future todo:
 */
 
 
-function trigger({ type, params, source }){
+function trigger({ type, params, source, data }){
 	console.log(`triggering event: ${type}`);
 	const event = new CustomEvent(type, {
 		bubbles: true,
-		detail: { ...params, ...{ source }}
+		detail: {
+			data,
+			...params,
+			...{ source }
+		}
 	});
 	window.dispatchEvent(event);
 }
@@ -49,6 +53,7 @@ let triggerClickListener;
 const attachTrigger = function attachTrigger({
 	name, // the module that is attaching the listener
 	type='click', // the input event name, eg. "click"
+	data, // a function to get data to include with fired event
 	eventName, // the name of the event(s) that triggers are attached for (can also be a function or an array)
 	filter // a function that will filter out input events that are of no concern
 }){
@@ -57,12 +62,12 @@ const attachTrigger = function attachTrigger({
 		return;
 	}
 
-	const triggerName = `${eventName}__${name}`;
 	const listener = triggerClickListener || ((event) => {
 		const foundTrigger = Object.keys(triggers)
 			.map(key => ({ key, ...triggers[key] }) )
 			.find(t => {
-				if(t.key !== triggerName) return false;
+				//this won't work if only one global listener
+				//if(t.key !== triggerName) return false;
 				const filterOkay = t.filter && typeof t.filter === "function" && t.filter(event);
 				return filterOkay;
 			});
@@ -70,10 +75,13 @@ const attachTrigger = function attachTrigger({
 		event.preventDefault();
 		event.stopPropagation();
 
-		const { eventName: type } = foundTrigger;
+		const { eventName: type, data } = foundTrigger;
 		const params = {};
-		const source ={};
-		trigger({ type, params, source });
+		const source = {};
+		const _data = typeof data === "function"
+			? data(event)
+			: data || {};
+		trigger({ type, params, source, data: _data });
 		return false;
 	});
 
@@ -82,8 +90,9 @@ const attachTrigger = function attachTrigger({
 		window.addEventListener(type, listener, options);
 	}
 
+	const triggerName = `${eventName}__${name}`;
 	triggers[triggerName] = {
-		filter, eventName
+		eventName, filter, data
 	};
 
 	triggerClickListener = triggerClickListener || listener;

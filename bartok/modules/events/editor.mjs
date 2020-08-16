@@ -1,4 +1,4 @@
-import { attach } from '../Listeners.mjs';
+import { attach, attachTrigger } from '../Listeners.mjs';
 import { setState, getState } from '../state.mjs';
 
 
@@ -167,6 +167,8 @@ function attachListener(switchEditor){
 	});
 }
 
+const connectTrigger = (args) => attachTrigger({ ...args, name: 'Editor' });
+
 export {
-	attachListener, ChangeHandler, CursorActivityHandler
+	attachListener, connectTrigger, ChangeHandler, CursorActivityHandler
 };

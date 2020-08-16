@@ -1,4 +1,7 @@
-import { attach } from './Listeners.mjs';
+import {
+	attach,
+	attachTrigger as connectTrigger
+} from './Listeners.mjs';
 
 let actionBar;
 function ActionBar(){
@@ -106,8 +109,7 @@ function ActionBar(){
 				<li class="full-screen" role="button">
 					<a></a>
 				</li>
-				<li class="settings hidden" role="button">
-					<!-- a></a -->
+				<li id="open-settings-view" class="settings" role="button">
 					<i class="material-icons">settings</i>
 				</li>
 			</ul>
@@ -134,6 +136,17 @@ function ActionBar(){
 		query: 'li.services',
 		action: 'showServicesMap'
 	}];
+
+	connectTrigger({
+		name: 'Action Bar',
+		eventName: 'open-settings-view',
+		filter: e => actionBar.contains(e.target)
+			&& ["LI", "I"].includes(e.target.tagName)
+			&& (
+				e.target.parentNode.id === 'open-settings-view' ||
+				e.target.id === 'open-settings-view'
+			)
+	});
 
 	events.forEach(event => {
 		actionBar

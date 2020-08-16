@@ -1,6 +1,11 @@
 import Editor from '../../shared/modules/editor.mjs';
 import EditorTabs from './EditorTabs.mjs';
-import { attachListener, ChangeHandler, CursorActivityHandler } from './events/editor.mjs';
+import {
+	attachListener,
+	connectTrigger,
+	ChangeHandler,
+	CursorActivityHandler
+} from './events/editor.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
 import { getCodeFromService , getState} from './state.mjs'
 import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
@@ -244,6 +249,15 @@ const miscSystemSettings = [{
 	button: 'close'
 }];
 
+/*
+var clickEvent = new MouseEvent('click', {
+  view: window,
+  bubbles: true,
+  cancelable: true
+});
+
+*/
+
 const SystemDocs = (section) => {
 	const style = `
 	<style>
@@ -282,19 +296,47 @@ const SystemDocs = (section) => {
 			border: 0;
 			padding: 0.5em;
 			color: inherit;
+			margin: .3em 0;
 		}
 		#editor-system-doc button:hover {
 			background: rgba(var(--main-theme-highlight-color), 0.4);
 		}
+		#editor-system-doc ul {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		#editor-system-doc li {
+			margin: 1em;
+			width: 100%;
+			text-align: center;
+		}
+		#editor-system-doc form.provider-settings {
+			padding: 1em;
+			display: flex;
+			flex-direction: column;
+			margin-top: 1em;
+			background: #88888826;
+		}
+		#editor-system-doc input {
+			color: inherit;
+			margin-bottom: 1.5em;
+			background: #88888829;
+			margin-top: 0.3em;
+			padding: 0 .5em;
+			box-sizing: border-box;
+		}
 	</style>
 	`;
 	if(!section){
-		return htmlToElement(`
+		const view = htmlToElement(`
 			<div id="editor-system-doc">
 				${style}
 				<div class="thisSystemDoc"></div>
 			</div>
 		`.replace(/		/g,''));
+		return view;
 	}
 
 	const miscSettings = `
@@ -327,6 +369,40 @@ const SystemDocs = (section) => {
 			At first, only local file server (electron), aka basic server, will be available
 			In the future, this could be a long list of providers.
 		</p>
+		<ul>
+			<li>
+				<button
+					onclick="event.target.parentNode.querySelector('.provider-settings').classList.toggle('hidden')"
+				>Bartok Basic Server</button>
+				<form class="provider-settings hidden" autocomplete="off" onsubmit="return false;">
+					<input class="hidden" autocomplete="false" name="hidden" type="text">
+					<input name="provider-type" class="hidden" type="text" value="basic-bartok-provider">
+
+					<label>Server URL</label>
+					<input name="provider-url" type="text" >
+
+					<button class="provider-test">Test Provider</test>
+					<button class="provider-save">Save Provider</test>
+					<button class="provider-add-service">Add Folder</button>
+				</form>
+			</li>
+			<li>
+				<button
+					onclick="event.target.parentNode.querySelector('.provider-settings').classList.toggle('hidden')"
+				>Bartok Advanced Server</button>
+				<form class="provider-settings hidden" autocomplete="off" onsubmit="return false;">
+					<input class="hidden" autocomplete="false" name="hidden" type="text">
+					<input name="provider-type" class="hidden" type="text" value="basic-advanced-provider">
+
+					<label>Server URL</label>
+					<input name="provider-url" type="text" >
+
+					<button class="provider-test">Test Provider</test>
+					<button class="provider-save">Save Provider</test>
+					<button class="provider-add-service">Add Folder</button>
+				</form>
+			</li>
+		</ul>
 	`.replace(/		/g,'');
 
 	const allSettings = `
@@ -772,6 +848,52 @@ const showSystemDocsView = ({ filename }) => {
 function _Editor() {
 	const editor = inlineEditor(ChangeHandler);
 	let editorPreview, editorDom, nothingOpenDom, systemDocsView;
+
+	/*
+
+		event.preventDefault();
+		event.stopPropagation();
+		document.querySelector('#editor-system-doc')
+			.handleMessage({
+				fields: Array.from(this.querySelectorAll('input:not(.hidden)'))
+					.map(({ name, value })=>({ name, value})),
+				action: event.submitter.className
+			});
+	*/
+
+	connectTrigger({
+		eventName: 'provider-test',
+		data: (event) => {
+			return Array.from(
+				event.target.parentNode.querySelectorAll('input:not(name="hidden")')
+			)
+				.map(({ name, value })=>({ name, value}))
+		},
+		filter: e => document.querySelector('#editor').contains(e.target)
+			&& e.target.classList.contains('provider-test')
+	});
+	connectTrigger({
+		eventName: 'provider-save',
+		data: (event) => {
+			return Array.from(
+				event.target.parentNode.querySelectorAll('input:not(name="hidden")')
+			)
+				.map(({ name, value })=>({ name, value}))
+		},
+		filter: e => document.querySelector('#editor').contains(e.target)
+		&& e.target.classList.contains('provider-save')
+	});
+	connectTrigger({
+		eventName: 'provider-add-service',
+		data: (event) => {
+			return Array.from(
+				event.target.parentNode.querySelectorAll('input:not(name="hidden")')
+			)
+				.map(({ name, value })=>({ name, value}))
+		},
+		filter: e => document.querySelector('#editor').contains(e.target)
+			&& e.target.classList.contains('provider-add-service')
+	});
 
 	attachListener((filename, mode) => {
 		if(mode === 'systemDoc'){
