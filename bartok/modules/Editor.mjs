@@ -238,12 +238,22 @@ const Search = () => {
 	return searchDiv;
 };
 
+const miscSystemSettings = [{
+	name: 'exit-current-service',
+	description: 'Close the current project',
+	button: 'close'
+}];
+
 const SystemDocs = (section) => {
 	const style = `
 	<style>
 		#editor-system-doc {
 			font-size: inherit;
 			margin: 0 2em;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 		}
 		#editor-system-doc h1 {
 			font-size: 1.1em;
@@ -252,6 +262,29 @@ const SystemDocs = (section) => {
 			padding-bottom: .4em;
 			opacity: .55;
 			margin: 2.2em 0 0.5em 0;
+		}
+		.thisSystemDoc {
+			max-width: 60em;
+		}
+		.settings-grid-2-col {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			grid-auto-rows: auto;
+			align-items: center;
+			margin: 1.5em 0;
+			grid-gap: 1em;
+			background: #8888881f;
+			padding: 1.1em;
+			border-radius: 2px;
+		}
+		#editor-system-doc button {
+			background: #88888847;
+			border: 0;
+			padding: 0.5em;
+			color: inherit;
+		}
+		#editor-system-doc button:hover {
+			background: rgba(var(--main-theme-highlight-color), 0.4);
 		}
 	</style>
 	`;
@@ -264,26 +297,42 @@ const SystemDocs = (section) => {
 		`.replace(/		/g,''));
 	}
 
+	const miscSettings = `
+		<h1>Misc Settings</h1>
+
+		${miscSystemSettings.map(x => {
+			return `
+				<div class="settings-grid-2-col">
+					<div>${x.description}</div>
+					<div>
+						<button id="${x.name}">${x.button}</button>
+					</div>
+				</div>
+			`.replace(/				/g, '')
+		}).join('\n')}
+	`.replace(/		/g,'');
+
 	const addServiceFolder = `
 		<h1>Add Folder</h1>
 		<p>
-			TODO: this functionality will take back seat to service provider because it's a one-shot/one-way solution; it's useful, but not as useful.
+			TODO: this functionality will take back seat to service provider because it's a one-shot/one-way solution;
+			it's useful, but not as useful.
 		</p>
 	`.replace(/		/g,'');
 
 	const connectServiceProvider = `
 		<h1>Connect a Service Provider</h1>
 		<p>
-			TODO: show a list of provider and allow setup
+			TODO: show a list of providers and allow setup
 			At first, only local file server (electron), aka basic server, will be available
-			In the future, this could be a long list of provuiders.
+			In the future, this could be a long list of providers.
 		</p>
-
 	`.replace(/		/g,'');
 
 	const allSettings = `
-		${addServiceFolder}
 		${connectServiceProvider}
+		${addServiceFolder}
+		${miscSettings}
 	`.replace(/		/g,'');
 
 	const sectionText = {
