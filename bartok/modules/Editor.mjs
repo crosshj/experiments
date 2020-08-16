@@ -238,13 +238,60 @@ const Search = () => {
 	return searchDiv;
 };
 
-const SystemDocs = () => {
-	return htmlToElement(`
-		<div id="editor-system-doc">
-			this is a system document!
-			<div class="thisSystemDoc"></div>
-		</div>
-	`.replace(/		/g,''));
+const SystemDocs = (section) => {
+	const style = `
+	<style>
+		#editor-system-doc {
+			font-size: inherit;
+			margin: 0 2em;
+		}
+		#editor-system-doc h1 {
+			font-size: 1.1em;
+			font-variant: all-petite-caps;
+			border-bottom: 1px solid;
+			padding-bottom: .4em;
+			opacity: .55;
+			margin: 2.2em 0 0.5em 0;
+		}
+	</style>
+	`;
+	if(!section){
+		return htmlToElement(`
+			<div id="editor-system-doc">
+				${style}
+				<div class="thisSystemDoc"></div>
+			</div>
+		`.replace(/		/g,''));
+	}
+
+	const addServiceFolder = `
+		<h1>Add Folder</h1>
+		<p>
+			TODO: this functionality will take back seat to service provider because it's a one-shot/one-way solution; it's useful, but not as useful.
+		</p>
+	`.replace(/		/g,'');
+
+	const connectServiceProvider = `
+		<h1>Connect a Service Provider</h1>
+		<p>
+			TODO: show a list of provider and allow setup
+			At first, only local file server (electron), aka basic server, will be available
+			In the future, this could be a long list of provuiders.
+		</p>
+
+	`.replace(/		/g,'');
+
+	const allSettings = `
+		${addServiceFolder}
+		${connectServiceProvider}
+	`.replace(/		/g,'');
+
+	const sectionText = {
+		'add-service-folder': addServiceFolder,
+		'connect-service-provider': connectServiceProvider,
+		'open-settings-view': allSettings
+	}[section];
+	return sectionText || '';
 };
 
 /*
@@ -669,9 +716,8 @@ const showSystemDocsView = ({ filename }) => {
 		systemDocsDOM = SystemDocs();
 		editorContainer.appendChild(systemDocsDOM);
 	}
-	systemDocsDOM.querySelector('.thisSystemDoc').innerHTML = `
-		name: ${filename}
-	`;
+	systemDocsDOM.querySelector('.thisSystemDoc')
+		.innerHTML = SystemDocs(filename);
 };
 
 function _Editor() {

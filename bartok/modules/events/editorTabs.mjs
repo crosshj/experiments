@@ -246,7 +246,8 @@ const handlers = {
 	'contextmenu': contextMenuHandler,
 	'contextmenu-select': contextMenuSelectHandler,
 	'add-service-folder': systemDocsHandler,
-	'connect-service-provider': systemDocsHandler
+	'connect-service-provider': systemDocsHandler,
+	'open-settings-view': systemDocsHandler
 };
 
 function attachListener(
@@ -263,6 +264,11 @@ function attachListener(
 		});
 	};
 
+	attach({
+		name: 'Tab Bar',
+		eventName: 'open-settings-view',
+		listener
+	});
 	attach({
 		name: 'Tab Bar',
 		eventName: 'add-service-folder',

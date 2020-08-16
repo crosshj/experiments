@@ -84,9 +84,10 @@ let firstLoad = true;
 function attachListener(switchEditor){
 	const listener = async function (e) {
 		if([
-			'add-service-folder', 'connect-service-provider'
+			'add-service-folder', 'connect-service-provider', 'open-settings-view'
 			].includes(e.type)
 		){
+			sessionStorage.setItem('editorFile', "systemDoc::" + e.type);
 			switchEditor(e.type, "systemDoc");
 			return;
 		}
@@ -97,7 +98,7 @@ function attachListener(switchEditor){
 		const { name, next } = e.detail;
 		let savedFileName;
 		if(e.type === "fileClose" && !next){
-			savedFileName = sessionStorage.setItem('editorFile', 'noFileSelected');
+			sessionStorage.setItem('editorFile', 'noFileSelected');
 			switchEditor(null, "nothingOpen");
 			return;
 		}
@@ -105,8 +106,12 @@ function attachListener(switchEditor){
 		if(firstLoad && isFileSelect){
 			savedFileName = sessionStorage.getItem('editorFile');
 			firstLoad = false;
-			if(savedFileName === 'noFileSelected'){
+			if(savedFileName && savedFileName === 'noFileSelected'){
 				switchEditor(null, "nothingOpen");
+				return;
+			}
+			if(savedFileName && savedFileName.includes('systemDoc::')){
+				switchEditor(savedFileName.replace('systemDoc::', ''), "systemDoc");
 				return;
 			}
 		}
@@ -115,6 +120,11 @@ function attachListener(switchEditor){
 		}
 		switchEditor(savedFileName || next || name);
 	};
+	attach({
+		name: 'Editor',
+		eventName: 'open-settings-view',
+		listener
+	});
 	attach({
 		name: 'Editor',
 		eventName: 'add-service-folder',

@@ -46,7 +46,7 @@ function trigger({ type, params, source }){
 }
 
 let triggerClickListener;
-function attachTrigger({
+const attachTrigger = function attachTrigger({
 	name, // the module that is attaching the listener
 	type='click', // the input event name, eg. "click"
 	eventName, // the name of the event(s) that triggers are attached for (can also be a function or an array)
@@ -58,28 +58,37 @@ function attachTrigger({
 	}
 
 	const triggerName = `${eventName}__${name}`;
-	const listener = (event) => {
+	const listener = triggerClickListener || ((event) => {
 		const foundTrigger = Object.keys(triggers)
 			.map(key => ({ key, ...triggers[key] }) )
 			.find(t => {
-				if(t.key !== triggerName) return;
+				if(t.key !== triggerName) return false;
 				const filterOkay = t.filter && typeof t.filter === "function" && t.filter(event);
 				return filterOkay;
 			});
-		if(!foundTrigger) return;
+		if(!foundTrigger) return true; //true so event will propagate, etc
+		event.preventDefault();
+		event.stopPropagation();
+
 		const { eventName: type } = foundTrigger;
 		const params = {};
 		const source ={};
 		trigger({ type, params, source });
-	};
+		return false;
+	});
+
 	const options = {};
-	triggerClickListener = triggerClickListener ||
+	if(!triggerClickListener){
 		window.addEventListener(type, listener, options);
+	}
+
 	triggers[triggerName] = {
 		filter, eventName
 	};
 
+	triggerClickListener = triggerClickListener || listener;
 }
+
 function removeTrigger({
 	name, eventName
 }){

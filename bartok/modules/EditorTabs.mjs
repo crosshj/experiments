@@ -151,7 +151,8 @@ const createTab = (parent, init) => (tabDef) => {
 		systemType = 'config';
 		systemName = {
 			'add-service-folder': 'Open Folder',
-			'connect-service-provider': 'Connect to a Provider'
+			'connect-service-provider': 'Connect to a Provider',
+			'open-settings-view': 'Settings'
 		}[tabDef.name.replace('system::', '')];
 		systemClass = 'italic';
 	}
