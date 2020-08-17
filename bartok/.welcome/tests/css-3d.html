@@ -66,16 +66,17 @@
   <style id="diamond-style">
     #diamond {
       position: relative;
-      color: #55aacc;
+      color: #87cde8;
       font-size: 150px;
       animation-name: spinner;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
+      animation-direction: alternate;
       animation-duration: 10s;
       transform-style: preserve-3d;
       transform:
         translate(0, -0.4em)
-        rotate3d(0, 1, 0, 180deg)
+        rotate3d(0, 1, 0, 270deg)
         rotate3d(1, 0, 0, 15deg);
       filter: blur(2);
     }
@@ -83,17 +84,45 @@
       from {
         transform:
           translate(0, -0.4em)
-          rotate3d(0, 1, 0, 0deg)
-          rotate3d(1, 0, 0, 25deg);
+          rotate3d(0, 1, 0, 270deg)
+          rotate3d(1, 0, 0, 15deg);
       }
       to {
         transform:
           translate(0, -0.4em)
-          rotate3d(0, 1, 0, -360deg)
-          rotate3d(1, 0, 0, 25deg);
+          rotate3d(0, 1, 0, 90deg)
+          rotate3d(1, 0, 0, 15deg);
       }
     }
-
+    #diamond:before {
+      content: '';
+      position: absolute;
+      background: #00000001;
+      transform: translate3d(-500px,-1000vw,0);
+      /*backface-visibility: hidden;*/
+      width: 5000vh;
+      height: 5000vh;
+      display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+    #diamond:after {
+      content: '';
+      position: absolute;
+      background: #00000001;
+      transform-origin: 0 0;
+      transform:
+        rotate3d(0,1,0,90deg)
+        translate3d(-500px,-1000vw,0);
+      /*backface-visibility: hidden;*/
+      width: 5000vh;
+      height: 5000vh;
+      display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
     #diamond > *{
       position: absolute;
       background: currentColor;

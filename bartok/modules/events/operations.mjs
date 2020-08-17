@@ -323,6 +323,43 @@ const operationsHandler = ({
 	}
 };
 
+const providerHandler = ({
+	managementOp, externalStateRequest,
+	getCurrentFile, getCurrentService,
+	getCurrentFolder, setCurrentFolder,
+	getState, resetState,
+	getOperations, getReadAfter, getUpdateAfter,
+	performOperation, operationsListener
+}) => (event) => {
+	const { detail, type } = event;
+	if(![
+		'provider-test',
+		'provider-save',
+		'provider-add-service'
+	].includes(type)){
+		return;
+	}
+	let { data } = detail;
+	data = data.reduce((all, one) => {
+		all[one.name] = one.value;
+		return all;
+	}, {});
+
+	//TODO: provider-add-service should just be service/create with provider passed as argument
+
+	const handler = operationsHandler({
+		managementOp, externalStateRequest,
+		getCurrentFile, getCurrentService,
+		getCurrentFolder, setCurrentFolder,
+		getState, resetState,
+		getOperations, getReadAfter, getUpdateAfter,
+		performOperation, operationsListener
+	});
+	return handler({
+		detail: { ...data, operation: type }
+	});
+};
+
 const handlers = {
 	showCurrentFolderHandler,
 	changeCurrentFolderHandler,
@@ -333,6 +370,9 @@ const handlers = {
 	moveFolderHandler,
 	moveFileHandler,
 	operationsHandler,
+	'provider-test': providerHandler,
+	'provider-save': providerHandler,
+	'provider-add-service': providerHandler,
 	fileChangeHandler
 };
 

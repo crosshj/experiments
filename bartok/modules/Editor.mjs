@@ -466,6 +466,7 @@ const inlineEditor = (ChangeHandler) => ({
 		const editorTextArea = document.createElement('textarea');
 		editorTextArea.id = "service_code";
 		editorTextArea.classList.add('functionInput');
+		editorTextArea.classList.add('hidden');
 		editorDiv.appendChild(editorTextArea);
 		containerDiv.querySelector('.contain').appendChild(editorDiv);
 	}
@@ -865,7 +866,7 @@ function _Editor() {
 		eventName: 'provider-test',
 		data: (event) => {
 			return Array.from(
-				event.target.parentNode.querySelectorAll('input:not(name="hidden")')
+				event.target.parentNode.querySelectorAll('input:not([name="hidden"])')
 			)
 				.map(({ name, value })=>({ name, value}))
 		},
@@ -876,7 +877,7 @@ function _Editor() {
 		eventName: 'provider-save',
 		data: (event) => {
 			return Array.from(
-				event.target.parentNode.querySelectorAll('input:not(name="hidden")')
+				event.target.parentNode.querySelectorAll('input:not([name="hidden"])')
 			)
 				.map(({ name, value })=>({ name, value}))
 		},
@@ -887,7 +888,7 @@ function _Editor() {
 		eventName: 'provider-add-service',
 		data: (event) => {
 			return Array.from(
-				event.target.parentNode.querySelectorAll('input:not(name="hidden")')
+				event.target.parentNode.querySelectorAll('input:not([name="hidden"])')
 			)
 				.map(({ name, value })=>({ name, value}))
 		},
