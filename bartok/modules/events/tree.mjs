@@ -339,7 +339,7 @@ const contextMenuSelectHandler = ({ newFile, newFolder }) => (e) => {
 
 		const query = shouldExclude && !shouldInclude
 			? ''
-			: '?preview=true';
+			: '/::preview::/';
 
 		window.open(path+query);
 	}

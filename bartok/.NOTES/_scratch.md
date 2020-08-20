@@ -17,6 +17,17 @@ why I keep vscode open
 - [X] no search in file
 
 
+
+2020-08-16 Note and Musing
+==========================
+- THIS SUCKS:  I am manually updating files and refreshing all the time
+
+#### distractions | focus | procrastination
+- lot's of things suck and need improved
+- many things are cool and not big impact but fun to work on
+- anxiety about first item and pain relieving effect of second item
+
+
 ### browsersysnc integration
 - http://localhost:3222/browser-sync/browser-sync-client.js
 - https://www.browsersync.io/docs/options/#option-socket

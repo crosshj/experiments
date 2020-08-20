@@ -97,3 +97,7 @@ graph graphname {
     // [style=invis] hides a node.
   }
 ```
+
+<script>
+  document.title = "Graph Formats";
+</script>

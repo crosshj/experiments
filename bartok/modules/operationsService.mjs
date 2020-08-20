@@ -136,15 +136,6 @@ function getOperations(updateAfter, readAfter) {
 			return JSON.stringify(eventData, null, 2);
 		}
 	}];
-	/*
-		//TODO: move this to operation or service worker??
-		if(data['provider-type'] !== 'basic-bartok-provider'){
-			console.error(`Provider type not supported: ${data['provider-type']}`);
-			//TODO: should fire an event here
-			//TODO: should use a registered trigger for that (not sure how this is possible)
-			return;
-		}
-	*/
 	operations.forEach(x => {
 		//x.url = `./${x.url}`;
 		// if (x.config && x.config.body) {

@@ -839,7 +839,7 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 				.path
 				.replace('/welcome/', '/.welcome/')
 				.replace(/^\//, './')
-			+ '?preview=true';
+			+ '/::preview::/';
 		} catch(e){}
 
 		return viewUpdate({ supported, view, type, doc, docName, locked, url });
