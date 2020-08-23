@@ -53,3 +53,4 @@ Feel free to edit anything!  In Bartok's current state, you won't hurt anything!
 
 Check out the [developer video log at youtube](https://www.youtube.com/playlist?list=PLzxw4c2I_GGe6q7XHWH2lXsc9VBfzsNB_).
 You can use this to keep up with Bartok as it is being improved.
+

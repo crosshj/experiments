@@ -33,4 +33,3 @@ if($s1 =~ m[(?<!\s)(l.ne)\z]o) {
 
 __END__
 something...
-
