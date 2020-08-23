@@ -135,6 +135,15 @@ function getOperations(updateAfter, readAfter) {
 		eventToBody: (eventData) => {
 			return JSON.stringify(eventData, null, 2);
 		}
+	}, {
+		name: 'provider-add-service',
+		url: 'service/create/provider',
+		config: {
+			method: 'POST'
+		},
+		eventToBody: (eventData) => {
+			return JSON.stringify(eventData, null, 2);
+		}
 	}];
 	operations.forEach(x => {
 		//x.url = `./${x.url}`;
@@ -230,12 +239,13 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 		detail: {
 			op: operation.name,
 			id,
-			result: result.result,
+			result: result
+				? result.result || result
+				: {},
 			listener: eventData.listener
 		}
 	});
 	document.body.dispatchEvent(event);
-	//console.log({ operation, data });
 }
 
 const operationsListener = async (

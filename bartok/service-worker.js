@@ -83,6 +83,8 @@ function fetchHandler(event) {
 	}
 
 	if (
+		event.request.url.includes('https://crosshj.auth0.com') ||
+
 		event.request.url.includes('index.bootstrap') ||
 		event.request.url.includes('localhost:3333/tree') ||
 
@@ -316,5 +318,6 @@ try {
 } catch(e){
 	console.error('failed to register module');
 	console.log(module);
+	console.log(e);
 }
 }

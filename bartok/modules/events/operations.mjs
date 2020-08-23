@@ -1,5 +1,13 @@
-import { attach } from '../Listeners.mjs';
+import { attach, attachTrigger } from '../Listeners.mjs';
 import { debounce } from "../../../shared/modules/utilities.mjs";
+
+const tryFn = (fn, _default) => {
+	try {
+		return fn();
+	} catch(e){
+		return _default;
+	}
+}
 
 const flattenTree = (tree) => {
 	const results = [];
@@ -341,7 +349,15 @@ const providerHandler = ({
 	}
 	let { data } = detail;
 	data = data.reduce((all, one) => {
-		all[one.name] = one.value;
+		const mappedName = {
+			'provider-url': 'providerUrl',
+			'provider-type': 'providerType'
+		}[one.name];
+		if(!mappedName){
+			console.error('could not find data mapping!');
+			return;
+		}
+		all[mappedName] = one.value;
 		return all;
 	}, {});
 
@@ -360,6 +376,35 @@ const providerHandler = ({
 	});
 };
 
+const operationDoneHandler = ({
+	getCurrentService, setCurrentService,
+	triggerServiceSwitchNotify
+}) => (event) => {
+	const result = tryFn(() => event.detail.result, []);
+	const op = tryFn(() => event.detail.op, '');
+	const inboundService = tryFn(() => event.detail.result[0], {});
+
+	const readOneServiceDone = result.length === 1
+		&& op === 'read'
+		&& inboundService.id && inboundService.id !== '*';
+
+	const handledHere = [readOneServiceDone];
+	if(!handledHere.some(x => x === true)){
+		return;
+	}
+
+	// TODO: this should be handled in state event handler..
+	if(readOneServiceDone){
+		const currentService = getCurrentService({ pure: true });
+		const isNewService = !currentService
+			|| Number(inboundService.id) !== Number(currentService.id);
+		if(!isNewService) return;
+		setCurrentService(inboundService);
+		triggerServiceSwitchNotify();
+		return;
+	}
+};
+
 const handlers = {
 	showCurrentFolderHandler,
 	changeCurrentFolderHandler,
@@ -370,19 +415,28 @@ const handlers = {
 	moveFolderHandler,
 	moveFileHandler,
 	operationsHandler,
+	operationDoneHandler,
 	'provider-test': providerHandler,
 	'provider-save': providerHandler,
 	'provider-add-service': providerHandler,
 	fileChangeHandler
 };
 
-function attachListeners(...args){
+function attachListeners(args){
+	const triggerServiceSwitchNotify = attachTrigger({
+		name: 'Operations',
+		eventName: 'service-switch-notify',
+		type: 'raw'
+	});
 	const mapListeners = (handlerName) => {
 		const eventName = handlerName.replace('Handler', '');
 		attach({
 			name: 'Operations',
 			eventName,
-			listener: handlers[handlerName](...args)
+			listener: handlers[handlerName]({
+				triggerServiceSwitchNotify,
+				...args
+			})
 		});
 	};
 	Object.keys(handlers).map(mapListeners);

@@ -16,10 +16,12 @@ import {
 async function Operations() {
     attachListeners({
         managementOp, externalStateRequest,
-        getCurrentFile, getCurrentService,
+        getCurrentFile,
+        getCurrentService, setCurrentService,
         getCurrentFolder, setCurrentFolder,
         getState, resetState,
-        getOperations, getReadAfter, getUpdateAfter,
+        getOperations,
+        getReadAfter, getUpdateAfter,
         performOperation, operationsListener
     });
 

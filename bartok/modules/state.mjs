@@ -49,7 +49,11 @@ function getDefaultFile(service){
 }
 
 // has side effects of setting current code
-const getCurrentService = () => {
+const getCurrentService = ({ pure }={}) => {
+	if(pure){
+		if(!currentService.code) debugger;
+		return currentService;
+	}
 	const changedArray = Object.keys(state.changedFiles)
 		.map(k => state.changedFiles[k]);
 	const mostRecent = changedArray.map(x => x[x.length-1]);

@@ -20,6 +20,7 @@ const file = require('./handlers/file.js');
   win.setVisibleOnAllWorkspaces(true);
   //app.dock.hide();
 
+  server.set('json spaces', 2);
   server.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');

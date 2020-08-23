@@ -4,6 +4,11 @@ const triggers = {};
 function attach({
 	name, listener, eventName, options
 }){
+	if(!name || !listener || !eventName){
+		console.error('Attempt to improperly attach an event listener');
+		console.error({ name, listener, eventName });
+		return;
+	}
 	const listenerName = `${eventName}__${name}`;
 	if(listeners[listenerName]){
 		return;
@@ -57,6 +62,19 @@ const attachTrigger = function attachTrigger({
 	eventName, // the name of the event(s) that triggers are attached for (can also be a function or an array)
 	filter // a function that will filter out input events that are of no concern
 }){
+	if(type === 'raw'){
+		const triggerName = `${eventName}__${name}`;
+		const _trigger = ({ data }={}) => trigger({
+			type: eventName,
+			data,
+			source: name
+		});
+		triggers[triggerName] = {
+			eventName, type, trigger: _trigger
+		};
+		return _trigger;
+	}
+
 	if(type !== 'click') {
 		console.error(`triggering based on ${type} not currently supported`);
 		return;
@@ -66,6 +84,9 @@ const attachTrigger = function attachTrigger({
 		const foundTrigger = Object.keys(triggers)
 			.map(key => ({ key, ...triggers[key] }) )
 			.find(t => {
+				if(t.type === 'raw'){
+					return false;
+				}
 				//this won't work if only one global listener
 				//if(t.key !== triggerName) return false;
 				const filterOkay = t.filter && typeof t.filter === "function" && t.filter(event);
@@ -92,7 +113,7 @@ const attachTrigger = function attachTrigger({
 
 	const triggerName = `${eventName}__${name}`;
 	triggers[triggerName] = {
-		eventName, filter, data
+		eventName, filter, data, type
 	};
 
 	triggerClickListener = triggerClickListener || listener;

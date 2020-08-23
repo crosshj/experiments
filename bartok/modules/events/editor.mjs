@@ -1,5 +1,9 @@
 import { attach, attachTrigger } from '../Listeners.mjs';
-import { setState, getState } from '../state.mjs';
+import {
+	setState, getState,
+	getCurrentFile,
+	getCurrentService
+} from '../state.mjs';
 
 
 const ChangeHandler = (doc) => {
@@ -80,8 +84,59 @@ const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 	}
 };
 
+const operationDoneHandler = ({ switchEditor, messageEditor }) => (e) => {
+	const { detail } = e;
+	const { op, result } = detail;
+	if(!detail || !op || ![
+		'provider-test',
+		'provider-save',
+		'provider-add-service'
+	].includes(op)){
+		return;
+	}
+	messageEditor({
+		op: op + '-done',
+		result
+	});
+};
+
 let firstLoad = true;
-function attachListener(switchEditor){
+const fileSelectHandler = ({ switchEditor }) => async (event) => {
+	const { name, next } = event.detail;
+	let savedFileName;
+
+	if(firstLoad){
+		firstLoad = false;
+		savedFileName = sessionStorage.getItem('editorFile');
+		if(savedFileName && savedFileName === 'noFileSelected'){
+			switchEditor(null, "nothingOpen");
+			return;
+		}
+		if(savedFileName && savedFileName.includes('systemDoc::')){
+			switchEditor(savedFileName.replace('systemDoc::', ''), "systemDoc");
+			return;
+		}
+	}
+
+	if(!savedFileName){
+		sessionStorage.setItem('editorFile', next || name);
+	}
+	const fileName = savedFileName || next || name;
+	const currentService = getCurrentService({ pure: true });
+	const fileBody = currentService.code.find(x => x.name === fileName);
+	switchEditor(fileName, null, fileBody.code);
+};
+
+const serviceSwitchListener = ({ switchEditor }) => async (event) => {
+	const fileName = getCurrentFile();
+	sessionStorage.setItem('editorFile', fileName);
+	const currentService = getCurrentService({ pure: true });
+	const fileBody = currentService.code.find(x => x.name === fileName);
+	switchEditor(fileName, null, fileBody.code);
+};
+
+
+function attachListener({ switchEditor, messageEditor }){
 	const listener = async function (e) {
 		if([
 			'add-service-folder', 'connect-service-provider', 'open-settings-view'
@@ -96,30 +151,29 @@ function attachListener(switchEditor){
 			return;
 		}
 		const { name, next } = e.detail;
-		let savedFileName;
+
 		if(e.type === "fileClose" && !next){
 			sessionStorage.setItem('editorFile', 'noFileSelected');
 			switchEditor(null, "nothingOpen");
 			return;
 		}
-		const isFileSelect = e.type === "fileSelect";
-		if(firstLoad && isFileSelect){
-			savedFileName = sessionStorage.getItem('editorFile');
-			firstLoad = false;
-			if(savedFileName && savedFileName === 'noFileSelected'){
-				switchEditor(null, "nothingOpen");
-				return;
-			}
-			if(savedFileName && savedFileName.includes('systemDoc::')){
-				switchEditor(savedFileName.replace('systemDoc::', ''), "systemDoc");
-				return;
-			}
-		}
+
+		let savedFileName;
 		if(!savedFileName){
 			sessionStorage.setItem('editorFile', next || name);
 		}
 		switchEditor(savedFileName || next || name);
 	};
+	attach({
+		name: 'Editor',
+		eventName: 'service-switch-notify',
+		listener: serviceSwitchListener({ switchEditor })
+	});
+	attach({
+		name: 'Editor',
+		eventName: 'operationDone',
+		listener: operationDoneHandler({ switchEditor, messageEditor })
+	});
 	attach({
 		name: 'Editor',
 		eventName: 'open-settings-view',
@@ -143,7 +197,7 @@ function attachListener(switchEditor){
 	attach({
 		name: 'Editor',
 		eventName: 'fileSelect',
-		listener
+		listener: fileSelectHandler({ switchEditor })
 	});
 	attach({
 		name: 'Editor',

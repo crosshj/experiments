@@ -19,7 +19,7 @@
                         ${service.files.join('\n')}
                     </pre>
                 </div>
-            `;
+            `.replace(new RegExp('                        ', 'g'), '');
     }
 
     async function readFolder(e) {
@@ -40,7 +40,7 @@
                         ${service.files.join('\n')}
                     </pre>
                 </div>
-            `;
+            `.replace(new RegExp('                        ', 'g'), '');
     }
 
     document.getElementById('file-input')
@@ -61,8 +61,8 @@
 
     #file-content {
         position: relative;
-        flex: 1;
         margin-top: 1em;
+        height: calc(100vh - 8em);
     }
 
     #file-input {

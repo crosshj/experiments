@@ -258,7 +258,7 @@ var clickEvent = new MouseEvent('click', {
 
 */
 
-const SystemDocs = (section) => {
+const SystemDocs = (section, errors) => {
 	const style = `
 	<style>
 		#editor-system-doc {
@@ -311,13 +311,13 @@ const SystemDocs = (section) => {
 			margin: 1em;
 			width: 100%;
 			text-align: center;
+			background: #88888826;
 		}
 		#editor-system-doc form.provider-settings {
 			padding: 1em;
 			display: flex;
 			flex-direction: column;
 			margin-top: 1em;
-			background: #88888826;
 		}
 		#editor-system-doc input {
 			color: inherit;
@@ -326,6 +326,11 @@ const SystemDocs = (section) => {
 			margin-top: 0.3em;
 			padding: 0 .5em;
 			box-sizing: border-box;
+		}
+		.provider-settings button.error {
+			outline: 1px solid red;
+			background: red;
+			color: red;
 		}
 	</style>
 	`;
@@ -367,7 +372,8 @@ const SystemDocs = (section) => {
 		<p>
 			TODO: show a list of providers and allow setup
 			At first, only local file server (electron), aka basic server, will be available
-			In the future, this could be a long list of providers.
+			In the future, this could be a much long list of providers.
+			TODO: get list of currently registered providers and show here (remove default value for basic server)
 		</p>
 		<ul>
 			<li>
@@ -379,7 +385,7 @@ const SystemDocs = (section) => {
 					<input name="provider-type" class="hidden" type="text" value="basic-bartok-provider">
 
 					<label>Server URL</label>
-					<input name="provider-url" type="text" >
+					<input name="provider-url" type="text" value="http://localhost:3333/">
 
 					<button class="provider-test">Test Provider</test>
 					<button class="provider-save">Save Provider</test>
@@ -684,7 +690,7 @@ const showNothingOpen = () => {
 				min-width: 160px;
 			}
 			#editor-empty-logo {
-				opacity: .5;
+				opacity: .7;
 				color: rgb(var(--main-theme-highlight-color));
 				fill: currentColor;
 				width: 18em;
@@ -836,19 +842,40 @@ const showBinaryPreview = ({
 };
 
 let systemDocsDOM;
-const showSystemDocsView = ({ filename }) => {
+const showSystemDocsView = ({ filename, errors }) => {
 	if(!systemDocsDOM){
 		const editorContainer = document.getElementById('editor-container');
 		systemDocsDOM = SystemDocs();
 		editorContainer.appendChild(systemDocsDOM);
 	}
-	systemDocsDOM.querySelector('.thisSystemDoc')
+	if(filename){
+		systemDocsDOM.querySelector('.thisSystemDoc')
 		.innerHTML = SystemDocs(filename);
+	}
+	if(errors.length){
+		errors.forEach(error => {
+			const domForError = systemDocsDOM.querySelector('.' + error.op.replace('-done',''));
+			if(domForError){
+				domForError.classList.add('error');
+				return;
+			}
+			console.error(error);
+		});
+	}
 };
 
 function _Editor() {
 	const editor = inlineEditor(ChangeHandler);
 	let editorPreview, editorDom, nothingOpenDom, systemDocsView;
+	let systemDocsErrors = [];
+
+	const messageEditor = ({ op, result }) => {
+		if(result.error){
+			systemDocsErrors = systemDocsErrors.filter(x => x.op === op);
+			systemDocsErrors.push({ op, error: result.error });
+			showSystemDocsView({ errors: systemDocsErrors })
+		}
+	};
 
 	/*
 
@@ -896,7 +923,7 @@ function _Editor() {
 			&& e.target.classList.contains('provider-add-service')
 	});
 
-	attachListener((filename, mode) => {
+	const switchEditor = (filename, mode, fileBody) => {
 		if(mode === 'systemDoc'){
 			//TODO: does this HAVE to be ran in this case?
 			editor({ code: '', name: '', id: '', filename: '' });
@@ -906,7 +933,7 @@ function _Editor() {
 			editorDom && editorDom.classList.add('hidden');
 			nothingOpenDom && nothingOpenDom.classList.add('hidden');
 
-			systemDocsView = showSystemDocsView({ filename });
+			systemDocsView = showSystemDocsView({ filename, errors: systemDocsErrors });
 			return;
 		}
 
@@ -946,6 +973,10 @@ function _Editor() {
 		editorDom && editorDom.classList.remove('hidden');
 		nothingOpenDom && nothingOpenDom.classList.add('hidden');
 		systemDocsView && systemDocsView.classList.add('hidden');
+	};
+
+	attachListener({
+		switchEditor, messageEditor
 	});
 
 	//deprecate

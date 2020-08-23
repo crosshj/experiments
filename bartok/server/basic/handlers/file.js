@@ -39,59 +39,64 @@ const style = `
 
 const file = ({ dialog, win }) =>
     async (req, res) => {
-        const _path = (req.params || {})['0'];
-        const lastChar = (_path || '').slice(-1);
+        try {
+            const _path = (req.params || {})['0'];
+            const lastChar = (_path || '').slice(-1);
 
-        if(!_path){
-            res.redirect('/file/');
-            return;
-        }
-        if(_path === '/'){
-            res.send(style + 'TODO: browse for a file!');
-            return;
-        }
+            if(!_path){
+                res.redirect('/file/');
+                return;
+            }
+            if(_path === '/'){
+                res.send(style + 'TODO: browse for a file!');
+                return;
+            }
 
-        const resolvedPath = path.resolve(_path.slice(1));
-        console.log({ _path: resolvedPath });
+            const resolvedPath = path.resolve(_path.slice(1));
+            //console.log({ _path: resolvedPath });
 
-        const isDirectory = (p) => {
-            return fs.existsSync(p)
-                && fs.lstatSync(p).isDirectory();
-        };
+            const isDirectory = (p) => {
+                return fs.existsSync(p)
+                    && fs.lstatSync(p).isDirectory();
+            };
 
-        if (isDirectory(resolvedPath) && lastChar !== '/') {
-            res.redirect('/file/' + resolvedPath.replace(/\\/g, '/') + '/');
-            return;
-        }
+            if (isDirectory(resolvedPath) && lastChar !== '/') {
+                res.redirect('/file/' + resolvedPath.replace(/\\/g, '/') + '/');
+                return;
+            }
 
-        if (!isDirectory(resolvedPath)) {
-            res.sendFile(resolvedPath);
-        }
+            if (!isDirectory(resolvedPath)) {
+                res.sendFile(resolvedPath, {dotfiles: 'allow'});
+                return;
+            }
 
-        let result = fs.readdirSync(resolvedPath);
-        result = result
-            .map(x => {
-                try {
-                    if (isDirectory(path.resolve(_path.slice(1), x))) {
-                        return x + '/';
+            let result = fs.readdirSync(resolvedPath);
+            result = result
+                .map(x => {
+                    try {
+                        if (isDirectory(path.resolve(_path.slice(1), x))) {
+                            return x + '/';
+                        }
+                    } catch (e) {
+                        return undefined;
                     }
-                } catch (e) {
-                    return undefined;
-                }
-                return x;
-            })
-            .filter(x => !!x)
-            .sort((a, b) => {
-                if (a.slice(-1) === '/' && b.slice(-1) !== '/') return -1;
-                if (a.slice(-1) !== '/' && b.slice(-1) === '/') return 1;
-                return 0;
-            });
-        const response = [
-            '<a href="../">parent</a><br>',
-            ...result.map(x => `<a href="./${x}">${x}</a>`)
-        ].join('<br>\n');
+                    return x;
+                })
+                .filter(x => !!x)
+                .sort((a, b) => {
+                    if (a.slice(-1) === '/' && b.slice(-1) !== '/') return -1;
+                    if (a.slice(-1) !== '/' && b.slice(-1) === '/') return 1;
+                    return 0;
+                });
+            const response = [
+                '<a href="../">parent</a><br>',
+                ...result.map(x => `<a href="./${x}">${x}</a>`)
+            ].join('<br>\n');
 
-        res.send(style + response);
+            res.send(style + response);
+        } catch(e){
+            res.send(e);
+        }
     };
 
 module.exports = file;
