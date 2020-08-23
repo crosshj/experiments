@@ -10,6 +10,7 @@ const port = 3333;
 
 const tree = require('./handlers/tree.js');
 const file = require('./handlers/file.js');
+const filePost = require('./handlers/filePost.js');
 
 (async () => {
   await app.whenReady();
@@ -32,6 +33,8 @@ const file = require('./handlers/file.js');
   server.get('/tree', tree({ dialog, win }));
 
   server.get('/file*', file({ dialog, win }));
+
+  server.post('/file*', filePost({ dialog, win }));
 
   server.get('/proxy/*', (req, res) => {
     const _path = (req.params || {})['0'];

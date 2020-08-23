@@ -19,6 +19,17 @@ const flattenTree = (tree) => {
     return results;
 };
 
+const unique = (array, fn) => {
+    const result = [];
+    const map = new Map();
+    for (const item of array) {
+        if( map.has(fn(item)) ) continue;
+        map.set(fn(item), true);
+        result.push(item);
+    }
+    return result;
+};
+
 function exampleReact() {
     return `
 // (p)react hooks
@@ -140,14 +151,7 @@ const dummyService = (_id, _name) => ({
     tree: defaultTree(_name)
 });
 
-async function getFileContents({ filename, store, cache, storagePath }) {
-    const cachedFile = await store.getItem(filename);
-    let contents;
-
-    // https://developer.mozilla.org/en-US/docs/Web/API/Request/cache
-    if (cachedFile && cache !== 'reload') {
-        return cachedFile;
-    }
+async function fetchFileContents(filename) {
     const storeAsBlob = [
         "image/", "audio/", "video/", "wasm"
     ];
@@ -160,12 +164,24 @@ async function getFileContents({ filename, store, cache, storagePath }) {
     const fetched = await fetch(filename);
     const contentType = fetched.headers.get('Content-Type');
 
-    contents =
+    let _contents =
         storeAsBlob.find(x => contentType.includes(x)) &&
-        !storeAsBlobBlacklist.find(x => contentType.includes(x)) &&
-        !fileNameBlacklist.find(x => filename.includes(x))
+            !storeAsBlobBlacklist.find(x => contentType.includes(x)) &&
+            !fileNameBlacklist.find(x => filename.includes(x))
             ? await fetched.blob()
             : await fetched.text();
+    return _contents;
+}
+
+async function getFileContents({ filename, store, cache, storagePath }) {
+    const cachedFile = await store.getItem(filename);
+    let contents;
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/Request/cache
+    if (cachedFile && cache !== 'reload') {
+        return cachedFile;
+    }
+    contents = await fetchFileContents(filename);
     if(storagePath){
         store.setItem('.' + storagePath.replace('/welcome/', '/.welcome/'), contents);
     } else {
@@ -276,6 +292,61 @@ const pathToRegex = {
     '/service/delete/:id?': (() => {
         const regex = new RegExp(
             /^((?:.*))\/service\/delete(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/service/provider/test/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/provider\/test(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/service/provider/create': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/provider\/create(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/service/provider/read/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/provider\/read(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/service/provider/update/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/provider\/update(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
+        );
+        return {
+            match: url => regex.test(url),
+            params: url => ({
+                id: regex.exec(url)[2]
+            })
+        }
+    })(),
+    '/service/provider/delete/:id?': (() => {
+        const regex = new RegExp(
+            /^((?:.*))\/service\/provider\/delete(?:\/((?:[^\/]+?)))?(?:\/(?=$))?$/i
         );
         return {
             match: url => regex.test(url),
@@ -399,11 +470,14 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
 
         return async (params, event) => {
             const { path, query } = params;
-            const filename = path.split('/').pop();
-            const previewMode = (params.query||'').includes('preview');
+            const cleanPath = decodeURI(path.replace('/::preview::/', ''));
+            const previewMode = path.includes('/::preview::/');
+            const filename = previewMode
+                ? cleanPath.split('/').pop()
+                : path.split('/').pop();
             let xformedFile;
 
-            const file = await store.getItem(`./${base}/${path}`);
+            const file = await store.getItem(`./${base}/${cleanPath}`);
             let fileJSONString;
             try {
                 if(typeof file !== 'string'){
@@ -597,8 +671,37 @@ fetch, cache, DB, storage - these should be passed in
 // TODO: what if this handler needs things to be stored when it is first loaded?
 
 */
-
-
+class ProviderManager {
+    constructor(store) {
+        this.store = store;
+    }
+    async create(provider){
+        return await this.store
+            .setItem(provider.id, provider);
+    }
+    async read(id){
+        if(!id){
+            return await this.store.keys();
+        }
+        return await this.store
+            .getItem(id);
+    }
+    async update(id, updates){
+        const provider = await this.read(id);
+        if(updates.id && updates.id !== id){
+            await this.delete(id);
+        }
+        return await this.store
+            .setItem(
+                updates.id || provider.id,
+                {...provider, ...updates}
+            );
+    }
+    async delete(id){
+        return await this.store
+            .removeItem(id);
+    }
+}
 
 (() => {
     console.warn('Service Request Handler - init');
@@ -624,10 +727,106 @@ fetch, cache, DB, storage - these should be passed in
             storeName: 'meta', // Should be alphanumeric, with underscores.
             description: 'directory stucture, service type, etc'
         });
+    const providerStore = localforage
+        .createInstance({
+            driver: driverOrder,
+            name: 'serviceRequest',
+            version: 1.0,
+            storeName: 'provider',
+            description: 'services which connect browser ui to outside world'
+        });
+    /* */
+    const providerManager = new ProviderManager(providerStore);
+    /* */
     //console.log({ driver: store.driver() })
 
     // handlerStore comes from SW context
     let app = fakeExpress({ store, handlerStore, metaStore });
+
+    const providerCreateServiceHandler = async (event) => {
+        console.warn('providerCreateServiceHandler');
+        try {
+            const body = await event.request.json();
+            const { providerType, providerUrl } = body;
+            const isSupported = ['basic-bartok-provider'].includes(providerType);
+            if(!isSupported){
+                return JSON.stringify({
+                    error: `Unsupported provider type: ${providerType}`
+                }, null, 2);
+            }
+            const provider = await providerManager.read(providerUrl);
+            if(!provider){
+                return JSON.stringify({
+                    error: `Provider does not exist: ${providerUrl}`
+                }, null, 2);
+            }
+            const treeUrl = (providerUrl + '/tree/').replace('//tree/', '/tree/');
+            const fileUrl = (providerUrl + '/file/').replace('//file/', '/file/');
+            const allServices = [];
+            await metaStore
+                .iterate((value, key) => {
+                    allServices.push(value);
+                });
+
+            const baseRes = await fetch(treeUrl);
+            if(baseRes.status !== 200){
+                return JSON.stringify({
+                    error: `Failed to connect to provider at: ${providerUrl}`
+                },null,2);
+            }
+            const {
+                files: providerFiles,
+                root: providerRoot,
+                tree: providerTree
+            } = await baseRes.json();
+            const providerRootName = providerRoot.split('/').pop();
+
+            const foundService = allServices.find(x => x.name === providerRootName);
+            const id = foundService
+                ? foundService.id
+                : allServices
+                    .reduce((all, one) => {
+                        return Number(one.id) >= all
+                            ? Number(one.id) + 1
+                            : all
+                        }, 0
+                    );
+
+            const service = {
+                name: providerRootName,
+                id,
+                providerRoot,
+                providerUrl,
+                tree: providerTree
+            };
+            await metaStore.setItem(id, service);
+            service.code = [];
+            for (let f = 0; f < providerFiles.length; f++) {
+                const filePath = providerFiles[f];
+                const fileContents = await fetchFileContents(`${fileUrl}${providerRoot}/${filePath}`);
+                store.setItem(`./${providerRootName}/${filePath}`, fileContents);
+                service.code.push({
+                    name: filePath.split('/').pop(),
+                    path: `./${providerRootName}/${filePath}`,
+                    code: typeof fileContents === 'string' ? fileContents : ''
+                });
+            }
+            await app.addServiceHandler({
+                name: providerRootName,
+                msg: 'served from fresh baked'
+            });
+            return JSON.stringify({
+                result: {
+                    services: [ service ]
+                }
+            }, null, 2);
+        } catch(e) {
+            console.error(e);
+            return JSON.stringify({
+                error: e
+            },null,2);
+        }
+    }
 
     app.post('/service/create/:id?', async (params, event) => {
         // event.request.arrayBuffer()
@@ -635,9 +834,13 @@ fetch, cache, DB, storage - these should be passed in
         // event.request.json()
         // event.request.text()
         // event.request.formData()
-
-        const { name } = (await event.request.json()) || {};
         const { id } = params;
+
+        if(id === "provider"){
+            return await providerCreateServiceHandler(event);
+        }
+        const { name } = (await event.request.json()) || {};
+
         if(!id){
             return JSON.stringify({ params, event, error: 'id required for service create!' }, null, 2);
         }
@@ -683,6 +886,7 @@ fetch, cache, DB, storage - these should be passed in
             }
         }, null, 2);
     });
+
     app.get('/service/read/:id?', async (params, event) => {
         //also, what if not "file service"?
         //also, what if "offline"?
@@ -760,7 +964,7 @@ fetch, cache, DB, storage - these should be passed in
                 .map(x => ({ id: x.id, name: x.name }));
 
             return JSON.stringify({
-                result: allServices
+                result: unique(allServices, x => x.id)
             }, null, 2);
         }
 
@@ -790,11 +994,38 @@ fetch, cache, DB, storage - these should be passed in
         //const foo = await store.getItem("foo");
 
     });
+
     app.post('/service/change', async (params, event) => {
         const body = await event.request.json();
         const { path, code } = body;
         //TODO: in the future (maybe) store these changes to a change holding area
         await store.setItem(path, code);
+
+        const parentServiceName = path.split('/').slice(1, 2).join('');
+        const foundParent = await metaStore
+            .iterate((value, key) => {
+                if(value.name === parentServiceName){
+                    return value;
+                }
+            });
+        if(foundParent && foundParent.providerUrl){
+            try {
+                const { providerUrl, providerRoot } = foundParent;
+                const pathWithoutParent = path.replace('./' + parentServiceName, '' );
+                const filePostUrl = `${providerUrl}file/${providerRoot}${pathWithoutParent}`;
+                const filePostRes = await fetch(filePostUrl, {
+                    method: 'POST',
+                    body: code
+                });
+                const filePostJson = await filePostRes.json();
+                if(filePostJson.error){
+                    return JSON.stringify(filePostJson, null,2);
+                }
+            }catch(saveToProviderError){
+                return JSON.stringify({ saveToProviderError }, null,2);
+            }
+        }
+
         return JSON.stringify({ result: { path, code }}, null,2)
     });
 
@@ -804,7 +1035,6 @@ fetch, cache, DB, storage - these should be passed in
             const body = await event.request.json();
             const { name } = body;
 
-            // enable this when sure about correctness
             await metaStore.setItem(id, {
                 name, id, tree: body.tree
             });
@@ -892,6 +1122,100 @@ fetch, cache, DB, storage - these should be passed in
     });
 
 
+    app.post('/service/provider/test/:id?', async (params, event) => {
+        try {
+            const body = await event.request.json();
+            const { providerType, providerUrl } = body;
+            const isSupported = ['basic-bartok-provider'].includes(providerType);
+            if(!isSupported){
+                return JSON.stringify({
+                    error: `Unsupported provider type: ${providerType}`
+                },null,2);
+            }
+            const fileUrl = (providerUrl + '/file/').replace('//file/', '/file/');
+            const treeUrl = (providerUrl + '/tree/').replace('//tree/', '/tree/');
+            try {
+                const baseRes = await fetch(providerUrl);
+                if(baseRes.status !== 200){
+                    return JSON.stringify({
+                        error: `Failed to connect to provider at: ${providerUrl}`
+                    },null,2);
+                }
+            } catch(e) {
+                return JSON.stringify({
+                    error: `Failed to connect to provider at: ${providerUrl}`
+                },null,2);
+            }
+            try {
+                const fileRes = await fetch(fileUrl);
+                if(fileRes.status !== 200){
+                    return JSON.stringify({
+                        error: `Failed to connect to provider at: ${fileUrl}`
+                    },null,2);
+                }
+            } catch(e) {
+                return JSON.stringify({
+                    error: `Failed to connect to provider at: ${fileUrl}`
+                },null,2);
+            }
+            try {
+                const treeRes = await fetch(treeUrl);
+                if(treeRes.status !== 200){
+                    return JSON.stringify({
+                        error: `Failed to connect to provider at: ${treeUrl}`
+                    },null,2);
+                }
+            } catch(e) {
+                return JSON.stringify({
+                    error: `Failed to connect to provider at: ${treeUrl}`
+                },null,2);
+            }
+            return JSON.stringify({
+                success: true
+            },null,2);
+        } catch(e){
+            return JSON.stringify({
+                error: e
+            },null,2);
+        }
+    });
+    app.post('/service/provider/create', async (params, event) => {
+        try {
+            const body = await event.request.json();
+            const { providerType, providerUrl } = body;
+            const isSupported = ['basic-bartok-provider'].includes(providerType);
+            if(!isSupported){
+                return JSON.stringify({
+                    error: `Unsupported provider type: ${providerType}`
+                }, null, 2);
+            }
+            const provider = await providerManager.create({
+                id: providerUrl,
+                url: providerUrl
+            });
+            return JSON.stringify({
+                success: true,
+                provider
+            }, null, 2);
+        } catch(e) {
+            return JSON.stringify({
+                error: e
+            }, null, 2);
+        }
+    });
+    app.post('/service/provider/read/:id?', async (params, event) => {
+        console.error('not implemented: provider read.  Should return one or all saved provider details.');
+        return JSON.stringify({ error: 'not implemented: provider read.  Should return one or all saved provider details.' });
+    });
+    app.post('/service/provider/update/:id?', async (params, event) => {
+        console.error('not implemented: provider update.  Should update provider details.');
+        return JSON.stringify({ error: 'not implemented: provider update.  Should update provider details.' });
+    });
+    app.post('/service/provider/delete/:id?', async (params, event) => {
+        console.error('not implemented: provider delete.  Should delete saved provider.');
+        return JSON.stringify({ error: 'not implemented: provider delete.  Should delete saved provider.' });
+    });
+
 
     app.get('/manage/:id?', async (params, event) => {
         console.log('/manage/:id? triggered');
@@ -934,7 +1258,7 @@ fetch, cache, DB, storage - these should be passed in
                     return response;
                 }
 
-                if(event.request.url.includes('preview')){
+                if(event.request.url.includes('/::preview::/')){
                     response = new Response(res, {headers:{'Content-Type': 'text/html'}});
                     return response;
                 }

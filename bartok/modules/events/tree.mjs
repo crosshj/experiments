@@ -3,8 +3,20 @@ import { getDefaultFile, getState } from '../state.mjs';
 
 import ext from '../../../shared/icons/seti/ext.json.mjs';
 
-
 let tree;
+
+
+const sortFn = (a, b) => {
+	const afilename = a.name.toLowerCase().split('.').slice(0,-1).join('.') || a.name;
+	const bfilename = b.name.toLowerCase().split('.').slice(0,-1).join('.') || b.name;
+	if(afilename < bfilename) { return -1; }
+	if(afilename > bfilename) { return 1; }
+	const aExt = a.name.replace(afilename, '');
+	const bExt = b.name.replace(bfilename, '');
+	if(aExt < bExt) { return -1; }
+	if(aExt > bExt) { return 1; }
+	return 0;
+};
 
 const flatten = (obj) => {
 	const array = Array.isArray(obj) ? obj : [obj];
@@ -47,11 +59,7 @@ const fileTreeConvert = (input, converted=[]) => {
 			children: fileTreeConvert(input[k])
 		})
 	});
-	return converted.sort((a, b) => {
-		if(a.name < b.name) { return -1; }
-    if(a.name > b.name) { return 1; }
-    return 0;
-	});
+	return converted.sort(sortFn);
 };
 
 function getFileType(fileName=''){
@@ -437,51 +445,19 @@ function attachListener(treeView, JSTreeView, updateTree, {
 			// this sort will only be affective on root level
 			const files = children
 				.filter(x => result[0].code.find(y => y.name === x.name))
-				.sort((a, b) => {
-					if (a.name.toLowerCase() > b.name.toLowerCase()) {
-						return 1;
-					}
-					if (b.name.toLowerCase() > a.name.toLowerCase()) {
-						return -1;
-					}
-					return 0;
-				});
+				.sort(sortFn);
 			const folders = children
 				.filter(x => !result[0].code.find(y => y.name === x.name))
-				.sort((a, b) => {
-					if (a.name.toLowerCase() > b.name.toLowerCase()) {
-						return 1;
-					}
-					if (b.name.toLowerCase() > a.name.toLowerCase()) {
-						return -1;
-					}
-					return 0;
-				});
+				.sort(sortFn);
 
 			function sortChildren(folder){
 				const folders = folder.children
 					.filter(x => x.children.length > 0)
 					.map(sortChildren)
-					.sort((a, b) => {
-						if (a.name.toLowerCase() > b.name.toLowerCase()) {
-							return 1;
-						}
-						if (b.name.toLowerCase() > a.name.toLowerCase()) {
-							return -1;
-						}
-						return 0;
-					});
+					.sort(sortFn);
 				const files = folder.children
 					.filter(x => x.children.length <= 0)
-					.sort((a, b) => {
-						if (a.name.toLowerCase() > b.name.toLowerCase()) {
-							return 1;
-						}
-						if (b.name.toLowerCase() > a.name.toLowerCase()) {
-							return -1;
-						}
-						return 0;
-					});
+					.sort(sortFn);
 				folder.children = [...folders, ...files];
 				return folder;
 			}
