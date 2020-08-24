@@ -1,7 +1,6 @@
 why I keep vscode open
 ======================
 
-- [ ] cant CRUD/save a file with service worker
 - [ ] service worker flow is not merged to main flow
 - [ ] no search in project / folder
 
@@ -13,6 +12,7 @@ why I keep vscode open
 - [ ] doesn't recall scroll position
 - [X] doesn't recall code collapse
 
+- [X] cant CRUD/save a file with service worker
 - [X] highlight is weird (themeing and color issues)
 - [X] no search in file
 
