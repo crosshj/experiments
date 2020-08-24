@@ -1030,6 +1030,23 @@ notes-section.loading:after {
   font-size: inherit !important;
 }
 
+.tree-leaf.new.creating .tree-leaf-content .tree-leaf-text input[type="text"] {
+  border: 1px solid transparent !important;
+  padding-left: 0px !important;
+  background-color: transparent !important;
+}
+
+@keyframes FileCreateAnimation {
+  50% { background-position: 100% 50%; }
+}
+.tree-leaf.new.creating {
+  background: linear-gradient(270deg, #88888859, #8888881a);
+  background-size: 400% 400%;
+  background-position: 0% 50%;
+  animation: FileCreateAnimation linear 0.4s infinite alternate;
+}
+
+
 #service-fields, .editor-controls {
   display: none !important;
 }

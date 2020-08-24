@@ -134,11 +134,14 @@ const state = {
 	changedFiles: {}
 };
 
-function getState({ folderPaths }={}){
+function getState({ folderPaths, serviceRelative }={}){
 	//TODO: should probably pull only latest state change
 	let paths;
 	try {
-		paths = flattenTree(currentService.tree, folderPaths);
+		const tree = serviceRelative
+			? currentService.tree[currentService.name]
+			: currentService.tree;
+		paths = flattenTree(tree, folderPaths);
 	} catch(e) {
 
 	}

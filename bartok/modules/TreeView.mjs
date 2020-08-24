@@ -240,6 +240,9 @@ const updateTree = (treeView) => (change, { name, id, file }) => {
 }
 
 function treeDomNodeFromPath(path){
+	if(!path){
+		return document.querySelector('#tree-view');
+	}
 	const leaves = Array.from(document.querySelectorAll('#tree-view .tree-leaf-content'));
 	const name = path.split('/').pop()
 	const found = leaves.find(x => JSON.parse(x.dataset.item).name === name)
@@ -251,12 +254,27 @@ function newFile({ parent, onDone }){
 		return console.error('newFile requires an onDone event handler');
 	}
 	const parentDOM = treeDomNodeFromPath(parent);
-	const expando = parentDOM.querySelector('.tree-expando');
-	expando.classList.remove('closed');
-	expando.classList.add('expanded', 'open');
-	const childLeaves = parentDOM.parentNode.querySelector('.tree-child-leaves');
-	childLeaves.classList.remove('hidden');
-	const nearbySibling = childLeaves.querySelector('.tree-leaf');
+	let nearbySibling;
+	if(parent){
+		const expando = parentDOM.querySelector('.tree-expando');
+		expando.classList.remove('closed');
+		expando.classList.add('expanded', 'open');
+		const childLeaves = parentDOM.parentNode.querySelector('.tree-child-leaves');
+		childLeaves.classList.remove('hidden');
+		nearbySibling = childLeaves.querySelector('.tree-leaf');
+	} else {
+		try {
+			nearbySibling = Array.from(parentDOM.children)
+				.find(x => JSON.parse(
+					x.querySelector('.tree-leaf-content').dataset.item
+					).children.length === 0
+				)
+		} catch(e) {}
+	}
+	if(!nearbySibling){
+		console.error('unable to add new file; error parsing DOM')
+		return;
+	}
 	const paddingLeft = nearbySibling
 		.querySelector('.tree-leaf-content')
 		.style.paddingLeft;
@@ -276,9 +294,10 @@ function newFile({ parent, onDone }){
 
 		fileNameInput.removeEventListener('blur', finishInput);
 		fileNameInput.removeEventListener('keyup', finishInput);
-		newFileNode.parentNode.removeChild(newFileNode);
-
 		if(!filename){ return; }
+
+		newFileNode.classList.add('creating');
+		fileNameInput.disabled = true;
 		onDone(filename, parent);
 	};
 	fileNameInput.addEventListener("blur", finishInput);

@@ -209,14 +209,14 @@ const getParent = (data) => {
 	let parent;
 	if(data.type === 'folder'){
 		try {
-			const state = getState({ folderPaths: true });
+			const state = getState({ folderPaths: true, serviceRelative: true });
 			parent = state.paths
 				.find(x => x.name === data.name)
 				.path;
 		}catch(e){}
 	} else {
 		try{
-			const state = getState();
+			const state = getState({ serviceRelative: true });
 			parent = state.paths
 				.find(x => x.name === data.name)
 				.path
@@ -239,6 +239,14 @@ const contextMenuSelectHandler = ({ newFile, newFolder }) => (e) => {
 			parent,
 			onDone: (filename, parent) => {
 				if(!filename){ return; }
+
+				const storeTree = JSON.parse(sessionStorage.getItem('tree'));
+				storeTree.expanded = storeTree.expanded || [];
+				const parentName = parent.split('/').pop();
+				if(!storeTree.expanded.includes(parentName)){
+					storeTree.expanded.push(parentName);
+					sessionStorage.setItem('tree', JSON.stringify(storeTree));
+				}
 				const event = new CustomEvent('operations', {
 					bubbles: true,
 					detail: {

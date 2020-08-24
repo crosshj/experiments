@@ -29,6 +29,7 @@ module.exports = {
         './__services/**/*',
         './server/**/*'
     ],
+    injectChanges: false,
     notify: false,
     middleware: [
         function (req, res, next) {
