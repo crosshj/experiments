@@ -7,11 +7,11 @@ why I keep vscode open
 - [ ] awkward integration with file system
 - [ ] buggy file management
 
-- [ ] can't dev/edit bartok in bartok
 
 - [ ] doesn't recall scroll position
 - [X] doesn't recall code collapse
 
+- [X] can't dev/edit bartok in bartok
 - [X] cant CRUD/save a file with service worker
 - [X] highlight is weird (themeing and color issues)
 - [X] no search in file

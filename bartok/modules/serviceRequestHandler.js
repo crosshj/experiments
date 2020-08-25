@@ -1233,13 +1233,15 @@ class ProviderManager {
     async function serviceAPIRequestHandler(event) {
         console.warn('Service Request Handler - usage');
 
-        const serviceAPIMatch = await app.find(event.request.url);
-        if (!serviceAPIMatch) {
-            return fetch(event.request.url);
-        }
+
         //TODO: should console log path here so it's known what handler is being used
         event.respondWith(
             (async () => {
+                const serviceAPIMatch = await app.find(event.request.url);
+                if (!serviceAPIMatch) {
+                    return fetch(event.request.url);
+                }
+
                 const res = await serviceAPIMatch.exec(event);
                 let response;
 

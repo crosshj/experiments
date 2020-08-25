@@ -279,7 +279,7 @@ function _Terminal(){
 
 	fitAddon.fit();
 
-	if(true || window.FUN){
+	if(window.FUN ){
 		//const whichMotd = Math.floor(Math.random() * motd.length);
 		const whichMotd = 1;
 		term.write(
