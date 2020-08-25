@@ -304,7 +304,10 @@ function _Terminal(){
 	};
 
 	let alreadyUpdatedOnce;
-	function updateIframeRaw({ url, src}){
+	function updateIframeRaw({ url, src, soft}){
+		if(url && soft && previewIframe.src === new URL(url, document.baseURI).href){
+			return;
+		}
 		previewContainer.removeChild(previewIframe);
 		previewIframe = document.createElement('iframe');
 		previewContainer.appendChild(previewIframe);
@@ -338,6 +341,7 @@ function _Terminal(){
 
 	function viewUpdate({ supported, view, type, doc, docName, locked, url, wait=1000 }){
 		if(locked !== undefined
+			&& type !== "viewSelect"
 			&& ![supported, view, type, doc, docName, url].find(x => x !== undefined)
 		){
 			updateLockIcon(locked);
@@ -375,14 +379,12 @@ function _Terminal(){
 			if(view !== 'preview'){
 				previewControls.forEach(pc => pc.classList.add('hidden'));
 				previewContainer.classList.add('hidden');
-			} else {
-				previewControls.forEach(pc => pc.classList.remove('hidden'));
-				if(!locked || !alreadyUpdatedOnce) {
-					updateIframe({ src, url });
-				}
-
-				previewContainer.classList.remove('hidden');
+				return;
 			}
+
+			previewControls.forEach(pc => pc.classList.remove('hidden'));
+			previewContainer.classList.remove('hidden');
+			updateIframe({ src, url, soft: true });
 			return;
 		}
 

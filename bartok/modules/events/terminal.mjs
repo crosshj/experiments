@@ -271,7 +271,15 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 			</body>
 		</html>
 	`;
-	viewUpdate({ supported: hasTemplate, type, doc, docName: currentFileName, locked, ...event.detail });
+	const supported = hasTemplate || isHTML || isJSX || isSVC3 || isSVG;
+	viewUpdate({
+		supported,
+		type,
+		doc,
+		docName: currentFileName,
+		locked,
+		...event.detail
+	});
 	return;
 };
 
@@ -358,12 +366,12 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		backupForLock.currentFile = doc;
 		backupForLock.currentFileName = next||name;
 	}
-	if(!doc && currentView === "preview"){
+	if(!doc){
 		sessionStorage.setItem('preview', 'noPreview');
 		viewUpdate({ supported: false, doc: NO_PREVIEW });
 		return;
 	}
-	if(doc && currentView === "preview"){
+	if(doc){
 		const supported = hasTemplate || isHTML || isJSX || isSVC3;
 		const viewArgs = { supported, type, locked, doc, docName: next || name, ...event.detail };
 		sessionStorage.setItem('preview', JSON.stringify(viewArgs));
