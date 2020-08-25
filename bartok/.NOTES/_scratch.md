@@ -17,6 +17,20 @@ why I keep vscode open
 - [X] no search in file
 
 
+2020-08-24 thoughts about who customer is
+=========================================
+- new to programming
+- average dev tired of BS
+  - having to install to get started
+  - mess of services spread all over the place
+- creative type that wants to make music, games, or art
+- blogger, note keeper, mind mapper
+- presentation giver
+- cloud dev ops
+- teams or team builders that want it to be easy for any/all of the above
+
+(maybe should add this to MARTKETING.md
+
 
 2020-08-16 Note and Musing
 ==========================
