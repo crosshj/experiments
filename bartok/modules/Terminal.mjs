@@ -236,6 +236,16 @@ function _Terminal(){
 		term.write('\x1B[38;5;14m \r\n∑ \x1B[0m');
 	}
 
+	term.attachCustomKeyEventHandler((event)=> {
+		const F5 = 116;
+		const F11 = 122;
+		const keysToBubbleUp = [
+			F5, F11
+		];
+		return !keysToBubbleUp
+			.includes(event.which || event.keyCode);
+	});
+
 	term.onKey((e) => {
 		const printable = !e.domEvent.altKey && !e.domEvent.altGraphKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
 		if (e.domEvent.keyCode === 13) {
