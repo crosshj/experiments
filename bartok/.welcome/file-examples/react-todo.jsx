@@ -19,19 +19,21 @@ const App = () => {
 
   return (
     <div class="app">
-      <Style />
-      <Header name="⚡ todo ⚡"/>
-      <div id="actions-top">
-        <UploadButton replace={replace} />
-        <DownloadButton />
+      <div class="container">
+        <Style />
+        <Header name="⚡ todo ⚡"/>
+        <div id="actions-top">
+          <UploadButton replace={replace} />
+          <DownloadButton />
+        </div>
+        <Body
+          todos={todos}
+          add={add}
+          check={checkItem}
+          reorder={reorder}
+        />
+        <Footer filter={filterTodos} active={activeFilter}/>
       </div>
-      <Body
-        todos={todos}
-        add={add}
-        check={checkItem}
-        reorder={reorder}
-      />
-      <Footer filter={filterTodos} active={activeFilter}/>
     </div>
   );
 };
@@ -352,14 +354,26 @@ const Style = () => {
       }
       body {
         background: var(--bg-color);
-        zoom: 0.65;
+        zoom: 0.64;
       }
       .app {
-        margin: 3em;
+        margin: 0 auto;
+        max-width: 85em;
+        position: absolute;
+        left: 0; right: 0;
+        top: 0; bottom: 0;
+      }
+      .container {
+        position: relative;
+        width: calc(100% - 4em);
+        height: 100%;
+        overflow: hidden;
+        padding: 0 2em;
       }
       .todo-header {
         display: flex;
         justify-content: space-around;
+        margin-top: 1.5em;
       }
       .todo-body input {
         background: #272727;
@@ -463,7 +477,7 @@ const Style = () => {
         );
         position: absolute;
         left: 10px;
-        right: 30px;
+        right: 0;
       }
       li.seperator:hover:before{
         background: repeating-linear-gradient(
@@ -539,7 +553,7 @@ const Style = () => {
       .todo-footer {
         position: absolute;
         bottom: 20px;
-        width: calc(100% - 6em);
+        width: calc(100% - 4em);
         display: flex;
         justify-content: space-between;
       }
