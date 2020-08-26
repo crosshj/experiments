@@ -351,11 +351,11 @@ function _Terminal(){
 
 	function viewUpdate({ supported, view, type, doc, docName, locked, url, wait=1000 }){
 		if(locked !== undefined
-			&& type !== "viewSelect"
-			&& ![supported, view, type, doc, docName, url].find(x => x !== undefined)
+			// && type !== "viewSelect"
+			// && ![supported, view, type, doc, docName, url].find(x => x !== undefined)
 		){
 			updateLockIcon(locked);
-			return;
+			// return;
 		}
 		if(!supported && doc && doc.includes('<!-- NO_PREVIEW -->')){
 			updateIframeRaw({ src: doc });

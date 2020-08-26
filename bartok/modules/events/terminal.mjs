@@ -17,6 +17,7 @@ if(lsLocked === null){
 	localStorage.setItem("previewLocked", "true");
 }
 locked = lsLocked === "true";
+
 let currentFile;
 let currentFileName;
 let currentView = localStorage.getItem('rightPaneSelected');
@@ -286,6 +287,7 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 //NOTE: this also handles fileClose events, thus next||name below
 let firstLoadSelect = true;
 const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
+	console.log('terminal-file select');
 	if(firstLoadSelect){
 		firstLoadSelect = false;
 		return;
@@ -374,7 +376,6 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	if(doc){
 		const supported = hasTemplate || isHTML || isJSX || isSVC3;
 		const viewArgs = { supported, type, locked, doc, docName: next || name, ...event.detail };
-		sessionStorage.setItem('preview', JSON.stringify(viewArgs));
 		viewUpdate(viewArgs);
 		return;
 	}
@@ -446,6 +447,7 @@ const fileChangeHandler = ({ viewUpdate }) => (event) => {
 const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 	const { type, detail } = event;
 	const { action } = detail;
+
 	if(type==="termMenuAction" && action === "lock"){
 		localStorage.setItem("previewLocked", !locked);
 		locked = !locked;
@@ -454,10 +456,6 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 	terminalActions({ type, detail, locked, ...event.detail });
 
 	if(action === 'full-screen'){
-		return;
-	}
-
-	if(locked){
 		return;
 	}
 
@@ -668,7 +666,7 @@ const operationDone = ({ viewUpdate }) => (event) => {
 			currentFileName = savedPreview.docName;
 			backupForLock.currentFile = savedPreview.doc;
 			backupForLock.currentFileName = savedPreview.docName;
-			viewUpdate(savedPreview);
+			viewUpdate({ ...savedPreview, locked, view: currentView });
 			return;
 		}
 	}
@@ -837,6 +835,9 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 
 	const stateBoundViewUpdate = ({ supported, view, type, doc, docName, locked }) => {
 		if(!supported || docName.includes('.json')){
+			if(!locked) {
+				sessionStorage.setItem('preview', 'noPreview');
+			}
 			return viewUpdate({ supported, view, type, doc, docName, locked });
 		}
 		const state = getState();
@@ -850,7 +851,11 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 			+ '/::preview::/';
 		} catch(e){}
 
-		return viewUpdate({ supported, view, type, doc, docName, locked, url });
+		const viewArgs = { supported, view, type, doc, docName, locked, url };
+		if(!locked) {
+			sessionStorage.setItem('preview', JSON.stringify(viewArgs));
+		}
+		return viewUpdate(viewArgs);
 	};
 
 	attach({
