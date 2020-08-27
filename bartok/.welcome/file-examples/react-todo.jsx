@@ -540,8 +540,9 @@ const Style = () => {
         font-stretch: ultra-expanded;
         color: transparent;
       }
-      li:hover {
-        color: #aaa !important;
+      li:hover,
+      li:hover span {
+        color: #bbb !important;
         background: #444;
       }
       li:hover:after,
