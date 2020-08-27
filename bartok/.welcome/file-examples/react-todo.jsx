@@ -4,7 +4,7 @@ const App = () => {
   const {
     value, addTodo, checkItem, filterTodos, replaceAll, reorder
   } = useStore();
-  const { todos=[], activeFilter='all' } = value || {};
+  const {todos=[], counts, activeFilter='all' } = value || {};
 
   const add = (event) => {
     const inputText = document.getElementById('inputBox').value;
@@ -32,7 +32,7 @@ const App = () => {
           check={checkItem}
           reorder={reorder}
         />
-        <Footer filter={filterTodos} active={activeFilter}/>
+        <Footer filter={filterTodos} active={activeFilter} counts={counts}/>
       </div>
     </div>
   );
@@ -110,14 +110,17 @@ const Body = ({ todos=[], add, check, reorder }) => {
   );
 };
 
-const Footer = ({ filter, active }) => {
+const Footer = ({ filter, active, counts={} }) => {
   return (
     <div class="todo-footer">
       {['all', 'active', 'completed'].map((menuItem, i) => (
         <div
           className={active===menuItem ? 'active' : ''}
           onClick={() => filter(menuItem)}
-        >{menuItem}</div>
+        >
+          <span>{menuItem}</span>
+          <span class="todo-count">{counts[menuItem] || '23'}</span>
+        </div>
       ))}
     </div>
   );
@@ -256,13 +259,20 @@ function useStore({ filter }={}) {
     }
   }
 
+  const getCounts = (t=[]) => ({
+    all: t.length,
+    active: t.filter(x => x.status === 'active').length,
+    completed: t.filter(x => x.status !== 'active').length,
+  });
+
   const reorder = useCallback(({ item, order }) => {
-    const { todos = [], activeFilter='all' } = value;
+    const { todos = [], activeFilter='all', counts } = value;
 
     todos.find(x => x.value === item).order = order;
 
     setValue({
       todos,
+      counts,
       activeFilter
     });
   }, [value]);
@@ -271,14 +281,19 @@ function useStore({ filter }={}) {
     const { todos = [], activeFilter='all' } = value;
     setValue({
       todos: submitted,
+      counts: getCounts(submitted),
       activeFilter
     });
   }, [value]);
 
   const addTodo = useCallback((submitted) => {
     const { todos = [], activeFilter='all' } = value;
+    const counts = getCounts(todos);
+    counts.active++;
+    counts.all++;
     setValue({
       todos: todos.concat({ value: submitted, status: 'active' }),
+      counts,
       activeFilter
     });
   }, [value]);
@@ -289,13 +304,18 @@ function useStore({ filter }={}) {
     theItem.status = theItem.status === 'active'
       ? 'completed'
       : 'active';
-    setValue({ todos, activeFilter });
+    setValue({
+      todos,
+      counts: getCounts(todos),
+      activeFilter
+    });
   }, [value]);
 
   const filterTodos = useCallback((which) => {
-    const { todos = [] } = value;
+    const { todos = [], counts } = value;
     setValue({
       todos,
+      counts,
       activeFilter: which
     });
   }, [value]);
@@ -331,6 +351,15 @@ function useStore({ filter }={}) {
       x.order = i;
       return x;
     });
+
+  state.counts = getCounts(value.todos);
+  /*
+  const counts = {
+    all: todos.length,
+    active: todos.filter(x => x.status === 'active').length,
+    completed: todos.filter(x => x.status !== 'active').length,
+  };
+  */
 
   localStorage.setItem('react-todo', JSON.stringify(value));
 
@@ -557,7 +586,7 @@ const Style = () => {
         display: flex;
         justify-content: space-between;
       }
-      .todo-footer * {
+      .todo-footer > * {
         cursor: pointer;
         border: 1px solid;
         border-radius: 3px;
@@ -567,6 +596,10 @@ const Style = () => {
         padding: 4px 14px;
         font-size: 1.2em;
         color: grey;
+      }
+      .todo-footer .todo-count {
+        margin-left: 1em;
+        opacity: 0.9;
       }
       .todo-footer .active {
         color: #b5b5b5;
