@@ -17,6 +17,28 @@ why I keep vscode open
 - [X] no search in file
 
 
+2020-08-22 TODO
+===============
+
+- [X] save a file with Bartok Basic Server provider
+
+- project switch
+
+- list of curent providers in settings
+
+- tons of issues
+  - [X] tab closing closes tabs that shouldn't close
+  - preview doesn't show if project doesn't have templates (global templates)
+  - project loads index.js even if it doesn't exist
+  - [ ] tabs are not recalled for projects other than welcome project
+  - [X] switching between preview and terminal is broken in some cases
+  - settings view has tab switching problems
+  - [ ] preview fails after fresh boot
+
+- preview full screen
+  - should hide most UI elements; only show fullscreen controls
+  - fullscreen state is wonky
+
 2020-08-24 thoughts about who customer is
 =========================================
 - new to programming
@@ -25,11 +47,11 @@ why I keep vscode open
   - mess of services spread all over the place
 - creative type that wants to make music, games, or art
 - blogger, note keeper, mind mapper
-- presentation giver
+- presentation giver, conference speaker
 - cloud dev ops
 - teams or team builders that want it to be easy for any/all of the above
 
-(maybe should add this to MARTKETING.md
+(maybe should add this to MARKETING.md
 
 
 2020-08-16 Note and Musing
@@ -156,10 +178,10 @@ TODO
 
 TODO 200714_1902
 ================
-  - [ ] ability to close last file
-  - [ ] bypass "let's go" button on repeat usage
+  - [X] ability to close last file
+  - [X] bypass "let's go" button on repeat usage
   - [ ] command palette
-  - [ ] default view for no service selected
+  - [X] default view for no service selected
   - [ ] download ZIP
   - [ ] edit bartok in bartok
   - [X] editor code folding
@@ -167,14 +189,14 @@ TODO 200714_1902
   - [ ] editor collaborative
   - [X] fix: closing (and opening?) a folder should not save that folder as selected
   - [ ] folders open when contained file is selected
-  - [ ] full screen for preview
+  - [X] full screen for preview
   - [ ] mini map
   - [X] preview binary files: image, font, audio, video
   - [X] preview uses service worker
   - [ ] react template loading spinner
   - [X] recall open files
   - [X] recall pane sizes
-  - [ ] recall pinned preview
+  - [X] recall pinned preview
   - [ ] recall scroll position per file
   - [X] recall selected file
   - [X] search in file
@@ -204,7 +226,6 @@ Service Worker
 ==============
 
 chrome://serviceworker-internals/
-
 
 https://developers.google.com/web/fundamentals/primers/service-workers/high-performance-loading
 https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook
@@ -243,13 +264,13 @@ websocket from service worker?
 - finish tree context menu
 - web loading time
 - web persistence layer
-	- localforage in serviceworker
+	- [X] localforage in serviceworker
 	- browserFS?
 - share
 - export zip
 - import zip
 - [X] images/binary files
-- open preview in new window / share
+- [X] open preview in new window / share
 - web build system / service layer
 - services graph / service selection
 - [X] codemirror elegance & bug where editor shows blank
@@ -356,7 +377,7 @@ What are currently the biggest "   "win"   " items?
   - logs streaming from server
   - metrics streaming from server
   - service map showing real stats
-  - direct file system based service (to enable next two wins)
+  - [X] direct file system based service (to enable next two wins)
 
   - UI ran from within bartok ecosystem (soft exploration into first-class services)
   - server ran from within bartok ecosystem (more serious foray into first-class services)
@@ -452,7 +473,8 @@ UNSORTED
 
 - [X] page resize doesn't respect min width for explorer
 - explorer can be hidden more beautifully, will auto-show and dismiss
-- terminal/preview can be hidden or take up full screen
+- terminal/preview can be hidden
+- [X] terminal can take up full screen
 
 - [ ] link files - files which store links and show them in preview
 
@@ -474,7 +496,8 @@ UNSORTED
 
 - remember scroll and cursor positions per file
 
-- command pallete / find in file dialogs
+- command pallete
+- [X} find in file dialogs
 - error dialogs / message popups
 - notifications
 
@@ -595,7 +618,7 @@ highest paid:
   - [X] Clojure
   - Go
   - Erlang
-  - WebAssembly
+  - [X] WebAssembly
   - Kotlin
   - Rust,
   - F#
