@@ -157,6 +157,10 @@ function attachListener({ switchEditor, messageEditor }){
 			switchEditor(null, "nothingOpen");
 			return;
 		}
+		const currentFile = getCurrentFile();
+		if(e.type === "fileClose" && next === currentFile){
+			return;
+		}
 
 		let savedFileName;
 		if(!savedFileName){
@@ -164,6 +168,7 @@ function attachListener({ switchEditor, messageEditor }){
 		}
 		switchEditor(savedFileName || next || name);
 	};
+
 	attach({
 		name: 'Editor',
 		eventName: 'service-switch-notify',

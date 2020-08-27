@@ -287,7 +287,7 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 //NOTE: this also handles fileClose events, thus next||name below
 let firstLoadSelect = true;
 const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
-	console.log('terminal-file select');
+	//console.log('terminal-file select');
 	if(firstLoadSelect){
 		firstLoadSelect = false;
 		return;
@@ -303,6 +303,9 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		//TODO: this should be a bit more nuanced
 		sessionStorage.setItem('preview', 'noPreview');
 		viewUpdate({ supported: false, doc: NO_PREVIEW });
+		return;
+	}
+	if(type === "fileClose" && next === currentFileName){
 		return;
 	}
 	let code;

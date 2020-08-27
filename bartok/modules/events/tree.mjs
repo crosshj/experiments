@@ -81,14 +81,17 @@ function getFileType(fileName=''){
 
 const fileSelectHandler = (e) => {
 	const { name, next } = e.detail;
-	if(e.type === "fileClose" && !next){
-		return;
-	}
 
 	Array.from(
 		document.querySelectorAll('#tree-view .selected')||[]
 	)
 		.forEach(x => x.classList.remove('selected'));
+	tree && (tree.selected = undefined);
+
+	if(e.type === "fileClose" && !next){
+		tree && (tree.selected = 'noneSelected');
+		return;
+	}
 
 	const leaves = Array.from(
 		document.querySelectorAll('#tree-view .tree-leaf-content')||[]
@@ -702,7 +705,7 @@ function attachListener(treeView, JSTreeView, updateTree, {
 	attach({
 		name: 'Explorer',
 		eventName: 'fileClose',
-		listener: fileSelectHandler
+		listener: saveTree(fileSelectHandler)
 	});
 	attach({
 		name: 'Explorer',

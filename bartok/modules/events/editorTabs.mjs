@@ -36,7 +36,7 @@ function triggerCloseTab(event){
 	const nextTabs = tabs.filter(x => x.name !== name);
 	const next = closedTab.active
 		? (nextTabs[nextTabs.length -1]||{}).name
-		: undefined;
+		: (tabs.filter(x => x.active)||[{}])[0].name;
 
 	const fileCloseEvent = new CustomEvent('fileClose', {
 		bubbles: true,
