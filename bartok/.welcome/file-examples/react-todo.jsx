@@ -541,8 +541,8 @@ const Style = () => {
         color: transparent;
       }
       li:hover {
-        color: black !important;
-        background: #999999;
+        color: #aaa !important;
+        background: #444;
       }
       li:hover:after,
       li:hover span,
