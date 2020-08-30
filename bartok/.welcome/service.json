@@ -1,555 +1,555 @@
 {
-    "id": 777,
-    "type": "frontend",
-    "persist": "filesystem",
-    "path": ".welcome",
-    "version": 0.5,
-    "tree": {
-      "package.json": {},
-      "lame.png": {},
-      ".NOTES": {
-        "releases": {
-          "bartokv0.0.md": {},
-          "bartokv0.1.md": {},
-          "bartokv0.2.md": {},
-          "bartokv0.3.0.md": {},
-          "bartokv0.3.1.md": {},
-          "bartokv0.3.2.md": {},
-          "bartokv0.4.0.md": {},
-          "bartokv0.4.1.md": {},
-          "bartokv0.5.md": {}
-        },
-        ".bugs": {},
-        ".scratch": {},
-        "future.md": {},
-        "MARKETING.md": {},
-        "MILESTONES.md": {},
-        "OVERVIEW.md": {}
+  "id": 777,
+  "type": "frontend",
+  "persist": "filesystem",
+  "path": ".welcome",
+  "version": 0.5,
+  "tree": {
+    "package.json": {},
+    "lame.png": {},
+    ".NOTES": {
+      "releases": {
+        "bartokv0.0.md": {},
+        "bartokv0.1.md": {},
+        "bartokv0.2.md": {},
+        "bartokv0.3.0.md": {},
+        "bartokv0.3.1.md": {},
+        "bartokv0.3.2.md": {},
+        "bartokv0.4.0.md": {},
+        "bartokv0.4.1.md": {},
+        "bartokv0.5.md": {}
       },
-      ".templates": {
-        "bf.html": {},
-        "d3-graph.html": {},
-        "gltf.html": {},
-        "ipynb.html": {},
-        "jsx.html": {},
-        "md.html": {},
-        "svcv3.html": {}
-      },
-      "file-examples": {
-        "video.mp4": {},
-        "audio.mp3": {},
-        "svg-bartok.svg": {},
-        "typescript.ts": {},
-        "javascript.js": {},
-        "react2.jsx": {},
-        "markdown2.md": {},
-        "brainfuck.bf": {},
-        "clojure.cljs": {},
-        "python.py": {},
-        "svg-solar-system.svg": {},
-        "graph-cytoscape.cx": {},
-        "graph-cytoscape.gml": {},
-        "webgl-helmet.gltf": {},
-        "webgl-duck.gltf": {},
-        "webgl-helloworld.gltf": {},
-        "jupyter.ipynb": {},
-        "jupyter2.ipynb": {},
-        "jupyter3.ipynb": {},
-        "jupyter4.ipynb": {},
-        "graph-d3.json": {},
-        "graph-d3.2.json": {},
-        "golang.go": {},
-        "lisp.lisp": {},
-        "php.php": {},
-        "prolog.pro": {},
-        "ruby.rb": {},
-        "scheme.scm": {},
-        "styles.css": {},
-        "styles.less": {},
-        "styles.scss": {},
-        "sql.sql": {},
-        "hyperscript.js": {},
-        "image.png": {},
-        "svg-lock.svg": {},
-        "windows.bat": {},
-        "slides-reveal.htm": {},
-        "plain.txt": {},
-        "json.json": {},
-        "markdown.md": {},
-        "preact-hyperscript.htm": {},
-        "react-todo.jsx": {},
-        "perl.pl": {}
-      },
-      "folder-examples": {
-        "fee": {
-          "fie": {
-            "foe": {
-              "fum": {
-                "mlerpo.md": {}
-              }
+      ".bugs": {},
+      ".scratch": {},
+      "future.md": {},
+      "MARKETING.md": {},
+      "MILESTONES.md": {},
+      "OVERVIEW.md": {}
+    },
+    ".templates": {
+      "bf.html": {},
+      "d3-graph.html": {},
+      "gltf.html": {},
+      "ipynb.html": {},
+      "jsx.html": {},
+      "md.html": {},
+      "svcv3.html": {}
+    },
+    "file-examples": {
+      "video.mp4": {},
+      "audio.mp3": {},
+      "svg-bartok.svg": {},
+      "typescript.ts": {},
+      "javascript.js": {},
+      "react2.jsx": {},
+      "markdown2.md": {},
+      "brainfuck.bf": {},
+      "clojure.cljs": {},
+      "python.py": {},
+      "svg-solar-system.svg": {},
+      "graph-cytoscape.cx": {},
+      "graph-cytoscape.gml": {},
+      "webgl-helmet.gltf": {},
+      "webgl-duck.gltf": {},
+      "webgl-helloworld.gltf": {},
+      "jupyter.ipynb": {},
+      "jupyter2.ipynb": {},
+      "jupyter3.ipynb": {},
+      "jupyter4.ipynb": {},
+      "graph-d3.json": {},
+      "graph-d3.2.json": {},
+      "golang.go": {},
+      "lisp.lisp": {},
+      "php.php": {},
+      "prolog.pro": {},
+      "ruby.rb": {},
+      "scheme.scm": {},
+      "styles.css": {},
+      "styles.less": {},
+      "styles.scss": {},
+      "sql.sql": {},
+      "hyperscript.js": {},
+      "image.png": {},
+      "svg-lock.svg": {},
+      "windows.bat": {},
+      "slides-reveal.htm": {},
+      "plain.txt": {},
+      "json.json": {},
+      "markdown.md": {},
+      "preact-hyperscript.htm": {},
+      "react-todo.jsx": {},
+      "perl.pl": {}
+    },
+    "folder-examples": {
+      "fee": {
+        "fie": {
+          "foe": {
+            "fum": {
+              "mlerpo.md": {}
             }
           }
-        },
-        "foo": {
-          "doo": {
-            "woo": {
-              "boo.js": {}
-            }
-          }
-        },
-        "test": {
-          "wee.js": {}
         }
       },
-      "Readme.md": {},
-      "service.json": {},
-      "tests": {
-        "_bartok.tools.html": {},
-        "_dimensional.md": {},
-        "_mirrors.md": {},
-        "_sort.flashing.md": {},
-        "color-picker.html": {},
-        "css-3d.html": {},
-        "css-doodle.html": {},
-        "sw.clientServer.htm": {},
-        "open.folder.html": {},
-        "wasm.binaryen.html": {},
-        "react-import.jsx": {},
-        "react-imported.mjs": {},
-        "language-assemblyscript.html": {},
-        "language-bf.html": {},
-        "language-cljs.html": {},
-        "language-cpp.html": {},
-        "language-lisp.html": {},
-        "language-php.html": {},
-        "language-pro.html": {},
-        "language-py.html": {},
-        "language-rb.html": {},
-        "language-scm.html": {},
-        "language-sql.html": {},
-        "language-sql-fetch.html": {}
+      "foo": {
+        "doo": {
+          "woo": {
+            "boo.js": {}
+          }
+        }
       },
-      "WIP": {
-        "angular9.html": {},
-        "auth0.md": {},
-        "graph-formats.md": {},
-        "Piksel-LIFE-20200506-191410.piskel": {},
-        "quotaIssue.js": {},
-        "react-notes.md": {}
+      "test": {
+        "wee.js": {}
       }
     },
-    "files": [
-      {
-        "name": "css-doodle.html",
-        "path": ".welcome/tests/css-doodle.html"
-      },
-      {
-        "name": "color-picker.html",
-        "path": ".welcome/tests/color-picker.html"
-      },
-      {
-        "name": "_bartok.tools.html",
-        "path": ".welcome/tests/_bartok.tools.html"
-      },
-      {
-        "name": "video.mp4",
-        "path": ".welcome/file-examples/video.mp4"
-      },
-      {
-        "name": "audio.mp3",
-        "path": ".welcome/file-examples/audio.mp3"
-      },
-      {
-        "name": "react-import.jsx",
-        "path": ".welcome/tests/react-import.jsx"
-      },
-      {
-        "name": "react-imported.mjs",
-        "path": ".welcome/tests/react-imported.mjs"
-      },
-      {
-        "name": "lame.png",
-        "path": ".welcome/lame.png"
-      },
-      {
-        "name": "_dimensional.md",
-        "path": ".welcome/tests/_dimensional.md"
-      },
-      {
-        "name": "_mirrors.md",
-        "path": ".welcome/tests/_mirrors.md"
-      },
-      {
-        "name": "_sort.flashing.md",
-        "path": ".welcome/tests/_sort.flashing.md"
-      },
-      {
-        "name": "language-assemblyscript.html",
-        "path": ".welcome/tests/language-assemblyscript.html"
-      },
-      {
-        "name": "language-sql.html",
-        "path": ".welcome/tests/language-sql.html"
-      },
-      {
-        "name": "language-sql-fetch.html",
-        "path": ".welcome/tests/language-sql-fetch.html"
-      },
-      {
-        "name": "language-scm.html",
-        "path": ".welcome/tests/language-scm.html"
-      },
-      {
-        "name": "language-rb.html",
-        "path": ".welcome/tests/language-rb.html"
-      },
-      {
-        "name": "language-py.html",
-        "path": ".welcome/tests/language-py.html"
-      },
-      {
-        "name": "language-php.html",
-        "path": ".welcome/tests/language-php.html"
-      },
-      {
-        "name": "language-pro.html",
-        "path": ".welcome/tests/language-pro.html"
-      },
-      {
-        "name": "language-lisp.html",
-        "path": ".welcome/tests/language-lisp.html"
-      },
-      {
-        "name": "language-cpp.html",
-        "path": ".welcome/tests/language-cpp.html"
-      },
-      {
-        "name": "language-cljs.html",
-        "path": ".welcome/tests/language-cljs.html"
-      },
-      {
-        "name": "language-bf.html",
-        "path": ".welcome/tests/language-bf.html"
-      },
-      {
-        "name": "wasm.binaryen.html",
-        "path": ".welcome/tests/wasm.binaryen.html"
-      },
-      {
-        "name": "css-3d.html",
-        "path": ".welcome/tests/css-3d.html"
-      },
-      {
-        "name": ".bugs",
-        "path": ".NOTES/_bugs.md"
-      },
-      {
-        "name": ".scratch",
-        "path": ".NOTES/_scratch.md" },
-      {
-        "name": "future.md",
-        "path": ".NOTES/future.md"
-      },
-      {
-        "name": "MARKETING.md",
-        "path": ".NOTES/MARKETING.md"
-      },
-      {
-        "name": "MILESTONES.md",
-        "path": ".NOTES/MILESTONES.md"
-      },
-      {
-        "name": "OVERVIEW.md",
-        "path": ".NOTES/OVERVIEW.md"
-      },
-      {
-        "name": "index.js",
-        "code": "",
-        "path": ".welcome/index.js"
-      },
-      {
-        "name": "package.json",
-        "path": ".welcome/package.json"
-      },
-      {
-        "name": "bf.html",
-        "path":".welcome/.templates/bf.html"
-      },
-      {
-        "name": "jsx.html",
-        "path": ".welcome/.templates/jsx.html"
-      },
-      {
-        "name": "svcv3.html",
-        "path": ".welcome/.templates/svcv3.html"
-      },
-      {
-        "name": "d3-graph.html",
-        "path": ".welcome/.templates/d3-graph.html"
-      },
-      {
-        "name": "gltf.html",
-        "path": ".welcome/.templates/gltf.html"
-      },
-      {
-        "name": "ipynb.html",
-        "path": ".welcome/.templates/ipynb.html"
-      },
-      {
-        "name": "md.html",
-        "path": ".welcome/.templates/md.html"
-      },
-      {
-        "name": "svg-bartok.svg",
-        "path": ".welcome/file-examples/svg-bartok.svg"
-      },
-      {
-        "name": "typescript.ts",
-        "path": ".welcome/file-examples/typescript.ts"
-      },
-      {
-        "name": "javascript.js",
-        "path": ".welcome/file-examples/javascript.js"
-      },
-      {
-        "name": "react2.jsx",
-        "path": ".welcome/file-examples/react2.jsx"
-      },
-      {
-        "name": "markdown2.md",
-        "path": ".welcome/file-examples/markdown2.md"
-      },
-      {
-        "name": "clojure.cljs",
-        "path": ".welcome/file-examples/clojure.cljs"
-      },
-      {
-        "name": "brainfuck.bf",
-        "path": ".welcome/file-examples/brainfuck.bf"
-      },
-      {
-        "name": "python.py",
-        "path": ".welcome/file-examples/python.py"
-      },
-      {
-        "name": "svg-solar-system.svg",
-        "path": ".welcome/file-examples/svg-solar-system.svg"
-      },
-      {
-        "name": "graph-cytoscape.cx",
-        "path": ".welcome/file-examples/graph-cytoscape.cx"
-      },
-      {
-        "name": "graph-cytoscape.gml",
-        "path": ".welcome/file-examples/graph-cytoscape.gml"
-      },
-      {
-        "name": "webgl-helloworld.gltf",
-        "path": ".welcome/file-examples/webgl-helloworld.gltf"
-      },
-      {
-        "name": "webgl-helmet.gltf",
-        "path": ".welcome/file-examples/webgl-helmet.gltf"
-      },
-      {
-        "name": "webgl-duck.gltf",
-        "path": ".welcome/file-examples/webgl-duck.gltf"
-      },
-      {
-        "name": "jupyter.ipynb",
-        "path": ".welcome/file-examples/jupyter.ipynb"
-      },
-      {
-        "name": "jupyter2.ipynb",
-        "path": ".welcome/file-examples/jupyter2.ipynb"
-      },
-      {
-        "name": "jupyter3.ipynb",
-        "path": ".welcome/file-examples/jupyter3.ipynb"
-      },
-      {
-        "name": "jupyter4.ipynb",
-        "path": ".welcome/file-examples/jupyter4.ipynb"
-      },
-      {
-        "name": "graph-d3.json",
-        "path": ".welcome/file-examples/graph-d3.json"
-      },
-      {
-        "name": "graph-d3.2.json",
-        "path": ".welcome/file-examples/graph-d3.2.json"
-      },
-      {
-        "name": "golang.go",
-        "path": ".welcome/file-examples/golang.go"
-      },
-      {
-        "name": "lisp.lisp",
-        "path": ".welcome/file-examples/lisp.lisp"
-      },
-      {
-        "name": "prolog.pro",
-        "path": ".welcome/file-examples/prolog.pro"
-      },
-      {
-        "name": "php.php",
-        "path": ".welcome/file-examples/php.php"
-      },
-      {
-        "name": "sql.sql",
-        "path": ".welcome/file-examples/sql.sql"
-      },
-      {
-        "name": "ruby.rb",
-        "path": ".welcome/file-examples/ruby.rb"
-      },
-      {
-        "name": "scheme.scm",
-        "path": ".welcome/file-examples/scheme.scm"
-      },
-      {
-        "name": "styles.css",
-        "path": ".welcome/file-examples/styles.css"
-      },
-      {
-        "name": "styles.less",
-        "path": ".welcome/file-examples/styles.less"
-      },
-      {
-        "name": "styles.scss",
-        "path": ".welcome/file-examples/styles.scss"
-      },
-      {
-        "name": "hyperscript.js",
-        "path": ".welcome/file-examples/hyperscript.js"
-      },
-      {
-        "name": "image.png",
-        "path": ".welcome/file-examples/image.png"
-      },
-      {
-        "name": "svg-lock.svg",
-        "path": ".welcome/file-examples/svg-lock.svg"
-      },
-      {
-        "name": "windows.bat",
-        "path": ".welcome/file-examples/windows.bat"
-      },
-      {
-        "name": "open.folder.html",
-        "path": ".welcome/tests/open.folder.html"
-      },
-      {
-        "name": "slides-reveal.htm",
-        "path": ".welcome/file-examples/slides-reveal.htm"
-      },
-      {
-        "name": "plain.txt",
-        "path": ".welcome/file-examples/plain.txt"
-      },
-      {
-        "name": "json.json",
-        "path": ".welcome/file-examples/json.json"
-      },
-      {
-        "name": "markdown.md",
-        "path": ".welcome/file-examples/markdown.md"
-      },
-      {
-        "name": "preact-hyperscript.htm",
-        "path": ".welcome/file-examples/preact-hyperscript.htm"
-      },
-      {
-        "name": "react-todo.jsx",
-        "path": ".welcome/file-examples/react-todo.jsx"
-      },
-      {
-        "name": "perl.pl",
-        "path": ".welcome/file-examples/perl.pl"
-      },
-      {
-        "name": "mlerpo.md",
-        "path": ".welcome/folder-examples/fee/fie/foe/fum/mlerpo.md"
-      },
-      {
-        "name": "boo.js",
-        "path": ".welcome/folder-examples/foo/doo/woo/boo.js"
-      },
-      {
-        "name": "wee.js",
-        "path": ".welcome/folder-examples/test/wee.js"
-      },
-      {
-        "name": "Readme.md",
-        "path": ".welcome/Readme.md"
-      },
-      {
-        "name": "service.json",
-        "path": ".welcome/service.json"
-      },
-      {
-        "name": "sw.clientServer.htm",
-        "path": ".welcome/tests/sw.clientServer.htm"
-      },
-      {
-        "name": "angular9.html",
-        "path": ".welcome/WIP/angular9.html"
-      },
-      {
-        "name": "auth0.md",
-        "path": ".welcome/WIP/auth0.md"
-      },
-      {
-        "name": "graph-formats.md",
-        "path": ".welcome/WIP/graph-formats.md"
-      },
-      {
-        "name": "Piksel-LIFE-20200506-191410.piskel",
-        "path": ".welcome/WIP/Piksel-LIFE-20200506-191410.piskel"
-      },
-      {
-        "name": "quotaIssue.js",
-        "path": ".welcome/WIP/quotaIssue.js"
-      },
-      {
-        "name": "react-notes.md",
-        "path": ".welcome/WIP/react-notes.md"
-      },
-      {
-        "name": "bartokv0.0.md",
-        "path": ".NOTES/releases/bartokv0.0.md"
-      },
-      {
-        "name": "bartokv0.1.md",
-        "path": ".NOTES/releases/bartokv0.1.md"
-      },
-      {
-        "name": "bartokv0.2.md",
-        "path": ".NOTES/releases/bartokv0.2.md"
-      },
-      {
-        "name": "bartokv0.3.0.md",
-        "path": ".NOTES/releases/bartokv0.3.md"
-      },
-      {
-        "name": "bartokv0.3.1.md",
-        "path": ".NOTES/releases/bartokv0.3.1.md"
-      },
-      {
-        "name": "bartokv0.3.2.md",
-        "path": ".NOTES/releases/bartokv0.3.2.md"
-      },
-      {
-        "name": "bartokv0.4.0.md",
-        "path": ".NOTES/releases/bartokv0.4.md"
-      },
-      {
-        "name": "bartokv0.4.1.md",
-        "path": ".NOTES/releases/bartokv0.4.1.md"
-      },
-      {
-        "name": "bartokv0.5.md",
-        "path": ".NOTES/releases/bartokv0.5.md"
-      }
-    ]
-  }
+    "Readme.md": {},
+    "service.json": {},
+    "tests": {
+      "_bartok.tools.html": {},
+      "_dimensional.md": {},
+      "_mirrors.md": {},
+      "_sort.flashing.md": {},
+      "color-picker.html": {},
+      "css-3d.html": {},
+      "css-doodle.html": {},
+      "sw.clientServer.htm": {},
+      "open.folder.html": {},
+      "wasm.binaryen.html": {},
+      "react-import.jsx": {},
+      "react-imported.mjs": {},
+      "language-assemblyscript.html": {},
+      "language-bf.html": {},
+      "language-cljs.html": {},
+      "language-cpp.html": {},
+      "language-lisp.html": {},
+      "language-php.html": {},
+      "language-pro.html": {},
+      "language-py.html": {},
+      "language-rb.html": {},
+      "language-scm.html": {},
+      "language-sql.html": {},
+      "language-sql-fetch.html": {}
+    },
+    "WIP": {
+      "angular9.html": {},
+      "auth0.md": {},
+      "graph-formats.md": {},
+      "Piksel-LIFE-20200506-191410.piskel": {},
+      "quotaIssue.js": {},
+      "react-notes.md": {}
+    }
+  },
+  "files": [
+    {
+      "name": "css-doodle.html",
+      "path": ".welcome/tests/css-doodle.html"
+    },
+    {
+      "name": "color-picker.html",
+      "path": ".welcome/tests/color-picker.html"
+    },
+    {
+      "name": "_bartok.tools.html",
+      "path": ".welcome/tests/_bartok.tools.html"
+    },
+    {
+      "name": "video.mp4",
+      "path": ".welcome/file-examples/video.mp4"
+    },
+    {
+      "name": "audio.mp3",
+      "path": ".welcome/file-examples/audio.mp3"
+    },
+    {
+      "name": "react-import.jsx",
+      "path": ".welcome/tests/react-import.jsx"
+    },
+    {
+      "name": "react-imported.mjs",
+      "path": ".welcome/tests/react-imported.mjs"
+    },
+    {
+      "name": "lame.png",
+      "path": ".welcome/lame.png"
+    },
+    {
+      "name": "_dimensional.md",
+      "path": ".welcome/tests/_dimensional.md"
+    },
+    {
+      "name": "_mirrors.md",
+      "path": ".welcome/tests/_mirrors.md"
+    },
+    {
+      "name": "_sort.flashing.md",
+      "path": ".welcome/tests/_sort.flashing.md"
+    },
+    {
+      "name": "language-assemblyscript.html",
+      "path": ".welcome/tests/language-assemblyscript.html"
+    },
+    {
+      "name": "language-sql.html",
+      "path": ".welcome/tests/language-sql.html"
+    },
+    {
+      "name": "language-sql-fetch.html",
+      "path": ".welcome/tests/language-sql-fetch.html"
+    },
+    {
+      "name": "language-scm.html",
+      "path": ".welcome/tests/language-scm.html"
+    },
+    {
+      "name": "language-rb.html",
+      "path": ".welcome/tests/language-rb.html"
+    },
+    {
+      "name": "language-py.html",
+      "path": ".welcome/tests/language-py.html"
+    },
+    {
+      "name": "language-php.html",
+      "path": ".welcome/tests/language-php.html"
+    },
+    {
+      "name": "language-pro.html",
+      "path": ".welcome/tests/language-pro.html"
+    },
+    {
+      "name": "language-lisp.html",
+      "path": ".welcome/tests/language-lisp.html"
+    },
+    {
+      "name": "language-cpp.html",
+      "path": ".welcome/tests/language-cpp.html"
+    },
+    {
+      "name": "language-cljs.html",
+      "path": ".welcome/tests/language-cljs.html"
+    },
+    {
+      "name": "language-bf.html",
+      "path": ".welcome/tests/language-bf.html"
+    },
+    {
+      "name": "wasm.binaryen.html",
+      "path": ".welcome/tests/wasm.binaryen.html"
+    },
+    {
+      "name": "css-3d.html",
+      "path": ".welcome/tests/css-3d.html"
+    },
+    {
+      "name": ".bugs",
+      "path": ".NOTES/_bugs.md"
+    },
+    {
+      "name": ".scratch",
+      "path": ".NOTES/_scratch.md" },
+    {
+      "name": "future.md",
+      "path": ".NOTES/future.md"
+    },
+    {
+      "name": "MARKETING.md",
+      "path": ".NOTES/MARKETING.md"
+    },
+    {
+      "name": "MILESTONES.md",
+      "path": ".NOTES/MILESTONES.md"
+    },
+    {
+      "name": "OVERVIEW.md",
+      "path": ".NOTES/OVERVIEW.md"
+    },
+    {
+      "name": "index.js",
+      "code": "",
+      "path": ".welcome/index.js"
+    },
+    {
+      "name": "package.json",
+      "path": ".welcome/package.json"
+    },
+    {
+      "name": "bf.html",
+      "path":".welcome/.templates/bf.html"
+    },
+    {
+      "name": "jsx.html",
+      "path": ".welcome/.templates/jsx.html"
+    },
+    {
+      "name": "svcv3.html",
+      "path": ".welcome/.templates/svcv3.html"
+    },
+    {
+      "name": "d3-graph.html",
+      "path": ".welcome/.templates/d3-graph.html"
+    },
+    {
+      "name": "gltf.html",
+      "path": ".welcome/.templates/gltf.html"
+    },
+    {
+      "name": "ipynb.html",
+      "path": ".welcome/.templates/ipynb.html"
+    },
+    {
+      "name": "md.html",
+      "path": ".welcome/.templates/md.html"
+    },
+    {
+      "name": "svg-bartok.svg",
+      "path": ".welcome/file-examples/svg-bartok.svg"
+    },
+    {
+      "name": "typescript.ts",
+      "path": ".welcome/file-examples/typescript.ts"
+    },
+    {
+      "name": "javascript.js",
+      "path": ".welcome/file-examples/javascript.js"
+    },
+    {
+      "name": "react2.jsx",
+      "path": ".welcome/file-examples/react2.jsx"
+    },
+    {
+      "name": "markdown2.md",
+      "path": ".welcome/file-examples/markdown2.md"
+    },
+    {
+      "name": "clojure.cljs",
+      "path": ".welcome/file-examples/clojure.cljs"
+    },
+    {
+      "name": "brainfuck.bf",
+      "path": ".welcome/file-examples/brainfuck.bf"
+    },
+    {
+      "name": "python.py",
+      "path": ".welcome/file-examples/python.py"
+    },
+    {
+      "name": "svg-solar-system.svg",
+      "path": ".welcome/file-examples/svg-solar-system.svg"
+    },
+    {
+      "name": "graph-cytoscape.cx",
+      "path": ".welcome/file-examples/graph-cytoscape.cx"
+    },
+    {
+      "name": "graph-cytoscape.gml",
+      "path": ".welcome/file-examples/graph-cytoscape.gml"
+    },
+    {
+      "name": "webgl-helloworld.gltf",
+      "path": ".welcome/file-examples/webgl-helloworld.gltf"
+    },
+    {
+      "name": "webgl-helmet.gltf",
+      "path": ".welcome/file-examples/webgl-helmet.gltf"
+    },
+    {
+      "name": "webgl-duck.gltf",
+      "path": ".welcome/file-examples/webgl-duck.gltf"
+    },
+    {
+      "name": "jupyter.ipynb",
+      "path": ".welcome/file-examples/jupyter.ipynb"
+    },
+    {
+      "name": "jupyter2.ipynb",
+      "path": ".welcome/file-examples/jupyter2.ipynb"
+    },
+    {
+      "name": "jupyter3.ipynb",
+      "path": ".welcome/file-examples/jupyter3.ipynb"
+    },
+    {
+      "name": "jupyter4.ipynb",
+      "path": ".welcome/file-examples/jupyter4.ipynb"
+    },
+    {
+      "name": "graph-d3.json",
+      "path": ".welcome/file-examples/graph-d3.json"
+    },
+    {
+      "name": "graph-d3.2.json",
+      "path": ".welcome/file-examples/graph-d3.2.json"
+    },
+    {
+      "name": "golang.go",
+      "path": ".welcome/file-examples/golang.go"
+    },
+    {
+      "name": "lisp.lisp",
+      "path": ".welcome/file-examples/lisp.lisp"
+    },
+    {
+      "name": "prolog.pro",
+      "path": ".welcome/file-examples/prolog.pro"
+    },
+    {
+      "name": "php.php",
+      "path": ".welcome/file-examples/php.php"
+    },
+    {
+      "name": "sql.sql",
+      "path": ".welcome/file-examples/sql.sql"
+    },
+    {
+      "name": "ruby.rb",
+      "path": ".welcome/file-examples/ruby.rb"
+    },
+    {
+      "name": "scheme.scm",
+      "path": ".welcome/file-examples/scheme.scm"
+    },
+    {
+      "name": "styles.css",
+      "path": ".welcome/file-examples/styles.css"
+    },
+    {
+      "name": "styles.less",
+      "path": ".welcome/file-examples/styles.less"
+    },
+    {
+      "name": "styles.scss",
+      "path": ".welcome/file-examples/styles.scss"
+    },
+    {
+      "name": "hyperscript.js",
+      "path": ".welcome/file-examples/hyperscript.js"
+    },
+    {
+      "name": "image.png",
+      "path": ".welcome/file-examples/image.png"
+    },
+    {
+      "name": "svg-lock.svg",
+      "path": ".welcome/file-examples/svg-lock.svg"
+    },
+    {
+      "name": "windows.bat",
+      "path": ".welcome/file-examples/windows.bat"
+    },
+    {
+      "name": "open.folder.html",
+      "path": ".welcome/tests/open.folder.html"
+    },
+    {
+      "name": "slides-reveal.htm",
+      "path": ".welcome/file-examples/slides-reveal.htm"
+    },
+    {
+      "name": "plain.txt",
+      "path": ".welcome/file-examples/plain.txt"
+    },
+    {
+      "name": "json.json",
+      "path": ".welcome/file-examples/json.json"
+    },
+    {
+      "name": "markdown.md",
+      "path": ".welcome/file-examples/markdown.md"
+    },
+    {
+      "name": "preact-hyperscript.htm",
+      "path": ".welcome/file-examples/preact-hyperscript.htm"
+    },
+    {
+      "name": "react-todo.jsx",
+      "path": ".welcome/file-examples/react-todo.jsx"
+    },
+    {
+      "name": "perl.pl",
+      "path": ".welcome/file-examples/perl.pl"
+    },
+    {
+      "name": "mlerpo.md",
+      "path": ".welcome/folder-examples/fee/fie/foe/fum/mlerpo.md"
+    },
+    {
+      "name": "boo.js",
+      "path": ".welcome/folder-examples/foo/doo/woo/boo.js"
+    },
+    {
+      "name": "wee.js",
+      "path": ".welcome/folder-examples/test/wee.js"
+    },
+    {
+      "name": "Readme.md",
+      "path": ".welcome/Readme.md"
+    },
+    {
+      "name": "service.json",
+      "path": ".welcome/service.json"
+    },
+    {
+      "name": "sw.clientServer.htm",
+      "path": ".welcome/tests/sw.clientServer.htm"
+    },
+    {
+      "name": "angular9.html",
+      "path": ".welcome/WIP/angular9.html"
+    },
+    {
+      "name": "auth0.md",
+      "path": ".welcome/WIP/auth0.md"
+    },
+    {
+      "name": "graph-formats.md",
+      "path": ".welcome/WIP/graph-formats.md"
+    },
+    {
+      "name": "Piksel-LIFE-20200506-191410.piskel",
+      "path": ".welcome/WIP/Piksel-LIFE-20200506-191410.piskel"
+    },
+    {
+      "name": "quotaIssue.js",
+      "path": ".welcome/WIP/quotaIssue.js"
+    },
+    {
+      "name": "react-notes.md",
+      "path": ".welcome/WIP/react-notes.md"
+    },
+    {
+      "name": "bartokv0.0.md",
+      "path": ".NOTES/releases/bartokv0.0.md"
+    },
+    {
+      "name": "bartokv0.1.md",
+      "path": ".NOTES/releases/bartokv0.1.md"
+    },
+    {
+      "name": "bartokv0.2.md",
+      "path": ".NOTES/releases/bartokv0.2.md"
+    },
+    {
+      "name": "bartokv0.3.0.md",
+      "path": ".NOTES/releases/bartokv0.3.md"
+    },
+    {
+      "name": "bartokv0.3.1.md",
+      "path": ".NOTES/releases/bartokv0.3.1.md"
+    },
+    {
+      "name": "bartokv0.3.2.md",
+      "path": ".NOTES/releases/bartokv0.3.2.md"
+    },
+    {
+      "name": "bartokv0.4.0.md",
+      "path": ".NOTES/releases/bartokv0.4.md"
+    },
+    {
+      "name": "bartokv0.4.1.md",
+      "path": ".NOTES/releases/bartokv0.4.1.md"
+    },
+    {
+      "name": "bartokv0.5.md",
+      "path": ".NOTES/releases/bartokv0.5.md"
+    }
+  ]
+}
