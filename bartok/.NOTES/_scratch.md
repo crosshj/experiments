@@ -28,12 +28,12 @@ why I keep vscode open
 
 - tons of issues
   - [X] tab closing closes tabs that shouldn't close
-  - preview doesn't show if project doesn't have templates (global templates)
-  - project loads index.js even if it doesn't exist
+  - [ ] preview doesn't show if project doesn't have templates (global templates)
+  - [ ] project loads index.js even if it doesn't exist
   - [ ] tabs are not recalled for projects other than welcome project
   - [X] switching between preview and terminal is broken in some cases
-  - settings view has tab switching problems
-  - [ ] preview fails after fresh boot
+  - [X] settings view has tab switching problems
+  - [X] preview fails after fresh boot
 
 - preview full screen
   - should hide most UI elements; only show fullscreen controls

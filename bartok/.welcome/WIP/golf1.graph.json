@@ -1,0 +1,30 @@
+{
+  "file-type": "d3-graph",
+  "nodes":[
+    {"id": "0", "name": "[0, 6]", "radius":30, "color": "red"},
+    {"id": "1", "name": "[1, 4]", "radius":30, "color": "orange"},
+    {"id": "2", "name": "[3, 5]", "radius":30, "color": "yellow"},
+    {"id": "3", "name": "[3, 8]", "radius":30, "color": "green"},
+    {"id": "4", "name": "[4, 7]", "radius":30, "color": "blue"},
+    {"id": "5", "name": "[5, 9]", "radius":30, "color": "indigo"},
+    {"id": "6", "name": "[6, 10]","radius":30, "color": "violet"},
+    {"id": "7", "name": "[8, 11]","radius":30, "color": "brown"}
+  ],
+  "links":[
+    {"source":0,"target":6,"weight":2},
+    {"source":0,"target":7,"weight":2},
+
+    {"source":1,"target":4,"weight":2},
+    {"source":1,"target":5,"weight":2},
+    {"source":1,"target":6,"weight":2},
+    {"source":1,"target":7,"weight":2},
+
+    {"source":2,"target":5,"weight":2},
+    {"source":2,"target":6,"weight":2},
+    {"source":2,"target":7,"weight":2},
+
+    {"source":3,"target":7,"weight":2},
+
+    {"source":4,"target":7,"weight":2}
+  ]
+}

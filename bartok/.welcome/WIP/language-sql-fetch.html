@@ -48,7 +48,9 @@ CREATE TEMPORARY TABLE stages
   UNION SELECT rewardCoin, rewardExp, areaCode, stageCode, rewardUnitExp, needHeart FROM stagesNormal
   UNION SELECT rewardCoin, rewardExp, areaCode, stageCode, rewardUnitExp, needHeart FROM stagesAdvent;
 
+/*
 SELECT * FROM rangersBasics;
+*/
 
 /*
 -- SKILLS
@@ -75,22 +77,26 @@ SELECT * FROM
 ORDER BY name ASC;
 */
 
-/*
 -- STAGES
-SELECT * FROM
+SELECT stageName,
+  rewardCoin,
+  rewardExp,
+  needHeart,
+  rewardCoin/needHeart AS coinPer
+FROM
   (
     SELECT *
     FROM stages
-    WHERE rewardExp >= 2000000
-    -- AND rewardCoin >= 200000
+    -- WHERE rewardExp >= 2000000
+    WHERE rewardCoin >= 100000
+      AND areaCode NOT LIKE 'aa%'
   ) AS a
   JOIN
   (
     SELECT key, value as stageName FROM lang
   ) AS s ON a.stageCode || '_nm' = s.key
 ORDER BY
-  rewardExp ASC;
-*/
+  coinPer DESC;
 
 -- table names
 SELECT name FROM  sqlite_master
