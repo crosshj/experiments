@@ -294,6 +294,11 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	}
 	const { type, detail } = event;
 	const { op, id, name, next } = detail;
+	if(type==="fileClose" && next && next.includes('system::')
+		|| type==="fileSelect" && name && name.includes('system::')
+	){
+		return;
+	}
 	if(type==="fileClose" && locked){
 		viewUpdate({ locked });
 		return;

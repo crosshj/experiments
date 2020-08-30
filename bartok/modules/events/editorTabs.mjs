@@ -57,7 +57,7 @@ const fileCloseHandler = ({
 	removeTab(found);
 
 	if(!next){ return; }
-	const nextTab = tabs.find(x => x.name === next);
+	const nextTab = tabs.find(x => x.name === next || x.systemDocsName === next);
 	nextTab.active = true;
 	sessionStorage.setItem('tabs', JSON.stringify(tabs));
 
@@ -83,9 +83,9 @@ const clickHandler = ({
 		event.preventDefault();
 		return;
 	}
-
-	const name = event.target.innerText.trim();
-	if(tabs.filter(x => x.active).map(x => x.name).includes(name)){
+	const id = event.target.id;
+	const foundTab = tabs.find(x => x.id === id);
+	if(tabs.filter(x => x.active).map(x => x.id).includes(id)){
 		return;
 	}
 
@@ -95,7 +95,9 @@ const clickHandler = ({
 	// tabsToUpdate.map(updateTab);
 	const fileSelectEvent = new CustomEvent('fileSelect', {
 		bubbles: true,
-		detail: { name }
+		detail: {
+			name: foundTab.name
+		}
 	});
 	document.body.dispatchEvent(fileSelectEvent);
 };
@@ -122,11 +124,22 @@ const fileSelectHandler = ({
 	}
 
 	id = 'TAB' + Math.random().toString().replace('0.', '');
+
+	let systemDocsName;
+	if(name.includes('system::')){
+		systemDocsName = {
+			'add-service-folder': 'Open Folder',
+			'connect-service-provider': 'Connect to a Provider',
+			'open-settings-view': 'Settings'
+		}[name.replace('system::', '')];
+	}
+
 	createTab({
 		name, active: true, id, changed
 	});
 	tabs.push({
-		name, active: true, id, changed
+		name, systemDocsName,
+		active: true, id, changed
 	});
 	sessionStorage.setItem('tabs', JSON.stringify(tabs));
 };

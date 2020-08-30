@@ -112,8 +112,8 @@ const fileSelectHandler = ({ switchEditor }) => async (event) => {
 			switchEditor(null, "nothingOpen");
 			return;
 		}
-		if(savedFileName && savedFileName.includes('systemDoc::')){
-			switchEditor(savedFileName.replace('systemDoc::', ''), "systemDoc");
+		if(savedFileName && savedFileName.includes('system::')){
+			switchEditor(savedFileName.replace('system::', ''), "systemDoc");
 			return;
 		}
 	}
@@ -121,9 +121,20 @@ const fileSelectHandler = ({ switchEditor }) => async (event) => {
 	if(!savedFileName){
 		sessionStorage.setItem('editorFile', next || name);
 	}
+
+	if(name.includes('system::')){
+		switchEditor(name.replace('system::', ''), "systemDoc");
+		return;
+	}
+
 	const fileName = savedFileName || next || name;
 	const currentService = getCurrentService({ pure: true });
 	const fileBody = currentService.code.find(x => x.name === fileName);
+	if(!fileBody){
+		console.error(`Current service (${currentService.id}:${currentService.name}) does not contain file: ${fileName}`);
+		switchEditor(null, "nothingOpen");
+		return;
+	}
 	switchEditor(fileName, null, fileBody.code);
 };
 
@@ -151,6 +162,11 @@ function attachListener({ switchEditor, messageEditor }){
 			return;
 		}
 		const { name, next } = e.detail;
+
+		if(e.type === 'fileClose' && next.includes('system::')){
+			switchEditor(next.replace('system::', ''), "systemDoc");
+			return;
+		}
 
 		if(e.type === "fileClose" && !next){
 			sessionStorage.setItem('editorFile', 'noFileSelected');

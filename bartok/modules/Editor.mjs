@@ -380,7 +380,7 @@ const SystemDocs = (section, errors) => {
 				<button
 					onclick="event.target.parentNode.querySelector('.provider-settings').classList.toggle('hidden')"
 				>Bartok Basic Server</button>
-				<form class="provider-settings hidden" autocomplete="off" onsubmit="return false;">
+				<form class="provider-settings" autocomplete="off" onsubmit="return false;">
 					<input class="hidden" autocomplete="false" name="hidden" type="text">
 					<input name="provider-type" class="hidden" type="text" value="basic-bartok-provider">
 

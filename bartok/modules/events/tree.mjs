@@ -7,12 +7,12 @@ let tree;
 
 
 const sortFn = (a, b) => {
-	const afilename = a.name.toLowerCase().split('.').slice(0,-1).join('.') || a.name;
-	const bfilename = b.name.toLowerCase().split('.').slice(0,-1).join('.') || b.name;
+	const afilename = a.name.toLowerCase().split('.').slice(0,-1).join('.') || a.name.toLowerCase();
+	const bfilename = b.name.toLowerCase().split('.').slice(0,-1).join('.') || b.name.toLowerCase();
 	if(afilename < bfilename) { return -1; }
 	if(afilename > bfilename) { return 1; }
-	const aExt = a.name.replace(afilename, '');
-	const bExt = b.name.replace(bfilename, '');
+	const aExt = a.name.toLowerCase().replace(afilename, '');
+	const bExt = b.name.toLowerCase().replace(bfilename, '');
 	if(aExt < bExt) { return -1; }
 	if(aExt > bExt) { return 1; }
 	return 0;

@@ -743,6 +743,37 @@ class ProviderManager {
     // handlerStore comes from SW context
     let app = fakeExpress({ store, handlerStore, metaStore });
 
+    const providerUpdateServiceJson = async ({ service, metaStore, fileStore }) => {
+        const serviceJsonFile = service.code.find(x => x.path.includes('/service.json'));
+        if(!serviceJsonFile) return;
+        const serviceJson = JSON.parse(serviceJsonFile.code);
+
+        const { code, ...serviceOther } = service;
+        const { providerUrl, providerRoot } = service;
+
+        serviceJson.tree = service.tree;
+        serviceJson.files = service.code
+            .map(x => ({
+                name: x.name,
+                path: x.path.replace('./', '')
+            }))
+            .sort((a,b) => {
+                if(a.name.toLowerCase() > b.name.toLowerCase()){ return 1; }
+                if(a.name.toLowerCase() < b.name.toLowerCase()){ return -1; }
+                return 0;
+            });
+        const pathWithoutParent = serviceJsonFile.path.replace('./' + service.name, '' );
+        const filePostUrl = `${providerUrl}file/${providerRoot}${pathWithoutParent}`;
+
+        serviceJsonFile.code = JSON.stringify(serviceJson, null, 2);
+        await metaStore.setItem(service.id + '', serviceOther);
+        await fileStore.setItem(serviceJsonFile.path, serviceJsonFile.code);
+        await fetch(filePostUrl, {
+            method: 'post',
+            body: serviceJsonFile.code
+        });
+    };
+
     const providerCreateServiceHandler = async (event) => {
         console.warn('providerCreateServiceHandler');
         try {
@@ -811,6 +842,10 @@ class ProviderManager {
                     code: typeof fileContents === 'string' ? fileContents : ''
                 });
             }
+            await providerUpdateServiceJson({
+                service, metaStore, fileStore: store
+            });
+
             await app.addServiceHandler({
                 name: providerRootName,
                 msg: 'served from fresh baked'
@@ -964,7 +999,7 @@ class ProviderManager {
                 .map(x => ({ id: x.id, name: x.name }));
 
             return JSON.stringify({
-                result: unique(allServices, x => x.id)
+                result: unique(allServices, x => Number(x.id))
             }, null, 2);
         }
 
@@ -1011,7 +1046,7 @@ class ProviderManager {
         if(foundParent && foundParent.providerUrl){
             try {
                 const { providerUrl, providerRoot } = foundParent;
-                const pathWithoutParent = path.replace('./' + parentServiceName, '' );
+                const pathWithoutParent = path.replace('./' + parentServiceName, '' );2
                 const filePostUrl = `${providerUrl}file/${providerRoot}${pathWithoutParent}`;
                 const filePostRes = await fetch(filePostUrl, {
                     method: 'POST',
