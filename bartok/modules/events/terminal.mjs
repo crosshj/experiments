@@ -842,12 +842,6 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 	// write(`\n${PROMPT}`);
 
 	const stateBoundViewUpdate = ({ supported, view, type, doc, docName, locked }) => {
-		if(!supported || docName.includes('.json')){
-			if(!locked) {
-				sessionStorage.setItem('preview', 'noPreview');
-			}
-			return viewUpdate({ supported, view, type, doc, docName, locked });
-		}
 		const state = getState();
 		let url;
 		try{

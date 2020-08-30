@@ -151,6 +151,39 @@ const dummyService = (_id, _name) => ({
     tree: defaultTree(_name)
 });
 
+const NO_PREVIEW = `
+<!-- NO_PREVIEW -->
+<html>
+	<style>
+		.no-preview {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 1.5em;
+			color: #666;
+		}
+		body {
+			margin: 0px;
+			margin-top: 40px;
+			height: calc(100vh - 40px);
+			overflow: hidden;
+			color: #ccc;
+			font-family: sans-serif;
+		}
+	</style>
+	<body>
+		<pre>
+			<div class="no-preview">No preview available.</div>
+			</pre>
+	</body>
+</html>
+`;
+
 async function fetchFileContents(filename) {
     const storeAsBlob = [
         "image/", "audio/", "video/", "wasm"
@@ -441,6 +474,9 @@ class TemplateEngine {
     }
 
     convert(filename, contents){
+        if(filename.includes('.htm')){
+            return contents;
+        }
         if(!this.templates.length) return false;
         const ext = filename.split('.').pop();
         const foundTemplate = this.templates.find(x => x.extensions.includes(ext));
@@ -457,7 +493,7 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
         const templatesFromStorage = [];
         await store
             .iterate((value, key) => {
-                if(key.indexOf(`./${base}/.templates`) !== 0) return;
+                if(!key.includes(`/.templates/`)) return;
                 templatesFromStorage.push({ value, key });
             });
 
@@ -496,6 +532,10 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
             // most likely a blob
             if(file && file.type && file.size){
                 return file;
+            }
+
+            if(previewMode && !xformedFile){
+                return NO_PREVIEW;
             }
 
             //TODO: need to know file type so that it can be returned properly
@@ -1140,7 +1180,7 @@ class ProviderManager {
             for (let i = 0; i < filesToDelete.length; i++) {
                 const key = filesToDelete[i];
                 console.log(`should remove ${key}`)
-                await store.removeItem(key);
+                //await store.removeItem(key);
             }
 
             return JSON.stringify({
@@ -1285,6 +1325,11 @@ class ProviderManager {
                     return response;
                 }
 
+                if(event.request.url.includes('/::preview::/')){
+                    response = new Response(res, {headers:{'Content-Type': 'text/html'}});
+                    return response;
+                }
+
                 if(event.request.url.includes('.mjs')){
                     response = new Response(res, {headers:{'Content-Type': 'text/javascript' }});
                     return response;
@@ -1295,10 +1340,6 @@ class ProviderManager {
                     return response;
                 }
 
-                if(event.request.url.includes('/::preview::/')){
-                    response = new Response(res, {headers:{'Content-Type': 'text/html'}});
-                    return response;
-                }
 
                 return new Response(res);
             })()

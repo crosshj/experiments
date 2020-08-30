@@ -244,6 +244,7 @@ attachListeners({ updateTemplates })
 
 // TODO: maybe cache this answer (and kill cache when updateTemplates is ran)
 const isSupported = ({ name, contents }, returnMatched) => {
+  return true;
   const extensionMatch = templates.find(t =>
     t.extensions.find(ext =>
       (name||'').includes(`.${ext}`)
@@ -276,6 +277,7 @@ const isSupported = ({ name, contents }, returnMatched) => {
 };
 
 const transform = ({ name, contents }) => {
+  return contents;
   if(name.includes('.htm')){
     return contents;
   }

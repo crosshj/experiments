@@ -163,7 +163,7 @@ function attachListener({ switchEditor, messageEditor }){
 		}
 		const { name, next } = e.detail;
 
-		if(e.type === 'fileClose' && next.includes('system::')){
+		if(e.type === 'fileClose' && next && next.includes('system::')){
 			switchEditor(next.replace('system::', ''), "systemDoc");
 			return;
 		}

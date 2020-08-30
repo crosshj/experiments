@@ -357,7 +357,7 @@ const contextMenuSelectHandler = ({ newFile, newFolder }) => (e) => {
 			.find(x => path.includes(x));
 
 		const query = shouldExclude && !shouldInclude
-			? ''
+			? '/::preview::/'
 			: '/::preview::/';
 
 		window.open(path+query);

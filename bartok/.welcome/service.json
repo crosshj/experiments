@@ -1,524 +1,529 @@
 {
-    "id": 777,
-    "type": "frontend",
-    "persist": "filesystem",
-    "path": ".welcome",
-    "version": 0.5,
-    "tree": {
-        ".welcome": {
-            ".templates": {
-                "bf.html": {},
-                "d3-graph.html": {},
-                "gltf.html": {},
-                "ipynb.html": {},
-                "jsx.html": {},
-                "md.html": {},
-                "svcv3.html": {}
-            },
-            "examples": {
-                ".deep-folders": {
-                    "fee": {
-                        "fie": {
-                            "foe": {
-                                "fum": {
-                                    "mlerpo.md": {}
-                                }
-                            }
-                        }
-                    },
-                    "foo": {
-                        "doo": {
-                            "woo": {
-                                "boo.js": {}
-                            }
-                        }
-                    },
-                    "test": {
-                        "wee.js": {}
-                    }
-                },
-                "3d": {
-                    "webgl-duck.gltf": {},
-                    "webgl-helloworld.gltf": {},
-                    "webgl-helmet.gltf": {}
-                },
-                "binary": {
-                    "audio.mp3": {},
-                    "video.mp4": {}
-                },
-                "document": {
-                    "jupyter.ipynb": {},
-                    "jupyter2.ipynb": {},
-                    "jupyter3.ipynb": {},
-                    "jupyter4.ipynb": {},
-                    "markdown.md": {},
-                    "markdown2.md": {},
-                    "plain.txt": {}
-                },
-                "graph": {
-                    "graph-cytoscape.cx": {},
-                    "graph-cytoscape.gml": {},
-                    "graph-d3.2.json": {},
-                    "graph-d3.json": {}
-                },
-                "image": {
-                    "blocks.ppm": {},
-                    "example.ppm": {},
-                    "image.png": {},
-                    "jelly.ppm": {},
-                    "jr.ppm": {},
-                    "lame.png": {},
-                    "svg-bartok.svg": {},
-                    "svg-lock.svg": {},
-                    "svg-solar-system.svg": {}
-                },
-                "language": {
-                    "brainfuck.bf": {},
-                    "clojure.cljs": {},
-                    "golang.go": {},
-                    "hyperscript.js": {},
-                    "javascript.js": {},
-                    "json.json": {},
-                    "lisp.lisp": {},
-                    "perl.pl": {},
-                    "php.php": {},
-                    "prolog.pro": {},
-                    "python.py": {},
-                    "ruby.rb": {},
-                    "scheme.scm": {},
-                    "sql.sql": {},
-                    "styles.css": {},
-                    "styles.less": {},
-                    "styles.scss": {},
-                    "typescript.ts": {},
-                    "windows.bat": {}
-                },
-                "preact-hyperscript.htm": {},
-                "react-todo.jsx": {},
-                "react2.jsx": {},
-                "slides-reveal.htm": {}
-            },
-            "index.js": {},
-            "package.json": {},
-            "Readme.md": {},
-            "service.json": {},
-            "WIP": {
-                "angular9.html": {},
-                "auth0.md": {},
-                "color-picker.html": {},
-                "css-3d.html": {},
-                "css-doodle.html": {},
-                "golf1.graph.json": {},
-                "golf1.js": {},
-                "golf2.js": {},
-                "graph-formats.md": {},
-                "language-assemblyscript.html": {},
-                "language-bf.html": {},
-                "language-cljs.html": {},
-                "language-cpp.html": {},
-                "language-lisp.html": {},
-                "language-php.html": {},
-                "language-pro.html": {},
-                "language-py.html": {},
-                "language-rb.html": {},
-                "language-scm.html": {},
-                "language-sql-fetch.html": {},
-                "language-sql.html": {},
-                "open.folder.html": {},
-                "Piksel-LIFE-20200506-191410.piskel": {},
-                "quotaIssue.js": {},
-                "react-import.jsx": {},
-                "react-imported.mjs": {},
-                "react-notes.md": {},
-                "sw.clientServer.htm": {},
-                "wasm.binaryen.html": {},
-                "_bartok.tools.html": {},
-                "_dimensional.md": {},
-                "_mirrors.md": {},
-                "_sort.flashing.md": {}
+  "id": 777,
+  "type": "frontend",
+  "persist": "filesystem",
+  "path": ".welcome",
+  "version": 0.5,
+  "tree": {
+    ".welcome": {
+      ".templates": {
+        "bf.html": {},
+        "d3-graph.html": {},
+        "gltf.html": {},
+        "ipynb.html": {},
+        "jsx.html": {},
+        "md.html": {},
+        "svcv3.html": {},
+        "svg.html": {}
+      },
+      "examples": {
+        ".deep-folders": {
+          "fee": {
+            "fie": {
+              "foe": {
+                "fum": {
+                  "mlerpo.md": {}
+                }
+              }
             }
-        }
+          },
+          "foo": {
+            "doo": {
+              "woo": {
+                "boo.js": {}
+              }
+            }
+          },
+          "test": {
+            "wee.js": {}
+          }
+        },
+        "3d": {
+          "webgl-duck.gltf": {},
+          "webgl-helloworld.gltf": {},
+          "webgl-helmet.gltf": {}
+        },
+        "binary": {
+          "audio.mp3": {},
+          "video.mp4": {}
+        },
+        "document": {
+          "jupyter.ipynb": {},
+          "jupyter2.ipynb": {},
+          "jupyter3.ipynb": {},
+          "jupyter4.ipynb": {},
+          "markdown.md": {},
+          "markdown2.md": {},
+          "plain.txt": {}
+        },
+        "graph": {
+          "graph-cytoscape.cx": {},
+          "graph-cytoscape.gml": {},
+          "graph-d3.2.json": {},
+          "graph-d3.json": {}
+        },
+        "image": {
+          "blocks.ppm": {},
+          "example.ppm": {},
+          "image.png": {},
+          "jelly.ppm": {},
+          "jr.ppm": {},
+          "lame.png": {},
+          "svg-bartok.svg": {},
+          "svg-lock.svg": {},
+          "svg-solar-system.svg": {}
+        },
+        "language": {
+          "brainfuck.bf": {},
+          "clojure.cljs": {},
+          "golang.go": {},
+          "hyperscript.js": {},
+          "javascript.js": {},
+          "json.json": {},
+          "lisp.lisp": {},
+          "perl.pl": {},
+          "php.php": {},
+          "prolog.pro": {},
+          "python.py": {},
+          "ruby.rb": {},
+          "scheme.scm": {},
+          "sql.sql": {},
+          "styles.css": {},
+          "styles.less": {},
+          "styles.scss": {},
+          "typescript.ts": {},
+          "windows.bat": {}
+        },
+        "react-todo.jsx": {},
+        "react2.jsx": {}
+      },
+      "index.js": {},
+      "package.json": {},
+      "Readme.md": {},
+      "service.json": {},
+      "WIP": {
+        "angular9.html": {},
+        "auth0.md": {},
+        "color-picker.html": {},
+        "css-3d.html": {},
+        "css-doodle.html": {},
+        "golf1.graph.json": {},
+        "golf1.js": {},
+        "golf2.js": {},
+        "graph-formats.md": {},
+        "language-assemblyscript.html": {},
+        "language-bf.html": {},
+        "language-cljs.html": {},
+        "language-cpp.html": {},
+        "language-lisp.html": {},
+        "language-php.html": {},
+        "language-pro.html": {},
+        "language-py.html": {},
+        "language-rb.html": {},
+        "language-scm.html": {},
+        "language-sql-fetch.html": {},
+        "language-sql.html": {},
+        "open.folder.html": {},
+        "Piksel-LIFE-20200506-191410.piskel": {},
+        "preact-hyperscript.htm": {},
+        "quotaIssue.js": {},
+        "react-import.jsx": {},
+        "react-imported.mjs": {},
+        "react-notes.md": {},
+        "slides-reveal.htm": {},
+        "sw.clientServer.htm": {},
+        "wasm.binaryen.html": {},
+        "_bartok.tools.html": {},
+        "_dimensional.md": {},
+        "_mirrors.md": {},
+        "_sort.flashing.md": {}
+      }
+    }
+  },
+  "files": [
+    {
+      "name": "_bartok.tools.html",
+      "path": ".welcome/WIP/_bartok.tools.html"
     },
-    "files": [
-        {
-            "name": "_bartok.tools.html",
-            "path": ".welcome/WIP/_bartok.tools.html"
-        },
-        {
-            "name": "_dimensional.md",
-            "path": ".welcome/WIP/_dimensional.md"
-        },
-        {
-            "name": "_mirrors.md",
-            "path": ".welcome/WIP/_mirrors.md"
-        },
-        {
-            "name": "_sort.flashing.md",
-            "path": ".welcome/WIP/_sort.flashing.md"
-        },
-        {
-            "name": "angular9.html",
-            "path": ".welcome/WIP/angular9.html"
-        },
-        {
-            "name": "audio.mp3",
-            "path": ".welcome/examples/binary/audio.mp3"
-        },
-        {
-            "name": "auth0.md",
-            "path": ".welcome/WIP/auth0.md"
-        },
-        {
-            "name": "bf.html",
-            "path": ".welcome/.templates/bf.html"
-        },
-        {
-            "name": "blocks.ppm",
-            "path": ".welcome/examples/image/blocks.ppm"
-        },
-        {
-            "name": "boo.js",
-            "path": ".welcome/examples/.deep-folders/foo/doo/woo/boo.js"
-        },
-        {
-            "name": "brainfuck.bf",
-            "path": ".welcome/examples/language/brainfuck.bf"
-        },
-        {
-            "name": "clojure.cljs",
-            "path": ".welcome/examples/language/clojure.cljs"
-        },
-        {
-            "name": "color-picker.html",
-            "path": ".welcome/WIP/color-picker.html"
-        },
-        {
-            "name": "css-3d.html",
-            "path": ".welcome/WIP/css-3d.html"
-        },
-        {
-            "name": "css-doodle.html",
-            "path": ".welcome/WIP/css-doodle.html"
-        },
-        {
-            "name": "d3-graph.html",
-            "path": ".welcome/.templates/d3-graph.html"
-        },
-        {
-            "name": "example.ppm",
-            "path": ".welcome/examples/image/example.ppm"
-        },
-        {
-            "name": "gltf.html",
-            "path": ".welcome/.templates/gltf.html"
-        },
-        {
-            "name": "golang.go",
-            "path": ".welcome/examples/language/golang.go"
-        },
-        {
-            "name": "golf1.graph.json",
-            "path": ".welcome/WIP/golf1.graph.json"
-        },
-        {
-            "name": "golf1.js",
-            "path": ".welcome/WIP/golf1.js"
-        },
-        {
-            "name": "golf2.js",
-            "path": ".welcome/WIP/golf2.js"
-        },
-        {
-            "name": "graph-cytoscape.cx",
-            "path": ".welcome/examples/graph/graph-cytoscape.cx"
-        },
-        {
-            "name": "graph-cytoscape.gml",
-            "path": ".welcome/examples/graph/graph-cytoscape.gml"
-        },
-        {
-            "name": "graph-d3.2.json",
-            "path": ".welcome/examples/graph/graph-d3.2.json"
-        },
-        {
-            "name": "graph-d3.json",
-            "path": ".welcome/examples/graph/graph-d3.json"
-        },
-        {
-            "name": "graph-formats.md",
-            "path": ".welcome/WIP/graph-formats.md"
-        },
-        {
-            "name": "hyperscript.js",
-            "path": ".welcome/examples/language/hyperscript.js"
-        },
-        {
-            "name": "image.png",
-            "path": ".welcome/examples/image/image.png"
-        },
-        {
-            "name": "index.js",
-            "path": ".welcome/index.js"
-        },
-        {
-            "name": "ipynb.html",
-            "path": ".welcome/.templates/ipynb.html"
-        },
-        {
-            "name": "javascript.js",
-            "path": ".welcome/examples/language/javascript.js"
-        },
-        {
-            "name": "jelly.ppm",
-            "path": ".welcome/examples/image/jelly.ppm"
-        },
-        {
-            "name": "jr.ppm",
-            "path": ".welcome/examples/image/jr.ppm"
-        },
-        {
-            "name": "json.json",
-            "path": ".welcome/examples/language/json.json"
-        },
-        {
-            "name": "jsx.html",
-            "path": ".welcome/.templates/jsx.html"
-        },
-        {
-            "name": "jupyter.ipynb",
-            "path": ".welcome/examples/document/jupyter.ipynb"
-        },
-        {
-            "name": "jupyter2.ipynb",
-            "path": ".welcome/examples/document/jupyter2.ipynb"
-        },
-        {
-            "name": "jupyter3.ipynb",
-            "path": ".welcome/examples/document/jupyter3.ipynb"
-        },
-        {
-            "name": "jupyter4.ipynb",
-            "path": ".welcome/examples/document/jupyter4.ipynb"
-        },
-        {
-            "name": "lame.png",
-            "path": ".welcome/examples/image/lame.png"
-        },
-        {
-            "name": "language-assemblyscript.html",
-            "path": ".welcome/WIP/language-assemblyscript.html"
-        },
-        {
-            "name": "language-bf.html",
-            "path": ".welcome/WIP/language-bf.html"
-        },
-        {
-            "name": "language-cljs.html",
-            "path": ".welcome/WIP/language-cljs.html"
-        },
-        {
-            "name": "language-cpp.html",
-            "path": ".welcome/WIP/language-cpp.html"
-        },
-        {
-            "name": "language-lisp.html",
-            "path": ".welcome/WIP/language-lisp.html"
-        },
-        {
-            "name": "language-php.html",
-            "path": ".welcome/WIP/language-php.html"
-        },
-        {
-            "name": "language-pro.html",
-            "path": ".welcome/WIP/language-pro.html"
-        },
-        {
-            "name": "language-py.html",
-            "path": ".welcome/WIP/language-py.html"
-        },
-        {
-            "name": "language-rb.html",
-            "path": ".welcome/WIP/language-rb.html"
-        },
-        {
-            "name": "language-scm.html",
-            "path": ".welcome/WIP/language-scm.html"
-        },
-        {
-            "name": "language-sql-fetch.html",
-            "path": ".welcome/WIP/language-sql-fetch.html"
-        },
-        {
-            "name": "language-sql.html",
-            "path": ".welcome/WIP/language-sql.html"
-        },
-        {
-            "name": "lisp.lisp",
-            "path": ".welcome/examples/language/lisp.lisp"
-        },
-        {
-            "name": "markdown.md",
-            "path": ".welcome/examples/document/markdown.md"
-        },
-        {
-            "name": "markdown2.md",
-            "path": ".welcome/examples/document/markdown2.md"
-        },
-        {
-            "name": "md.html",
-            "path": ".welcome/.templates/md.html"
-        },
-        {
-            "name": "mlerpo.md",
-            "path": ".welcome/examples/.deep-folders/fee/fie/foe/fum/mlerpo.md"
-        },
-        {
-            "name": "open.folder.html",
-            "path": ".welcome/WIP/open.folder.html"
-        },
-        {
-            "name": "package.json",
-            "path": ".welcome/package.json"
-        },
-        {
-            "name": "perl.pl",
-            "path": ".welcome/examples/language/perl.pl"
-        },
-        {
-            "name": "php.php",
-            "path": ".welcome/examples/language/php.php"
-        },
-        {
-            "name": "Piksel-LIFE-20200506-191410.piskel",
-            "path": ".welcome/WIP/Piksel-LIFE-20200506-191410.piskel"
-        },
-        {
-            "name": "plain.txt",
-            "path": ".welcome/examples/document/plain.txt"
-        },
-        {
-            "name": "preact-hyperscript.htm",
-            "path": ".welcome/examples/preact-hyperscript.htm"
-        },
-        {
-            "name": "prolog.pro",
-            "path": ".welcome/examples/language/prolog.pro"
-        },
-        {
-            "name": "python.py",
-            "path": ".welcome/examples/language/python.py"
-        },
-        {
-            "name": "quotaIssue.js",
-            "path": ".welcome/WIP/quotaIssue.js"
-        },
-        {
-            "name": "react-import.jsx",
-            "path": ".welcome/WIP/react-import.jsx"
-        },
-        {
-            "name": "react-imported.mjs",
-            "path": ".welcome/WIP/react-imported.mjs"
-        },
-        {
-            "name": "react-notes.md",
-            "path": ".welcome/WIP/react-notes.md"
-        },
-        {
-            "name": "react-todo.jsx",
-            "path": ".welcome/examples/react-todo.jsx"
-        },
-        {
-            "name": "react2.jsx",
-            "path": ".welcome/examples/react2.jsx"
-        },
-        {
-            "name": "Readme.md",
-            "path": ".welcome/Readme.md"
-        },
-        {
-            "name": "ruby.rb",
-            "path": ".welcome/examples/language/ruby.rb"
-        },
-        {
-            "name": "scheme.scm",
-            "path": ".welcome/examples/language/scheme.scm"
-        },
-        {
-            "name": "service.json",
-            "path": ".welcome/service.json"
-        },
-        {
-            "name": "slides-reveal.htm",
-            "path": ".welcome/examples/slides-reveal.htm"
-        },
-        {
-            "name": "sql.sql",
-            "path": ".welcome/examples/language/sql.sql"
-        },
-        {
-            "name": "styles.css",
-            "path": ".welcome/examples/language/styles.css"
-        },
-        {
-            "name": "styles.less",
-            "path": ".welcome/examples/language/styles.less"
-        },
-        {
-            "name": "styles.scss",
-            "path": ".welcome/examples/language/styles.scss"
-        },
-        {
-            "name": "svcv3.html",
-            "path": ".welcome/.templates/svcv3.html"
-        },
-        {
-            "name": "svg-bartok.svg",
-            "path": ".welcome/examples/image/svg-bartok.svg"
-        },
-        {
-            "name": "svg-lock.svg",
-            "path": ".welcome/examples/image/svg-lock.svg"
-        },
-        {
-            "name": "svg-solar-system.svg",
-            "path": ".welcome/examples/image/svg-solar-system.svg"
-        },
-        {
-            "name": "sw.clientServer.htm",
-            "path": ".welcome/WIP/sw.clientServer.htm"
-        },
-        {
-            "name": "typescript.ts",
-            "path": ".welcome/examples/language/typescript.ts"
-        },
-        {
-            "name": "video.mp4",
-            "path": ".welcome/examples/binary/video.mp4"
-        },
-        {
-            "name": "wasm.binaryen.html",
-            "path": ".welcome/WIP/wasm.binaryen.html"
-        },
-        {
-            "name": "webgl-duck.gltf",
-            "path": ".welcome/examples/3d/webgl-duck.gltf"
-        },
-        {
-            "name": "webgl-helloworld.gltf",
-            "path": ".welcome/examples/3d/webgl-helloworld.gltf"
-        },
-        {
-            "name": "webgl-helmet.gltf",
-            "path": ".welcome/examples/3d/webgl-helmet.gltf"
-        },
-        {
-            "name": "wee.js",
-            "path": ".welcome/examples/.deep-folders/test/wee.js"
-        },
-        {
-            "name": "windows.bat",
-            "path": ".welcome/examples/language/windows.bat"
-        }
-    ]
+    {
+      "name": "_dimensional.md",
+      "path": ".welcome/WIP/_dimensional.md"
+    },
+    {
+      "name": "_mirrors.md",
+      "path": ".welcome/WIP/_mirrors.md"
+    },
+    {
+      "name": "_sort.flashing.md",
+      "path": ".welcome/WIP/_sort.flashing.md"
+    },
+    {
+      "name": "angular9.html",
+      "path": ".welcome/WIP/angular9.html"
+    },
+    {
+      "name": "audio.mp3",
+      "path": ".welcome/examples/binary/audio.mp3"
+    },
+    {
+      "name": "auth0.md",
+      "path": ".welcome/WIP/auth0.md"
+    },
+    {
+      "name": "bf.html",
+      "path": ".welcome/.templates/bf.html"
+    },
+    {
+      "name": "blocks.ppm",
+      "path": ".welcome/examples/image/blocks.ppm"
+    },
+    {
+      "name": "boo.js",
+      "path": ".welcome/examples/.deep-folders/foo/doo/woo/boo.js"
+    },
+    {
+      "name": "brainfuck.bf",
+      "path": ".welcome/examples/language/brainfuck.bf"
+    },
+    {
+      "name": "clojure.cljs",
+      "path": ".welcome/examples/language/clojure.cljs"
+    },
+    {
+      "name": "color-picker.html",
+      "path": ".welcome/WIP/color-picker.html"
+    },
+    {
+      "name": "css-3d.html",
+      "path": ".welcome/WIP/css-3d.html"
+    },
+    {
+      "name": "css-doodle.html",
+      "path": ".welcome/WIP/css-doodle.html"
+    },
+    {
+      "name": "d3-graph.html",
+      "path": ".welcome/.templates/d3-graph.html"
+    },
+    {
+      "name": "example.ppm",
+      "path": ".welcome/examples/image/example.ppm"
+    },
+    {
+      "name": "gltf.html",
+      "path": ".welcome/.templates/gltf.html"
+    },
+    {
+      "name": "golang.go",
+      "path": ".welcome/examples/language/golang.go"
+    },
+    {
+      "name": "golf1.graph.json",
+      "path": ".welcome/WIP/golf1.graph.json"
+    },
+    {
+      "name": "golf1.js",
+      "path": ".welcome/WIP/golf1.js"
+    },
+    {
+      "name": "golf2.js",
+      "path": ".welcome/WIP/golf2.js"
+    },
+    {
+      "name": "graph-cytoscape.cx",
+      "path": ".welcome/examples/graph/graph-cytoscape.cx"
+    },
+    {
+      "name": "graph-cytoscape.gml",
+      "path": ".welcome/examples/graph/graph-cytoscape.gml"
+    },
+    {
+      "name": "graph-d3.2.json",
+      "path": ".welcome/examples/graph/graph-d3.2.json"
+    },
+    {
+      "name": "graph-d3.json",
+      "path": ".welcome/examples/graph/graph-d3.json"
+    },
+    {
+      "name": "graph-formats.md",
+      "path": ".welcome/WIP/graph-formats.md"
+    },
+    {
+      "name": "hyperscript.js",
+      "path": ".welcome/examples/language/hyperscript.js"
+    },
+    {
+      "name": "image.png",
+      "path": ".welcome/examples/image/image.png"
+    },
+    {
+      "name": "index.js",
+      "path": ".welcome/index.js"
+    },
+    {
+      "name": "ipynb.html",
+      "path": ".welcome/.templates/ipynb.html"
+    },
+    {
+      "name": "javascript.js",
+      "path": ".welcome/examples/language/javascript.js"
+    },
+    {
+      "name": "jelly.ppm",
+      "path": ".welcome/examples/image/jelly.ppm"
+    },
+    {
+      "name": "jr.ppm",
+      "path": ".welcome/examples/image/jr.ppm"
+    },
+    {
+      "name": "json.json",
+      "path": ".welcome/examples/language/json.json"
+    },
+    {
+      "name": "jsx.html",
+      "path": ".welcome/.templates/jsx.html"
+    },
+    {
+      "name": "jupyter.ipynb",
+      "path": ".welcome/examples/document/jupyter.ipynb"
+    },
+    {
+      "name": "jupyter2.ipynb",
+      "path": ".welcome/examples/document/jupyter2.ipynb"
+    },
+    {
+      "name": "jupyter3.ipynb",
+      "path": ".welcome/examples/document/jupyter3.ipynb"
+    },
+    {
+      "name": "jupyter4.ipynb",
+      "path": ".welcome/examples/document/jupyter4.ipynb"
+    },
+    {
+      "name": "lame.png",
+      "path": ".welcome/examples/image/lame.png"
+    },
+    {
+      "name": "language-assemblyscript.html",
+      "path": ".welcome/WIP/language-assemblyscript.html"
+    },
+    {
+      "name": "language-bf.html",
+      "path": ".welcome/WIP/language-bf.html"
+    },
+    {
+      "name": "language-cljs.html",
+      "path": ".welcome/WIP/language-cljs.html"
+    },
+    {
+      "name": "language-cpp.html",
+      "path": ".welcome/WIP/language-cpp.html"
+    },
+    {
+      "name": "language-lisp.html",
+      "path": ".welcome/WIP/language-lisp.html"
+    },
+    {
+      "name": "language-php.html",
+      "path": ".welcome/WIP/language-php.html"
+    },
+    {
+      "name": "language-pro.html",
+      "path": ".welcome/WIP/language-pro.html"
+    },
+    {
+      "name": "language-py.html",
+      "path": ".welcome/WIP/language-py.html"
+    },
+    {
+      "name": "language-rb.html",
+      "path": ".welcome/WIP/language-rb.html"
+    },
+    {
+      "name": "language-scm.html",
+      "path": ".welcome/WIP/language-scm.html"
+    },
+    {
+      "name": "language-sql-fetch.html",
+      "path": ".welcome/WIP/language-sql-fetch.html"
+    },
+    {
+      "name": "language-sql.html",
+      "path": ".welcome/WIP/language-sql.html"
+    },
+    {
+      "name": "lisp.lisp",
+      "path": ".welcome/examples/language/lisp.lisp"
+    },
+    {
+      "name": "markdown.md",
+      "path": ".welcome/examples/document/markdown.md"
+    },
+    {
+      "name": "markdown2.md",
+      "path": ".welcome/examples/document/markdown2.md"
+    },
+    {
+      "name": "md.html",
+      "path": ".welcome/.templates/md.html"
+    },
+    {
+      "name": "mlerpo.md",
+      "path": ".welcome/examples/.deep-folders/fee/fie/foe/fum/mlerpo.md"
+    },
+    {
+      "name": "open.folder.html",
+      "path": ".welcome/WIP/open.folder.html"
+    },
+    {
+      "name": "package.json",
+      "path": ".welcome/package.json"
+    },
+    {
+      "name": "perl.pl",
+      "path": ".welcome/examples/language/perl.pl"
+    },
+    {
+      "name": "php.php",
+      "path": ".welcome/examples/language/php.php"
+    },
+    {
+      "name": "Piksel-LIFE-20200506-191410.piskel",
+      "path": ".welcome/WIP/Piksel-LIFE-20200506-191410.piskel"
+    },
+    {
+      "name": "plain.txt",
+      "path": ".welcome/examples/document/plain.txt"
+    },
+    {
+      "name": "preact-hyperscript.htm",
+      "path": ".welcome/WIP/preact-hyperscript.htm"
+    },
+    {
+      "name": "prolog.pro",
+      "path": ".welcome/examples/language/prolog.pro"
+    },
+    {
+      "name": "python.py",
+      "path": ".welcome/examples/language/python.py"
+    },
+    {
+      "name": "quotaIssue.js",
+      "path": ".welcome/WIP/quotaIssue.js"
+    },
+    {
+      "name": "react-import.jsx",
+      "path": ".welcome/WIP/react-import.jsx"
+    },
+    {
+      "name": "react-imported.mjs",
+      "path": ".welcome/WIP/react-imported.mjs"
+    },
+    {
+      "name": "react-notes.md",
+      "path": ".welcome/WIP/react-notes.md"
+    },
+    {
+      "name": "react-todo.jsx",
+      "path": ".welcome/examples/react-todo.jsx"
+    },
+    {
+      "name": "react2.jsx",
+      "path": ".welcome/examples/react2.jsx"
+    },
+    {
+      "name": "Readme.md",
+      "path": ".welcome/Readme.md"
+    },
+    {
+      "name": "ruby.rb",
+      "path": ".welcome/examples/language/ruby.rb"
+    },
+    {
+      "name": "scheme.scm",
+      "path": ".welcome/examples/language/scheme.scm"
+    },
+    {
+      "name": "service.json",
+      "path": ".welcome/service.json"
+    },
+    {
+      "name": "slides-reveal.htm",
+      "path": ".welcome/WIP/slides-reveal.htm"
+    },
+    {
+      "name": "sql.sql",
+      "path": ".welcome/examples/language/sql.sql"
+    },
+    {
+      "name": "styles.css",
+      "path": ".welcome/examples/language/styles.css"
+    },
+    {
+      "name": "styles.less",
+      "path": ".welcome/examples/language/styles.less"
+    },
+    {
+      "name": "styles.scss",
+      "path": ".welcome/examples/language/styles.scss"
+    },
+    {
+      "name": "svcv3.html",
+      "path": ".welcome/.templates/svcv3.html"
+    },
+    {
+      "name": "svg-bartok.svg",
+      "path": ".welcome/examples/image/svg-bartok.svg"
+    },
+    {
+      "name": "svg-lock.svg",
+      "path": ".welcome/examples/image/svg-lock.svg"
+    },
+    {
+      "name": "svg-solar-system.svg",
+      "path": ".welcome/examples/image/svg-solar-system.svg"
+    },
+    {
+      "name": "svg.html",
+      "path": ".welcome/.templates/svg.html"
+    },
+    {
+      "name": "sw.clientServer.htm",
+      "path": ".welcome/WIP/sw.clientServer.htm"
+    },
+    {
+      "name": "typescript.ts",
+      "path": ".welcome/examples/language/typescript.ts"
+    },
+    {
+      "name": "video.mp4",
+      "path": ".welcome/examples/binary/video.mp4"
+    },
+    {
+      "name": "wasm.binaryen.html",
+      "path": ".welcome/WIP/wasm.binaryen.html"
+    },
+    {
+      "name": "webgl-duck.gltf",
+      "path": ".welcome/examples/3d/webgl-duck.gltf"
+    },
+    {
+      "name": "webgl-helloworld.gltf",
+      "path": ".welcome/examples/3d/webgl-helloworld.gltf"
+    },
+    {
+      "name": "webgl-helmet.gltf",
+      "path": ".welcome/examples/3d/webgl-helmet.gltf"
+    },
+    {
+      "name": "wee.js",
+      "path": ".welcome/examples/.deep-folders/test/wee.js"
+    },
+    {
+      "name": "windows.bat",
+      "path": ".welcome/examples/language/windows.bat"
+    }
+  ]
 }
