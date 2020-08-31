@@ -473,13 +473,35 @@ class TemplateEngine {
         this.templates.push(newTemp);
     }
 
+    getTemplate(filename='', contents=''){
+        const ext = filename.split('.').pop();
+        const extMatch = this.templates.find(x => x.extensions.includes(ext));
+        if(extMatch) return extMatch;
+
+        const jsonMatch = (() => {
+            if(!filename.includes('.json')){ return; }
+            if(!contents.includes('file-type')){ return; }
+            try {
+              const parsed = JSON.parse(contents);
+              const fileType = parsed['file-type'];
+              if(!fileType) return;
+              const _jsonMatch = this.templates
+                .find(x => x.extensions.includes(fileType));
+              return _jsonMatch;
+            } catch(e){
+              console.error(e);
+              return;
+            }
+        })();
+        return jsonMatch;
+    }
+
     convert(filename, contents){
         if(filename.includes('.htm')){
             return contents;
         }
         if(!this.templates.length) return false;
-        const ext = filename.split('.').pop();
-        const foundTemplate = this.templates.find(x => x.extensions.includes(ext));
+        const foundTemplate = this.getTemplate(filename, contents);
         if(!foundTemplate) return;
         return foundTemplate.convert(contents);
     }

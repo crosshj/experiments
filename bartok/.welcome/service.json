@@ -12,6 +12,7 @@
         "gltf.html": {},
         "ipynb.html": {},
         "jsx.html": {},
+        "lisp.html": {},
         "md.html": {},
         "svcv3.html": {},
         "svg.html": {}
@@ -115,7 +116,6 @@
         "language-bf.html": {},
         "language-cljs.html": {},
         "language-cpp.html": {},
-        "language-lisp.html": {},
         "language-php.html": {},
         "language-pro.html": {},
         "language-py.html": {},
@@ -322,10 +322,6 @@
       "path": ".welcome/WIP/language-cpp.html"
     },
     {
-      "name": "language-lisp.html",
-      "path": ".welcome/WIP/language-lisp.html"
-    },
-    {
       "name": "language-php.html",
       "path": ".welcome/WIP/language-php.html"
     },
@@ -352,6 +348,10 @@
     {
       "name": "language-sql.html",
       "path": ".welcome/WIP/language-sql.html"
+    },
+    {
+      "name": "lisp.html",
+      "path": ".welcome/.templates/lisp.html"
     },
     {
       "name": "lisp.lisp",

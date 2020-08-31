@@ -6,93 +6,18 @@ https://github.com/jscl-project/jscl
 <html>
 
 <head>
-    <title>LISP CODE EVAL DEMO</title>
+    <title>LISP PREVIEW</title>
 </head>
 
-<script>
-    const scriptUrl = "https://jscl-project.github.io/jscl.js";
-
-    async function letsGo() {
-        const inputDOM = document.querySelector('.language-input');
-        const outputDOM = document.querySelector('.language-output');
-
-        const appendScript = (url) => {
-            return new Promise((resolve, reject) => {
-                var script = document.createElement('script');
-                script.crossOrigin = "anonymous";
-                script.onload = resolve;
-                script.src = url;
-                document.head.appendChild(script);
-            });
-        };
-
-        let loading = true;
-        outputDOM.innerHTML = '\nloading...';
-
-        const doEach = (a) => {
-            if (loading) {
-                outputDOM.innerHTML = '\n';
-                loading = false;
-            }
-            outputDOM.innerHTML += a;
-        };
-
-        const codeFromComment = Array.from(
-            document.querySelector('.language-input').childNodes
-        )
-            .filter(x => x.nodeType === 8)
-            .map(x => x.data).join('\n');
-        inputDOM.innerText = codeFromComment;
-
-        await appendScript(scriptUrl);
-        return {
-            code: codeFromComment,
-            doEach,
-            doAfter: doEach
-        };
-    }
-</script>
-
-<body>
-    <h3>LISP CODE EVAL DEMO</h3>
-    <pre>
-
-INPUT:
-<code class="language-input language">
-<!--
-;;;Original code by Arnold Schoenhage,
-;;;translated to Scheme by Bradley J. Lucier (2004),
-;;;and adapted to Common Lisp by Nicolas Neuss.
-(defun fast-fib-pair (n)
-  "Returns f_n f_{n+1}."
-  (case n
-    ((0) (values 0 1))
-    ((1) (values 1 1))
-    (t (let ((m (floor n 2)))
-         (multiple-value-bind (f_m f_m+1)
-             (fast-fib-pair m)
-           (let ((f_m^2   (* f_m f_m))
-                 (f_m+1^2 (* f_m+1 f_m+1)))
-             (if (evenp n)
-                 (values (- (* 2 f_m+1^2)
-                            (* 3 f_m^2)
-                            (if (oddp m) -2 2))
-                         (+ f_m^2 f_m+1^2))
-                 (values (+ f_m^2 f_m+1^2)
-                         (- (* 3 f_m+1^2)
-                            (* 2 f_m^2)
-                            (if (oddp m) -2 2))))))))))
--->
-</code>
-
-OUTPUT:
-<code class="language-output language">
-</code>
-
-</pre>
-</body>
-
 <style>
+    ::-webkit-scrollbar,
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-thumb,
+    ::-webkit-scrollbar-thumb:hover {
+        background: transparent;
+    }
+
+    .hidden { display: none !important; }
     .language-input {
         height: 330px;
     }
@@ -326,13 +251,74 @@ OUTPUT:
 </style>
 
 <script>
+    const scriptUrl = "https://jscl-project.github.io/jscl.js";
+
+    async function letsGo() {
+        const inputDOM = document.querySelector('.language-input');
+        const outputDOM = document.querySelector('.language-output');
+
+        const appendScript = (url) => {
+            return new Promise((resolve, reject) => {
+                var script = document.createElement('script');
+                script.crossOrigin = "anonymous";
+                script.onload = resolve;
+                script.src = url;
+                document.head.appendChild(script);
+            });
+        };
+
+        let loading = true;
+        outputDOM.innerHTML = '\nloading...';
+
+        const doEach = (a) => {
+            if (loading) {
+                outputDOM.innerHTML = '\n';
+                loading = false;
+            }
+            outputDOM.innerHTML += a;
+        };
+
+        const codeFromComment = Array.from(
+            document.querySelector('.language-input').childNodes
+        )
+            .filter(x => x.nodeType === 8)
+            .map(x => x.data).join('\n');
+        inputDOM.innerText = codeFromComment;
+
+        await appendScript(scriptUrl);
+        return {
+            code: codeFromComment,
+            doEach,
+            doAfter: doEach
+        };
+    }
+</script>
+
+<body>
+    <pre>
+
+<code class="language-input language hidden">
+<!--
+{{template_input}}
+-->
+</code>
+
+<code class="language-output language">
+</code>
+
+</pre>
+</body>
+
+<script>
     (async () => {
         const {code, doEach, doAfter } = await letsGo();
         const compiled = jscl.evaluateString(code);
-        (new Array(10)).fill().forEach((x, i) => {
-            compiled.fvalue(x => doAfter(`fib(${i}): ${x}\n`), i);
-        });
+        compiled();
+        doAfter(JSON.stringify(window.results, null, 2))
     })();
 </script>
 
 </html>
+
+
+
