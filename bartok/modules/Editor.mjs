@@ -226,7 +226,14 @@ const Search = () => {
 		</style>
 		<div class="collapse-handle">></div>
 		<div class="search-field">
-			<input type="text" placeholder="Find" />
+			<input
+				type="text"
+				autocomplete="off"
+				autocorrect="off"
+				autocapitalize="off"
+				spellcheck="false"
+				placeholder="Find"
+			/>
 		</div>
 		<div class="search-count hidden">
 			<span class="search-count-current">X</span>

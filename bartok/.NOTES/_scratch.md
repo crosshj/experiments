@@ -1,3 +1,5 @@
+<!-- no-select -->
+
 why I keep vscode open
 ======================
 
@@ -18,7 +20,7 @@ why I keep vscode open
 
 
 2020-08-22 TODO
-===============
+---------------
 
 - [X] save a file with Bartok Basic Server provider
 
@@ -28,9 +30,9 @@ why I keep vscode open
 
 - tons of issues
   - [X] tab closing closes tabs that shouldn't close
-  - [ ] preview doesn't show if project doesn't have templates (global templates)
+  - [X] preview doesn't show if project doesn't have templates (global templates)
   - [ ] project loads index.js even if it doesn't exist
-  - [ ] tabs are not recalled for projects other than welcome project
+  - [X] tabs are not recalled for projects other than welcome project
   - [X] switching between preview and terminal is broken in some cases
   - [X] settings view has tab switching problems
   - [X] preview fails after fresh boot
@@ -81,7 +83,7 @@ why I keep vscode open
   - clear: meta store, handler store, module cache
   - unregister and stop service worker
   - refresh page
-
+```
   error in console, but all else seems to be fine:
   VM6:916 Uncaught (in promise) DOMException: Failed to execute 'respondWith' on 'FetchEvent': The event handler is already finished.
       at Object.serviceAPIRequestHandler [as handler] (eval at registerModule (http://localhost:3000/bartok/service-worker.js:227:22), <anonymous>:916:15)
@@ -91,7 +93,7 @@ why I keep vscode open
     async function (async)
     serviceAPIRequestHandler @ VM6:911
     fetchHandler @ service-worker.js:82
-
+```
 
 
 
@@ -165,8 +167,8 @@ reset page for ui
 
 BUG: loading page shows loading bar multiple times
 
-TODO
-====
+TIME AS MONEY
+=============
 
 - rephrase all tasks in terms of money and/or time
   - started work on Bartok on March 15, 2020
@@ -425,6 +427,10 @@ PREVIEW
 UNSORTED
 ========
 
+- bundling in browser
+  - http://webpack.github.io/playground/
+  - https://github.com/systemjs/systemjs
+
 - inline controls for codemirror - https://github.com/enjalot/Inlet
 
 - show binary files as HEX, show preview in side (instead)
@@ -446,6 +452,7 @@ UNSORTED
 
 - https://react-live.netlify.app/
 
+- https://observablehq.com/
 - https://bl.ocks.org/
   - https://bl.ocks.org/mbostock/11357811 - Wilson's algorithm (maze generation)
 - http://www.biofabric.org/gallery/pages/SuperQuickBioFabric.html
@@ -545,21 +552,21 @@ UNSORTED
 - https://www.dwitter.net/ - 2d graphics in 150 characters
 
 
-// spritesheet tool? https://www.leshylabs.com/apps/sstool/
+- spritesheet tool? https://www.leshylabs.com/apps/sstool/
 
-// https://svg-edit.github.io/svgedit/editor/svg-editor.html
-// http://petercollingridge.appspot.com/svg-editor - optimizes SVGs
+- https://svg-edit.github.io/svgedit/editor/svg-editor.html
+- http://petercollingridge.appspot.com/svg-editor - optimizes SVGs
 
-// SVG URL Encoder (for CSS) - https://yoksel.github.io/url-encoder/
+- SVG URL Encoder (for CSS) - https://yoksel.github.io/url-encoder/
 
-// ascii text
-// http://patorjk.com/software/taag/#p=testall&f=Graffiti&t=notes
+- ascii text
+- http://patorjk.com/software/taag/#p=testall&f=Graffiti&t=notes
 
-// ascii from pic
-// https://www.ascii-art-generator.org/
+- ascii from pic
+- https://www.ascii-art-generator.org/
 
-// VERY COOL TOOL: https://danmarshall.github.io/google-font-to-svg-path/
-// WORKS GREAT WITH: https://svg-edit.github.io/svgedit/editor
+- VERY COOL TOOL: https://danmarshall.github.io/google-font-to-svg-path/
+- WORKS GREAT WITH: https://svg-edit.github.io/svgedit/editor
 
 
 memory usage and performance
