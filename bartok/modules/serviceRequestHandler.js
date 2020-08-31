@@ -813,7 +813,7 @@ class ProviderManager {
         const { code, ...serviceOther } = service;
         const { providerUrl, providerRoot } = service;
 
-        serviceJson.tree = service.tree;
+        serviceJson.tree = service.tree[service.name];
         serviceJson.files = service.code
             .map(x => ({
                 name: x.name,
@@ -882,7 +882,7 @@ class ProviderManager {
                         return Number(one.id) >= all
                             ? Number(one.id) + 1
                             : all
-                        }, 0
+                        }, 1
                     );
 
             const service = {
