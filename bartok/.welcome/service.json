@@ -5,139 +5,147 @@
   "path": ".welcome",
   "version": 0.5,
   "tree": {
-    ".welcome": {
-      ".templates": {
-        "bf.html": {},
-        "d3-graph.html": {},
-        "gltf.html": {},
-        "ipynb.html": {},
-        "jsx.html": {},
-        "lisp.html": {},
-        "md.html": {},
-        "svcv3.html": {},
-        "svg.html": {}
-      },
-      "examples": {
-        ".deep-folders": {
-          "fee": {
-            "fie": {
-              "foe": {
-                "fum": {
-                  "mlerpo.md": {}
-                }
+    ".templates": {
+      "bf.html": {},
+      "d3-graph.html": {},
+      "gltf.html": {},
+      "ipynb.html": {},
+      "jsx.html": {},
+      "lisp.html": {},
+      "md.html": {},
+      "svcv3.html": {},
+      "svg.html": {}
+    },
+    "examples": {
+      ".deep-folders": {
+        "fee": {
+          "fie": {
+            "foe": {
+              "fum": {
+                "mlerpo.md": {}
               }
             }
-          },
-          "foo": {
-            "doo": {
-              "woo": {
-                "boo.js": {}
-              }
-            }
-          },
-          "test": {
-            "wee.js": {}
           }
         },
-        "3d": {
-          "webgl-duck.gltf": {},
-          "webgl-helloworld.gltf": {},
-          "webgl-helmet.gltf": {}
+        "foo": {
+          "doo": {
+            "woo": {
+              "boo.js": {}
+            }
+          }
         },
-        "binary": {
-          "audio.mp3": {},
-          "video.mp4": {}
-        },
-        "document": {
-          "jupyter.ipynb": {},
-          "jupyter2.ipynb": {},
-          "jupyter3.ipynb": {},
-          "jupyter4.ipynb": {},
-          "markdown.md": {},
-          "markdown2.md": {},
-          "plain.txt": {}
-        },
-        "graph": {
-          "graph-cytoscape.cx": {},
-          "graph-cytoscape.gml": {},
-          "graph-d3.2.json": {},
-          "graph-d3.json": {}
-        },
-        "image": {
-          "blocks.ppm": {},
-          "example.ppm": {},
-          "image.png": {},
-          "jelly.ppm": {},
-          "jr.ppm": {},
-          "lame.png": {},
-          "svg-bartok.svg": {},
-          "svg-lock.svg": {},
-          "svg-solar-system.svg": {}
-        },
-        "language": {
-          "brainfuck.bf": {},
-          "clojure.cljs": {},
-          "golang.go": {},
-          "hyperscript.js": {},
-          "javascript.js": {},
-          "json.json": {},
-          "lisp.lisp": {},
-          "perl.pl": {},
-          "php.php": {},
-          "prolog.pro": {},
-          "python.py": {},
-          "ruby.rb": {},
-          "scheme.scm": {},
-          "sql.sql": {},
-          "styles.css": {},
-          "styles.less": {},
-          "styles.scss": {},
-          "typescript.ts": {},
-          "windows.bat": {}
-        },
-        "react-todo.jsx": {},
-        "react2.jsx": {}
+        "test": {
+          "wee.js": {}
+        }
       },
-      "index.js": {},
-      "package.json": {},
-      "Readme.md": {},
-      "service.json": {},
-      "WIP": {
-        "angular9.html": {},
-        "auth0.md": {},
-        "color-picker.html": {},
-        "css-3d.html": {},
-        "css-doodle.html": {},
-        "golf1.graph.json": {},
-        "golf1.js": {},
-        "golf2.js": {},
-        "graph-formats.md": {},
-        "language-assemblyscript.html": {},
-        "language-bf.html": {},
-        "language-cljs.html": {},
-        "language-cpp.html": {},
-        "language-php.html": {},
-        "language-pro.html": {},
-        "language-py.html": {},
-        "language-rb.html": {},
-        "language-scm.html": {},
-        "language-sql-fetch.html": {},
-        "language-sql.html": {},
-        "open.folder.html": {},
-        "Piksel-LIFE-20200506-191410.piskel": {},
-        "preact-hyperscript.htm": {},
-        "quotaIssue.js": {},
-        "react-import.jsx": {},
-        "react-imported.mjs": {},
-        "react-notes.md": {},
-        "slides-reveal.htm": {},
-        "sw.clientServer.htm": {},
-        "wasm.binaryen.html": {},
-        "_bartok.tools.html": {},
-        "_dimensional.md": {},
-        "_mirrors.md": {},
-        "_sort.flashing.md": {}
-      }
+      "3d": {
+        "webgl-duck.gltf": {},
+        "webgl-helloworld.gltf": {},
+        "webgl-helmet.gltf": {}
+      },
+      "binary": {
+        "audio.mp3": {},
+        "video.mp4": {}
+      },
+      "document": {
+        "jupyter.ipynb": {},
+        "jupyter2.ipynb": {},
+        "jupyter3.ipynb": {},
+        "jupyter4.ipynb": {},
+        "markdown.md": {},
+        "markdown2.md": {},
+        "plain.txt": {}
+      },
+      "graph": {
+        "graph-cytoscape.cx": {},
+        "graph-cytoscape.gml": {},
+        "graph-d3.2.json": {},
+        "graph-d3.json": {}
+      },
+      "image": {
+        "bartok-logo-black.png": {},
+        "bartok-logo.png": {},
+        "bartok-logo.svg": {},
+        "bartok-logo.zip": {},
+        "bartok-logo2.png": {},
+        "BartokLogo.png": {},
+        "blocks.ppm": {},
+        "example.ppm": {},
+        "favicon_package2_v0.16.zip": {},
+        "grey.png": {},
+        "image.png": {},
+        "jelly.ppm": {},
+        "jr.ppm": {},
+        "lame.png": {},
+        "svg-bartok.svg": {},
+        "svg-lock.svg": {},
+        "svg-solar-system.svg": {},
+        "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg": {}
+      },
+      "language": {
+        "brainfuck.bf": {},
+        "clojure.cljs": {},
+        "golang.go": {},
+        "hyperscript.js": {},
+        "javascript.js": {},
+        "json.json": {},
+        "lisp.lisp": {},
+        "perl.pl": {},
+        "php.php": {},
+        "prolog.pro": {},
+        "python.py": {},
+        "ruby.rb": {},
+        "scheme.scm": {},
+        "sql.sql": {},
+        "styles.css": {},
+        "styles.less": {},
+        "styles.scss": {},
+        "typescript.ts": {},
+        "windows.bat": {}
+      },
+      "react-todo.jsx": {},
+      "react2.jsx": {}
+    },
+    "index.js": {},
+    "package.json": {},
+    "Readme.md": {},
+    "service.json": {},
+    "WIP": {
+      "angular9.html": {},
+      "auth0.md": {},
+      "color-picker.html": {},
+      "css-3d.html": {},
+      "css-doodle.html": {},
+      "golf1.graph.json": {},
+      "golf1.js": {},
+      "golf2.js": {},
+      "graph-formats.md": {},
+      "language-assemblyscript.html": {},
+      "language-bf.html": {},
+      "language-cljs.html": {},
+      "language-cpp.html": {},
+      "language-php.html": {},
+      "language-pro.html": {},
+      "language-py.html": {},
+      "language-rb.html": {},
+      "language-scm.html": {},
+      "language-sql-fetch.html": {},
+      "language-sql.html": {},
+      "open.folder.html": {},
+      "Piksel-LIFE-20200506-191410.piskel": {},
+      "preact-hyperscript.htm": {},
+      "quotaIssue.js": {},
+      "react-import.jsx": {},
+      "react-imported.mjs": {},
+      "react-notes.md": {},
+      "reveal.html": {},
+      "slides-reveal.htm": {},
+      "sw.clientServer.htm": {},
+      "wasm.binaryen.html": {},
+      "_bartok.tools.html": {},
+      "_dimensional.md": {},
+      "_mirrors.md": {},
+      "_sort.flashing.md": {}
     }
   },
   "files": [
@@ -168,6 +176,30 @@
     {
       "name": "auth0.md",
       "path": ".welcome/WIP/auth0.md"
+    },
+    {
+      "name": "bartok-logo-black.png",
+      "path": ".welcome/examples/image/bartok-logo-black.png"
+    },
+    {
+      "name": "bartok-logo.png",
+      "path": ".welcome/examples/image/bartok-logo.png"
+    },
+    {
+      "name": "bartok-logo.svg",
+      "path": ".welcome/examples/image/bartok-logo.svg"
+    },
+    {
+      "name": "bartok-logo.zip",
+      "path": ".welcome/examples/image/bartok-logo.zip"
+    },
+    {
+      "name": "bartok-logo2.png",
+      "path": ".welcome/examples/image/bartok-logo2.png"
+    },
+    {
+      "name": "BartokLogo.png",
+      "path": ".welcome/examples/image/BartokLogo.png"
     },
     {
       "name": "bf.html",
@@ -210,6 +242,10 @@
       "path": ".welcome/examples/image/example.ppm"
     },
     {
+      "name": "favicon_package2_v0.16.zip",
+      "path": ".welcome/examples/image/favicon_package2_v0.16.zip"
+    },
+    {
       "name": "gltf.html",
       "path": ".welcome/.templates/gltf.html"
     },
@@ -248,6 +284,10 @@
     {
       "name": "graph-formats.md",
       "path": ".welcome/WIP/graph-formats.md"
+    },
+    {
+      "name": "grey.png",
+      "path": ".welcome/examples/image/grey.png"
     },
     {
       "name": "hyperscript.js",
@@ -438,6 +478,10 @@
       "path": ".welcome/Readme.md"
     },
     {
+      "name": "reveal.html",
+      "path": ".welcome/WIP/reveal.html"
+    },
+    {
       "name": "ruby.rb",
       "path": ".welcome/examples/language/ruby.rb"
     },
@@ -492,6 +536,10 @@
     {
       "name": "sw.clientServer.htm",
       "path": ".welcome/WIP/sw.clientServer.htm"
+    },
+    {
+      "name": "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg",
+      "path": ".welcome/examples/image/the-shannara-chronicles-tree-forest-guardian-tv-series.jpg"
     },
     {
       "name": "typescript.ts",
