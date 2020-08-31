@@ -377,7 +377,7 @@ function Panes() {
 		</style>
 		<div id="actionbar"></div>
 
-		<div id="explorer" style="position: absolute; left: 50px; right: ${explorerRight}%;"></div>
+		<div id="explorer" tabindex="-1" style="position: absolute; left: 50px; right: ${explorerRight}%;"></div>
 		<div class="seperator" id="seperator1" style="position: absolute; left: ${100-explorerRight}%;"></div>
 		<div id="editor" style="position: absolute; left: ${100-explorerRight}%; right: ${editorRight}%;"></div>
 		<div class="seperator" id="seperator2" style="position: absolute; left: ${terminalLeft}%;"></div>

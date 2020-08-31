@@ -994,6 +994,9 @@ notes-section.loading:after {
   background: rgba(var(--main-theme-highlight-color), 0.4);
   /* color: var(--theme-text-selected); */
 }
+#explorer:not(:focus) .tree-leaf-content.selected {
+  background: #88888842;
+}
 
 .tree-child-leaves .tree-leaf-content {
   padding-left: 15px;
