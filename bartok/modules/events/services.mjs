@@ -6,15 +6,13 @@ const hideServiceMapHandler = (hideServiceMap) => async (event) => {
 };
 
 const showServiceMapHandler = (showServiceMap) => async (event) => {
-	console.log('hide services');
+	console.log('show services');
 	showServiceMap();
 };
 
 const operationDoneHandler = (receiveServices) => async (event) => {
 	const { type, detail } = event;
 	const { op, id } = detail;
-	// console.log('receive services');
-	// console.log({ type, op, detail })
 	if(op === "read" && !id){
 		const services = detail.result;
 		receiveServices(services);

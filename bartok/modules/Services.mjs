@@ -255,6 +255,7 @@ function getServiceSelector(el, onSelect){
 	`;
 	const select = el.querySelector('select');
 	if(!window.M){
+		console.error('could not build service map selector dropdown');
 		return;
 	}
 	const selectInstance = M.FormSelect.init(select, {
@@ -278,10 +279,13 @@ function getServiceSelector(el, onSelect){
 }
 
 const handleSelect = (selection, canvas, {
-	list= () => ([]), getCurrentServices
+	getListeners, getTriggers, getCurrentServices
 } = {}) => {
 	const showUIServices = () => {
-		const listeners = list();
+		const listeners = getListeners();
+		const triggers = getTriggers();
+		console.log({ listeners, triggers });
+
 		const mappedListeners = listeners.reduce((all, one) => {
 			const eventName = one.split('__')[0];
 			const name = one.split('__')[1];
@@ -300,7 +304,7 @@ const handleSelect = (selection, canvas, {
 		const spacingY = [
 			200, 200, 200, 200,
 			900, 900, 900, 900,
-			1200, 1200
+			1600, 1600, 1600, 1600
 		];
 		for(var i=0, len=keys.length; i<len; i++){
 			const x = spacingX[i];
@@ -309,7 +313,7 @@ const handleSelect = (selection, canvas, {
 				x, y
 			}, mappedListeners[keys[i]]);
 
-			const node = Node({ x: x/2 -20, y:y/2+5, scale: 1, label: keys[i]});
+			const node = Node({ x: x/2 -20, y:y/2+5, scale: 0.9, label: keys[i]});
 			canvas.appendChild(node);
 		}
 
@@ -320,8 +324,8 @@ const handleSelect = (selection, canvas, {
 		// });
 	}
 
-	const showSystemServices = () => {
-		const services = getCurrentServices();
+	const showSystemServices = async () => {
+		const services = await getCurrentServices();
 		//console.log({services});
 		services && services.forEach((s, i) => {
 			const leftOffset = 175;
@@ -332,6 +336,7 @@ const handleSelect = (selection, canvas, {
 			const y = i > 5
 				? 500
 				: 200;
+
 			const node = Node({ x, y, scale: 1, label: s.name});
 			canvas.appendChild(node);
 		});
@@ -363,11 +368,15 @@ function Services({ list } = {}){
 	if(services){
 		return;
 	}
-	const getCurrentServices = () => {
+	const getCurrentServices = async () => {
+		//TODO: this is lame, replace it later
+		currentServices = currentServices && currentServices.length
+			? currentServices
+			: (await (await fetch('./service/read/*')).json()).result;
 		return currentServices;
 	};
 	services = document.getElementById('services');
-	services.classList.add('hidden');
+	//services.classList.add('hidden');
 	//document.querySelector('#terminal').style.visibility = "hidden";
 	services.style.width="100%";
 	services.style.height="100%";
@@ -382,23 +391,31 @@ function Services({ list } = {}){
 	`;
 	const canvas = services.querySelector('svg#canvas');
 
-	attachListener({
-		showServiceMap: () => services.classList.remove('hidden'),
-		hideServiceMap: () => services.classList.add('hidden'),
-		receiveServices: (services) => currentServices = services
-	});
 	if(!canvas){ return; }
 
 	const selector = services.querySelector('.selector');
 	const onSelect = (val) => {
 		handleSelect(val, canvas, {
-			list, getCurrentServices
+			getCurrentServices,
+			getListeners: window.listListeners,
+			getTriggers: window.listTriggers,
 		});
 	};
 	getServiceSelector(selector, onSelect);
+
 	setTimeout(x => {
 		onSelect('ui-service');
-	}, 300);
+	}, 2000);
+
+
+	attachListener({
+		showServiceMap: () => services.classList.remove('hidden'),
+		hideServiceMap: () => services.classList.add('hidden'),
+		receiveServices: (services) => {
+			currentServices = services;
+			onSelect('ui-service');
+		}
+	});
 
 	attachPan(canvas);
 }
