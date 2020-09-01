@@ -362,7 +362,15 @@ const contextMenuSelectHandler = ({ newFile, newFolder }) => (e) => {
 
 		window.open(path+query);
 	}
-
+	
+	if(which === 'Open in Preview'){
+		const { name } = data;
+		const event = new CustomEvent('previewSelect', {
+			bubbles: true,
+			detail: { name }
+		});
+		document.body.dispatchEvent(event);
+	}
 
 };
 

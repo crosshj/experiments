@@ -854,7 +854,7 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 		} catch(e){}
 
 		const viewArgs = { supported, view, type, doc, docName, locked, url };
-		if(!locked) {
+		if(!locked || type === 'previewSelect') {
 			sessionStorage.setItem('preview', JSON.stringify(viewArgs));
 		}
 		return viewUpdate(viewArgs);
@@ -869,6 +869,14 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 	attach({
 		name: 'Terminal',
 		eventName: 'fileSelect',
+		listener: fileSelectHandler({
+			viewUpdate: stateBoundViewUpdate,
+			getCurrentService
+		})
+	});
+	attach({
+		name: 'Terminal',
+		eventName: 'previewSelect',
 		listener: fileSelectHandler({
 			viewUpdate: stateBoundViewUpdate,
 			getCurrentService

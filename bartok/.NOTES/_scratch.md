@@ -97,8 +97,8 @@ why I keep vscode open
 
 
 
-200801_1829 TODO
-================
+2020-08-01_1829 TODO
+====================
 
   - [IP] trying to get service worker fully fleshed out
 
@@ -141,8 +141,8 @@ can currupt previously saved data.
 - save to filesystem (so git can be source-of-truth)
 - some consistency between server and UI storage
 
-HUGE 200719_1731
-================
+2020-07-19_1731 HUGE
+====================
 
 recall all things
   - [X] editor tabs (remember open, selected, and scroll position)
@@ -178,8 +178,8 @@ TIME AS MONEY
 - how much would I pay to use bartok (trick question)?
 - how much would you have to pay me to use bartok (trick question)?
 
-TODO 200714_1902
-================
+2020-07-14_1902 TODO
+====================
   - [X] ability to close last file
   - [X] bypass "let's go" button on repeat usage
   - [ ] command palette
@@ -394,7 +394,7 @@ FILE CHANGES
  - only keep changed tabs open, reuse previous/unchanged tabs
  - [X] tabs stay open across reload
  - scroll/cursor position remembered
- - allow closing last tab
+ - [X] allow closing last tab
 
 PACKAGE.JSON / CONFIG
 ---------------------
@@ -594,17 +594,11 @@ components:
 
 web assembly
 ============
-
 - https://www.toptal.com/virtual-reality/assemblyscript-and-webassembly-tutorial
-
-
-searching for n language to wasm in-browser solutions
-=====================================================
-- https://play.rust-lang.org/
-- https://wasdk.github.io/WasmFiddle/
-- https://webassembly.studio/
-
-
+- wasm in-browser
+  - https://play.rust-lang.org/
+  - https://wasdk.github.io/WasmFiddle/
+  - https://webassembly.studio/
 
 syntax highlighting, etc
 ========================
@@ -613,10 +607,13 @@ syntax highlighting, etc
 - https://highlightjs.org/usage/
 - https://ourcodeworld.com/articles/read/309/top-5-best-code-editor-plugins-written-in-javascript
 
+- https://github.com/appcypher/awesome-wasm-langs
 
+- https://web.mit.edu/alexmv/6.037/sicp.pdf
+- http://matt.might.net/articles/best-programming-languages/
+- http://www.digibarn.com/collections/posters/tongues/tongues.jpg
 
-languages
-=========
+#### languages
 https://learnworthy.net/top-10-most-popular-language-of-2019-according-to-github/
 https://madnight.github.io/githut/#/pull_requests/2020/2
 

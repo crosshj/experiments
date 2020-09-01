@@ -409,12 +409,16 @@ function _Terminal(){
 			updateIframeRaw({ src, url });
 			return;
 		}
+		if(type === "previewSelect"){
+			updateIframeRaw({ src, url });
+		}
 		if(
 			type === "fileClose" ||
 			type === "termMenuAction" ||
 			type === "fileSelect" ||
 			type === "fileChange"
 		){
+
 			if(!locked || !alreadyUpdatedOnce){
 				updateIframeRaw({ src, url });
 			}

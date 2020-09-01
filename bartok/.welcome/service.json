@@ -144,6 +144,7 @@
       "wasm.binaryen.html": {},
       "_bartok.tools.html": {},
       "_dimensional.md": {},
+      "_docu_fiddling.md": {},
       "_mirrors.md": {},
       "_sort.flashing.md": {}
     }
@@ -156,6 +157,10 @@
     {
       "name": "_dimensional.md",
       "path": ".welcome/WIP/_dimensional.md"
+    },
+    {
+      "name": "_docu_fiddling.md",
+      "path": ".welcome/WIP/_docu_fiddling.md"
     },
     {
       "name": "_mirrors.md",

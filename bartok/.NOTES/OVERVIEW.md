@@ -1,12 +1,12 @@
 <!-- no-select -->
 
-Bartok Overview
-===============
+#### Bartok Overview
+
 
 The following graphic helps me think clearly about how bartok is put together and what it is.
 
 
-##### Service Map Loaded into UI
+#### Service Map Loaded into UI
 
 It's important to note that Local Storage and Backend service are included in the Service Map.
 
@@ -78,7 +78,7 @@ Outside the service map, they exist as running instances of services that deploy
 
 
 
-##### Connections
+#### Connections
 
  A1/A2 - code is pushed and pulled
          this may result in browser service restart
@@ -91,7 +91,7 @@ Outside the service map, they exist as running instances of services that deploy
  D1/D2 - code read and written to a DB of choice
 
 
-##### Notes
+#### Notes
 
 Templates|Config:
    service code bases that are not deployed

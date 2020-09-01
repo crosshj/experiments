@@ -695,6 +695,10 @@
       nextNextLine = cm.getLine(end + 2);
     }
 
+    if(cm.getLine(end).trim() === ''){
+      end--;
+    }
+
     return {
       from: CodeMirror.Pos(start.line, firstLine.length),
       to: CodeMirror.Pos(end, cm.getLine(end).length)
