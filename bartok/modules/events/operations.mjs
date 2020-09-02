@@ -253,7 +253,7 @@ const fileChangeHandler = (...args) => debounce((event) => {
 
 // ----------------------------------------------------------------------------------------------------------
 
-const updateServiceHandler = ({ getCurrentService, getState, performOperation, foundOp, manOp }) => {
+const updateServiceHandler = async ({ getCurrentService, getState, performOperation, foundOp, manOp }) => {
 	try {
 		const service = getCurrentService();
 		const state = getState();
@@ -278,7 +278,7 @@ const updateServiceHandler = ({ getCurrentService, getState, performOperation, f
 			eventData.listener = manOp.listener;
 		}
 
-		const results = performOperation(foundOp, eventData);
+		const results = await performOperation(foundOp, eventData);
 		return results;
 	}catch(e) {
 		console.error('error updating service');
@@ -292,8 +292,9 @@ const operationsHandler = ({
 	getCurrentFolder, setCurrentFolder,
 	getState, resetState,
 	getOperations, getReadAfter, getUpdateAfter,
-	performOperation, operationsListener
-}) => (event) => {
+	performOperation, operationsListener,
+	triggerOperationDone
+}) => async (event) => {
 	try {
 		// deprecate from dummyFunc -> updateAfter -> readAfter;
 		const dummyFunc = () => {};
@@ -311,7 +312,9 @@ const operationsHandler = ({
 				return;
 			}
 			const foundOp = allOperations.find(x => x.name === 'update');
-			return updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp });
+			const result = await updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp });
+			triggerOperationDone(result);
+			return;
 		}
 
 
@@ -320,9 +323,12 @@ const operationsHandler = ({
 			return;
 		}
 		if(foundOp.name === 'update'){
-			return updateServiceHandler({ getCurrentService, getState, performOperation, foundOp });
+			const result = await updateServiceHandler({ getCurrentService, getState, performOperation, foundOp });
+			triggerOperationDone(result);
+			return;
 		}
-		performOperation(foundOp, event.detail);
+		const result = await performOperation(foundOp, event.detail);
+		triggerOperationDone(result);
 		//wrangle context(state?)?
 		//execute operation with context
 		//debugger;
@@ -337,7 +343,8 @@ const providerHandler = ({
 	getCurrentFolder, setCurrentFolder,
 	getState, resetState,
 	getOperations, getReadAfter, getUpdateAfter,
-	performOperation, operationsListener
+	performOperation, operationsListener,
+	triggerOperationDone
 }) => (event) => {
 	const { detail, type } = event;
 	if(![
@@ -369,7 +376,8 @@ const providerHandler = ({
 		getCurrentFolder, setCurrentFolder,
 		getState, resetState,
 		getOperations, getReadAfter, getUpdateAfter,
-		performOperation, operationsListener
+		performOperation, operationsListener,
+		triggerOperationDone
 	});
 	return handler({
 		detail: { ...data, operation: type }
@@ -428,6 +436,11 @@ function attachListeners(args){
 		eventName: 'service-switch-notify',
 		type: 'raw'
 	});
+	const triggerOperationDone = attachTrigger({
+		name: 'Operations',
+		eventName: 'operationDone',
+		type: 'raw'
+	});
 	const mapListeners = (handlerName) => {
 		const eventName = handlerName.replace('Handler', '');
 		attach({
@@ -435,14 +448,19 @@ function attachListeners(args){
 			eventName,
 			listener: handlers[handlerName]({
 				triggerServiceSwitchNotify,
+				triggerOperationDone,
 				...args
 			})
 		});
 	};
 	Object.keys(handlers).map(mapListeners);
-
+	return {
+		triggerServiceSwitchNotify, triggerOperationDone
+	};
 }
 
+const connectTrigger = (args) => attachTrigger({ ...args, name: 'Operations' });
+
 export {
-	attachListeners
+	attachListeners, connectTrigger
 };

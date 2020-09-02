@@ -41,15 +41,18 @@ future todo:
 */
 
 
-function trigger({ type, params, source, data }){
+function trigger({ type, params, source, data, detail }){
 	console.log(`triggering event: ${type}`);
+	const defaultDetail = {
+		data,
+		...params,
+		...{ source }
+	};
 	const event = new CustomEvent(type, {
 		bubbles: true,
-		detail: {
-			data,
-			...params,
-			...{ source }
-		}
+		detail: detail
+			? { ...detail, ...defaultDetail }
+			: defaultDetail
 	});
 	window.dispatchEvent(event);
 }
@@ -64,9 +67,9 @@ const attachTrigger = function attachTrigger({
 }){
 	if(type === 'raw'){
 		const triggerName = `${eventName}__${name}`;
-		const _trigger = ({ data }={}) => trigger({
+		const _trigger = (args) => trigger({
+			...args,
 			type: eventName,
-			data,
 			source: name
 		});
 		triggers[triggerName] = {

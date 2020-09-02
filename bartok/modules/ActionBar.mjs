@@ -138,7 +138,7 @@ function ActionBar(){
 	}];
 
 	connectTrigger({
-		name: 'Action Bar',
+		name: 'ActionBar',
 		eventName: 'open-settings-view',
 		filter: e => actionBar.contains(e.target)
 			&& ["LI", "I"].includes(e.target.tagName)

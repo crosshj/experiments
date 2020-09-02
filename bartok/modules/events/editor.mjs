@@ -131,7 +131,7 @@ const fileSelectHandler = ({ switchEditor }) => async (event) => {
 	const currentService = getCurrentService({ pure: true });
 	const fileBody = currentService.code.find(x => x.name === fileName);
 	if(!fileBody){
-		console.error(`Current service (${currentService.id}:${currentService.name}) does not contain file: ${fileName}`);
+		console.error(`[editor:fileSelect] Current service (${currentService.id}:${currentService.name}) does not contain file: ${fileName}`);
 		switchEditor(null, "nothingOpen");
 		return;
 	}
@@ -143,6 +143,11 @@ const serviceSwitchListener = ({ switchEditor }) => async (event) => {
 	sessionStorage.setItem('editorFile', fileName);
 	const currentService = getCurrentService({ pure: true });
 	const fileBody = currentService.code.find(x => x.name === fileName);
+	if(!fileBody){
+		console.error(`[editor:serviceSwitch] Current service (${currentService.id}:${currentService.name}) does not contain file: ${fileName}`);
+		switchEditor(null, "nothingOpen");
+		return;
+	}
 	switchEditor(fileName, null, fileBody.code);
 };
 

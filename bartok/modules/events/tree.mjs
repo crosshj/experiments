@@ -362,7 +362,7 @@ const contextMenuSelectHandler = ({ newFile, newFolder }) => (e) => {
 
 		window.open(path+query);
 	}
-	
+
 	if(which === 'Open in Preview'){
 		const { name } = data;
 		const event = new CustomEvent('previewSelect', {
@@ -735,7 +735,7 @@ function attachListener(treeView, JSTreeView, updateTree, {
 	});
 }
 
-const connectTrigger = (args) => attachTrigger({ ...args, name: 'Tree' });
+const connectTrigger = (args) => attachTrigger({ ...args, name: 'Explorer' });
 
 export {
 	attachListener,

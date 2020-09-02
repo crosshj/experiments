@@ -14,7 +14,9 @@ import {
 } from './operationsService.mjs'
 
 async function Operations() {
-    attachListeners({
+    const {
+		triggerOperationDone
+	} = attachListeners({
         managementOp, externalStateRequest,
         getCurrentFile,
         getCurrentService, setCurrentService,
@@ -63,8 +65,8 @@ async function Operations() {
 
     //console.log({ lastService });
     const eventData = { body: { id: lastService } };
-    await performOperation(foundOp, { body: { id: lastService } }, externalStateRequest);
-
+    const result = await performOperation(foundOp, { body: { id: lastService } }, externalStateRequest);
+    triggerOperationDone(result);
 }
 
 export default Operations;

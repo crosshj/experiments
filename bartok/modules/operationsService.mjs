@@ -160,7 +160,7 @@ function getOperations(updateAfter, readAfter) {
 }
 
 
-async function performOperation(operation, eventData = {}, externalStateRequest) {
+async function performOperation(operation, eventData = {}) {
 
 	const { body = {}, after } = eventData;
 	if (operation.name !== "read") {
@@ -234,8 +234,8 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 		sessionStorage.removeItem('tabs');
 		sessionStorage.removeItem('statusbar');
 	}
-	const event = new CustomEvent('operationDone', {
-		bubbles: true,
+
+	return {
 		detail: {
 			op: operation.name,
 			id,
@@ -244,8 +244,7 @@ async function performOperation(operation, eventData = {}, externalStateRequest)
 				: {},
 			listener: eventData.listener
 		}
-	});
-	document.body.dispatchEvent(event);
+	};
 }
 
 const operationsListener = async (

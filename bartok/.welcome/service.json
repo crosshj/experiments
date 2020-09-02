@@ -135,6 +135,7 @@
       "Piksel-LIFE-20200506-191410.piskel": {},
       "preact-hyperscript.htm": {},
       "quotaIssue.js": {},
+      "react-import.css": {},
       "react-import.jsx": {},
       "react-imported.mjs": {},
       "react-notes.md": {},
@@ -457,6 +458,10 @@
     {
       "name": "quotaIssue.js",
       "path": ".welcome/WIP/quotaIssue.js"
+    },
+    {
+      "name": "react-import.css",
+      "path": ".welcome/WIP/react-import.css"
     },
     {
       "name": "react-import.jsx",
