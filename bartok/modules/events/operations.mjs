@@ -238,7 +238,7 @@ const readFolderHandler = ({
 };
 
 const fileChangeHandler = (...args) => debounce((event) => {
-	const { getState, getOperations, performOperation } = args[0];
+	const { getState, getOperations, performOperation, triggerOperationDone } = args[0];
 	const state = getState();
 	const operations = getOperations();
 	const changeOp = (operations||[]).find(x => x.name === 'change');
@@ -246,9 +246,13 @@ const fileChangeHandler = (...args) => debounce((event) => {
 	const { file, code } = event.detail;
 	const path = '.' + (state.paths.find(x => x.name === file)||{ path: ''}).path.replace('/welcome/', '/.welcome/');
 
-	performOperation(changeOp, {
-		path, code
-	});
+	(async() => {
+		const results = await performOperation(changeOp, {
+			path, code
+		});
+		triggerOperationDone(results);
+	})();
+
 }, 300);
 
 // ----------------------------------------------------------------------------------------------------------

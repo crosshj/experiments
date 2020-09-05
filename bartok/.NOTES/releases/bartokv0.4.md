@@ -46,7 +46,7 @@
   - [X] upload binary files
   - [ ] upload whole folder
   - [X] pop out preview
-  - [ ] languages for preview
+  - [X] languages for preview
   - [X] search icon (magnifer) should be connected to somehting
 
 ### panes
@@ -70,6 +70,7 @@
   - [X] recall previous file type (on page reload)
 
 ### templates
+  - [X] templates run through service worker
   - [ ] match based on tag in file contents
 
 ### preview
@@ -77,7 +78,7 @@
   - [X] recall last shown preview on page reload
 
 ### service map
-  - [ ] show registered triggers in map
+  - [X] show registered triggers in map
 
 ### terminal
   - no updates

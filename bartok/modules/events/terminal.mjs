@@ -389,69 +389,6 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 	}
 };
 
-//DEPRECATE
-const fileChangeHandler = ({ viewUpdate }) => (event) => {
-	const { type, detail } = event;
-	let { name, id, file='', code='' } = detail;
-
-	code = typeof code === "string"
-		? code
-		: '';
-
-	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return file.includes('.'+x)});
-	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return file.includes('.'+x)});
-	const isJSX = (file).includes('jsx');
-	const isSVC3 = code.includes('/* svcV3 ');
-	const hasTemplate = isSupported({ name: file, contents: code });
-
-	//debugger;
-	if(!isSVG && !isHTML && !isJSX && !isSVC3 && !hasTemplate){
-		code = `<div class="no-preview">No preview available.</div>`;
-	}
-	const doc = isHTML || isJSX || isSVC3 || hasTemplate
-	? code
-	: `
-	<html>
-		<style>
-			.no-preview {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				font-size: 1.5em;
-				color: #666;
-			}
-			body {
-				margin: 0px;
-				margin-top: 40px;
-				height: calc(100vh - 40px);
-				overflow: hidden;
-				color: #ccc;
-				font-family: sans-serif;
-			}
-		</style>
-		<body>
-			<pre>${code}</pre>
-		</body>
-	</html>
-`;
-	if(!locked){
-		currentFile = doc;
-		currentFileName = file;
-	} else {
-		backupForLock.currentFile = doc;
-		backupForLock.currentFileName = file;
-	}
-	if(doc && currentView === "preview"){
-		const supported = hasTemplate || isHTML || isJSX || isSVC3;
-		viewUpdate({ supported, type, locked, doc, docName: file, ...event.detail });
-	}
-};
-
 const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 	const { type, detail } = event;
 	const { action } = detail;
@@ -650,7 +587,7 @@ const handleCommandQueue = (event) => {
 }
 
 let firstLoad = true;
-const operationDone = ({ viewUpdate }) => (event) => {
+const operationDone = ({ viewUpdate, viewReload }) => (event) => {
 	handleCommandQueue(event);
 
 	if(firstLoad){
@@ -682,23 +619,7 @@ const operationDone = ({ viewUpdate }) => (event) => {
 	const { op, id, result, operation } = detail;
 
 	if(op === 'change'){
-		const { path, code } = result;
-		if(locked){
-			return;
-		}
-		const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return path.includes('.'+x)});
-		const hasTemplate = isSupported({
-			name: path,
-			contents: code
-		});
-		const supported = hasTemplate || isHTML;
-		if(!supported){
-			return;
-		}
-		viewUpdate({
-			type: 'forceRefreshOnPersist',
-			wait: 1
-		});
+		!locked && viewReload(detail);
 		return;
 	}
 
@@ -836,7 +757,7 @@ const contextMenuSelectHandler = ({ newFile } = {}) => (e) => {
 
 /// -----------------------------------------------------------------------------
 
-function attachEvents({ write, viewUpdate, terminalActions }){
+function attachEvents({ write, viewUpdate, viewReload, terminalActions }){
 	// write('\x1B[2K');
 	// write('\rEvent system attached.\n');
 	// write(`\n${PROMPT}`);
@@ -890,14 +811,6 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 			getCurrentService
 		})
 	});
-	// attach({
-	// 	name: 'Terminal',
-	// 	eventName: 'fileChange',
-	// 	listener: fileChangeHandler({
-	// 		viewUpdate: stateBoundViewUpdate,
-	// 		getCurrentService
-	// 	})
-	// });
 	attach({
 		name: 'Terminal',
 		eventName: 'termMenuAction',
@@ -909,7 +822,7 @@ function attachEvents({ write, viewUpdate, terminalActions }){
 	attach({
 		name: 'Terminal',
 		eventName: 'operationDone',
-		listener: operationDone({ viewUpdate: stateBoundViewUpdate })
+		listener: operationDone({ viewUpdate: stateBoundViewUpdate, viewReload })
 	});
 	attach({
 		name: 'Terminal',

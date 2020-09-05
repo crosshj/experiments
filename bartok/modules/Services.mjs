@@ -52,6 +52,13 @@ ${/* FOR VISUAL DEBUGGING */''}
 </style>
 `;
 
+function rotateArray(array, degrees){
+	const itemsToSlice = (array.length/360)*Math.abs(degrees);
+	return degrees > 0
+			? [ ...array.slice(array.length - itemsToSlice), ...array.slice(0, array.length - itemsToSlice)]
+			: [ ...array.slice(itemsToSlice), ...array.slice(0, itemsToSlice)];
+}
+
 function attachPan(_canvas){
 	let transX=0, transY=0, offsetX=0, offsetY=0;
 	const serviceMapTransform = localStorage.getItem('serviceMapTransform');
@@ -142,11 +149,37 @@ function circleLayout({
 	let angle = Math.PI/-2;
 	const step = (2*Math.PI) / numberOfItems;
 	const positions = [];
+	const distance = ([x1,y1],[x2,y2]) => Math.hypot(x2-x1, y2-y1);
 	for(var i=0; i < numberOfItems; i++){
 		var x1 = Math.round(width/2 + radius * Math.cos(angle) - itemWidth/2);
-		var y1 = Math.round(verticalScale * (height/2 + radius * Math.sin(angle) - itemHeight/2));
+		var y1 = Math.round((height/2 + (verticalScale * radius) * Math.sin(angle) - itemHeight/2));
 		positions.push([x1, y1]);
 		angle += step;
+	}
+	if(verticalScale === 1) return positions;
+
+	const first = 0;
+	const last = positions.length - 1;
+	const minDistance = 500;
+	const adjustDistance = 150;
+	for(var i=0; i < positions.length; i++){
+		if(i <= positions.length /2){
+			const previous = i === first
+			? positions[last]
+			: positions[i - 1];
+			const prevDistance = distance(positions[i], previous);
+			if(prevDistance < minDistance){
+				positions[i][1] += adjustDistance;
+			}
+			continue;
+		}
+		const next = i === last
+			? positions[first]
+			: positions[i+1];
+		const nextDistance = distance(positions[i], next);
+		if(nextDistance < minDistance){
+			positions[i][1] += adjustDistance;
+		}
 	}
 	return positions;
 }
@@ -371,7 +404,12 @@ const handleSelect = (selection, canvas, {
 			.reverse();
 
 		let rippled = [];
-		for (let k = 0; k < keys.length / 2; k++) {
+		const isOddLength = keys.length % 2;
+		let popped;
+		for (let k = 0; k < keys.length; k++) {
+			if(!popped && isOddLength && (k*2) > (keys.length/2)){
+				popped = rippled.pop();
+			}
 			if(!rippled.includes(keys[k])){
 				rippled.push(keys[k]);
 			}
@@ -383,23 +421,24 @@ const handleSelect = (selection, canvas, {
 
 		const layout = circleLayout({
 			radius: 1200,
-			width: 3200,
-			height: 3200,
+			width: 4000,
+			height: 4000,
 			itemHeight: 0,
 			itemWidth: 0,
 			numberOfItems: keys.length,
-			verticalScale: 0.575
+			verticalScale: 0.5
 		});
 		let allNodes = [];
 		for(var i=0, len=keys.length; i<len; i++){
 			const [x, y] = layout[i];
-			const theseNodes = addNodes(canvas, {
-				x, y
-			}, [
-				...listeners[keys[i]],
-				...(triggers[keys[i]]||[])
-					.map(key => ({ key, type: 'trigger'}))
-			]);
+			const theseNodes = addNodes(canvas,
+				{ x, y },
+				rotateArray([
+					...listeners[keys[i]],
+					...(triggers[keys[i]]||[])
+						.map(key => ({ key, type: 'trigger'}))
+				], (360*i/keys.length) -155)
+			);
 			allNodes = [...theseNodes, ...allNodes ];
 
 			const nodeParams = { x: x/2 -20, y:y/2+5, scale: 0.9, label: keys[i]};
@@ -416,17 +455,22 @@ const handleSelect = (selection, canvas, {
 
 	const showSystemServices = async () => {
 		const services = await getCurrentServices();
+		const layout = circleLayout({
+			radius: 200,
+			width: 2000,
+			height: 2000,
+			itemHeight: 0,
+			itemWidth: 0,
+			numberOfItems: services.length,
+			verticalScale: 1
+		});
 		services && services.forEach((s, i) => {
-			const leftOffset = 175;
-			const spacing = 150;
-			const x = i > 5
-				? (i-5)*spacing + (leftOffset-spacing)
-				: i*spacing + leftOffset;
-			const y = i > 5
-				? 500
-				: 200;
-
-			const node = Node({ x, y, scale: 1, label: s.name});
+			const [x, y] = layout[i];
+			const node = Node({
+				x, y, scale: 1,
+				label: s.name,
+				labelDistance: 50
+			});
 			canvas.appendChild(node);
 		});
 	};

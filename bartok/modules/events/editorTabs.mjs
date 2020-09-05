@@ -1,4 +1,4 @@
-import { attach } from '../Listeners.mjs';
+import { attach, attachTrigger } from '../Listeners.mjs';
 import { getDefaultFile } from '../state.mjs';
 let tabs = [];
 
@@ -23,7 +23,7 @@ function getTabsToUpdate(name) {
 	return { foundTab, tabsToUpdate };
 }
 
-function triggerCloseTab(event){
+function triggerCloseTab(event, fileCloseTrigger){
 	let name;
 	try{
 		name = event.target.dataset.name.trim()
@@ -38,11 +38,10 @@ function triggerCloseTab(event){
 		? (nextTabs[nextTabs.length -1]||{}).name
 		: (tabs.filter(x => x.active)||[{}])[0].name;
 
-	const fileCloseEvent = new CustomEvent('fileClose', {
-		bubbles: true,
+	fileCloseTrigger({
 		detail: { name, next }
 	});
-	document.body.dispatchEvent(fileCloseEvent);
+
 }
 
 const fileCloseHandler = ({
@@ -65,7 +64,7 @@ const fileCloseHandler = ({
 };
 
 const clickHandler = ({
-	event, container, initTabs, createTab, updateTab, removeTab
+	event, container, initTabs, createTab, updateTab, removeTab, triggers
 }) => {
 	if(!container.contains(event.target)){
 		//console.log('did not click any tab container element');
@@ -79,7 +78,7 @@ const clickHandler = ({
 	}
 
 	if(event.target.classList.contains('close-editor-action')){
-		triggerCloseTab(event);
+		triggerCloseTab(event, triggers['fileClose']);
 		event.preventDefault();
 		return;
 	}
@@ -93,13 +92,12 @@ const clickHandler = ({
 
 	// const { tabsToUpdate, foundTab } = getTabsToUpdate(name);
 	// tabsToUpdate.map(updateTab);
-	const fileSelectEvent = new CustomEvent('fileSelect', {
-		bubbles: true,
+
+	triggers['fileSelect']({
 		detail: {
 			name: foundTab.name
 		}
-	});
-	document.body.dispatchEvent(fileSelectEvent);
+	})
 };
 
 const fileSelectHandler = ({
@@ -267,13 +265,25 @@ function attachListener(
 	container,
 	{ initTabs, createTab, updateTab, removeTab }
 ){
+	const triggers = {
+		'fileClose': attachTrigger({
+			name: 'Tab Bar',
+			eventName: 'fileClose',
+			type: 'raw'
+		}),
+		'fileSelect': attachTrigger({
+			name: 'Tab Bar',
+			eventName: 'fileSelect',
+			type: 'raw'
+		})
+	};
 	const listener = async function (event) {
 		//console.log(event.type)
 		// await something here??
 		const showMenu = () => window.showMenu;
 
 		handlers[event.type] && handlers[event.type]({
-			event, container, initTabs, createTab, updateTab, removeTab, showMenu
+			event, container, initTabs, createTab, updateTab, removeTab, showMenu, triggers
 		});
 	};
 

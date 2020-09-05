@@ -8,10 +8,10 @@
 ## Current State
 
 ### meta
-  - [ ] !!! storage and backup
+  - [X] !!! storage and backup
   - [ ] !!! connect to server UI
   - [ ] !!! bartok version at bottom left should be connected to real something
-  - [ ] !!! settings icon (gear) should be connected to something
+  - [X] !!! settings icon (gear) should be connected to something
 
 ### panes
   - nothing

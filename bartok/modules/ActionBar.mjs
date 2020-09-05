@@ -120,13 +120,14 @@ function ActionBar(){
 		actionBar.querySelector('.full-screen-exit').classList.remove('hidden');
 		document.documentElement.requestFullscreen();
 	});
+
 	actionBar.querySelector('.full-screen-exit').addEventListener("click", () => {
 		actionBar.querySelector('.full-screen').classList.remove('hidden');
 		actionBar.querySelector('.full-screen-exit').classList.add('hidden');
 		document.exitFullscreen();
 	});
 
-	const events = [{
+	const triggers = [{
 		query: 'li.explorer',
 		action: 'showServiceCode'
 	}, {
@@ -137,6 +138,28 @@ function ActionBar(){
 		action: 'showServicesMap'
 	}];
 
+	triggers.forEach(trigger => {
+		connectTrigger({
+			name: 'ActionBar',
+			eventName: trigger.action,
+			data: e => {
+				const target = e.target.tagName === 'I'
+					? e.target.parentNode
+					: e.target;
+				actionBar.querySelector('.checked')
+					.classList.remove('checked');
+				target.classList.add('checked');
+				return;
+			},
+			filter: e => actionBar.contains(e.target)
+				&& ["LI", "I"].includes(e.target.tagName)
+				&& (
+					e.target.parentNode.className.includes(trigger.query.replace('li.', '')) ||
+					e.target.className.includes(trigger.query.replace('li.', ''))
+				)
+		});
+	});
+
 	connectTrigger({
 		name: 'ActionBar',
 		eventName: 'open-settings-view',
@@ -146,32 +169,6 @@ function ActionBar(){
 				e.target.parentNode.id === 'open-settings-view' ||
 				e.target.id === 'open-settings-view'
 			)
-	});
-
-	events.forEach(event => {
-		actionBar
-			.querySelector(event.query)
-			.addEventListener("click", (e) => {
-				// if(event.action === "showSearch"){
-				// 	return;
-				// }
-				//debugger;
-				let target = e.target;
-				if(target.tagName == 'I'){
-					target = target.parentNode;
-				}
-				actionBar.querySelector('.checked')
-					.classList.remove('checked');
-				target.classList.add('checked');
-
-				//TODO: should trigger event here in a standard way!!!
-
-				const actionBarEvent = new CustomEvent(event.action, {
-					bubbles: true,
-					detail: { }
-				});
-				document.body.dispatchEvent(actionBarEvent);
-			});
 	});
 
 	attach({

@@ -343,7 +343,11 @@ function _Terminal(){
 	}
 
 	const updateIframe = debounce(updateIframeRaw, 300);
-	const reloadIframe = (wait) => {
+	const reloadIframe = (wait=0) => {
+		/*
+		TODO: in the future, frame will be reloaded offscreen and then replaced when loaded
+		see: https://stackoverflow.com/a/18107241
+		*/
 		setTimeout(() => {
 			previewIframe.contentWindow.location.reload();
 		}, wait);
@@ -469,6 +473,7 @@ function _Terminal(){
 	EventTrigger = attachEvents({
 		write: (x) => term.write(x),
 		viewUpdate,
+		viewReload: reloadIframe,
 		terminalActions
 	});
 }

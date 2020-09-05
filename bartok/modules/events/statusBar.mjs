@@ -107,17 +107,6 @@ const fileChange = ({
 		//console.log('status bar listen for fileChange');
 	};
 
-const click = ({
-	setLineNumber, setColNumber, setTabSize, setDocType
-}) =>
-	(event) => {
-		statusBarDom = statusBarDom || document.getElementById('status-bar');
-		if(!statusBarDom.contains(event.target)){ return true; }
-		event.preventDefault();
-
-		//console.log('status bar listen for click');
-	};
-
 const cursorActivity = ({
 	setLineNumber, setColNumber
 }) =>
@@ -130,7 +119,7 @@ const cursorActivity = ({
 
 
 const listeners = {
-	operationDone, fileSelect, fileClose, fileChange, click, cursorActivity
+	operationDone, fileSelect, fileClose, fileChange, cursorActivity
 };
 
 function attachListeners({

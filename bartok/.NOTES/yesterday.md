@@ -1,7 +1,12 @@
 <!-- no-select -->
 <br>
 
-#### 2020-08-29 | 2020-08-30 - refactor, fix settins,template issues
+#### 2020-09-02 | 2020-09-02 - service map
+  - connect triggers to listeners in service map
+  - add a bunch of triggers in app
+  - mess with service map layout
+
+#### 2020-08-29 | 2020-08-30 - refactor, fix settings,template issues
   - move around a bunch of files; further test provider integration
   - fix settings and template issues
   - settings issue still exists on page reload

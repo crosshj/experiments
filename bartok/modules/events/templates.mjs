@@ -78,16 +78,16 @@ const templatesListener = ({ updateTemplates }) => (event) => {
 function attachListeners({
 	updateTemplates
 }){
-	attach({
-		name: 'Templates',
-		eventName: 'operations',
-		listener: templatesListener({ updateTemplates })
-	});
-	attach({
-		name: 'Templates',
-		eventName: 'operationDone',
-		listener: templatesListener({ updateTemplates })
-	});
+	// attach({
+	// 	name: 'Templates',
+	// 	eventName: 'operations',
+	// 	listener: templatesListener({ updateTemplates })
+	// });
+	// attach({
+	// 	name: 'Templates',
+	// 	eventName: 'operationDone',
+	// 	listener: templatesListener({ updateTemplates })
+	// });
 }
 
 export {
