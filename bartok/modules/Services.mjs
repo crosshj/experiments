@@ -366,7 +366,7 @@ function makeDraggable(el){
   function finishMove(evt){
     root.removeEventListener('mousemove',handleMove,false);
     root.removeEventListener('mouseup',  finishMove,false);
-    //fireEvent('synthetic-dragend');
+    fireEvent('synthetic-dragend');
   }
   function fireEvent(eventName){
     var event = new Event(eventName);
@@ -409,6 +409,7 @@ function drawRootNodes({ canvas, listeners, triggers }) {
 		numberOfItems: keys.length,
 		verticalScale: 0.5
 	});
+	let allParentNodes = [];
 	let allNodes = [];
 	let allLinks;
 	for (var i = 0, len = keys.length; i < len; i++) {
@@ -439,7 +440,8 @@ function drawRootNodes({ canvas, listeners, triggers }) {
 		canvas.appendChild(node);
 		makeDraggable(node);
 		svgChildBringToTop(node.querySelector('g'));
-		let nodeName = keys[i];
+
+		const nodeName = keys[i];
 		let myLinks;
 		node.addEventListener('synthetic-drag', ({detail}) => {
 			myLinks = myLinks || allLinks
@@ -449,9 +451,31 @@ function drawRootNodes({ canvas, listeners, triggers }) {
 				diff: detail
 			}))
 		});
+
+		node.addEventListener('synthetic-drag', () => {
+			const serviceMapPositionsUI = allParentNodes.map(x => x.getAttribute('transform'));
+			localStorage.setItem("serviceMapPositionsUI", serviceMapPositionsUI);
+		});
+
+		allParentNodes.push(node);
 	}
 
 	allLinks = addLinks({ canvas, allNodes });
+
+	const serviceMapPositionsUI = (localStorage.getItem("serviceMapPositionsUI")||"").split(',');
+	if(serviceMapPositionsUI.length === allParentNodes.length){
+		for (let i = 0; i < serviceMapPositionsUI.length; i++) {
+			const transform = serviceMapPositionsUI[i];
+			if(!transform) continue;
+			const [x,y] = transform.match(/translate\((.*?)\)/)[1].split(' ');
+			allParentNodes[i].setAttribute('transform', transform);
+			var event = new Event('synthetic-drag');
+			event.detail = { x, y };
+			allParentNodes[i].dispatchEvent(event);
+		}
+	}
+
+
 }
 
 
