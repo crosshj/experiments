@@ -21,6 +21,8 @@ const styles = `
     z-index: 99999;
 	}
 
+	#services ::selection { background: transparent; }
+
 	svg#canvas {
 		width: 100%;
 		height: 100%;
@@ -56,16 +58,18 @@ ${/* FOR VISUAL DEBUGGING */''}
     text-transform: uppercase;
     color: #1dafa9;
 	}
-
 	.trigger-link {
 		stroke: #e65a5aa3;
 	}
-
 	#canvas * {
 		user-drag: none;
 		-webkit-user-drag: none;
 	}
-
+	#canvas text,
+	#canvas foreignObject {
+		pointer-events: none;
+		user-select: none;
+	}
 
 </style>
 `;
@@ -532,9 +536,7 @@ function getServiceSelector(el, onSelect) {
 				background: transparent;
 				color: white;
 			}
-			#canvas text,
-			#canvas foreignObject {
-				pointer-events: none;
+			.selector * {
 				user-select: none;
 			}
 		</style>`;
@@ -620,15 +622,19 @@ function getZoomControls(el, zoomTarget){
 		<span class="zoom-plus"></span>
 		<span class="zoom-minus"></span>
 	`;
-	el.querySelector('.zoom-plus').onclick = () => {
+	el.querySelector('.zoom-plus').onclick = (e) => {
 		const zoom = localStorage.getItem('serviceMapZoom') || 1;
 		zoomTarget.style.transform = modifyTransform(zoomTarget, 'scale', Number(zoom) + 0.1);
 		localStorage.setItem('serviceMapZoom', Number(zoom) + 0.1);
+		e.preventDefault();
+		return false;
 	}
-	el.querySelector('.zoom-minus').onclick = () => {
+	el.querySelector('.zoom-minus').onclick = (e) => {
 		const zoom = localStorage.getItem('serviceMapZoom') || 1;
 		zoomTarget.style.transform = modifyTransform(zoomTarget, 'scale', Number(zoom) - 0.1);
 		localStorage.setItem('serviceMapZoom', Number(zoom) - 0.1);
+		e.preventDefault();
+		return false;
 	}
 }
 
