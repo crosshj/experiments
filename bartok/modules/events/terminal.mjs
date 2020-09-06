@@ -1,5 +1,5 @@
 import {
-	attach, trigger
+	attach, trigger, attachTrigger
 } from '../Listeners.mjs';
 
 import {
@@ -468,7 +468,7 @@ const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
 };
 
 let queuedCommands = [];
-function execCommand({ command, loading, done }){
+const _execCommand = (execTrigger) => ({ command, loading, done }) => {
 	const [ op, ...args] = command.split(' ');
 	let filename, newName, _id, name, other;
 	let after, noDone;
@@ -559,8 +559,7 @@ function execCommand({ command, loading, done }){
 		after
 	});
 
-	const event = new CustomEvent('operations', {
-		bubbles: true,
+	execTrigger({
 		detail: {
 			operation: op,
 			listener: commandQueueId,
@@ -568,8 +567,6 @@ function execCommand({ command, loading, done }){
 			body
 		}
 	});
-	document.body.dispatchEvent(event);
-	//isProjectOp && loading(`${command}: running... `);
 };
 
 const handleCommandQueue = (event) => {
@@ -851,23 +848,17 @@ function attachEvents({ write, viewUpdate, viewReload, terminalActions }){
 	return (command, callback) => terminalTrigger(write, command, callback);
 }
 
-function attachTrigger({ target, domEvents, type, selector, handler }){
-	domEvents.forEach(de => {
-		target.addEventListener(de, (event) => {
-			if(!selector(event)){ return true; }
-			const params = handler(event);
-			trigger({
-				type,
-				params,
-				source: 'Terminal'
-			});
-		});
-	});
-}
+const execTrigger = attachTrigger({
+	name: 'Terminal',
+	eventName: 'operations',
+	type: 'raw'
+});
+const execCommand = _execCommand(execTrigger);
+
+const connectTrigger = (args) => attachTrigger({ ...args, name: 'Terminal' });
 
 export {
 	attachEvents,
-	attachTrigger,
+	connectTrigger,
 	execCommand
 };
-

@@ -51,7 +51,7 @@ function trigger({ type, params, source, data, detail }){
 	const event = new CustomEvent(type, {
 		bubbles: true,
 		detail: detail
-			? { ...detail, ...defaultDetail }
+			? { ...defaultDetail, ...detail  }
 			: defaultDetail
 	});
 	window.dispatchEvent(event);
@@ -105,7 +105,7 @@ const attachTrigger = function attachTrigger({
 		const _data = typeof data === "function"
 			? data(event)
 			: data || {};
-		trigger({ type, params, source, data: _data });
+		trigger({ type, params, source, data: _data, detail: (_data||{}).detail });
 		return false;
 	});
 

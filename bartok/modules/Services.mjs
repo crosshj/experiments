@@ -28,6 +28,7 @@ const styles = `
 		height: 100%;
 		min-width: 2000px;
 		min-height: 2000px;
+		border: 2px solid #88888845;
 ${/* FOR VISUAL DEBUGGING */''}
 		/* background: #292929; */
 	}
@@ -708,7 +709,7 @@ function Services({ list } = {}) {
 		return currentServices;
 	};
 	services = document.getElementById('services');
-	//services.classList.add('hidden');
+	services.classList.add('hidden');
 	//document.querySelector('#terminal').style.visibility = "hidden";
 	services.style.width = "100%";
 	services.style.height = "100%";

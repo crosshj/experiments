@@ -46,109 +46,24 @@ function getFileType(fileName = '') {
 	return type;
 }
 
-//This is used by both List and inlineEditor
-const Container = ({ operations }) => {
+//This is used by inlineEditor
+const Container = () => {
 	const prevConatiner = document.querySelector("#full-page-container");
 	if (prevConatiner) {
 		prevConatiner.parentNode.removeChild(prevConatiner);
 	}
 	const containerDiv = document.createElement('div');
-	const operationsItems = operations.map(x => `<li>${x}</li>`).join('\n');
 	containerDiv.innerHTML = `
 		<div class="editor-space hide-on-med-and-down"></div>
-		<div class="contain">
-			<ul class="editor-controls">
-				${operationsItems}
-			</ul>
-		</div>
+		<div class="contain"></div>
 	`;
 	containerDiv.classList.add('section', 'simulation', 'editor');
 	containerDiv.id = "full-page-container";
-
-	containerDiv.querySelector('.editor-controls')
-		.addEventListener('click', e => {
-			const operation = e.target.innerText;
-			const event = new CustomEvent('operations', {
-				bubbles: true,
-				detail: {
-					operation,
-					body: {
-						name: (containerDiv.querySelector('#service_name') || {}).value,
-						id: (containerDiv.querySelector('#service_id') || {}).value,
-						code: (window.Editor || { getValue: () => { } }).getValue()
-					}
-				}
-			});
-			document.body.dispatchEvent(event);
-		});
 	containerDiv.classList.add('section', 'simulation', 'editor');
 
 	document.querySelector('#editor')
 		.appendChild(containerDiv);
 	return containerDiv;
-};
-
-const List = () => ({ services }) => {
-	const containerDiv = Container({
-		operations: ['read', 'manage', 'monitor', 'persist']
-	});
-
-	const listDiv = document.createElement('div');
-	const servicesRows = services.map(s => (`
-		<tr>
-			<td class="table-checkbox">
-				<label>
-					<input type="checkbox" />
-					<span></span>
-				</label>
-			</td>
-			<td class="table-id">${s.id}</td>
-			<td>${s.name}</td>
-			<td data-id="${s.id}"><i class="material-icons">keyboard_arrow_right</i></td>
-		</tr>
-	`)).join('\n');
-	listDiv.innerHTML = `
-	<div class="container">
-		<div class="row">
-			<table class="highlight">
-				<thead>
-					<tr>
-							<th class="table-checkbox">
-								<label>
-									<input type="checkbox" />
-									<span></span>
-								</label>
-							</th>
-							<th class="table-id">ID</th>
-							<th>Name</th>
-							<th></th>
-					</tr>
-				</thead>
-
-				<tbody>
-					${servicesRows}
-				</tbody>
-			</table>
-		</div>
-	</div>
-	`;
-	listDiv.classList.add('services-list');
-	listDiv.addEventListener('click', e => {
-		if (e.target.tagName.toLowerCase() !== 'i') {
-			return;
-		}
-		const parent = e.target.parentNode;
-		const event = new CustomEvent('operations', {
-			bubbles: true,
-			detail: {
-				operation: 'read',
-				body: parent.dataset
-			}
-		});
-		document.body.dispatchEvent(event);
-	});
-	containerDiv.querySelector('.contain').appendChild(listDiv);
-	return listDiv;
 };
 
 const Search = () => {
@@ -990,8 +905,7 @@ function _Editor() {
 
 	//deprecate
 	return {
-		inlineEditor: editor,
-		List: List()
+		inlineEditor: editor
 	}
 }
 

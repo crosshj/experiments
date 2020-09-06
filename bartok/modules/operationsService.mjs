@@ -1,34 +1,6 @@
 function getReadAfter(List, inlineEditor, getCodeFromService) {
 	return ({ result = {} } = {}) => {
 		console.warn('Read After');
-		// const services = result.result;
-		// if (services.length && !services[0].code) {
-		// 	result.listOne = true;
-		// }
-		// if (services.length > 1 || result.listOne) {
-		// 	document.querySelector('#project-splitter')
-		// 		.style.display = "none";
-		// 	List({ services });
-		// 	return;
-		// }
-		// else {
-		// 	document.querySelector('#project-splitter')
-		// 		.style.display = "";
-		// 	const service = services[0];
-		// 	if (!service) {
-		// 		return inlineEditor({ code: "", name: "", id: "", filename: "" });
-		// 	}
-
-		// 	const { code, name, id, filename } = getCodeFromService(services[0]);
-		// 	inlineEditor({ code, name, id, filename });
-		// 	const event = new CustomEvent('fileSelect', {
-		// 		bubbles: true,
-		// 		detail: {
-		// 			name: filename
-		// 		}
-		// 	});
-		// 	document.body.dispatchEvent(event);
-		// }
 	};
 }
 

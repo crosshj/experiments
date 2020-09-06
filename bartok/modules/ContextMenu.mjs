@@ -1,3 +1,7 @@
+import {
+	attach as connectListener,
+	attachTrigger as connectTrigger
+} from './Listeners.mjs';
 
 let contextPane;
 function ContextPane() {
@@ -120,14 +124,6 @@ function ContextPane() {
 		Menu.classList.remove('open');
 	}
 
-	function triggerMenuEvent({ which, parent, data }){
-		const menuEvent = new CustomEvent('contextmenu-select', {
-			bubbles: true,
-			detail: { which, parent, data }
-		});
-		document.body.dispatchEvent(menuEvent);
-	}
-
 	function showMenu({
 		x=0, y=0, parent='unknown', data, list
 	}={}){
@@ -159,9 +155,11 @@ function ContextPane() {
 			document.body.removeEventListener('click', menuClickListener, false);
 			if(!menuWasClicked){ return; }
 
-			triggerMenuEvent({
-				which: event.target.dataset.text,
-				parent, data
+			contextMenuSelect({
+				detail: {
+					which: event.target.dataset.text,
+					parent, data
+				}
 			});
 		};
 		document.body.addEventListener('click', menuClickListener);
@@ -171,6 +169,21 @@ function ContextPane() {
 
 	//attachListeners({ showMenu });
 	//triggers = attachTriggers
+
+	const contextMenuSelect = connectTrigger({
+		name: 'Context Menu',
+		eventName: 'contextmenu-select',
+		type: 'raw'
+	});
+
+	connectListener({
+		name: 'Context Menu',
+		eventName: 'context-menu-show',
+		listener: () => {
+			console.error('TODO: context-menu-show versus window.showMenu!');
+		}
+	});
+
 }
 
 export default ContextPane;

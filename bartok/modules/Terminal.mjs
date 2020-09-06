@@ -5,7 +5,7 @@ import "../../shared/vendor/xterm-addon-fit.js";
 import { debounce } from "../../shared/modules/utilities.mjs";
 
 import motd from "./motd.mjs";
-import { attachEvents, attachTrigger, execCommand } from './events/terminal.mjs';
+import { attachEvents, connectTrigger, execCommand } from './events/terminal.mjs';
 import { templateJSX, templateSVC3, transform } from './Templates.mjs';
 
 let EventTrigger;
@@ -454,20 +454,19 @@ function _Terminal(){
 	}
 
 
-	attachTrigger({
-		target: termMenu.querySelector('.view-switcher'),
-		domEvents: ['click'],
-		type: 'viewSelect',
-		selector: (e) => e.target.tagName === 'A',
-		handler: (e) => ({ view: e.target.dataset.type })
+	connectTrigger({
+		eventName: 'viewSelect',
+		filter: e => termMenu.querySelector('.view-switcher').contains(e.target)
+			&& e.target.tagName === 'A',
+		data: (e) => ({ detail: { view: e.target.dataset.type } })
 	});
-	attachTrigger({
-		target: termMenu.querySelector('.terminal-actions'),
-		domEvents: ['click'],
-		type: 'termMenuAction',
-		selector: (e) => e.target.tagName === 'A'
+
+	connectTrigger({
+		eventName: 'termMenuAction',
+		filter: e => termMenu.querySelector('.terminal-actions').contains(e.target)
+			&& e.target.tagName === 'A'
 			&& e.target.parentNode.parentNode.classList.contains('actions-container'),
-		handler: (e) => ({ action: e.target.dataset.type })
+		data: (e) => ({ detail: { action: e.target.dataset.type } })
 	});
 
 	EventTrigger = attachEvents({
