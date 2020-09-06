@@ -1,12 +1,11 @@
 <!-- no-select -->
 
-Auth0 SPA authorization
-=======================
+## Auth0 SPA authorization
+  - the goal is to get authorization working from client-only
+  - that much works, but IDP API calls still need a backend
+  - get new token management from here (TODO: automate this)
+  https://manage.auth0.com/dashboard/us/crosshj/apis/5c04a0bd041ec32e95553613/explorer
 
-- the goal is to get authorization working from client-only
-- that much works, but IDP API calls still need a backend
-- get new token management from here (TODO: automate this)
-https://manage.auth0.com/dashboard/us/crosshj/apis/5c04a0bd041ec32e95553613/explorer
 
 <button onclick="
   const token = window.prompt('Enter Management Token');
