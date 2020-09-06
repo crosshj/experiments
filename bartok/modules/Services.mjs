@@ -1,5 +1,14 @@
 import { attachListener } from './events/services.mjs';
 
+const modifyTransform = (el, attr, value) => {
+	const arrRegex = new RegExp(`${attr}\\(.*?\\)`);
+	const hasAtt = (el.style.transform||"").match(arrRegex);
+	if(!hasAtt){
+		return el.style.transform + ` ${attr}(${value})`;
+	}
+	return el.style.transform.replace(arrRegex, `${attr}(${value})`);
+};
+
 const styles = `
 <style>
 
@@ -15,7 +24,6 @@ const styles = `
 	svg#canvas {
 		width: 100%;
 		height: 100%;
-		zoom: 1.1;
 		min-width: 2000px;
 		min-height: 2000px;
 ${/* FOR VISUAL DEBUGGING */''}
@@ -37,6 +45,11 @@ ${/* FOR VISUAL DEBUGGING */''}
 	.node-center-dot {
 		fill: #00000070;
 	}
+	.node-background-circle {
+		fill: #88888801;
+		r: 120;
+		stroke-width: 0;
+	}
 	.node-label {
 		font-size: 15px;
     font-family: inherit;
@@ -48,33 +61,52 @@ ${/* FOR VISUAL DEBUGGING */''}
 		stroke: #e65a5aa3;
 	}
 
+	#canvas * {
+		user-drag: none;
+		-webkit-user-drag: none;
+	}
+
 
 </style>
 `;
 
-function rotateArray(array, degrees){
-	const itemsToSlice = (array.length/360)*Math.abs(degrees);
-	return degrees > 0
-			? [ ...array.slice(array.length - itemsToSlice), ...array.slice(0, array.length - itemsToSlice)]
-			: [ ...array.slice(itemsToSlice), ...array.slice(0, itemsToSlice)];
+function svgChildBringToTop(targetElement){
+  // put the element at the bottom of its parent
+  let parent = targetElement.parentNode;
+  parent.appendChild(targetElement);
 }
 
-function attachPan(_canvas){
-	let transX=0, transY=0, offsetX=0, offsetY=0;
+function rotateArray(array, degrees) {
+	const itemsToSlice = (array.length / 360) * Math.abs(degrees);
+	return degrees > 0
+		? [...array.slice(array.length - itemsToSlice), ...array.slice(0, array.length - itemsToSlice)]
+		: [...array.slice(itemsToSlice), ...array.slice(0, itemsToSlice)];
+}
+
+function attachPan(_canvas) {
+	let transX = 0, transY = 0, offsetX = 0, offsetY = 0;
 	const serviceMapTransform = localStorage.getItem('serviceMapTransform');
-	if(serviceMapTransform){
+	if (serviceMapTransform) {
 		transX = serviceMapTransform.split(',')[0];
 		transY = serviceMapTransform.split(',')[1];
-		_canvas.style.transform = `translate(${transX}px,${transY}px)`;
+		_canvas.style.transform = modifyTransform(_canvas, 'translate', `${transX}px,${transY}px`);
 	}
+	const serviceMapZoom = localStorage.getItem('serviceMapZoom');
+	if(serviceMapZoom){
+		_canvas.style.transform = modifyTransform(_canvas, 'scale', serviceMapZoom);
+	}
+
 	_canvas.onpointerdown = (pointerDownEvent) => {
+		if(pointerDownEvent.target.id !== 'canvas'){
+			return true;
+		}
 		let firstX = pointerDownEvent.clientX - transX;
 		let firstY = pointerDownEvent.clientY - transY;
 
 		const detachListeners = (detachEvent) => {
 			transX = offsetX;
 			transY = offsetY;
-			localStorage.setItem('serviceMapTransform',`${transX},${transY}`)
+			localStorage.setItem('serviceMapTransform', `${transX},${transY}`)
 			document.onpointermove = document.onpointerup = null;
 			detachEvent.preventDefault();
 			return false;
@@ -85,9 +117,7 @@ function attachPan(_canvas){
 			let currentY = pointerMoveEvent.clientY;
 			offsetX = currentX - firstX;
 			offsetY = currentY - firstY;
-
-			_canvas.style.transform = `translate(${offsetX}px,${offsetY}px)`;
-
+			_canvas.style.transform = modifyTransform(_canvas, 'translate', `${offsetX}px,${offsetY}px`);
 			pointerMoveEvent.preventDefault();
 			return false;
 		};
@@ -101,13 +131,14 @@ function attachPan(_canvas){
 const createSVGElement = (type) =>
 	document.createElementNS("http://www.w3.org/2000/svg", type);
 
-function Node({ x, y, scale, label, labelDistance=160 }){
-	const node = 	createSVGElement('g');
+function Node({ x, y, scale, label, labelDistance = 160 }) {
+	const node = createSVGElement('g');
 	node.classList.add('node');
 	node.innerHTML = `
-		<g transform="translate(${x},${y}) scale(${scale})" draggable="true">
+		<g transform="translate(${x},${y}) scale(${scale})" draggable="false">
+			<circle class="node-background-circle"></circle>
 			<g class="_GraphNodeStatic__GraphNodeWrapper-xnsael-0 cNyCOA">
-				<foreignObject y="${labelDistance}" x="-68.75" width="137.5" height="200px" style="pointer-events: none; text-align: center;">
+				<foreignObject y="${labelDistance}" x="-68.75" width="137.5" height="20px" style="pointer-events: none; text-align: center;">
 					<div class="r">
 						<div class="node-label">
 							<span title="${label}">${label}</span>
@@ -127,12 +158,12 @@ function Node({ x, y, scale, label, labelDistance=160 }){
 	return node;
 }
 
-function EventNode({ x, y, scale, label, type }){
-	const node = 	createSVGElement('g');
+function EventNode({ x, y, scale, label, type }) {
+	const node = createSVGElement('g');
 	node.classList.add('node');
 	node.innerHTML = `
-		<g transform="translate(${x},${y}) scale(${scale})" draggable="true">
-			<circle cx="5" cy="5" r="5" fill="${type && type==="trigger" ? 'red' : '#999'}" />
+		<g transform="translate(${x},${y}) scale(${scale})" draggable="false">
+			<circle cx="5" cy="5" r="5" fill="${type && type === "trigger" ? 'red' : '#999'}" />
 			<text fill="#ccc" font-size="12" font-family="Sans-serif" text-anchor="middle" x="5" y="30" xml:space="preserve" >${label}</text>
 		</g>
 	`;
@@ -140,90 +171,116 @@ function EventNode({ x, y, scale, label, type }){
 }
 
 function circleLayout({
-	radius=100,
+	radius = 100,
 	width, height,
 	numberOfItems,
 	itemHeight, itemWidth,
-	verticalScale=1
-}){
-	let angle = Math.PI/-2;
-	const step = (2*Math.PI) / numberOfItems;
+	verticalScale = 1
+}) {
+	let angle = Math.PI / -2;
+	const step = (2 * Math.PI) / numberOfItems;
 	const positions = [];
-	const distance = ([x1,y1],[x2,y2]) => Math.hypot(x2-x1, y2-y1);
-	for(var i=0; i < numberOfItems; i++){
-		var x1 = Math.round(width/2 + radius * Math.cos(angle) - itemWidth/2);
-		var y1 = Math.round((height/2 + (verticalScale * radius) * Math.sin(angle) - itemHeight/2));
+	const distance = ([x1, y1], [x2, y2]) => Math.hypot(x2 - x1, y2 - y1);
+	for (var i = 0; i < numberOfItems; i++) {
+		var x1 = Math.round(width / 2 + radius * Math.cos(angle) - itemWidth / 2);
+		var y1 = Math.round((height / 2 + (verticalScale * radius) * Math.sin(angle) - itemHeight / 2));
 		positions.push([x1, y1]);
 		angle += step;
 	}
-	if(verticalScale === 1) return positions;
+	if (verticalScale === 1) return positions;
 
 	const first = 0;
 	const last = positions.length - 1;
 	const minDistance = 500;
 	const adjustDistance = 150;
-	for(var i=0; i < positions.length; i++){
-		if(i <= positions.length /2){
+	for (var i = 0; i < positions.length; i++) {
+		if (i <= positions.length / 2) {
 			const previous = i === first
-			? positions[last]
-			: positions[i - 1];
+				? positions[last]
+				: positions[i - 1];
 			const prevDistance = distance(positions[i], previous);
-			if(prevDistance < minDistance){
+			if (prevDistance < minDistance) {
 				positions[i][1] += adjustDistance;
 			}
 			continue;
 		}
 		const next = i === last
 			? positions[first]
-			: positions[i+1];
+			: positions[i + 1];
 		const nextDistance = distance(positions[i], next);
-		if(nextDistance < minDistance){
+		if (nextDistance < minDistance) {
 			positions[i][1] += adjustDistance;
 		}
 	}
 	return positions;
 }
 
-function addLinks({ canvas, allNodes }){
-	const createLine = ({ x, y, x1, y1}) => {
+
+function addLinks({ canvas, allNodes }) {
+	const createLine = ({ source, target }) => {
 		const line = createSVGElement('g');
 		line.innerHTML = `
 			<line
+				draggable="false"
 				class="trigger-link"
 				stroke-width="1"
 				stroke-dasharray="2,2"
-				x1="${x1}" x2="${x}"
-				y1="${y1}" y2="${y}"
+				x1="${source.x1}" x2="${target.x1}"
+				y1="${source.y1}" y2="${target.y1}"
 			/>
 		`;
 		canvas.appendChild(line);
+
+		const lineEl = line.querySelector('line');
+		line.adjust = ({ parent, diff }) => {
+			if(![
+				source.parent, target.parent
+			].includes(parent)) return;
+
+			if(parent === source.parent){
+				lineEl.setAttribute('x1', source.x1 + Number(diff.x));
+				lineEl.setAttribute('y1', source.y1 + Number(diff.y));
+			}
+			if(parent === target.parent){
+				lineEl.setAttribute('x2', target.x1 + Number(diff.x));
+				lineEl.setAttribute('y2', target.y1 + Number(diff.y));
+			}
+		}
+
+		return { source, target, line };
 	};
 	const triggers = allNodes.filter(x => x.type === 'trigger');
 	const targets = allNodes.filter(x => x.type !== 'trigger');
+	let allLines = [];
 	for (let t = 0; t < triggers.length; t++) {
 		const trigger = triggers[t];
 		const connections = targets.filter(target => target.label === trigger.label)
-		connections.forEach(conn => createLine({
+		const theseLines = connections.map(conn => createLine({
+			target: conn,
+			source: trigger,
 			x: trigger.x1,
 			y: trigger.y1,
 			x1: conn.x1,
 			y1: conn.y1,
-		}))
+		}));
+		allLines = [ ...allLines, ...theseLines];
 	}
+	return allLines;
 }
 
-function addNodes(canvas, {x, y}, nodes=[]){
+// this adds all child nodes
+function addNodes(canvas, { x, y }, nodes = [], parent) {
 	const layout = circleLayout({
 		radius: 100,
 		width: x,
 		height: y,
-		itemHeight:0,
+		itemHeight: 0,
 		itemWidth: 50,
 		numberOfItems: nodes.length,
 	});
 
 	const _nodes = [];
-	for(var i=0, len=nodes.length; i<len; i++){
+	for (var i = 0, len = nodes.length; i < len; i++) {
 		const [x1, y1] = layout[i];
 		const line = createSVGElement('g');
 		const isTrigger = nodes[i] && nodes[i].type === "trigger"
@@ -232,20 +289,24 @@ function addNodes(canvas, {x, y}, nodes=[]){
 				stroke="${isTrigger ? "red" : "#888"}"
 				stroke-width="1"
 				stroke-dasharray="2,2"
-				x1="${x1+5}" x2="${x/2-20}"
-				y1="${y1+5}" y2="${y/2+5}"
+				x1="${x1 + 5}" x2="${x / 2 - 20}"
+				y1="${y1 + 5}" y2="${y / 2 + 5}"
 			/>
 		`;
-		canvas.appendChild(line);
+		if(parent){
+			parent.appendChild(line);
+		} else {
+			canvas.appendChild(line);
+		}
 		_nodes.push({
-			x: x/2-20,
-			y: y/2+5,
-			x1: x1+5,
-			y1: y1+5,
+			x: x / 2 - 20,
+			y: y / 2 + 5,
+			x1: x1 + 5,
+			y1: y1 + 5,
 			scale: 1,
 			label: nodes[i].key || nodes[i],
 			type: nodes[i].type
-		 });
+		});
 
 		const nodeParams = {
 			x: x1, y: y1,
@@ -255,50 +316,147 @@ function addNodes(canvas, {x, y}, nodes=[]){
 		};
 		const node = EventNode(nodeParams);
 
-	 	canvas.appendChild(node);
+		if(parent){
+			parent.appendChild(node);
+		} else {
+			canvas.appendChild(node);
+		}
 	}
 	return _nodes;
 }
 
-function dummyNodes(canvas){
-	const labels = [
-		"API Server",
-    "Scheduler",
-    "Controller Manager",
-    "etcd",
-    "Worker 1",
-		"Worker 2"
-	];
-	const labels2 = [
-    "template server",
-    "http basic",
-		"express",
-		"fastify"
-	];
-	const LEFT_OFFSET = 230;
-	let j = 1;
-	for(var i=0, len=labels.length; i < len; i++){
-		const x = (j===2 ? 150 : 0) + LEFT_OFFSET + i%4 * 150;
-		const y = 50 +  j * 100;
-		if(i%4 === 3){
-			j++;
-		}
-		const node1 = Node({ x, y, scale: 1, label: labels[i] });
-		canvas.appendChild(node1);
-	}
-	for(var i=0, len=labels2.length; i < len; i++){
-		const x = LEFT_OFFSET + i%4 * 150;
-		const y = 350 +  j * 100;
-		if(i%4 === 3){
-			j++;
-		}
-		const node1 = Node({ x, y, scale: 1, label: labels2[i] });
-		canvas.appendChild(node1);
-	}
+function makeDraggable(el){
+  if (!el) return console.error('makeDraggable() needs an element');
+  var svg = el;
+  while (svg && svg.tagName!='svg') svg=svg.parentNode;
+  if (!svg) return console.error(el,'must be inside an SVG wrapper');
+  var pt=svg.createSVGPoint(), doc=svg.ownerDocument;
+
+  var root = doc.rootElement || doc.body || svg;
+  var xlate, txStartX, txStartY, mouseStart;
+  var xforms = el.transform.baseVal;
+
+  el.addEventListener('mousedown',startMove,true);
+
+  function startMove(evt){
+    root.addEventListener('mousemove',handleMove,false);
+    root.addEventListener('mouseup',  finishMove,false);
+    xlate = xforms.numberOfItems>0 && xforms.getItem(0);
+    if (!xlate || xlate.type != SVGTransform.SVG_TRANSFORM_TRANSLATE){
+      xlate = xforms.createSVGTransformFromMatrix( svg.createSVGMatrix() );
+      xforms.insertItemBefore( xlate, 0 );
+    }
+    txStartX=xlate.matrix.e;
+    txStartY=xlate.matrix.f;
+    mouseStart = inElementSpace(evt);
+		//fireEvent('synthetic-dragstart');
+		evt.preventDefault();
+		return false;
+  }
+  function handleMove(evt){
+    var point = inElementSpace(evt);
+    xlate.setTranslate(
+      txStartX + point.x - mouseStart.x,
+      txStartY + point.y - mouseStart.y
+    );
+		fireEvent('synthetic-drag');
+		evt.preventDefault();
+		return false;
+  }
+  function finishMove(evt){
+    root.removeEventListener('mousemove',handleMove,false);
+    root.removeEventListener('mouseup',  finishMove,false);
+    //fireEvent('synthetic-dragend');
+  }
+  function fireEvent(eventName){
+    var event = new Event(eventName);
+    event.detail = { x:xlate.matrix.e, y:xlate.matrix.f };
+    return el.dispatchEvent(event);
+  }
+  function inElementSpace(evt){
+    pt.x=evt.clientX; pt.y=evt.clientY;
+    return pt.matrixTransform(el.parentNode.getScreenCTM().inverse());
+  }
 }
 
-function getServiceSelector(el, onSelect){
-	el.innerHTML = `
+function drawRootNodes({ canvas, listeners, triggers }) {
+	let keys = Object.keys(listeners)
+		.sort((a, b) => listeners[a].length - listeners[b].length)
+		.reverse();
+
+	let rippled = [];
+	const isOddLength = keys.length % 2;
+	let popped;
+	for (let k = 0; k < keys.length; k++) {
+		if (!popped && isOddLength && (k * 2) > (keys.length / 2)) {
+			popped = rippled.pop();
+		}
+		if (!rippled.includes(keys[k])) {
+			rippled.push(keys[k]);
+		}
+		if (!rippled.includes(keys[keys.length - k - 1])) {
+			rippled.push(keys[keys.length - k - 1]);
+		}
+	}
+	keys = rippled;
+
+	const layout = circleLayout({
+		radius: 1200,
+		width: 4000,
+		height: 4000,
+		itemHeight: 0,
+		itemWidth: 0,
+		numberOfItems: keys.length,
+		verticalScale: 0.5
+	});
+	let allNodes = [];
+	let allLinks;
+	for (var i = 0, len = keys.length; i < len; i++) {
+		const [x, y] = layout[i];
+		const children = [
+			...listeners[keys[i]],
+			...(triggers[keys[i]] || [])
+				.map(key => ({ key, type: 'trigger' }))
+		];
+		const nodeParams = { x: x / 2 - 20, y: y / 2 + 5, scale: 0.9, label: keys[i] };
+		if (children.length === 1 || children.length === 3) {
+			nodeParams.labelDistance = 100;
+		}
+		const node = Node(nodeParams);
+		node.classList.add('node-group');
+
+		const theseNodes = addNodes(
+			canvas,
+			{ x, y },
+			rotateArray(children, (360 * i / keys.length) - 155),
+			node
+		);
+		allNodes = [
+			...theseNodes.map(x => ({ ...x, parent: keys[i] })),
+			...allNodes
+		];
+
+		canvas.appendChild(node);
+		makeDraggable(node);
+		svgChildBringToTop(node.querySelector('g'));
+		let nodeName = keys[i];
+		let myLinks;
+		node.addEventListener('synthetic-drag', ({detail}) => {
+			myLinks = myLinks || allLinks
+				.filter(x => x.source.parent === nodeName || x.target.parent === nodeName)
+			myLinks.forEach(m => m.line.adjust({
+				parent: nodeName,
+				diff: detail
+			}))
+		});
+	}
+
+	allLinks = addLinks({ canvas, allNodes });
+}
+
+
+function getServiceSelector(el, onSelect) {
+	const style = `
 		<style>
 			.row.selector {
 				position: absolute;
@@ -350,7 +508,14 @@ function getServiceSelector(el, onSelect){
 				background: transparent;
 				color: white;
 			}
-		</style>
+			#canvas text,
+			#canvas foreignObject {
+				pointer-events: none;
+				user-select: none;
+			}
+		</style>`;
+
+		el.innerHTML = style + `
 		<div class="input-field s3">
 			<select>
 				<option value="ui-service">UI Service Map</option>
@@ -359,7 +524,7 @@ function getServiceSelector(el, onSelect){
 		</div>
 	`;
 	const select = el.querySelector('select');
-	if(!window.M){
+	if (!window.M) {
 		console.error('could not build service map selector dropdown');
 		return;
 	}
@@ -373,7 +538,7 @@ function getServiceSelector(el, onSelect){
 				const items = selected && Array.from(
 					document.querySelectorAll('.selector ul.select-dropdown li')
 				);
-				if(items && items.length > 1 & items[0].id !== selected.id){
+				if (items && items.length > 1 & items[0].id !== selected.id) {
 					parent.insertBefore(selected, items[0]);
 				}
 				onSelect(select.value);
@@ -383,11 +548,70 @@ function getServiceSelector(el, onSelect){
 	return selectInstance;
 }
 
+function getZoomControls(el, zoomTarget){
+	const style = `
+		<style>
+
+			.zoom-controls {
+				position: absolute;
+				right: 60px;
+				bottom: 8px;
+				width: 1em;
+				height: 2.25em;
+				font-size: 3.25em;
+				background: #2f2f2fe8;
+				border-radius: 19px;
+				text-align: center;
+				color: #999999;
+				z-index: 1;
+				border: 1px solid #232323;
+				opacity: .3;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-evenly;
+				align-items: center;
+			}
+			.zoom-controls:hover {
+				opacity: 1;
+			}
+			.zoom-controls span {
+				height: 35px;
+				display: flex;
+				border-radius: 50%;
+				background: #333333;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				font-family: monospace;
+			}
+			.zoom-plus:before {
+				content: '+';
+			}
+			.zoom-minus:before {
+				content: '-';
+			}
+		</style>
+	`;
+	el.innerHTML = style + `
+		<span class="zoom-plus"></span>
+		<span class="zoom-minus"></span>
+	`;
+	el.querySelector('.zoom-plus').onclick = () => {
+		const zoom = localStorage.getItem('serviceMapZoom') || 1;
+		zoomTarget.style.transform = modifyTransform(zoomTarget, 'scale', Number(zoom) + 0.1);
+		localStorage.setItem('serviceMapZoom', Number(zoom) + 0.1);
+	}
+	el.querySelector('.zoom-minus').onclick = () => {
+		const zoom = localStorage.getItem('serviceMapZoom') || 1;
+		zoomTarget.style.transform = modifyTransform(zoomTarget, 'scale', Number(zoom) - 0.1);
+		localStorage.setItem('serviceMapZoom', Number(zoom) - 0.1);
+	}
+}
+
 const handleSelect = (selection, canvas, {
 	getListeners, getTriggers, getCurrentServices
 } = {}) => {
 	const showUIServices = () => {
-
 		const mapToNodes = (list) => list
 			.reduce((all, one) => {
 				const eventName = one.split('__')[0];
@@ -398,59 +622,7 @@ const handleSelect = (selection, canvas, {
 			}, {});
 		const listeners = mapToNodes(getListeners());
 		const triggers = mapToNodes(getTriggers());
-
-		let keys = Object.keys(listeners)
-			.sort((a,b) => listeners[a].length - listeners[b].length)
-			.reverse();
-
-		let rippled = [];
-		const isOddLength = keys.length % 2;
-		let popped;
-		for (let k = 0; k < keys.length; k++) {
-			if(!popped && isOddLength && (k*2) > (keys.length/2)){
-				popped = rippled.pop();
-			}
-			if(!rippled.includes(keys[k])){
-				rippled.push(keys[k]);
-			}
-			if(!rippled.includes(keys[keys.length-k-1])){
-				rippled.push(keys[keys.length-k-1]);
-			}
-		}
-		keys = rippled;
-
-		const layout = circleLayout({
-			radius: 1200,
-			width: 4000,
-			height: 4000,
-			itemHeight: 0,
-			itemWidth: 0,
-			numberOfItems: keys.length,
-			verticalScale: 0.5
-		});
-		let allNodes = [];
-		for(var i=0, len=keys.length; i<len; i++){
-			const [x, y] = layout[i];
-			const theseNodes = addNodes(canvas,
-				{ x, y },
-				rotateArray([
-					...listeners[keys[i]],
-					...(triggers[keys[i]]||[])
-						.map(key => ({ key, type: 'trigger'}))
-				], (360*i/keys.length) -155)
-			);
-			allNodes = [...theseNodes, ...allNodes ];
-
-			const nodeParams = { x: x/2 -20, y:y/2+5, scale: 0.9, label: keys[i]};
-			if(theseNodes.length === 1 || theseNodes.length === 3){
-				nodeParams.labelDistance = 100;
-			}
-			const node = Node(nodeParams);
-
-			canvas.appendChild(node);
-		}
-
-		addLinks({ canvas, allNodes });
+		drawRootNodes({ canvas, listeners, triggers });
 	}
 
 	const showSystemServices = async () => {
@@ -482,11 +654,11 @@ const handleSelect = (selection, canvas, {
 			})
 	};
 
-	if(selection === 'ui-service'){
+	if (selection === 'ui-service') {
 		cleanCanvas();
 		showUIServices();
 	}
-	if(selection === 'system-services'){
+	if (selection === 'system-services') {
 		cleanCanvas();
 		showSystemServices();
 	}
@@ -494,8 +666,8 @@ const handleSelect = (selection, canvas, {
 
 let services;
 let currentServices;
-function Services({ list } = {}){
-	if(services){
+function Services({ list } = {}) {
+	if (services) {
 		return;
 	}
 	const getCurrentServices = async () => {
@@ -506,24 +678,25 @@ function Services({ list } = {}){
 		return currentServices;
 	};
 	services = document.getElementById('services');
-	services.classList.add('hidden');
+	//services.classList.add('hidden');
 	//document.querySelector('#terminal').style.visibility = "hidden";
-	services.style.width="100%";
-	services.style.height="100%";
+	services.style.width = "100%";
+	services.style.height = "100%";
 	services.innerHTML = `
 		${styles}
 		<div class="row selector"></div>
+		<div class="zoom-controls"></div>
 
-		<svg id="canvas" class="">
-			<!-- circle cx="${services.offsetWidth/2}" cy="${services.offsetHeight/2}" r="2.5" fill="red"
+		<svg id="canvas" class="" draggable="false">
+			<!-- circle cx="${services.offsetWidth / 2}" cy="${services.offsetHeight / 2}" r="2.5" fill="red"
 			/ -->
 		</svg>
 	`;
 	const canvas = services.querySelector('svg#canvas');
 
-	if(!canvas){ return; }
+	if (!canvas) { return; }
 
-	const selector = services.querySelector('.selector');
+	const selector = services.querySelector('#services .selector');
 	const onSelect = (val) => {
 		handleSelect(val, canvas, {
 			getCurrentServices,
@@ -532,6 +705,10 @@ function Services({ list } = {}){
 		});
 	};
 	getServiceSelector(selector, onSelect);
+
+	const zoomControls = services.querySelector('#services .zoom-controls');
+	const zoomTarget = services.querySelector('#services #canvas');
+	getZoomControls(zoomControls, zoomTarget);
 
 	setTimeout(x => {
 		onSelect('ui-service');

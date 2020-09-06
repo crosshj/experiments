@@ -1,6 +1,6 @@
 <!-- no-select -->
 
-<p class="change">變</p>
+<p class="change">变</p>
 
 Given n number of items alternating between two colors with a different period of change.
 
