@@ -1,5 +1,106 @@
 import { attachListener } from './events/services.mjs';
 
+function simpleDrag(name, el, onMouseMove){
+	let currentX, currentY;
+	let startX, startY, dragging;
+	const setCurrent = () => {
+		try {
+			const stored = JSON.parse(localStorage.getItem(name))
+			currentX = stored[0];
+			currentY = stored[1];
+		} catch(e){
+			currentY = currentX = 0;
+		}};
+	setCurrent();
+	onMouseMove(currentX, currentY);
+	const pointerUp = () => {
+		dragging = false;
+		localStorage.setItem(name, JSON.stringify([currentX,currentY]));
+		document.onpointermove = document.onpointerup = null;
+	};
+	const pointerMove = (e) => {
+		currentX = startX-e.clientX;
+		currentY = startY-e.clientY;
+		onMouseMove(currentX, currentY);
+		e.preventDefault();
+		return false;
+	};
+	el.onpointerdown = (e) => {
+		if(dragging) return;
+		setCurrent();
+		startX = currentX + e.clientX;
+		startY = currentY + e.clientY;
+		dragging = true;
+		document.onpointermove = pointerMove;
+		document.onpointerup = pointerUp;
+		e.preventDefault();
+		return false;
+	};
+}
+
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim(); // Never return a text node of whitespace as the result
+	template.innerHTML = html;
+	//also would be cool to remove indentation from all lines
+	return template.content.firstChild;
+}
+
+const SideBar = (parent) => {
+	const style = `
+	<style>
+		#service-sidebar {
+			position: absolute;
+			right: 0; bottom: 0; top: 0;
+			background: white;
+		}
+		.service-sidebar-bg {
+			position: relative;
+			height: 100vh;
+		}
+		.service-sidebar-bg > div {
+			position: absolute;
+			bottom: 0;
+			top: 0;
+			left: 0;
+			background: #000000dc;
+			right: 0;
+			display: block;
+		}
+		.service-sidebar-sizer {
+			position: absolute;
+			top: 0;
+			left: -2px;
+			bottom: 0;
+			width: 2px;
+			background: #1b1b1b;
+			cursor: col-resize;
+		}
+	</style>`;
+
+	const sidebarEl = htmlToElement(`
+	<div id="service-sidebar" style="	width: 200px">
+		${style}
+		<div class="service-sidebar-bg">
+			<div></div>
+		</div>
+		<div class="service-sidebar-sizer"></div>
+	</div>
+	`);
+
+	const sizer = sidebarEl.querySelector('.service-sidebar-sizer');
+	const startWidth = Number(sidebarEl.style.width.replace('px',''));
+	const onMouseMove = x => {
+		sidebarEl.style.width = startWidth + x + 'px';
+	};
+	simpleDrag('serviceSidebarSize', sizer, onMouseMove);
+
+	parent.appendChild(sidebarEl);
+
+	return sidebarEl;
+};
+
+
 const modifyTransform = (el, attr, value) => {
 	const arrRegex = new RegExp(`${attr}\\(.*?\\)`);
 	const hasAtt = (el.style.transform||"").match(arrRegex);
@@ -724,6 +825,7 @@ function Services({ list } = {}) {
 		</svg>
 	`;
 	const canvas = services.querySelector('svg#canvas');
+	SideBar(services);
 
 	if (!canvas) { return; }
 
@@ -742,8 +844,9 @@ function Services({ list } = {}) {
 	getZoomControls(zoomControls, zoomTarget);
 
 	setTimeout(x => {
-		onSelect('ui-service');
-	}, 2000);
+		//onSelect('ui-service');
+		onSelect('system-services');
+	}, 300);
 
 
 	attachListener({
