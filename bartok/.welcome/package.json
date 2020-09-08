@@ -5,7 +5,7 @@
   "config" : { "port" : "" },
   "port": "",
 
-  "main": "Readme.md",
+  "main": "_bartok.tools.html",
   "module": "dist/module.js",
   "browser": "dist/index.js",
 

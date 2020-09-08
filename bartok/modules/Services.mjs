@@ -51,7 +51,7 @@ const SideBar = (parent) => {
 	<style>
 		#service-sidebar {
 			position: absolute;
-			right: 0; bottom: 0; top: 0;
+			right: 30px; bottom: 0; top: 0;
 			background: white;
 		}
 		.service-sidebar-bg {
@@ -70,21 +70,74 @@ const SideBar = (parent) => {
 		.service-sidebar-sizer {
 			position: absolute;
 			top: 0;
-			left: -2px;
+			left: -1.5px;
 			bottom: 0;
-			width: 2px;
+			width: 3px;
 			background: #1b1b1b;
 			cursor: col-resize;
+		}
+		.service-sidebar-contents {
+			display: flex;
+			flex-direction: column;
+			position: absolute;
+			top: 0; left: 0; right: 0; bottom: 0;
+		}
+		.service-sidebar-contents > div { width: 100%; }
+		.service-sidebar-header {
+			height: 9em;
+			padding: 1em;
+			background: #333;
+			display: flex;
+			flex-direction: column;
+		}
+		.service-sidebar-actions {
+			height: 4em;
+			background: #292929;
+		}
+		.service-sidebar-detail {
+			flex: 1;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+		.service-sidebar-detail-content {
+			padding: 20px;
+			overflow-wrap: break-word;
+			overflow: visible;
+		}
+		.service-sidebar-header-close {
+			margin-right: 1.75em;
+			cursor: pointer;
+			display: block;
+			border: 1px solid;
+			border-color: transparent;
+			margin-left: auto;
+			padding: 1px 6px;
+		}
+		.service-sidebar-header-close:hover {
+			border-color: inherit;
+		}
+		.service-sidebar-header-label {
+			font-size: 1.5em;
 		}
 	</style>`;
 
 	const sidebarEl = htmlToElement(`
-	<div id="service-sidebar" style="	width: 200px">
+	<div id="service-sidebar" class="hidden" style="	width: 450px">
 		${style}
 		<div class="service-sidebar-bg">
 			<div></div>
 		</div>
 		<div class="service-sidebar-sizer"></div>
+		<div class="service-sidebar-contents">
+			<div class="service-sidebar-header">
+				<div class="service-sidebar-header-close">X</div>
+				<div class="service-sidebar-header-label"></div>
+			</div>
+			<div class="service-sidebar-actions"></div>
+			<div class="service-sidebar-detail">
+				<div class="service-sidebar-detail-content"></div>
+			</div>
+		</div>
 	</div>
 	`);
 
@@ -95,7 +148,19 @@ const SideBar = (parent) => {
 	};
 	simpleDrag('serviceSidebarSize', sizer, onMouseMove);
 
+	const headerClose = sidebarEl.querySelector('.service-sidebar-header-close');
+	headerClose.onclick = () => {
+		sidebarEl.classList.add('hidden');
+	};
 	parent.appendChild(sidebarEl);
+
+	const headerLabel = sidebarEl.querySelector('.service-sidebar-header-label');
+	sidebarEl.nodeSelected = ({ name, id, label }) => {
+		sidebarEl.classList.remove('hidden');
+		headerLabel.innerHTML = `
+			<span>${label || name}</span>
+		`;
+	};
 
 	return sidebarEl;
 };
@@ -127,8 +192,8 @@ const styles = `
 	svg#canvas {
 		width: 100%;
 		height: 100%;
-		min-width: 2000px;
-		min-height: 2000px;
+		min-width: 4000px;
+		min-height: 3000px;
 		border: 2px solid #88888845;
 ${/* FOR VISUAL DEBUGGING */''}
 		/* background: #292929; */
@@ -136,6 +201,9 @@ ${/* FOR VISUAL DEBUGGING */''}
 
 	.node-bg {
 		fill: #8a663d;
+	}
+	.node.selected .node-bg {
+		fill: #5dd8be;
 	}
 
 	.node-border-1 {
@@ -485,7 +553,7 @@ function makeDraggable(el){
   }
 }
 
-function drawRootNodes({ canvas, listeners, triggers }) {
+function drawRootNodes({ canvas, listeners, triggers, sidebar }) {
 	let keys = Object.keys(listeners)
 		.sort((a, b) => listeners[a].length - listeners[b].length)
 		.reverse();
@@ -563,6 +631,15 @@ function drawRootNodes({ canvas, listeners, triggers }) {
 			localStorage.setItem("serviceMapPositionsUI", serviceMapPositionsUI);
 		});
 
+		node.onclick = (event) => {
+			Array.from(document.querySelectorAll('#canvas .node.selected'))
+				.forEach(x => x.classList.remove('selected'))
+			node.classList.add('selected');
+			sidebar.nodeSelected({
+				label: nodeName
+			});
+		};
+
 		allParentNodes.push(node);
 	}
 
@@ -590,9 +667,8 @@ function getServiceSelector(el, onSelect) {
 		<style>
 			.row.selector {
 				position: absolute;
-				left: -60px; /* because contents don't feel centered otherwise*/
-				left: 0px;
-				right: 0;
+				left: -40px; /* because contents don't feel centered otherwise*/
+				right: 100px;
 				display: flex;
 				flex-wrap: wrap;
 				justify-content: center;
@@ -641,6 +717,17 @@ function getServiceSelector(el, onSelect) {
 			.selector * {
 				user-select: none;
 			}
+			.service-controls {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				pointer-events: none;
+			}
+			.service-controls > * {
+				pointer-events: auto;
+			}
 		</style>`;
 
 		el.innerHTML = style + `
@@ -679,10 +766,9 @@ function getServiceSelector(el, onSelect) {
 function getZoomControls(el, zoomTarget){
 	const style = `
 		<style>
-
 			.zoom-controls {
 				position: absolute;
-				right: 60px;
+				left: 15px;
 				bottom: 8px;
 				width: 1em;
 				height: 2.25em;
@@ -741,7 +827,7 @@ function getZoomControls(el, zoomTarget){
 }
 
 const handleSelect = (selection, canvas, {
-	getListeners, getTriggers, getCurrentServices
+	getListeners, getTriggers, getCurrentServices, sidebar
 } = {}) => {
 	const showUIServices = () => {
 		const mapToNodes = (list) => list
@@ -754,15 +840,15 @@ const handleSelect = (selection, canvas, {
 			}, {});
 		const listeners = mapToNodes(getListeners());
 		const triggers = mapToNodes(getTriggers());
-		drawRootNodes({ canvas, listeners, triggers });
+		drawRootNodes({ canvas, listeners, triggers, sidebar });
 	}
 
 	const showSystemServices = async () => {
 		const services = await getCurrentServices();
 		const layout = circleLayout({
 			radius: 200,
-			width: 2000,
-			height: 2000,
+			width: 4000,
+			height: 3000,
 			itemHeight: 0,
 			itemWidth: 0,
 			numberOfItems: services.length,
@@ -775,6 +861,12 @@ const handleSelect = (selection, canvas, {
 				label: s.name,
 				labelDistance: 50
 			});
+			node.onclick = (event) => {
+				Array.from(document.querySelectorAll('#canvas .node.selected'))
+					.forEach(x => x.classList.remove('selected'))
+				node.classList.add('selected');
+				sidebar.nodeSelected(s);
+			};
 			canvas.appendChild(node);
 		});
 	};
@@ -816,22 +908,27 @@ function Services({ list } = {}) {
 	services.style.height = "100%";
 	services.innerHTML = `
 		${styles}
-		<div class="row selector"></div>
-		<div class="zoom-controls"></div>
-
 		<svg id="canvas" class="" draggable="false">
-			<!-- circle cx="${services.offsetWidth / 2}" cy="${services.offsetHeight / 2}" r="2.5" fill="red"
-			/ -->
+			<circle
+				cx="${services.offsetWidth / 2}"
+				cy="${services.offsetHeight / 2}"
+				r="2.5" fill="red"
+			>
 		</svg>
+		<div class="service-controls">
+			<div class="row selector"></div>
+			<div class="zoom-controls"></div>
+		</div>
 	`;
 	const canvas = services.querySelector('svg#canvas');
-	SideBar(services);
-
 	if (!canvas) { return; }
+
+	const sidebar = SideBar(services.querySelector('.service-controls'));
 
 	const selector = services.querySelector('#services .selector');
 	const onSelect = (val) => {
 		handleSelect(val, canvas, {
+			sidebar,
 			getCurrentServices,
 			getListeners: window.listListeners,
 			getTriggers: window.listTriggers,
@@ -844,8 +941,8 @@ function Services({ list } = {}) {
 	getZoomControls(zoomControls, zoomTarget);
 
 	setTimeout(x => {
-		//onSelect('ui-service');
-		onSelect('system-services');
+		onSelect('ui-service');
+		//onSelect('system-services');
 	}, 300);
 
 
@@ -855,6 +952,7 @@ function Services({ list } = {}) {
 		receiveServices: (services) => {
 			currentServices = services;
 			onSelect('ui-service');
+			//onSelect('system-services');
 		}
 	});
 
