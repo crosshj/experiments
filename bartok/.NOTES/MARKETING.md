@@ -62,3 +62,16 @@
   - [what is kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
   - [cloud architecture saas faas xaas](https://brainhub.eu/blog/cloud-architecture-saas-faas-xaas/)
   - [paas and caas in 15 minutes](https://tanzu.vmware.com/content/intersect/paas-and-caas-in-15-minutes)
+  
+
+2020-08-24 thoughts about who customer is
+=========================================
+- new to programming
+- average dev tired of BS
+  - having to install to get started
+  - mess of services spread all over the place
+- creative type that wants to make music, games, or art
+- blogger, note keeper, mind mapper
+- presentation giver, conference speaker
+- cloud dev ops
+- teams or team builders that want it to be easy for any/all of the above

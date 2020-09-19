@@ -18,6 +18,36 @@ why I keep vscode open
 - [X] highlight is weird (themeing and color issues)
 - [X] no search in file
 
+2020-09-19 settings
+-------------------
+- settings view could be the first example of preview iframe that interacts with rest of the app
+- settings should be a json file with .settings extension
+- this should not be hidden at first, but may be later
+- preview should be html that is loaded in iframe
+- iframe should message the external app
+- message should be heard by service worker handler and affect app settings
+- these settings are used to update settings file (and consequentially, the html file)
+
+
+2020-09-17 HUGE
+---------------
+- less tabs, close all tabs
+- create/delete file/folder works with provider
+- issue with preview, binary file shows in preview instead
+- settings tab issue on refresh
+- CRUD, connecting service nodes working in service map (decide what it means to connect from code POV)
+- switch between tabs and spaces
+
+2020-09-17 LOOSE
+----------------
+- demo driven development, versus ticket or changelog driven
+- delivery versus debt (false dichotomy?)
+- *.todo, *.slides, *.graph - all services should come with "native" support for these
+- *.settings - treat settings as templated files with a common UI?
+- connect git
+	- https://github.com/isomorphic-git/isomorphic-git
+	- real/beefy FS abstraction layer
+
 
 2020-08-22 TODO
 ---------------
@@ -40,21 +70,6 @@ why I keep vscode open
 - preview full screen
   - should hide most UI elements; only show fullscreen controls
   - fullscreen state is wonky
-
-2020-08-24 thoughts about who customer is
-=========================================
-- new to programming
-- average dev tired of BS
-  - having to install to get started
-  - mess of services spread all over the place
-- creative type that wants to make music, games, or art
-- blogger, note keeper, mind mapper
-- presentation giver, conference speaker
-- cloud dev ops
-- teams or team builders that want it to be easy for any/all of the above
-
-(maybe should add this to MARKETING.md
-
 
 2020-08-16 Note and Musing
 ==========================

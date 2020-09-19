@@ -1,0 +1,69 @@
+<!-- <script src="https://cdn.jsdelivr.net/npm/isomorphic-git@1.7.8/index.umd.min.js"></script> -->
+
+<script src="https://unpkg.com/@isomorphic-git/lightning-fs"></script>
+<script src="https://unpkg.com/isomorphic-git"></script>
+<script type="module">
+  import http from 'https://unpkg.com/isomorphic-git@beta/http/web/index.js'
+  window.fs = new LightningFS('fs', {
+    wipe: true
+  })
+
+  /*
+    fs.promises.readFile(path[, options])
+    fs.promises.writeFile(file, data[, options])
+    fs.promises.unlink(path)
+    fs.promises.readdir(path[, options])
+    fs.promises.mkdir(path[, mode])
+    fs.promises.rmdir(path)
+    fs.promises.stat(path[, options])
+    fs.promises.lstat(path[, options])
+    fs.promises.readlink(path[, options]) (optional ¹)
+    fs.promises.symlink(target, path[, type]) (optional ¹)
+    fs.promises.chmod(path, mode) (optional ²)
+  */
+
+  const dir = '/test-clone'
+  git
+  .clone({
+    fs, http, dir,
+    url: 'https://github.com/isomorphic-git/lightning-fs',
+    corsProxy: 'https://cors.isomorphic-git.org',
+    //corsProxy: "http://localhost:3333/proxy"
+    onProgress(evt) {
+      console.log(evt)
+    },
+    onMessage(msg) {
+      //console.warn(msg)
+    },
+    onAuth(url) {
+      console.error('onAuth not implemented')
+      console.log(url);
+      return;
+    },
+    onAuthFailure({ url, auth }) {
+      console.error('onAuthFailure not implemented')
+      return;
+    }
+  })
+  .then(async (...args) => {
+    console.log({ args })
+    const ls = await fs.promises.readdir(dir)
+    console.log({ ls })
+    await fs.promises.writeFile(`${dir}/README.md`, 'Very short README', 'utf8')
+    //await git.status({fs, dir, filepath: 'README.md'})
+    await git.add({fs, dir, filepath: 'README.md'})
+
+    let sha = await git.commit({
+      fs,
+      dir,
+      message: 'Delete overwrite README.',
+      author: {
+        name: 'Mr. Test',
+        email: 'mrtest@example.com'
+      }
+    })
+
+    const commits = await git.log({fs, dir, depth: 1})
+    console.log(commits[0])
+  })
+</script>

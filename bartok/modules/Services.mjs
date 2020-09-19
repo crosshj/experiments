@@ -85,14 +85,14 @@ const SideBar = (parent) => {
 		.service-sidebar-contents > div { width: 100%; }
 		.service-sidebar-header {
 			height: 9em;
-			padding: 1em;
-			background: #333;
+			padding: 1em 2em;
 			display: flex;
 			flex-direction: column;
+			background: rgba(var(--main-theme-highlight-color),0.4);
 		}
 		.service-sidebar-actions {
 			height: 4em;
-			background: #292929;
+			background: rgba(var(--main-theme-highlight-color),0.2);
 		}
 		.service-sidebar-detail {
 			flex: 1;
@@ -105,7 +105,7 @@ const SideBar = (parent) => {
 			overflow: visible;
 		}
 		.service-sidebar-header-close {
-			margin-right: 1.75em;
+			margin-right: 0.5em;
 			cursor: pointer;
 			display: block;
 			border: 1px solid;
@@ -576,8 +576,8 @@ function drawRootNodes({ canvas, listeners, triggers, sidebar }) {
 
 	const layout = circleLayout({
 		radius: 1200,
-		width: 4000,
-		height: 4000,
+		width: 8000,
+		height: 6000,
 		itemHeight: 0,
 		itemWidth: 0,
 		numberOfItems: keys.length,
