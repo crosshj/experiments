@@ -86,7 +86,7 @@ function fetchHandler(event) {
 		event.request.url.includes('https://crosshj.auth0.com') ||
 
 		event.request.url.includes('index.bootstrap') ||
-		event.request.url.includes('localhost:3333/tree') ||
+		event.request.url.includes('localhost:3333') ||
 
 		event.request.url.includes('browser-sync/socket.io') ||
 		event.request.url.includes('browser-sync/browser-sync-client') ||
@@ -115,6 +115,11 @@ function fetchHandler(event) {
 	// ) {
 	// 	return;
 	// }
+
+	if(event.request.url.includes('unpkg')){
+		console.error(`NOT AVAILABLE OFFLINE: ${event.request.url}`);
+		return;
+	}
 
 	event.respondWith(
 		caches.match(event.request)

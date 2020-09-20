@@ -13,5 +13,8 @@
   "devDependencies": {
     "electromon": "^1.0.10",
     "electron": "^9.1.2"
+  },
+  "dependencies": {
+    "@isomorphic-git/cors-proxy": "^2.7.0"
   }
 }

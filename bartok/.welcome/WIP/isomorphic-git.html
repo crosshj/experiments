@@ -27,8 +27,8 @@
   .clone({
     fs, http, dir,
     url: 'https://github.com/isomorphic-git/lightning-fs',
-    corsProxy: 'https://cors.isomorphic-git.org',
-    //corsProxy: "http://localhost:3333/proxy"
+    //corsProxy: 'https://cors.isomorphic-git.org',
+    corsProxy: "http://localhost:3333/proxy",
     onProgress(evt) {
       console.log(evt)
     },

@@ -1,5 +1,7 @@
 const { readFileSync } = require('fs');
 const request = require('request');
+const corsProxy = require('@isomorphic-git/cors-proxy/middleware.js');
+const url = require('url');
 //const path = require("path");
 
 const appHTML = readFileSync('app.html', 'utf8');
@@ -21,6 +23,9 @@ const filePost = require('./handlers/filePost.js');
   win.setVisibleOnAllWorkspaces(true);
   //app.dock.hide();
 
+  const options = {}
+  server.use(corsProxy(options))
+
   server.set('json spaces', 2);
   server.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,7 +42,13 @@ const filePost = require('./handlers/filePost.js');
   server.post('/file*', filePost({ dialog, win }));
 
   server.get('/proxy/*', (req, res) => {
-    const _path = (req.params || {})['0'];
+    let _path = (req.params || {})['0'];
+    if(!_path.includes('https://')){
+      _path = 'https://' + _path;
+    }
+    const queryString = url.parse(req.url).query
+    _path += '?' + queryString;
+    console.log(`PROXY: ${_path}`)
     request(_path).pipe(res);
   })
 

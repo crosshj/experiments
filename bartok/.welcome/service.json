@@ -120,6 +120,7 @@
       "golf1.js": {},
       "golf2.js": {},
       "graph-formats.md": {},
+      "isomorphic-git.html": {},
       "language-assemblyscript.html": {},
       "language-bf.html": {},
       "language-cljs.html": {},
@@ -310,6 +311,10 @@
     {
       "name": "ipynb.html",
       "path": ".welcome/.templates/ipynb.html"
+    },
+    {
+      "name": "isomorphic-git.html",
+      "path": ".welcome/WIP/isomorphic-git.html"
     },
     {
       "name": "javascript.js",
