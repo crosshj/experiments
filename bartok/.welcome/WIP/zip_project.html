@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head></head>
+
+  <style>
+    body{ margin: 3em; }
+  </style>
+
   <body>
     <button id="downloadZip">Download ZIP</button>
   </body>
@@ -24,18 +29,20 @@
       }`
     }];
 
-    var zip = new JSZip();
-    files.forEach(file => {
-      zip.file(file.name, file.code);
-    })
+    async function zipFiles(){
+      var zip = new JSZip();
+      files.forEach(file => {
+        zip.file(file.name, file.code);
+      })
+      // var img = zip.folder("images");
+      // img.file("smile.gif", imgData, {base64: true});
+      const content = await zip.generateAsync({type:"blob"})
 
-    // var img = zip.folder("images");
-    // img.file("smile.gif", imgData, {base64: true});
-    const content = await zip.generateAsync({type:"blob"})
-
-    console.log(content)
-    document.querySelector('button#downloadZip').onclick = (e) => {
-      saveAs(content, "example.zip");
+      console.log(content)
+      return content;
+    }
+    document.querySelector('button#downloadZip').onclick = async (e) => {
+      saveAs(await zipFiles(), "example.zip");
     }
 
   })()
