@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <button id="downloadZip">Download ZIP</button>
+  </body>
+
+  <script src="https://unpkg.com/jszip@3.1.5/dist/jszip.min.js"></script>
+  <script src="https://unpkg.com/file-saver@2.0.0-rc.2/dist/FileSaver.min.js"></script>
+  <script>(async() => {
+
+
+    const files = [{
+      name: 'index.html',
+      code: 'this is html file'
+    }, {
+      name: 'index.js',
+      code: 'console.log("this is html file");'
+    }, {
+      name: 'index.css',
+      code: `
+      body: after {
+        content: "this is css";
+      }`
+    }];
+
+    var zip = new JSZip();
+    files.forEach(file => {
+      zip.file(file.name, file.code);
+    })
+
+    // var img = zip.folder("images");
+    // img.file("smile.gif", imgData, {base64: true});
+    const content = await zip.generateAsync({type:"blob"})
+
+    console.log(content)
+    document.querySelector('button#downloadZip').onclick = (e) => {
+      saveAs(content, "example.zip");
+    }
+
+  })()
+  </script>
+</html>
