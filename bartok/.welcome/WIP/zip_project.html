@@ -8,13 +8,14 @@
 
   <body>
     <button id="downloadZip">Download ZIP</button>
+    <button id="uploadZip" onclick="alert('not implemented!')">Upload ZIP</button>
+    <button id="downloadCanvasZip" onclick="alert('not implemented!')">Download Canvas ZIP</button>
   </body>
 
   <script src="https://unpkg.com/jszip@3.1.5/dist/jszip.min.js"></script>
   <script src="https://unpkg.com/file-saver@2.0.0-rc.2/dist/FileSaver.min.js"></script>
-  <script>(async() => {
 
-
+  <script>
     const files = [{
       name: 'index.html',
       code: 'this is html file'
@@ -29,7 +30,7 @@
       }`
     }];
 
-    async function zipFiles(){
+      async function zipFiles(){
       var zip = new JSZip();
       files.forEach(file => {
         zip.file(file.name, file.code);
@@ -44,7 +45,5 @@
     document.querySelector('button#downloadZip').onclick = async (e) => {
       saveAs(await zipFiles(), "example.zip");
     }
-
-  })()
   </script>
 </html>

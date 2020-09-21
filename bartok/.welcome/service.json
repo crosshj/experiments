@@ -145,6 +145,7 @@
       "slides-reveal.htm": {},
       "sw.clientServer.htm": {},
       "wasm.binaryen.html": {},
+      "webtorrent_share.html": {},
       "zip_project.html": {},
       "_bartok.tools.html": {},
       "_dimensional.md": {},
@@ -585,6 +586,10 @@
     {
       "name": "webgl-helmet.gltf",
       "path": ".welcome/examples/3d/webgl-helmet.gltf"
+    },
+    {
+      "name": "webtorrent_share.html",
+      "path": ".welcome/WIP/webtorrent_share.html"
     },
     {
       "name": "wee.js",
