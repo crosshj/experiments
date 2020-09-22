@@ -1,19 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head></head>
+  <head>
+    <base target="_blank">
+  </head>
 
   <style>
-    body{ margin: 3em; }
+    body{ margin: 4em 1em; }
+    body > *:not(#videoContainer):not(script){
+      filter: invert(0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: baseline;
+      margin: 2em 0;
+    }
+    video { filter: none; }
+    #videoContainer { min-height: 30px;}
     video {
       width: 100%;
       box-sizing: border-box;
-      padding: 2em 0;
+    }
+    .links > * {
+      display: block;
+      margin: .5em 0;
+      font-family: monospace;
     }
   </style>
 
   <body>
     <button id="getMovieTorrent">Get Movie Torrent</button>
-    <button id="shareTorrent">Share Torrent</button>
+    <div id="videoContainer"></div>
+    <div id="shareTorrentContainer">
+      <button id="shareTorrent">Share Torrent</button>
+      <div class="links"></div>
+    </div>
     <button id="getSharedTorrent">Get Shared Torrent</button>
   </body>
 
@@ -29,7 +48,7 @@
         var file = torrent.files.find(function (file) {
           return file.name.endsWith('.mp4')
         })
-        file.appendTo('body')
+        file.appendTo('#videoContainer')
       })
     }
 
@@ -38,7 +57,7 @@
       code: 'this is html file'
     }, {
       name: 'index.js',
-      code: 'console.log("this is html file");'
+      code: 'console.log("this is js file");'
     }, {
       name: 'index.css',
       code: `
@@ -51,7 +70,30 @@
       downloadMovie();
     }
     document.querySelector('button#shareTorrent').onclick = async (e) => {
-      alert('not implemented');
+      const fileList = files.map(f => new File([f.code], f.name, {
+            type: f.type || 'text/plain'
+      }));
+      client.seed(fileList, {
+        name: 'bartok example seed 1',
+        comment: 'testing bartok webtorrent integration',
+        //createdBy: String,        // name and version of program used to create torrent
+        //creationDate: Date        // creation time in UNIX epoch format (default = now)
+        //private: Boolean,         // is this a private .torrent? (default = false)
+        //announceList: [[String]], // custom trackers
+        //urlList: [String],        // web seed urls
+      }, onseed);
+      function onseed(torrent){
+        const container = document.querySelector('#shareTorrentContainer .links');
+        const link = document.createElement('a')
+        link.href = torrent.magnetURI;
+        link.text = 'magnetUri => ' + torrent.infoHash;
+        container.appendChild(link);
+
+        const iiolink = document.createElement('a')
+        iiolink.href = 'https://instant.io/#' + torrent.infoHash;
+        iiolink.text = 'instant.io => ' + torrent.infoHash;
+        container.appendChild(iiolink);
+      }
     }
     document.querySelector('button#getSharedTorrent').onclick = async (e) => {
       alert('not implemented');
