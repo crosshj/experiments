@@ -1,5 +1,6 @@
 function codemirrorModeFromFileType(fileType){
 	const conversions = {
+		assemblyscript: { name: 'javascript', typescript: true, assemblyscript: true },
 		typescript: { name: 'javascript', typescript: true },
 		react: 'jsx',
 		svg: 'xml',

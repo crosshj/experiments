@@ -91,6 +91,9 @@ function StatusBar(){
 		if(type.typescript){
 			docType = 'TypeScript';
 		}
+		if(type.assemblyscript){
+			docType = 'AssemblyScript';
+		}
 		if(type.name && type.name.includes('html')){
 			docType = 'html';
 		}

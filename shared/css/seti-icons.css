@@ -149,6 +149,7 @@
 .icon-todo:before,
 .icon-tsconfig:before,
 .icon-twig:before,
+.icon-assemblyscript:before,
 .icon-typescript:before,
 .icon-vala:before,
 .icon-video:before,
@@ -769,6 +770,10 @@
 .icon-twig:before {
   content: '\E08C';
   color: white;
+}
+.icon-assemblyscript:before {
+  content: '\E020';
+  color: grey;
 }
 .icon-typescript:before {
   content: '\E08D';

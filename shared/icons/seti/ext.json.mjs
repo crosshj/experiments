@@ -117,6 +117,7 @@ export default {
     "ins": "tex",
     "txt": "default",
     "twig": "twig",
+    "as": "assemblyscript",
     "ts": "typescript",
     "tsx": "react",
     "direnv": "config",

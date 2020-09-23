@@ -6,6 +6,7 @@
   "version": 0.5,
   "tree": {
     ".templates": {
+      "as.html": {},
       "bf.html": {},
       "d3-graph.html": {},
       "gltf.html": {},
@@ -84,6 +85,7 @@
         "wasps_bees.bmp": {}
       },
       "language": {
+        "assemblyscript.as": {},
         "brainfuck.bf": {},
         "clojure.cljs": {},
         "golang.go": {},
@@ -178,6 +180,14 @@
     {
       "name": "angular9.html",
       "path": ".welcome/WIP/angular9.html"
+    },
+    {
+      "name": "as.html",
+      "path": ".welcome/.templates/as.html"
+    },
+    {
+      "name": "assemblyscript.as",
+      "path": ".welcome/examples/language/assemblyscript.as"
     },
     {
       "name": "audio.mp3",
