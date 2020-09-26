@@ -9,3 +9,5 @@ WITH RECURSIVE fib (n1, n2) AS
     LIMIT 10
 )
 SELECT n1 FROM fib;
+
+-- driver code?

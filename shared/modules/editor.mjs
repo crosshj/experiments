@@ -104,6 +104,10 @@ const codeMirrorModeJs = (mode, callback) => {
 		callback();
 		return;
 	}
+	if(mode === "cpp"){
+		callback();
+		return;
+	}
 	if(mode === "default"){
 		callback();
 		return;
@@ -170,6 +174,9 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		codeMirrorModeJs(mode, () => {
 			if(mode === 'sql'){
 				opts.mode = 'text/x-pgsql';
+			}
+			if(mode === 'cpp'){
+				opts.mode = 'text/x-c++src';
 			}
 
 			opts.mode = opts.mode.mimeType || opts.mode || mode;

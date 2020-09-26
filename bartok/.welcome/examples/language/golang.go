@@ -1,41 +1,37 @@
-// Prime Sieve in Go.
-// Taken from the Go specification.
-// Copyright © The Go Authors.
-
 package main
 
-import "fmt"
+import (
+    "fmt"
+    "strconv"
+)
 
-// Send the sequence 2, 3, 4, ... to channel 'ch'.
-func generate(ch chan<- int) {
-	for i := 2; ; i++ {
-		ch <- i  // Send 'i' to channel 'ch'
-	}
+func FibonacciLoop(n int) int {
+    f := make([]int, n+1, n+2)
+    if n < 2 {
+        f = f[0:2]
+    }
+    f[0] = 0
+    f[1] = 1
+    for i := 2; i <= n; i++ {
+        f[i] = f[i-1] + f[i-2]
+    }
+    return f[n]
 }
 
-// Copy the values from channel 'src' to channel 'dst',
-// removing those divisible by 'prime'.
-func filter(src <-chan int, dst chan<- int, prime int) {
-	for i := range src {    // Loop over values received from 'src'.
-		if i%prime != 0 {
-			dst <- i  // Send 'i' to channel 'dst'.
-		}
-	}
-}
-
-// The prime sieve: Daisy-chain filter processes together.
-func sieve() {
-	ch := make(chan int)  // Create a new channel.
-	go generate(ch)       // Start generate() as a subprocess.
-	for {
-		prime := <-ch
-		fmt.Print(prime, "\n")
-		ch1 := make(chan int)
-		go filter(ch, ch1, prime)
-		ch = ch1
-	}
+func FibonacciRecursion(n int) int {
+    if n <= 1 {
+        return n
+    }
+    return FibonacciRecursion(n-1) + FibonacciRecursion(n-2)
 }
 
 func main() {
-	sieve()
+    for i := 0; i <= 9; i++ {
+        fmt.Print(strconv.Itoa(FibonacciLoop(i)) + " ")
+    }
+    fmt.Println("")
+    for i := 0; i <= 9; i++ {
+        fmt.Print(strconv.Itoa(FibonacciRecursion(i)) + " ")
+    }
+    fmt.Println("")
 }

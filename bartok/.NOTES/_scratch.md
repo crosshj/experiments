@@ -614,6 +614,9 @@ web assembly
   - https://play.rust-lang.org/
   - https://wasdk.github.io/WasmFiddle/
   - https://webassembly.studio/
+- many languages using wasm - https://stackoverflow.com/a/47483989
+- many languages wasm - https://github.com/appcypher/awesome-wasm-langs
+
 
 syntax highlighting, etc
 ========================
@@ -622,15 +625,14 @@ syntax highlighting, etc
 - https://highlightjs.org/usage/
 - https://ourcodeworld.com/articles/read/309/top-5-best-code-editor-plugins-written-in-javascript
 
-- https://github.com/appcypher/awesome-wasm-langs
-
 - https://web.mit.edu/alexmv/6.037/sicp.pdf
 - http://matt.might.net/articles/best-programming-languages/
 - http://www.digibarn.com/collections/posters/tongues/tongues.jpg
 
 #### languages
-https://learnworthy.net/top-10-most-popular-language-of-2019-according-to-github/
-https://madnight.github.io/githut/#/pull_requests/2020/2
+- https://github.com/drujensen/fib - fibonacci in a lot of languages
+- https://learnworthy.net/top-10-most-popular-language-of-2019-according-to-github/
+- https://madnight.github.io/githut/#/pull_requests/2020/2
 
 highest paid:
   - Scala
