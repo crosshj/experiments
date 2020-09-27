@@ -1,6 +1,12 @@
 <!-- no-select -->
 <br>
 
+#### 2020-09-19 | 2020-09-27 - languages & misc
+  - add a ton of language templates, icons, syntax
+  - experiment webtorrent
+  - experiment zip
+  - experiment git integration
+
 #### 2020-09-02 | 2020-09-06 - service map
   - connect triggers to listeners in service map
   - add a bunch of triggers in app

@@ -1,5 +1,9 @@
 package main
 
+/*
+use this? https://github.com/gopherjs/gopherjs
+*/
+
 import (
     "fmt"
     "strconv"

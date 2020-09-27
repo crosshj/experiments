@@ -224,7 +224,15 @@
             "/shared/vendor/codemirror/mode/php.js",
             "/shared/vendor/codemirror/mode/go.js",
             "/shared/vendor/codemirror/mode/clojure.js",
-            "/shared/vendor/codemirror/mode/ruby.js"
+            "/shared/vendor/codemirror/mode/ruby.js",
+
+            "/shared/vendor/codemirror/mode/simple.js",
+            "/shared/vendor/codemirror/mode/rust.js",
+            "/shared/vendor/codemirror/mode/swift.js",
+            "/shared/vendor/codemirror/mode/scheme.js",
+            "/shared/vendor/codemirror/mode/prolog.js",
+            "/shared/vendor/codemirror/mode/nim.js",
+            "/shared/vendor/codemirror/mode/julia.js"
         ]
     }, {
         "route": "./modules/ContextMenu.mjs",

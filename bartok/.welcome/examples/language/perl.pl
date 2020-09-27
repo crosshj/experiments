@@ -1,37 +1,7 @@
-#!/usr/bin/perl
-
-#https://github.com/haukex/webperl
-
-use Something qw(func1 func2);
-
-# strings
-my $s1 = qq'single line';
-our $s2 = q(multi-
-              line);
-
-=item Something
-	Example.
-=cut
-
-my $multiline=<<'FOO'
-one
-two
-three
-FOO
-
-print "first,".join(',', 'second', qq~third~);
-
-if($s1 =~ m[(?<!\s)(l.ne)\z]o) {
-	$h->{$1}=$$.' predefined variables';
-	$s2 =~ s/\-line//ox;
-	$s1 =~ s[
-		  line ]
-		[
-		  block
-		]ox;
+sub fib {
+  my $n = shift;
+  if ( $n <= 1 ) { return 1; }
+  return fib($n - 1) + fib($n - 2);
 }
 
-1; # numbers and comments
-
-__END__
-something...
+print fib(46)

@@ -21,6 +21,7 @@
   - online editor and web-based code share/run
   - examples: plunker, codepen, stackblitz, runkit, glitch, observables, iodide.io, jupyter notebook
   - more: https://codeframe.co/, https://slingcode.net/
+  - https://en.wikipedia.org/wiki/Comparison_of_online_source_code_playgrounds
 
 ### mindmap | knowledge management tool
   - example: dendron.so, roam, athens, foam, vscode-memo
@@ -62,7 +63,7 @@
   - [what is kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
   - [cloud architecture saas faas xaas](https://brainhub.eu/blog/cloud-architecture-saas-faas-xaas/)
   - [paas and caas in 15 minutes](https://tanzu.vmware.com/content/intersect/paas-and-caas-in-15-minutes)
-  
+
 
 2020-08-24 thoughts about who customer is
 =========================================

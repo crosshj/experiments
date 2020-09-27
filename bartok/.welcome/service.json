@@ -94,27 +94,46 @@
         "wasps_bees.bmp": {}
       },
       "language": {
+        "ada.adb": {},
         "assemblyscript.as": {},
         "brainfuck.bf": {},
         "clojure.cljs": {},
         "cpp.cpp": {},
+        "crystal.cr": {},
+        "csharp.cs": {},
+        "dart.dart": {},
+        "elixr.ex": {},
+        "elm.elm": {},
+        "erlang.erl": {},
         "golang.go": {},
+        "haskell.hs": {},
         "hyperscript.js": {},
+        "ink.ink": {},
+        "java.java": {},
         "javascript.js": {},
         "json.json": {},
+        "julia.jl": {},
+        "kotlin.kt": {},
         "lisp.lisp": {},
+        "lua.lua": {},
+        "nim.nim": {},
+        "ocaml.ml": {},
         "perl.pl": {},
         "php.php": {},
         "prolog.pro": {},
         "python.py": {},
+        "r.r": {},
         "ruby.rb": {},
+        "rust.rs": {},
         "scheme.scm": {},
         "sql.sql": {},
         "styles.css": {},
         "styles.less": {},
         "styles.scss": {},
+        "swift.swift": {},
         "typescript.ts": {},
-        "windows.bat": {}
+        "windows.bat": {},
+        "zig.zig": {}
       },
       "react-todo.jsx": {},
       "react2.jsx": {}
@@ -134,15 +153,7 @@
       "golf2.js": {},
       "graph-formats.md": {},
       "isomorphic-git.html": {},
-      "language-cljs.html": {},
-      "language-cpp.html": {},
-      "language-php.html": {},
-      "language-pro.html": {},
-      "language-py.html": {},
-      "language-rb.html": {},
-      "language-scm.html": {},
       "language-sql-fetch.html": {},
-      "language-sql.html": {},
       "language-turboscript.html": {},
       "open.folder.html": {},
       "Piksel-LIFE-20200506-191410.piskel": {},
@@ -185,6 +196,10 @@
     {
       "name": "_sort.flashing.md",
       "path": ".welcome/WIP/_sort.flashing.md"
+    },
+    {
+      "name": "ada.adb",
+      "path": ".welcome/examples/language/ada.adb"
     },
     {
       "name": "angular9.html",
@@ -271,6 +286,14 @@
       "path": ".welcome/.templates/cpp.html"
     },
     {
+      "name": "crystal.cr",
+      "path": ".welcome/examples/language/crystal.cr"
+    },
+    {
+      "name": "csharp.cs",
+      "path": ".welcome/examples/language/csharp.cs"
+    },
+    {
       "name": "css-3d.html",
       "path": ".welcome/WIP/css-3d.html"
     },
@@ -281,6 +304,22 @@
     {
       "name": "d3-graph.html",
       "path": ".welcome/.templates/d3-graph.html"
+    },
+    {
+      "name": "dart.dart",
+      "path": ".welcome/examples/language/dart.dart"
+    },
+    {
+      "name": "elixr.ex",
+      "path": ".welcome/examples/language/elixr.ex"
+    },
+    {
+      "name": "elm.elm",
+      "path": ".welcome/examples/language/elm.elm"
+    },
+    {
+      "name": "erlang.erl",
+      "path": ".welcome/examples/language/erlang.erl"
     },
     {
       "name": "example.ppm",
@@ -335,6 +374,10 @@
       "path": ".welcome/examples/image/grey.png"
     },
     {
+      "name": "haskell.hs",
+      "path": ".welcome/examples/language/haskell.hs"
+    },
+    {
       "name": "hyperscript.js",
       "path": ".welcome/examples/language/hyperscript.js"
     },
@@ -347,12 +390,20 @@
       "path": ".welcome/index.js"
     },
     {
+      "name": "ink.ink",
+      "path": ".welcome/examples/language/ink.ink"
+    },
+    {
       "name": "ipynb.html",
       "path": ".welcome/.templates/ipynb.html"
     },
     {
       "name": "isomorphic-git.html",
       "path": ".welcome/WIP/isomorphic-git.html"
+    },
+    {
+      "name": "java.java",
+      "path": ".welcome/examples/language/java.java"
     },
     {
       "name": "javascript.js",
@@ -375,6 +426,10 @@
       "path": ".welcome/.templates/jsx.html"
     },
     {
+      "name": "julia.jl",
+      "path": ".welcome/examples/language/julia.jl"
+    },
+    {
       "name": "jupyter.ipynb",
       "path": ".welcome/examples/document/jupyter.ipynb"
     },
@@ -391,44 +446,16 @@
       "path": ".welcome/examples/document/jupyter4.ipynb"
     },
     {
+      "name": "kotlin.kt",
+      "path": ".welcome/examples/language/kotlin.kt"
+    },
+    {
       "name": "lame.png",
       "path": ".welcome/examples/image/lame.png"
     },
     {
-      "name": "language-cljs.html",
-      "path": ".welcome/WIP/language-cljs.html"
-    },
-    {
-      "name": "language-cpp.html",
-      "path": ".welcome/WIP/language-cpp.html"
-    },
-    {
-      "name": "language-php.html",
-      "path": ".welcome/WIP/language-php.html"
-    },
-    {
-      "name": "language-pro.html",
-      "path": ".welcome/WIP/language-pro.html"
-    },
-    {
-      "name": "language-py.html",
-      "path": ".welcome/WIP/language-py.html"
-    },
-    {
-      "name": "language-rb.html",
-      "path": ".welcome/WIP/language-rb.html"
-    },
-    {
-      "name": "language-scm.html",
-      "path": ".welcome/WIP/language-scm.html"
-    },
-    {
       "name": "language-sql-fetch.html",
       "path": ".welcome/WIP/language-sql-fetch.html"
-    },
-    {
-      "name": "language-sql.html",
-      "path": ".welcome/WIP/language-sql.html"
     },
     {
       "name": "language-turboscript.html",
@@ -441,6 +468,10 @@
     {
       "name": "lisp.lisp",
       "path": ".welcome/examples/language/lisp.lisp"
+    },
+    {
+      "name": "lua.lua",
+      "path": ".welcome/examples/language/lua.lua"
     },
     {
       "name": "markdown.md",
@@ -457,6 +488,14 @@
     {
       "name": "mlerpo.md",
       "path": ".welcome/examples/.deep-folders/fee/fie/foe/fum/mlerpo.md"
+    },
+    {
+      "name": "nim.nim",
+      "path": ".welcome/examples/language/nim.nim"
+    },
+    {
+      "name": "ocaml.ml",
+      "path": ".welcome/examples/language/ocaml.ml"
     },
     {
       "name": "open.folder.html",
@@ -511,6 +550,10 @@
       "path": ".welcome/WIP/quotaIssue.js"
     },
     {
+      "name": "r.r",
+      "path": ".welcome/examples/language/r.r"
+    },
+    {
       "name": "rb.html",
       "path": ".welcome/.templates/rb.html"
     },
@@ -549,6 +592,10 @@
     {
       "name": "ruby.rb",
       "path": ".welcome/examples/language/ruby.rb"
+    },
+    {
+      "name": "rust.rs",
+      "path": ".welcome/examples/language/rust.rs"
     },
     {
       "name": "scheme.scm",
@@ -611,6 +658,10 @@
       "path": ".welcome/WIP/sw.clientServer.htm"
     },
     {
+      "name": "swift.swift",
+      "path": ".welcome/examples/language/swift.swift"
+    },
+    {
       "name": "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg",
       "path": ".welcome/examples/image/the-shannara-chronicles-tree-forest-guardian-tv-series.jpg"
     },
@@ -653,6 +704,10 @@
     {
       "name": "windows.bat",
       "path": ".welcome/examples/language/windows.bat"
+    },
+    {
+      "name": "zig.zig",
+      "path": ".welcome/examples/language/zig.zig"
     },
     {
       "name": "zip_project.html",

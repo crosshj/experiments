@@ -104,7 +104,13 @@ const codeMirrorModeJs = (mode, callback) => {
 		callback();
 		return;
 	}
-	if(mode === "cpp"){
+	if(['cpp', 'csharp', 'kotlin', 'java'].includes(mode)){
+		callback();
+		return;
+	}
+	if([
+		'ada', 'crystal', 'dart', 'elm', 'elixir', 'erlang', 'haskell', 'kotlin', 'lua', 'ocaml', 'r', 'zig'
+	].includes(mode)){
 		callback();
 		return;
 	}
@@ -159,6 +165,10 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		opts.mode = 'commonlisp';
 		mode = 'commonlisp';
 	}
+	if(mode === "ink"){
+		opts.mode = "go";
+		mode = "go";
+	}
 	if(window.EditorLoading){
 		stack.push({
 			text, opts,
@@ -178,6 +188,15 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 			if(mode === 'cpp'){
 				opts.mode = 'text/x-c++src';
 			}
+			if(mode === 'csharp'){
+				opts.mode = 'text/x-csharp';
+			}
+			if(mode === 'kotlin'){
+				opts.mode = 'text/x-kotlin';
+			}
+			if(mode === 'java'){
+				opts.mode = 'text/x-java';
+			}
 
 			opts.mode = opts.mode.mimeType || opts.mode || mode;
 			window.Editor.toTextArea();
@@ -196,32 +215,34 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 				codeMirrorModeJs("javascript", () => {
 					codeMirrorModeJs("css", () => {
 						codeMirrorModeJs("clike", () => {
-							codeMirrorModeJs("htmlmixed", () => {
-								codeMirrorModeJs("htmlembedded", () => {
-									codeMirrorModeJs(opts.mode, () => {
-										if(stack.length > 0){
-											({ text, opts, callback } = stack.pop());
-											stack = [];
-										}
-										let theEditor = setupEditor(text, opts || {});
-										if(!theEditor){
-											setTimeout(() => {
-												theEditor = setupEditor(text, opts || {});
-												if(!theEditor){
-													console.log('STUBBORN editor...');
-													debugger;
-												}
-												window.EditorLoading= false;
-												window.Editor = theEditor;
-												callback(null, theEditor);
-											}, 1000);
-											return;
-										}
-										//theEditor.setOption("mode", opts.mode);
-										//theEditor.setOption("theme", "default");
-										window.EditorLoading= false;
-										window.Editor = theEditor;
-										callback(null, theEditor);
+							codeMirrorModeJs("simple", () => {
+								codeMirrorModeJs("htmlmixed", () => {
+									codeMirrorModeJs("htmlembedded", () => {
+										codeMirrorModeJs(opts.mode, () => {
+											if(stack.length > 0){
+												({ text, opts, callback } = stack.pop());
+												stack = [];
+											}
+											let theEditor = setupEditor(text, opts || {});
+											if(!theEditor){
+												setTimeout(() => {
+													theEditor = setupEditor(text, opts || {});
+													if(!theEditor){
+														console.log('STUBBORN editor...');
+														debugger;
+													}
+													window.EditorLoading= false;
+													window.Editor = theEditor;
+													callback(null, theEditor);
+												}, 1000);
+												return;
+											}
+											//theEditor.setOption("mode", opts.mode);
+											//theEditor.setOption("theme", "default");
+											window.EditorLoading= false;
+											window.Editor = theEditor;
+											callback(null, theEditor);
+										});
 									});
 								});
 							});
