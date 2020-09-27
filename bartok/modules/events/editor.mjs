@@ -122,14 +122,14 @@ const fileSelectHandler = ({ switchEditor }) => async (event) => {
 		sessionStorage.setItem('editorFile', next || name);
 	}
 
-	if(name.includes('system::')){
-		switchEditor(name.replace('system::', ''), "systemDoc");
+	const fileName = savedFileName || next || name;
+	if(name.includes('system::') || fileName.includes('systemDoc::')){
+		switchEditor((savedFileName || name).replace('system::', '').replace('systemDoc::', ''), "systemDoc");
 		return;
 	}
-
-	const fileName = savedFileName || next || name;
 	const currentService = getCurrentService({ pure: true });
 	const fileBody = currentService.code.find(x => x.name === fileName);
+
 	if(!fileBody){
 		console.error(`[editor:fileSelect] Current service (${currentService.id}:${currentService.name}) does not contain file: ${fileName}`);
 		switchEditor(null, "nothingOpen");

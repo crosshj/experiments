@@ -1,3 +1,12 @@
+const safe = (fn) => {
+    try {
+        return fn();
+    } catch(e){
+        console.error('possible issue: '+fn.toString());
+        return;
+    }
+}
+
 const flattenTree = (tree) => {
     const results = [];
     const recurse = (branch, parent = '/') => {
@@ -226,7 +235,7 @@ async function getFileContents({ filename, store, cache, storagePath }) {
 
 //TODO: this is intense, but save a more granular approach for future
 async function fileSystemTricks({ result, store, cache, metaStore }) {
-    if (!result.result[0].code.find) {
+    if (!safe(() => result.result[0].code.find)) {
         const parsed = JSON.parse(result.result[0].code);
         result.result[0].code = parsed.files;
         result.result[0].tree = parsed.tree;
@@ -252,8 +261,8 @@ async function fileSystemTricks({ result, store, cache, metaStore }) {
             [result.result[0].name]: serviceJSON.tree
         }
     }
-    const len = result.result[0].code.length;
-    const flat = flattenTree(result.result[0].tree);
+    const len = safe(() => result.result[0].code.length);
+    const flat = flattenTree(safe(() => result.result[0].tree));
 
     for (var i = 0; i < len; i++) {
         const item = result.result[0].code[i];

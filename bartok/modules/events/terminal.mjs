@@ -231,7 +231,7 @@ const viewSelectHandler = ({ viewUpdate }) => (event) => {
 	let code = typeof currentFile === "string"
 		? currentFile
 		: '';
-	const name = currentFileName;
+	const name = currentFileName || '';
 	const isHTML = code.includes('</html>') && ['htm', 'html'].find(x => { return name.includes('.'+x)});
 	const isSVG = code.includes('</svg>') && ['svg'].find(x => { return name.includes('.'+x)});
 	const isJSX = (name).includes('jsx');
