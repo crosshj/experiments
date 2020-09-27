@@ -117,6 +117,11 @@ http://swannodette.github.io/assets/js/cljs_next/main.js
 </pre>
     </body>
     <script>
+    const consoleInfoBak = console.info;
+    console.info = (...args) => {
+      if(args.includes('register-mode: '))return;
+      consoleInfoBak(...args);
+    };
     const inputDOM = document.querySelector('.cljs-input');
     const outputDOM = document.querySelector('.cljs-output');
 
@@ -146,7 +151,7 @@ http://swannodette.github.io/assets/js/cljs_next/main.js
             .clojure["eval_and_callback"](
                 inputText,
                 (...args) => {
-                  console.log({ args })
+                  //console.log({ args })
                 }
             );
         outputDOM.innerHTML = 'loading...';

@@ -109,7 +109,7 @@ const codeMirrorModeJs = (mode, callback) => {
 		return;
 	}
 	if([
-		'ada', 'crystal', 'dart', 'elm', 'elixir', 'erlang', 'haskell', 'kotlin', 'lua', 'ocaml', 'r', 'zig'
+		'ada', 'ocaml', 'zig'
 	].includes(mode)){
 		callback();
 		return;
@@ -118,6 +118,10 @@ const codeMirrorModeJs = (mode, callback) => {
 		callback();
 		return;
 	}
+
+	//ocaml -> "mllike" -> "text/x-ocaml"
+	//F# -> "mllike" -> "text/x-fsharp"
+
 	const scriptId = `cm-syntax-${mode}`;
 	const scriptExists = !!document.getElementById(scriptId);
 	if(scriptExists){

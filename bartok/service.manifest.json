@@ -113,13 +113,6 @@
             "https://rawgit.com/mrdoob/three.js/master/examples/models/gltf/DamagedHelmet/glTF/Default_emissive.jpg",
 
             "/shared/vendor/klipse_plugin-7.9.6.min.js",
-            "https://viebel.github.io/klipse-clj/target/public/cljs-out/dev//cljs/core$macros.cljc.cache.json",
-            "https://viebel.github.io/cljs-analysis-cache/cache//klipse_clj_SLASH_repl$macros.js",
-            "https://viebel.github.io/cljs-analysis-cache/cache//cljs_SLASH_reader$macros.js",
-            "https://viebel.github.io/cljs-analysis-cache/cache//klipse_clj_SLASH_macros$macros.js",
-            "https://viebel.github.io/cljs-analysis-cache/cache//cljs_SLASH_spec_SLASH_alpha$macros.js",
-            "https://viebel.github.io/cljs-analysis-cache/cache//cljs_SLASH_spec_SLASH_gen_SLASH_alpha$macros.js",
-            "https://viebel.github.io/cljs-analysis-cache/cache//cljs_SLASH_tools_SLASH_reader_SLASH_reader_types$macros.js",
 
             "https://cdn.jsdelivr.net/npm/reveal.js@3.9.2/css/reveal.min.css",
             "https://cdn.jsdelivr.net/npm/reveal.js@3.9.2/css/theme/black.css",
@@ -232,6 +225,15 @@
             "/shared/vendor/codemirror/mode/scheme.js",
             "/shared/vendor/codemirror/mode/prolog.js",
             "/shared/vendor/codemirror/mode/nim.js",
+            "/shared/vendor/codemirror/mode/crystal.js",
+            "/shared/vendor/codemirror/mode/dart.js",
+            "/shared/vendor/codemirror/mode/elixir.js",
+            "/shared/vendor/codemirror/mode/elm.js",
+            "/shared/vendor/codemirror/mode/erlang.js",
+            "/shared/vendor/codemirror/mode/haskell.js",
+            "/shared/vendor/codemirror/mode/lua.js",
+            "/shared/vendor/codemirror/mode/mllike.js",
+            "/shared/vendor/codemirror/mode/r.js",
             "/shared/vendor/codemirror/mode/julia.js"
         ]
     }, {

@@ -669,10 +669,10 @@ CodeMirror.defineMode("nim", (conf, parserConf) => {
 
 CodeMirror.defineMIME("text/x-nim", "nim");
 
-CodeMirror.modeInfo.push({
-  name: "Nim",
-  mime: "text/x-nim",
-  mode: "name",
-  ext: ["nim"],
-});
+// CodeMirror.modeInfo.push({
+//   name: "Nim",
+//   mime: "text/x-nim",
+//   mode: "name",
+//   ext: ["nim"],
+// });
 
