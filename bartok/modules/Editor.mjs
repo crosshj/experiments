@@ -774,7 +774,7 @@ const showSystemDocsView = ({ filename, errors }) => {
 	}
 	if(filename){
 		systemDocsDOM.querySelector('.thisSystemDoc')
-		.innerHTML = SystemDocs(filename);
+			.innerHTML = SystemDocs(filename);
 	}
 	if(errors.length){
 		errors.forEach(error => {
@@ -786,6 +786,7 @@ const showSystemDocsView = ({ filename, errors }) => {
 			console.error(error);
 		});
 	}
+	return systemDocsDOM;
 };
 
 function _Editor() {
@@ -853,11 +854,13 @@ function _Editor() {
 			editor({ code: '', name: '', id: '', filename: '' });
 			editorDom = document.querySelector('.CodeMirror');
 
+			systemDocsView = showSystemDocsView({ filename, errors: systemDocsErrors });
+			systemDocsView && systemDocsView.classList.remove('hidden');
+
 			editorPreview && editorPreview.classList.add('hidden');
 			editorDom && editorDom.classList.add('hidden');
 			nothingOpenDom && nothingOpenDom.classList.add('hidden');
 
-			systemDocsView = showSystemDocsView({ filename, errors: systemDocsErrors });
 			return;
 		}
 
@@ -892,9 +895,9 @@ function _Editor() {
 
 		editor({ code, name, id, filename: filename || defaultFile });
 		editorDom = document.querySelector('.CodeMirror');
+		editorDom && editorDom.classList.remove('hidden');
 
 		editorPreview && editorPreview.classList.add('hidden');
-		editorDom && editorDom.classList.remove('hidden');
 		nothingOpenDom && nothingOpenDom.classList.add('hidden');
 		systemDocsView && systemDocsView.classList.add('hidden');
 	};

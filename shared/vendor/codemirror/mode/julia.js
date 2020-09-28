@@ -46,7 +46,7 @@ CodeMirror.defineMode("julia", function(config, parserConf) {
         "global", "local", "const", "export", "import", "importall", "using",
         "function", "where", "macro", "module", "baremodule", "struct", "type",
         "mutable", "immutable", "quote", "typealias", "abstract", "primitive",
-        "bitstype"];
+        "bitstype", "println"];
 
   var builtinsList = ["true", "false", "nothing", "NaN", "Inf"];
 
