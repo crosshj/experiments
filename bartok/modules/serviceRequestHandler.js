@@ -195,10 +195,10 @@ const NO_PREVIEW = `
 
 async function fetchFileContents(filename) {
     const storeAsBlob = [
-        "image/", "audio/", "video/", "wasm"
+        "image/", "audio/", "video/", "wasm", "application/zip"
     ];
     const storeAsBlobBlacklist = [
-        'image/svg'
+        'image/svg', 'image/x-portable-pixmap'
     ];
     const fileNameBlacklist = [
         '.ts' // mistaken as video/mp2t

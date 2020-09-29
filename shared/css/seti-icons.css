@@ -46,6 +46,7 @@
 .icon-ejs:before,
 .icon-elixir:before,
 .icon-elixir_script:before,
+.icon-fsharp:before,
 .icon-ink:before,
 .icon-elm:before,
 .icon-error:before,
@@ -80,6 +81,7 @@
 .icon-ignored:before,
 .icon-illustrator:before,
 .icon-image:before,
+.icon-ppm:before,
 .icon-info:before,
 .icon-ionic:before,
 .icon-jade:before,
@@ -307,7 +309,7 @@
 }
 .icon-d:before {
   content: '\E01D';
-  color: white;
+  color: #bb2239;
 }
 .icon-dart:before {
   content: '\E01E';
@@ -367,7 +369,7 @@
 }
 .icon-fsharp:before {
   content: '\E02B';
-  color: white;
+  color: #378bba;
 }
 .icon-favicon:before {
   content: '\E02C';
@@ -480,6 +482,10 @@
 .icon-image:before {
   content: '\E047';
   color: #a074c4;
+}
+.icon-ppm:before {
+  content: '\E047';
+  color: #c474c1;
 }
 .icon-info:before {
   content: '\E048';
@@ -827,7 +833,7 @@
 }
 .icon-zip:before {
   content: '\E09B';
-  color: white;
+  color: #157efb;
 }
 
 
@@ -835,9 +841,13 @@
 .icon-ada:before,
 .icon-assemblyscript:before,
 .icon-erlang:before,
+.icon-forth:before,
 .icon-nim:before,
 .icon-scheme:before,
 .icon-lisp:before,
+.icon-pascal:before,
+.icon-pony:before,
+.icon-raku:before,
 .icon-zig:before {
   font-family: 'seti';
   -webkit-font-smoothing: antialiased;
@@ -875,6 +885,38 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='translate(7 10)'%3E%3Cpath id='a' d='m8.9324 0-1.3716 1.0689c-0.71169-0.022708-2.109 0.1368-2.8662 0.41206-0.69702-0.44169-1.3098-0.92935-1.3098-0.92935l-0.85292 1.4295c-0.48822 0.26031-0.97865 0.55191-1.4151 0.93822l-1.1168-0.45582c0.67292 1.3569 1.1224 2.7138 2.3561 3.5335 1.9592-3.0943 11.064-2.8061 13.064-0.017723 1.2932-0.67348 1.7958-2.1212 2.304-3.4629-0.40099 0.13337-0.79964 0.2737-1.1958 0.42092-0.26751-0.2916-0.89862-0.73938-1.2572-0.95594-0.33978-0.62308-0.83492-1.4641-0.83492-1.4641s-0.58625 0.43588-1.2661 0.91191c-0.918-0.16948-2.0287-0.37523-2.9631-0.324-0.63526-0.52366-1.2741-1.1052-1.2741-1.1052z' fill='%23F3D400'/%3E%3Cpath d='m0.69618 5.3485 1.6161 3.9146c2.8072 3.7033 9.9748 3.9581 13.1 0.072l1.7369-4.0085c-0.80169 1.1874-2.106 2.0077-2.9096 2.4516-0.57102 0.31292-1.8886 0.50206-1.8886 0.50206l-3.456-1.7925-3.4787 1.7565s-1.2996-0.2088-1.8886-0.48378c-1.1874-0.63692-1.9866-1.3832-2.8288-2.4092l-0.0030462-0.0027692z' fill='%23FFE953'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   content: '';
   margin: auto;
+}
+.icon-forth:before {
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' version='1.1' viewBox='0 0 67.733 67.733' xmlns='http://www.w3.org/2000/svg' xmlns:osb='http://www.openswatchbook.org/uri/2009/osb'%3E%3Cpath d='m10.321 12.006c-0.21038 0-0.37976 0.1735-0.37976 0.3892v12.63c0 0.2157 0.16938 0.38961 0.37976 0.38961h16.925c0.21038 0 0.37976-0.17391 0.37976-0.38961v-12.63c0-0.2157-0.16938-0.3892-0.37976-0.3892zm30.167 0c-0.21038 0-0.37976 0.1735-0.37976 0.3892v12.63c0 0.2157 0.16938 0.38961 0.37976 0.38961h16.925c0.21038 0 0.37976-0.17391 0.37976-0.38961v-12.63c0-0.2157-0.16938-0.3892-0.37976-0.3892zm-30.167 22.322c-0.21038 0-0.37976 0.1735-0.37976 0.3892v12.63c0 0.2157 0.16938 0.38961 0.37976 0.38961h16.925c0.21038 0 0.37976-0.17391 0.37976-0.38961v-12.63c0-0.2157-0.16938-0.3892-0.37976-0.3892zm30.167 0c-0.21038 0-0.37976 0.1735-0.37976 0.3892v12.63c0 0.2157 0.16938 0.38961 0.37976 0.38961h4.0525v4.3514h-4.0308c-0.20757 0-0.37483 0.16726-0.37483 0.37483v2.8898c0 0.20757 0.16726 0.37442 0.37483 0.37442h8.3029c0.20758 0 0.37442-0.16685 0.37442-0.37442v-4.135h3.7976c0.20757 0 0.37442-0.16726 0.37442-0.37483v-3.1062h4.0542c0.21038 0 0.37976-0.17391 0.37976-0.38961v-12.63c0-0.2157-0.16938-0.3892-0.37976-0.3892z' fill='%23ef5350'/%3E%3C/svg%3E");
+  content: '';
+  margin: auto;
+  background-repeat: no-repeat;
+  margin-left: 2px;
+  margin-right: -2px;
+  margin-bottom: -3px;
+  margin-top: 1px;
+}
+.icon-pascal:before {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='3.667' y='21.362' fill='%230288d1' font-family='sans-serif' font-size='26.338' letter-spacing='0' stroke-width='1.796' word-spacing='0' style='line-height:1.25'%3E%3Ctspan x='3.667' y='21.362' font-family='Roboto' font-style='italic' font-weight='bold'%3EP%3C/tspan%3E%3C/text%3E%3C/svg%3E");
+  content: '';
+  margin: auto;
+  background-repeat: no-repeat;
+  margin-left: 4px;
+  margin-right: -4px;
+  margin-bottom: -3px;
+  margin-top: 1px;
+  width: 16px;
+  height: 16px;
+}
+.icon-raku:before {
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Cg class='layer' fill='%231177ff'%3E%3Ccircle cx='3.6103' cy='5.4226' r='3.58172' stroke-width='0'/%3E%3Ccircle cx='12.37513' cy='5.3754' r='3.58172' stroke-width='0'/%3E%3Ccircle cx='5.34978' cy='10.39158' r='2.26025' stroke-width='0'/%3E%3Ccircle cx='10.60868' cy='10.45901' r='2.26025' stroke-width='0'/%3E%3Ccircle cx='8.0062' cy='7.84304' r='2.26025' stroke-width='0'/%3E%3C/g%3E%3C/svg%3E");
+  content: '';
+  margin: auto;
+  background-repeat: no-repeat;
+  margin-left: 2px;
+  margin-right: -2px;
+  margin-bottom: -5px;
+  margin-top: 2px;
 }
 .icon-ada:before {
   /* content: 'A';
@@ -932,6 +974,16 @@
   margin-bottom: -8px;
   margin-right: 1px;
   margin-left: 2px;
+}
+.icon-pony:before {
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Cg class='layer'%3E%3Ccircle cx='7.98598' cy='7.99137' fill='%237f3f00' id='svg_7' r='7.19819' stroke='%234f2600' stroke-width='0.25'/%3E%3Crect fill='%23e5dac3' height='6.75566' id='svg_15' stroke='%237f3f00' stroke-width='0.25' width='15.80367' x='0.0774' y='4.51915'/%3E%3Ctext fill='%237f3f00' font-family='Fantasy' font-size='4' font-weight='normal' id='svg_16' stroke='%237f3f00' stroke-width='0' style='cursor: move;' text-anchor='middle' x='8.0062' xml:space='preserve' y='9.54881'%3EP O N Y%3C/text%3E%3C/g%3E%3C/svg%3E");
+  content: '';
+  margin: auto;
+  background-repeat: no-repeat;
+  margin-left: 2px;
+  margin-right: -2px;
+  margin-bottom: -5px;
+  margin-top: 2px;
 }
 
 

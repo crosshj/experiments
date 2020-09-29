@@ -100,28 +100,6 @@ const codeMirrorJs = (callback) => {
 };
 
 const codeMirrorModeJs = (mode, callback) => {
-	if(mode === "brainfuck"){ //because I am lazy and put it in clike mode
-		callback();
-		return;
-	}
-	if(['cpp', 'csharp', 'kotlin', 'java'].includes(mode)){
-		callback();
-		return;
-	}
-	if([
-		'ocaml', 'zig'
-	].includes(mode)){
-		callback();
-		return;
-	}
-	if(mode === "default"){
-		callback();
-		return;
-	}
-
-	//ocaml -> "mllike" -> "text/x-ocaml"
-	//F# -> "mllike" -> "text/x-fsharp"
-
 	const scriptId = `cm-syntax-${mode}`;
 	const scriptExists = !!document.getElementById(scriptId);
 	if(scriptExists){
@@ -161,10 +139,17 @@ const setupEditor = (text, opts) => {
 
 let stack = [];
 const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
+	let _text = text;
+	if(typeof _text !== 'string'){
+		_text = '\n';
+		console.warn(`Editor received bad text!`);
+		console.warn({ text, opts })
+	}
 	let mode = opts.mode || "javascript";
 	try {
 		mode = opts.mode.name || mode;
 	} catch(e){}
+
 	if(mode === 'lisp'){
 		opts.mode = 'commonlisp';
 		mode = 'commonlisp';
@@ -173,86 +158,67 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		opts.mode = "go";
 		mode = "go";
 	}
+	if(mode === "raku"){
+		opts.mode = "perl6";
+		mode = "perl6";
+	}
+	if(mode === "zig"){
+		opts.mode = "rust";
+		mode = "rust";
+	}
+	if(mode === 'sql'){
+		opts.mode = 'text/x-pgsql';
+	}
+	if(mode === 'cpp'){
+		opts.mode = 'text/x-c++src';
+	}
+	if(['ocaml', 'csharp', 'fsharp', 'java', 'kotlin'].includes(mode)){
+		opts.mode = 'text/x-' + mode;
+	}
 	if(window.EditorLoading){
 		stack.push({
-			text, opts,
-			callback: (...args) => {
-				codeMirrorModeJs(opts.mode, () => {
-					callback(...args);
-				});
-			}
+			text: _text, opts,
+			callback
 		});
 		return;
 	}
 	if(window.Editor){
-		codeMirrorModeJs(mode, () => {
-			if(mode === 'sql'){
-				opts.mode = 'text/x-pgsql';
-			}
-			if(mode === 'cpp'){
-				opts.mode = 'text/x-c++src';
-			}
-			if(mode === 'csharp'){
-				opts.mode = 'text/x-csharp';
-			}
-			if(mode === 'kotlin'){
-				opts.mode = 'text/x-kotlin';
-			}
-			if(mode === 'java'){
-				opts.mode = 'text/x-java';
-			}
-
-			opts.mode = opts.mode.mimeType || opts.mode || mode;
-			window.Editor.toTextArea();
-			const theEditor = setupEditor(text, opts || {});
-			//theEditor.setOption("mode", mode);
-			//theEditor.setOption("theme", "default");
-			window.Editor = theEditor;
-			callback(null, theEditor);
-		})
+		opts.mode = opts.mode.mimeType || opts.mode || mode;
+		window.Editor.toTextArea();
+		const theEditor = setupEditor(_text, opts || {});
+		//theEditor.setOption("mode", mode);
+		//theEditor.setOption("theme", "default");
+		window.Editor = theEditor;
+		callback(null, theEditor);
 		return;
 	}
 	window.EditorLoading= true;
 	codeMirrorCss(() => {
 		codeMirrorJs(() => {
-			codeMirrorModeJs("xml", () => {
-				codeMirrorModeJs("javascript", () => {
-					codeMirrorModeJs("css", () => {
-						codeMirrorModeJs("clike", () => {
-							codeMirrorModeJs("simple", () => {
-								codeMirrorModeJs("htmlmixed", () => {
-									codeMirrorModeJs("htmlembedded", () => {
-										codeMirrorModeJs(opts.mode, () => {
-											if(stack.length > 0){
-												({ text, opts, callback } = stack.pop());
-												stack = [];
-											}
-											let theEditor = setupEditor(text, opts || {});
-											if(!theEditor){
-												setTimeout(() => {
-													theEditor = setupEditor(text, opts || {});
-													if(!theEditor){
-														console.log('STUBBORN editor...');
-														debugger;
-													}
-													window.EditorLoading= false;
-													window.Editor = theEditor;
-													callback(null, theEditor);
-												}, 1000);
-												return;
-											}
-											//theEditor.setOption("mode", opts.mode);
-											//theEditor.setOption("theme", "default");
-											window.EditorLoading= false;
-											window.Editor = theEditor;
-											callback(null, theEditor);
-										});
-									});
-								});
-							});
-						});
-					});
-				});
+			codeMirrorModeJs("../mode.bundle", () => {
+				if(stack.length > 0){
+					({ text: _text, opts, callback } = stack.pop());
+					stack = [];
+				}
+				let theEditor = setupEditor(_text, opts || {});
+				if(!theEditor){
+					setTimeout(() => {
+						theEditor = setupEditor(_text, opts || {});
+						if(!theEditor){
+							console.log('STUBBORN editor...');
+							debugger;
+						}
+						window.EditorLoading= false;
+						window.Editor = theEditor;
+						callback(null, theEditor);
+					}, 1000);
+					return;
+				}
+				//theEditor.setOption("mode", opts.mode);
+				//theEditor.setOption("theme", "default");
+				window.EditorLoading= false;
+				window.Editor = theEditor;
+				callback(null, theEditor);
 			});
 		});
 	});

@@ -56,6 +56,9 @@
         "audio.mp3": {},
         "video.mp4": {}
       },
+      "data": {
+        "json.json": {}
+      },
       "document": {
         "jupyter.ipynb": {},
         "jupyter2.ipynb": {},
@@ -102,41 +105,48 @@
         "crystal.cr": {},
         "csharp.cs": {},
         "dart.dart": {},
+        "dlang.d": {},
         "elixr.ex": {},
         "elm.elm": {},
         "erlang.erl": {},
+        "forth.fth": {},
+        "fsharp.fs": {},
         "golang.go": {},
         "haskell.hs": {},
         "hyperscript.js": {},
         "ink.ink": {},
         "java.java": {},
         "javascript.js": {},
-        "json.json": {},
         "julia.jl": {},
         "kotlin.kt": {},
         "lisp.lisp": {},
         "lua.lua": {},
         "nim.nim": {},
         "ocaml.ml": {},
+        "pascal.pas": {},
         "perl.pl": {},
         "php.php": {},
+        "pony.pony": {},
         "prolog.pro": {},
         "python.py": {},
+        "raku.raku": {},
         "rlang.r": {},
         "ruby.rb": {},
         "rust.rs": {},
         "scheme.scm": {},
         "sql.sql": {},
-        "styles.css": {},
-        "styles.less": {},
-        "styles.scss": {},
         "swift.swift": {},
         "typescript.ts": {},
         "windows.bat": {},
         "zig.zig": {}
       },
       "react-todo.jsx": {},
-      "react2.jsx": {}
+      "react2.jsx": {},
+      "style": {
+        "styles.css": {},
+        "styles.less": {},
+        "styles.scss": {}
+      }
     },
     "index.js": {},
     "package.json": {},
@@ -310,6 +320,10 @@
       "path": ".welcome/examples/language/dart.dart"
     },
     {
+      "name": "dlang.d",
+      "path": ".welcome/examples/language/dlang.d"
+    },
+    {
       "name": "elixr.ex",
       "path": ".welcome/examples/language/elixr.ex"
     },
@@ -328,6 +342,14 @@
     {
       "name": "favicon_package2_v0.16.zip",
       "path": ".welcome/examples/image/favicon_package2_v0.16.zip"
+    },
+    {
+      "name": "forth.fth",
+      "path": ".welcome/examples/language/forth.fth"
+    },
+    {
+      "name": "fsharp.fs",
+      "path": ".welcome/examples/language/fsharp.fs"
     },
     {
       "name": "gltf.html",
@@ -419,7 +441,7 @@
     },
     {
       "name": "json.json",
-      "path": ".welcome/examples/language/json.json"
+      "path": ".welcome/examples/data/json.json"
     },
     {
       "name": "jsx.html",
@@ -506,6 +528,10 @@
       "path": ".welcome/package.json"
     },
     {
+      "name": "pascal.pas",
+      "path": ".welcome/examples/language/pascal.pas"
+    },
+    {
       "name": "perl.pl",
       "path": ".welcome/examples/language/perl.pl"
     },
@@ -524,6 +550,10 @@
     {
       "name": "plain.txt",
       "path": ".welcome/examples/document/plain.txt"
+    },
+    {
+      "name": "pony.pony",
+      "path": ".welcome/examples/language/pony.pony"
     },
     {
       "name": "preact-hyperscript.htm",
@@ -548,6 +578,10 @@
     {
       "name": "quotaIssue.js",
       "path": ".welcome/WIP/quotaIssue.js"
+    },
+    {
+      "name": "raku.raku",
+      "path": ".welcome/examples/language/raku.raku"
     },
     {
       "name": "rb.html",
@@ -623,15 +657,15 @@
     },
     {
       "name": "styles.css",
-      "path": ".welcome/examples/language/styles.css"
+      "path": ".welcome/examples/style/styles.css"
     },
     {
       "name": "styles.less",
-      "path": ".welcome/examples/language/styles.less"
+      "path": ".welcome/examples/style/styles.less"
     },
     {
       "name": "styles.scss",
-      "path": ".welcome/examples/language/styles.scss"
+      "path": ".welcome/examples/style/styles.scss"
     },
     {
       "name": "svcv3.html",

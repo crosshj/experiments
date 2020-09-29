@@ -211,41 +211,7 @@
             "/shared/vendor/codemirror-show-invisibles.js",
             "/shared/vendor/codemirror-search.js",
 
-            "/shared/vendor/codemirror/mode/javascript.js",
-            "/shared/vendor/codemirror/mode/jsx.js",
-            "/shared/vendor/codemirror/mode/xml.js",
-            "/shared/vendor/codemirror/mode/sql.js",
-            "/shared/vendor/codemirror/mode/commonlisp.js",
-            "/shared/vendor/codemirror/mode/css.js",
-            "/shared/vendor/codemirror/mode/clike.js",
-            "/shared/vendor/codemirror/mode/htmlmixed.js",
-            "/shared/vendor/codemirror/mode/htmlembedded.js",
-            "/shared/vendor/codemirror/mode/markdown.js",
-
-            "/shared/vendor/codemirror/mode/perl.js",
-            "/shared/vendor/codemirror/mode/python.js",
-            "/shared/vendor/codemirror/mode/php.js",
-            "/shared/vendor/codemirror/mode/go.js",
-            "/shared/vendor/codemirror/mode/clojure.js",
-            "/shared/vendor/codemirror/mode/ruby.js",
-
-            "/shared/vendor/codemirror/mode/simple.js",
-            "/shared/vendor/codemirror/mode/rust.js",
-            "/shared/vendor/codemirror/mode/ada.js",
-            "/shared/vendor/codemirror/mode/swift.js",
-            "/shared/vendor/codemirror/mode/scheme.js",
-            "/shared/vendor/codemirror/mode/prolog.js",
-            "/shared/vendor/codemirror/mode/nim.js",
-            "/shared/vendor/codemirror/mode/crystal.js",
-            "/shared/vendor/codemirror/mode/dart.js",
-            "/shared/vendor/codemirror/mode/elixir.js",
-            "/shared/vendor/codemirror/mode/elm.js",
-            "/shared/vendor/codemirror/mode/erlang.js",
-            "/shared/vendor/codemirror/mode/haskell.js",
-            "/shared/vendor/codemirror/mode/lua.js",
-            "/shared/vendor/codemirror/mode/mllike.js",
-            "/shared/vendor/codemirror/mode/r.js",
-            "/shared/vendor/codemirror/mode/julia.js"
+            "/shared/vendor/codemirror/mode.bundle.js"
         ]
     }, {
         "route": "./modules/ContextMenu.mjs",

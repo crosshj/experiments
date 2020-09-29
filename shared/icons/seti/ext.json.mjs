@@ -173,6 +173,13 @@ export default {
     "kt": "kotlin",
     "ink": "ink",
     "zig": "zig",
+    "pas": "pascal",
+    "raku": "raku",
+    "fth": "forth",
+    "d": "d",
+    "pony": "pony",
+
+    "ppm": "ppm",
 
     "scratch": "smarty",
     "bugs": "platformio"

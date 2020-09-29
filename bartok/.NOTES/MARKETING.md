@@ -20,7 +20,7 @@
 ### ide | playground
   - online editor and web-based code share/run
   - examples: plunker, codepen, stackblitz, runkit, glitch, observables, iodide.io, jupyter notebook
-  - more: https://codeframe.co/, https://slingcode.net/
+  - more: https://codeframe.co/, https://slingcode.net/, https://codefence.io/
   - https://en.wikipedia.org/wiki/Comparison_of_online_source_code_playgrounds
 
 ### mindmap | knowledge management tool
