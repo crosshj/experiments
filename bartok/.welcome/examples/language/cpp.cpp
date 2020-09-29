@@ -23,7 +23,7 @@ int fibonacci(int n){
 
 int main(){
     for (int i = 0; i < 10; ++i){
-        cout << "fib(" << i << "): " << fibonacci(i) << endl;
+        cout << fibonacci(i) << endl;
     }
     return 0;
 }

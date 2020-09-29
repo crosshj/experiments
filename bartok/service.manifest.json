@@ -86,7 +86,17 @@
             "https://felixhao28.github.io/JSCPP/dist/JSCPP.es5.min.js",
             "https://jscl-project.github.io/jscl.js",
             "https://asmblah.github.io/uniter/dist/uniter.js",
-            "https://cdn.jsdelivr.net/npm/tau-prolog@0.2.81/modules/core.min.js",
+
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/core.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/js.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/dom.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/lists.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/format.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/charsio.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/os.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/random.min.js",
+            "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/statistics.min.js",
+
             "https://cdn.jsdelivr.net/npm/skulpt@1.0.0/dist/skulpt.min.js",
             "https://cdn.jsdelivr.net/npm/skulpt@1.0.0/dist/skulpt-stdlib.js",
             "https://cdn.opalrb.com/opal/current/opal.js",
@@ -221,6 +231,7 @@
 
             "/shared/vendor/codemirror/mode/simple.js",
             "/shared/vendor/codemirror/mode/rust.js",
+            "/shared/vendor/codemirror/mode/ada.js",
             "/shared/vendor/codemirror/mode/swift.js",
             "/shared/vendor/codemirror/mode/scheme.js",
             "/shared/vendor/codemirror/mode/prolog.js",

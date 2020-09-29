@@ -268,21 +268,27 @@ https://github.com/jscl-project/jscl
         };
 
         let loading = true;
-        outputDOM.innerHTML = '\nloading...';
+        outputDOM.innerHTML = 'loading...';
 
         const doEach = (a) => {
             if (loading) {
-                outputDOM.innerHTML = '\n';
+                outputDOM.innerHTML = '';
                 loading = false;
             }
-            outputDOM.innerHTML += a;
+            outputDOM.innerHTML += a.replace(new RegExp('\\\\n', "g"), '\n');
         };
 
-        const codeFromComment = Array.from(
-            document.querySelector('.language-input').childNodes
-        )
+        const codeIn = document.querySelector('.language-input')
+        let codeFromComment = Array.from(codeIn.childNodes)
             .filter(x => x.nodeType === 8)
             .map(x => x.data).join('\n');
+        if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+          codeFromComment = `
+          (lambda()
+            (#j:console:info "hello world" "\\\\n")
+          )
+          `.replace(new RegExp('          ', 'g'), '');
+        }
         inputDOM.innerText = codeFromComment;
 
         await appendScript(scriptUrl);
@@ -303,7 +309,7 @@ https://github.com/jscl-project/jscl
 -->
 </code>
 
-<code class="language-output language">
+<code class="language-output">
 </code>
 
 </pre>
@@ -311,10 +317,15 @@ https://github.com/jscl-project/jscl
 
 <script>
     (async () => {
+        const consoleLogBackup = console.log;
+        const consoleInfoBackup = console.info;
+        console.log = (...args) => {
+          //consoleLogBackup(...args)
+        };
         const {code, doEach, doAfter } = await letsGo();
+        console.info = (...args) => doEach(args.join(''));
         const compiled = jscl.evaluateString(code);
         compiled();
-        doAfter(JSON.stringify(window.results, null, 2))
     })();
 </script>
 

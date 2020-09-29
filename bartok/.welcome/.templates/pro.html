@@ -26,17 +26,14 @@ http://tau-prolog.org/
 </code_in>
 
 <body>
-    <h3></h3>
     <pre>
-      <span>INPUT:</span>
-      <code class="language-input language">
+      <code class="language-input language" style="display:none;">
       </code>
 
-      OUTPUT:
-      <code class="language-output language">
+      <code class="language-output">
       </code>
     </pre>
-</body>
+</body> 
 
 <style>
     body {
@@ -97,25 +94,40 @@ http://tau-prolog.org/
 </style>
 
 <script>
-    const scriptUrl = "https://cdn.jsdelivr.net/npm/tau-prolog@0.2.81/modules/core.min.js";
-
+    const scriptUrl = [
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/core.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/js.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/dom.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/lists.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/format.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/charsio.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/os.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/random.min.js",
+        "https://cdn.jsdelivr.net/npm/tau-prolog@0.3.0/modules/statistics.min.js"
+    ];
     (async () => {
         const {code, doEach, doAfter } = await letsGo(scriptUrl);
-        const session = pl.create(1000);
-        session.consult(code);
-        doEach('\n');
-        (new Array(10)).fill().forEach((x, i) => {
-            session.query(`fib(${i}, X).`);
-            session.answer(x => {
-              doEach(`fib(${i}): ${x.links.X.value}\n`)
-            });
+        const LIMIT = 1000;
+        const session = pl.create(LIMIT);
+        session.consult(code, {
+          success: () => {},
+          error: doEach
         });
-
+        session.query(`main.`, {
+          success: () => {},
+          error: doEach
+        });
+        const consoleLogBackup = console.log;
+        console.log = doEach;
+        session.answer({
+          success: () => {},
+          fail: function() { /* No more answers */ },
+          error: doEach,
+          limit: doEach
+        })
     })();
 
     async function letsGo(scriptUrl) {
-        document.querySelector('body h3').innerText = document.title;
-
         const codeIn = document.querySelector('code_in');
         const inputDOM = document.querySelector('.language-input');
         const outputDOM = document.querySelector('.language-output');
@@ -131,7 +143,7 @@ http://tau-prolog.org/
         };
 
         let loading = true;
-        outputDOM.innerHTML = '\nloading...';
+        outputDOM.innerHTML = 'loading...';
 
         const doEach = (a) => {
             if (loading) {
@@ -141,12 +153,24 @@ http://tau-prolog.org/
             outputDOM.innerHTML += a;
         };
 
-        const codeFromComment = Array.from(codeIn.childNodes)
+        let codeFromComment = Array.from(codeIn.childNodes)
             .filter(x => x.nodeType === 8)
             .map(x => x.data).join('\n');
+        if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+          codeFromComment = `
+           main :-
+              write('hello world').
+          `.replace(new RegExp('          ', 'g'), '');
+        }
         inputDOM.innerText = codeFromComment;
 
-        await appendScript(scriptUrl);
+        if (Array.isArray(scriptUrl)) {
+            for (let i = 0, len = scriptUrl.length; i < len; i++) {
+                await appendScript(scriptUrl[i]);
+            }
+        } else {
+            await appendScript(scriptUrl);
+        }
         return {
             code: codeFromComment,
             doEach,

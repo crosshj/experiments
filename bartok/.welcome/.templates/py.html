@@ -103,7 +103,6 @@ also check out https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific
                 output: doEach,
                 read: builtinRead
             });
-            doEach('\n');
             await Sk.importMainWithBody("<stdin>", false, code, true);
         } catch (e) {
             console.error(e);
@@ -126,7 +125,7 @@ also check out https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific
         };
 
         let loading = true;
-        outputDOM.innerHTML = '\nloading...';
+        outputDOM.innerHTML = 'loading...';
 
         const doEach = (a) => {
             if (loading) {

@@ -5,18 +5,14 @@ https://github.com/felixhao28/JSCPP
 -->
 <html>
 <body>
-    <h3>C++ CODE EVAL DEMO</h3>
     <pre>
-
-INPUT:
-<code class="language-input language">
+<code class="language-input" style="display: none;">
 <!--
 {{template_input}}
 -->
 </code>
 
-OUTPUT:
-<code class="language-output language">
+<code class="language-output">
 </code>
 
 </pre>
@@ -271,13 +267,23 @@ OUTPUT:
                 }
             }
         };
-        const codeFromComment = Array.from(document.querySelector('.language-input').childNodes)
+
+        const codeIn = document.querySelector('.language-input');
+        let codeFromComment = Array.from(codeIn.childNodes)
             .filter(x => x.nodeType === 8)
             .map(x => x.data).join('\n');
+        if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+          codeFromComment = `
+          #include <iostream>
+          int main(){
+            cout << "hello world" << endl;
+            return 0;
+          }`.replace(new RegExp('          ', 'g'), '');
+        }
         inputDOM.innerText = codeFromComment;
 
         var exitCode = JSCPP.run(codeFromComment, input, config);
-        outputDOM.innerHTML += `\nprogram exited with code ${exitCode}`;
+        //outputDOM.innerHTML += `\nprogram exited with code ${exitCode}`;
     }
     appendScript(scriptUrl, scriptCallback);
 </script>

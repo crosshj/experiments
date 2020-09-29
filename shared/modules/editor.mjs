@@ -109,7 +109,7 @@ const codeMirrorModeJs = (mode, callback) => {
 		return;
 	}
 	if([
-		'ada', 'ocaml', 'zig'
+		'ocaml', 'zig'
 	].includes(mode)){
 		callback();
 		return;

@@ -21,7 +21,6 @@
                            (- (* 3 f_m+1^2)
                               (* 2 f_m^2)
                               (if (oddp m) -2 2))))))))))
-  (setf #j:results (make-array '(10)))
   (dotimes (i 10)
-    (setf (aref #j:results i) (fast-fib-pair i)))
+    (#j:console:info (fast-fib-pair i) "\\n"))
 )
