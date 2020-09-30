@@ -150,8 +150,36 @@
             "https://cdn.jsdelivr.net/npm/reveal.js@3.9.2/lib/font/source-sans-pro/source-sans-pro-semibold.ttf",
             "https://cdn.jsdelivr.net/npm/reveal.js@3.9.2/lib/font/source-sans-pro/source-sans-pro-regular.ttf",
 
-            "/shared/images/thumb-1920-774078.jpg"
+            "/shared/images/thumb-1920-774078.jpg",
 
+            "/shared/vendor/go/playground.js",
+            "/shared/vendor/go/pkg/errors.a.js",
+            "/shared/vendor/go/pkg/fmt.a.js",
+            "/shared/vendor/go/pkg/github.com/gopherjs/gopherjs/js.a.js",
+            "/shared/vendor/go/pkg/github.com/gopherjs/gopherjs/nosync.a.js",
+            "/shared/vendor/go/pkg/internal/bytealg.a.js",
+            "/shared/vendor/go/pkg/internal/cpu.a.js",
+            "/shared/vendor/go/pkg/internal/fmtsort.a.js",
+            "/shared/vendor/go/pkg/internal/poll.a.js",
+            "/shared/vendor/go/pkg/internal/race.a.js",
+            "/shared/vendor/go/pkg/internal/syscall/unix.a.js",
+            "/shared/vendor/go/pkg/internal/testlog.a.js",
+            "/shared/vendor/go/pkg/io.a.js",
+            "/shared/vendor/go/pkg/math.a.js",
+            "/shared/vendor/go/pkg/math/bits.a.js",
+            "/shared/vendor/go/pkg/os.a.js",
+            "/shared/vendor/go/pkg/reflect.a.js",
+            "/shared/vendor/go/pkg/runtime.a.js",
+            "/shared/vendor/go/pkg/runtime/internal/sys.a.js",
+            "/shared/vendor/go/pkg/sort.a.js",
+            "/shared/vendor/go/pkg/strconv.a.js",
+            "/shared/vendor/go/pkg/sync.a.js",
+            "/shared/vendor/go/pkg/sync/atomic.a.js",
+            "/shared/vendor/go/pkg/syscall.a.js",
+            "/shared/vendor/go/pkg/syscall/js.a.js",
+            "/shared/vendor/go/pkg/time.a.js",
+            "/shared/vendor/go/pkg/unicode.a.js",
+            "/shared/vendor/go/pkg/unicode/utf8.a.js"
 
         ]
     },

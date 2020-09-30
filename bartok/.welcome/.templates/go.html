@@ -1,0 +1,253 @@
+<!--
+
+files with .pl could be a perl or prolog file
+
+this could be a special template that reads the file contents to determine which this is
+
+#!/usr/bin/perl  <<< perl
+
+for now, will use .pro extension
+
+
+prolog:
+http://tau-prolog.org/
+
+-->
+<html>
+
+<head>
+    <title>PROLOG CODE EVAL DEMO</title>
+</head>
+
+<code_in>
+<!--
+{{template_input}}
+-->
+</code_in>
+
+<body>
+    <pre>
+      <code class="language-input language" style="display:none;">
+      </code>
+
+      <code class="language-output">
+      </code>
+    </pre>
+</body>
+
+<style>
+    body {
+        margin: 40px;
+        overflow: hidden;
+        color: #ccc;
+        font-family: sans-serif;
+        background: #1a1a1a;
+    }
+
+    code {
+        color: #888;
+    }
+
+    h3 {
+        margin-top: 3em;
+        margin-bottom: 2em;
+    }
+
+    .language {
+        min-height: 155px;
+        background: #2d2d2d;
+        padding: 0px 10px 20px 10px;
+        margin: 15px 0px -8px 0px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-size: 0.9em;
+        color: #ccc;
+        display: block;
+        max-height: 600px;
+    }
+
+    .language::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .language::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .language::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    .language::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    pre {
+        margin-top: -1em;
+        white-space: pre-line;
+    }
+
+    pre code {
+        white-space: pre;
+    }
+
+</style>
+
+<script>
+    window.controller = [];
+    const scriptUrl = [
+      "/shared/vendor/go/playground.js"
+    ]; 
+    (async () => {
+      const {code, doEach, doAfter } = await letsGo(scriptUrl);
+
+
+
+      const {
+        $ptrType, $sliceType, $structType, $newType, $stringToBytes, $Uint8, $String, $internalize, $externalize, $ifaceNil, $throwRuntimeError
+      } = window.$prelude;
+      const F = $packages["go/token"];
+      const K = $packages["github.com/gopherjs/gopherjs/compiler"];
+      const U = $structType("", []);
+      const V = $sliceType($String);
+      const W = $sliceType($Uint8);
+      const X = $ptrType(K.Archive);
+      const Y = $ptrType(K.Decl);
+      const Z = $sliceType(Y);
+      
+      const fullPath = 'prog.go';
+      const B = $packages["go/ast"];
+      const AA = $ptrType(B.File);
+      const AB = $sliceType(AA);
+      const f = [{ Object: { code: $externalize(code, $String) }}];
+      
+      const h = [F.NewFileSet()];
+      const j = [];
+      const k = [{}];
+      const m = [true];
+      console.log(f, controller)
+      
+      const setupController = new Promise((resolve) => {
+        const applied = []
+        f.$apply = (...args) => {
+          applied.push(args);
+          if(applied.length === 2){
+            resolve({ f, applied });
+          }
+        }
+
+        window.controller[0][1][1](f);
+      })
+      
+      const welp = await setupController();
+      console.log({ welp })
+      f.run()
+
+        return;
+      const comments = 4; //not sure what this means
+      const r = $packages["go/parser"].ParseFile(h[0], fullPath, (new W($stringToBytes($internalize(f[0].Object.code, $String)))), 4);
+      const s = r[0];
+      console.log({ parsed: r });
+  return;
+      const importPath = 'main';
+
+      j[0] = new K.ImportContext.ptr({},(function(a, b, f, g, h, i, j, k, l, m, n, o) {
+          return function(p) {
+              var p, q, r, s, t, u;
+              q = (r = k[0][$String.keyFor(p)],
+              r !== undefined ? [r.v, true] : [X.nil, false]);
+              s = q[0];
+              t = q[1];
+              if (t) {
+                  return [s, $ifaceNil];
+              }
+              u = p;
+              (m[0] || $throwRuntimeError("assignment to entry in nil map"))[$String.keyFor(u)] = {
+                  k: u,
+                  v: new U.ptr()
+              };
+              return [new K.Archive.ptr("","",V.nil,W.nil,Z.nil,W.nil,W.nil,false), $ifaceNil];
+          };
+        })(null,null,null,null,null,null,null,k, null, m)
+      );
+      const minify = false; 
+      //importPath string, files []*ast.File, fileSet *token.FileSet, importContext *ImportContext, minify bool 
+      const foo = $packages['github.com/gopherjs/gopherjs/compiler'].Compile(
+        importPath, new AB([s]), h[0], j[0], minify
+      );
+      console.log({ foo });
+      const ae = foo[0]; 
+      const ar = K.ImportDependencies(ae, j[0].Import); 
+    })();
+
+    async function letsGo(scriptUrl) {
+        const codeIn = document.querySelector('code_in');
+        const inputDOM = document.querySelector('.language-input');
+        const outputDOM = document.querySelector('.language-output');
+
+        const appendScript = (url) => {
+            return new Promise((resolve, reject) => {
+                var script = document.createElement('script');
+                script.crossOrigin = "anonymous";
+                script.onload = resolve;
+                script.src = url;
+                document.head.appendChild(script);
+            });
+        };
+
+        let loading = true;
+        outputDOM.innerHTML = 'loading...';
+
+        const doEach = (a) => {
+            if (loading) {
+                outputDOM.innerHTML = '';
+                loading = false;
+            }
+            outputDOM.innerHTML += a;
+        };
+
+        let codeFromComment = Array.from(codeIn.childNodes)
+            .filter(x => x.nodeType === 8)
+            .map(x => x.data).join('\n');
+        if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+          codeFromComment = `
+          package main
+
+          import (
+            "syscall/js"
+          )
+
+          func main() {
+            js.Global().Get("console").Call("log", "hello world")
+          }
+          `.replace(new RegExp('          ', 'g'), '');
+        }
+        inputDOM.innerText = codeFromComment;
+
+        window.angular = {
+          module: () => {
+            return {
+              element: (...args) => controller.push(args),
+              controller: (...args) => controller.push(args)
+            };
+          },
+element: (...args) => ({
+  on: (event, fn) => controller.push({ event, fn }),
+}) 
+        };
+        if (Array.isArray(scriptUrl)) {
+            for (let i = 0, len = scriptUrl.length; i < len; i++) {
+                await appendScript(scriptUrl[i]);
+            }
+        } else {
+            await appendScript(scriptUrl);
+        }
+        return {
+            code: codeFromComment,
+            doEach,
+            doAfter: doEach
+        };
+    }
+</script>
+
+</html>

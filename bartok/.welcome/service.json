@@ -12,6 +12,7 @@
       "cpp.html": {},
       "d3-graph.html": {},
       "gltf.html": {},
+      "go.html": {},
       "ipynb.html": {},
       "jsx.html": {},
       "lisp.html": {},
@@ -355,6 +356,10 @@
     {
       "name": "gltf.html",
       "path": ".welcome/.templates/gltf.html"
+    },
+    {
+      "name": "go.html",
+      "path": ".welcome/.templates/go.html"
     },
     {
       "name": "golang.go",
