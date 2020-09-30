@@ -17,6 +17,7 @@
       "lisp.html": {},
       "md.html": {},
       "php.html": {},
+      "ppm.html": {},
       "pro.html": {},
       "py.html": {},
       "rb.html": {},
@@ -554,6 +555,10 @@
     {
       "name": "pony.pony",
       "path": ".welcome/examples/language/pony.pony"
+    },
+    {
+      "name": "ppm.html",
+      "path": ".welcome/.templates/ppm.html"
     },
     {
       "name": "preact-hyperscript.htm",
