@@ -234,7 +234,6 @@ const removeTab = (parent) => (tabDef) => {
 
 const scrollHorizontally = (el) => function (e) {
   e = window.event || e;
-  e.preventDefault();
   el.scrollLeft -= (e.wheelDelta || -e.detail);
 }
 
@@ -244,8 +243,8 @@ function attachWheel(el) {
   }
 
   if (el.addEventListener) {
-    el.addEventListener('mousewheel', scrollHorizontally(el), false);
-    el.addEventListener('DOMMouseScroll', scrollHorizontally(el), false);
+    el.addEventListener('mousewheel', scrollHorizontally(el), { passive: true });
+    el.addEventListener('DOMMouseScroll', scrollHorizontally(el), { passive: true });
   } else {
     el.attachEvent('onmousewheel', scrollHorizontally(el));
   }

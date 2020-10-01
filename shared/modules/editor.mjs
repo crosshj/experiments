@@ -137,14 +137,8 @@ const setupEditor = (text, opts) => {
 	return editor;
 };
 
-let stack = [];
-const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
-	let _text = text;
-	if(typeof _text !== 'string'){
-		_text = '\n';
-		console.warn(`Editor received bad text!`);
-		console.warn({ text, opts })
-	}
+// has side effects of changing opts.mode in some cases
+const getModeWithEffects = (opts) => {
 	let mode = opts.mode || "javascript";
 	try {
 		mode = opts.mode.name || mode;
@@ -175,6 +169,50 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 	if(['ocaml', 'csharp', 'fsharp', 'java', 'kotlin'].includes(mode)){
 		opts.mode = 'text/x-' + mode;
 	}
+	return mode;
+}
+
+async function loadDeps(_text, opts, callback) {
+	codeMirrorCss(() => {
+		codeMirrorJs(() => {
+			codeMirrorModeJs("../mode.bundle", () => {
+				if (stack.length > 0) {
+					({ text: _text, opts, callback } = stack.pop());
+					stack = [];
+				}
+				let theEditor = setupEditor(_text, opts || {});
+				if (!theEditor) {
+					setTimeout(() => {
+						theEditor = setupEditor(_text, opts || {});
+						if (!theEditor) {
+							console.log('STUBBORN editor...');
+							debugger;
+						}
+						window.EditorLoading = false;
+						window.Editor = theEditor;
+						callback(null, theEditor);
+					}, 1000);
+					return;
+				}
+				//theEditor.setOption("mode", opts.mode);
+				//theEditor.setOption("theme", "default");
+				window.EditorLoading = false;
+				window.Editor = theEditor;
+				callback(null, theEditor);
+			});
+		});
+	});
+};
+
+let stack = [];
+const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
+	let _text = text;
+	if(typeof _text !== 'string'){
+		_text = '\n';
+		console.warn(`Editor received bad text!`);
+		console.warn({ text, opts })
+	}
+	let mode = getModeWithEffects(opts);
 	if(window.EditorLoading){
 		stack.push({
 			text: _text, opts,
@@ -193,35 +231,10 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		return;
 	}
 	window.EditorLoading= true;
-	codeMirrorCss(() => {
-		codeMirrorJs(() => {
-			codeMirrorModeJs("../mode.bundle", () => {
-				if(stack.length > 0){
-					({ text: _text, opts, callback } = stack.pop());
-					stack = [];
-				}
-				let theEditor = setupEditor(_text, opts || {});
-				if(!theEditor){
-					setTimeout(() => {
-						theEditor = setupEditor(_text, opts || {});
-						if(!theEditor){
-							console.log('STUBBORN editor...');
-							debugger;
-						}
-						window.EditorLoading= false;
-						window.Editor = theEditor;
-						callback(null, theEditor);
-					}, 1000);
-					return;
-				}
-				//theEditor.setOption("mode", opts.mode);
-				//theEditor.setOption("theme", "default");
-				window.EditorLoading= false;
-				window.Editor = theEditor;
-				callback(null, theEditor);
-			});
-		});
-	});
+
+	// do not await this next function call
+	loadDeps(_text, opts, callback);
 }
 
 export default allTheEditorThings;
+

@@ -1,18 +1,21 @@
-program Fib;
+{
+  github.com/kanaka/pascal.js
+  also awesome - https://github.com/kripken/llvm.js
+}
+program Fibonacci;     
+var
+ i, result : integer;
 
-// Allows for `Result` instead of the function name.
-{$mode ObjFPC}
-// Disables "IO checking" for `WriteLn`.
-{$I-}
-
-function Fib(const N: UInt64): UInt64; inline;
+function fib(n : integer) : integer;
 begin
-  case N of
-    0, 1: Result := 1;
-    otherwise Result := Fib(N - 1) + Fib(N - 2);
-  end;
+    if n <= 2 then fib := 1
+    else fib := fib(n-2) + fib(n-1)
 end;
 
 begin
-  WriteLn(Fib(46));
+  for i := 1 to 20 do
+  begin
+    result := fib(i);
+    writeln(i, ' : ', result)
+  end
 end.

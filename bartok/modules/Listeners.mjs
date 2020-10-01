@@ -42,7 +42,7 @@ future todo:
 
 
 function trigger({ type, params, source, data, detail }){
-	console.log(`triggering event: ${type}`);
+	//console.log(`triggering event: ${type}`);
 	const defaultDetail = {
 		data,
 		...params,

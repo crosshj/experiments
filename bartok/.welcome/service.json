@@ -85,6 +85,7 @@
         "BartokLogo.png": {},
         "blocks.ppm": {},
         "bottles.bmp": {},
+        "crystals.bmp": {},
         "example.ppm": {},
         "favicon_package2_v0.16.zip": {},
         "grey.png": {},
@@ -300,6 +301,10 @@
     {
       "name": "crystal.cr",
       "path": ".welcome/examples/language/crystal.cr"
+    },
+    {
+      "name": "crystals.bmp",
+      "path": ".welcome/examples/image/crystals.bmp"
     },
     {
       "name": "csharp.cs",

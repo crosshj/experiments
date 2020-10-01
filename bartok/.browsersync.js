@@ -41,7 +41,14 @@ module.exports = {
             next();
         }
     ],
-    // snippetOptions: {
-    //     ignorePaths: ["index.bootstrap.html"],
-    // }
+    snippetOptions: {
+        ignorePaths: ["index.bootstrap.html"],
+        rule: {
+            match: /<\/body>/i,
+            fn: function (snippet, match) {
+                const customSnippet = `<script async src='/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>\n`;
+                return customSnippet + match;
+            }
+        }
+    }
 };
