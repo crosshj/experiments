@@ -1,10 +1,8 @@
-/*
-use this? https://github.com/gopherjs/gopherjs
-*/
-
 package main
 
-import "fmt"
+import (
+  "syscall/js"
+)
 
 func fib(n uint64) uint64 {
 	if n <= 1 {
@@ -14,5 +12,5 @@ func fib(n uint64) uint64 {
 }
 
 func main() {
-	fmt.Println(fib(46))
+  js.Global().Call("doEach", fib(1))
 }
