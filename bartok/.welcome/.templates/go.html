@@ -153,9 +153,9 @@
               controller: (...args) => controller.push(args)
             };
           },
-element: (...args) => ({
-  on: (event, fn) => controller.push({ event, fn }),
-}) 
+          element: (...args) => ({
+            on: (event, fn) => controller.push({ event, fn }),
+          }) 
         };
         if (Array.isArray(scriptUrl)) {
             for (let i = 0, len = scriptUrl.length; i < len; i++) {

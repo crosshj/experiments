@@ -1,10 +1,10 @@
 package main
 
 import (
-  "syscall/js"
+	"syscall/js"
 )
 
-func fib(n uint64) uint64 {
+func fib(n int) int {
 	if n <= 1 {
 		return 1
 	}
@@ -12,5 +12,8 @@ func fib(n uint64) uint64 {
 }
 
 func main() {
-  js.Global().Call("doEach", fib(1))
+	for n := 0; n < 9; n++ {
+		js.Global().Call("doEach", fib(n))
+		js.Global().Call("doEach", "\n")
+	}
 }
