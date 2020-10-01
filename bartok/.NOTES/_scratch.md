@@ -18,6 +18,12 @@ why I keep vscode open
 - [X] highlight is weird (themeing and color issues)
 - [X] no search in file
 
+2020-09-30 shaders webgl
+------------------------
+- http://webglplayground.net/ - I like the way source is handled here; divided into meaningful sections
+- shadertoy
+- fragment and vertex shaders - would like to support previews of these
+
 2020-09-19 settings
 -------------------
 - settings view could be the first example of preview iframe that interacts with rest of the app
