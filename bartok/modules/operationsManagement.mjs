@@ -102,7 +102,7 @@ function addFile(e, currentService, currentFile) {
 		currentServiceCode = JSON.parse(JSON.stringify(currentService.code));
 		currentServiceCode.push({
 			name: file || filename,
-			code: "\n\n\n"
+			code: ""
 		});
 
 		let alreadyPlaced;

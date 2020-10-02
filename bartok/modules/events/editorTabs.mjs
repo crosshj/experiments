@@ -148,7 +148,7 @@ const fileSelectHandler = ({
 	createTab({
 		name, active: true, id, changed
 	});
-	const { cleared, tabs: newTabs } = (clearLastTab({ tabs, removeTab }) || {});
+	const { cleared, tabs: newTabs } = firstLoad ? {} : (clearLastTab({ tabs, removeTab }) || {});
 	if(newTabs) tabs = newTabs;
 	if(cleared) tabsToUpdate = tabsToUpdate.filter(t => t.id !== cleared.id);
 	tabsToUpdate.map(updateTab);

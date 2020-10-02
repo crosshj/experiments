@@ -1361,7 +1361,7 @@ class ProviderManager {
                     return response;
                 }
 
-                if(event.request.url.includes('.mjs')){
+                if(event.request.url.includes('.mjs') || event.request.url.includes('.js')){
                     response = new Response(res, {headers:{'Content-Type': 'text/javascript' }});
                     return response;
                 }
@@ -1371,6 +1371,10 @@ class ProviderManager {
                     return response;
                 }
 
+                if(event.request.url.includes('.css')){
+                    response = new Response(res, {headers:{'Content-Type': 'text/css' }});
+                    return response;
+                }
 
                 return new Response(res);
             })()

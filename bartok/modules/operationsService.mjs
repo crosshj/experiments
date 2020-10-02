@@ -67,8 +67,7 @@ function getOperations(updateAfter, readAfter) {
 		},
 		eventToBody: ({ path, code } = {}) => {
 			if (!path) throw new Error('path is required when changing service files');
-			if (!code) throw new Error('code is required when changing service files');
-			return JSON.stringify({ path, code }, null, 2);
+			return JSON.stringify({ path, code: code || '' }, null, 2);
 		},
 	}, {
 		name: 'delete',

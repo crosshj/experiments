@@ -477,12 +477,8 @@ const inlineEditor = (ChangeHandler) => ({
 		"Ctrl-D": selectNextOccurrence
 	};
 
-	if(!code){
-		return;
-	}
-
 	Editor({
-		text: code,
+		text: code || '',
 		lineNumbers: true,
 		mode,
 		addModeClass: true,

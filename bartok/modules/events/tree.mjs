@@ -190,7 +190,11 @@ const contextMenuHandler = ({ treeView, showMenu }) => (e) => {
 			name: treeLeafContent.querySelector('.tree-leaf-text').innerText,
 			type: treeLeafContent.classList.contains('folder') ? 'folder' : 'file'
 		};
-	} catch(e) {}
+	} catch(e) {
+		data = {
+			name: '', type: 'folder'
+		}
+	}
 
 	if(!data){
 		console.error('some issue finding data for this context click!')
@@ -216,7 +220,9 @@ const getParent = (data) => {
 			parent = state.paths
 				.find(x => x.name === data.name)
 				.path;
-		}catch(e){}
+		}catch(e){
+			parent="";
+		}
 	} else {
 		try{
 			const state = getState({ serviceRelative: true });
