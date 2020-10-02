@@ -160,7 +160,8 @@ const createTab = (parent, init) => (tabDef) => {
 		<span style="pointer-events: none;"
 			class="${systemClass?systemClass+' ':''}icon-${systemType||fileType}"
 		>${systemName||tabDef.name}</span>
-		<div class="tab-close"><div class="monaco-action-bar animated">
+		<div class="tab-close">
+		<div class="monaco-action-bar animated">
 			<ul class="actions-container" role="toolbar" aria-label="Tab actions">
 				<li class="action-item" role="presentation">
 					<a class="action-label icon close-editor-action"
@@ -180,10 +181,8 @@ const createTab = (parent, init) => (tabDef) => {
 	//setTimeout(() => scrollToChild(tab), 100);
 	scrollToChild(tab)
 	if(tabDef.active){
-		setTimeout(() => {
-			tab.classList.add('active');
-			tab.classList.remove('new');
-		}, 1)
+		tab.classList.add('active');
+		tab.classList.remove('new');
 	}
 
 	const remainingTabs = Array.from(parent.querySelectorAll('.tab'));
@@ -194,6 +193,7 @@ const createTab = (parent, init) => (tabDef) => {
 
 const updateTab = (parent) => (tabDef) => {
 	const child = parent.querySelector('#' + tabDef.id);
+	if(!child) return;
 	if(!tabDef.active && child.classList.contains('active')){
 		child.classList.remove('active');
 	}
@@ -210,7 +210,7 @@ const updateTab = (parent) => (tabDef) => {
 	}
 };
 
-const removeTab = (parent) => (tabDef) => {
+const removeTab = (parent) => async (tabDef) => {
 	const child = parent.querySelector('#' + tabDef.id);
 	child.parentNode.removeChild(child);
 

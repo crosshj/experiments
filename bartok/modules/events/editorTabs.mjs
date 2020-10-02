@@ -2,6 +2,14 @@ import { attach, attachTrigger } from '../Listeners.mjs';
 import { getDefaultFile } from '../state.mjs';
 let tabs = [];
 
+function clearLastTab({ tabs, removeTab }){
+	const lastTab = tabs[tabs.length - 1];
+	if(lastTab.changed) return;
+	tabs = tabs.filter(t => t.id !== lastTab.id);
+	removeTab(lastTab);
+	return { tabs, cleared: lastTab };
+}
+
 function getTabsToUpdate(name) {
 	const tabsToUpdate = [];
 	let foundTab;
@@ -18,6 +26,9 @@ function getTabsToUpdate(name) {
 		if (name !== tabs[i].name && tabs[i].active) {
 			delete tabs[i].active;
 			tabsToUpdate.push(tabs[i]);
+		}
+		if(!foundTab){
+
 		}
 	}
 	return { foundTab, tabsToUpdate };
@@ -44,8 +55,11 @@ function triggerCloseTab(event, fileCloseTrigger){
 
 }
 
+
+
+
 const fileCloseHandler = ({
-	event, container, initTabs, createTab, updateTab, removeTab
+	event, updateTab, removeTab
 }) => {
 	const { name, next } = event.detail;
 
@@ -57,6 +71,9 @@ const fileCloseHandler = ({
 
 	if(!next){ return; }
 	const nextTab = tabs.find(x => x.name === next || x.systemDocsName === next);
+	if(!nextTab){
+		return;
+	}
 	nextTab.active = true;
 	sessionStorage.setItem('tabs', JSON.stringify(tabs));
 
@@ -64,7 +81,7 @@ const fileCloseHandler = ({
 };
 
 const clickHandler = ({
-	event, container, initTabs, createTab, updateTab, removeTab, triggers
+	event, container, triggers
 }) => {
 	if(!container.contains(event.target)){
 		//console.log('did not click any tab container element');
@@ -111,18 +128,6 @@ const fileSelectHandler = ({
 	// }
 
 	const { name, changed } = event.detail;
-	let id;
-
-	const { tabsToUpdate, foundTab } = getTabsToUpdate(name);
-	tabsToUpdate.map(updateTab);
-
-	if(foundTab){
-		sessionStorage.setItem('tabs', JSON.stringify(tabs));
-		return;
-	}
-
-	id = 'TAB' + Math.random().toString().replace('0.', '');
-
 	let systemDocsName;
 	if(name.includes('system::')){
 		systemDocsName = {
@@ -131,10 +136,22 @@ const fileSelectHandler = ({
 			'open-settings-view': 'Settings'
 		}[name.replace('system::', '')];
 	}
+	let id = 'TAB' + Math.random().toString().replace('0.', '');
+
+	let { tabsToUpdate, foundTab } = getTabsToUpdate(name);
+	if(foundTab){
+		tabsToUpdate.map(updateTab);
+		sessionStorage.setItem('tabs', JSON.stringify(tabs));
+		return;
+	}
 
 	createTab({
 		name, active: true, id, changed
 	});
+	const { cleared, tabs: newTabs } = (clearLastTab({ tabs, removeTab }) || {});
+	if(newTabs) tabs = newTabs;
+	if(cleared) tabsToUpdate = tabsToUpdate.filter(t => t.id !== cleared.id);
+	tabsToUpdate.map(updateTab);
 	tabs.push({
 		name, systemDocsName,
 		active: true, id, changed
@@ -278,8 +295,6 @@ function attachListener(
 		})
 	};
 	const listener = async function (event) {
-		//console.log(event.type)
-		// await something here??
 		const showMenu = () => window.showMenu;
 
 		handlers[event.type] && handlers[event.type]({
