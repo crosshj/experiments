@@ -361,7 +361,8 @@ const inlineEditor = (ChangeHandler) => ({
 	code=BLANK_CODE_PAGE,
 	name,
 	id,
-	filename
+	filename,
+	callback
 } = {}) => {
 	const prevEditor = document.querySelector('#editor-container');
 	let editorDiv = prevEditor;
@@ -477,6 +478,15 @@ const inlineEditor = (ChangeHandler) => ({
 		"Ctrl-D": selectNextOccurrence
 	};
 
+	function settings(){
+		return {
+			tabSize: 2,
+			indentWithTabs: false
+		}
+	}
+	const { indentWithTabs, tabSize } = settings();
+
+
 	Editor({
 		text: code || '',
 		lineNumbers: true,
@@ -484,8 +494,8 @@ const inlineEditor = (ChangeHandler) => ({
 		addModeClass: true,
 		autocorrect: true,
 		// scrollbarStyle: 'native',
-		tabSize: 2,
-		//indentWithTabs: true,
+		tabSize,
+		indentWithTabs,
 		showInvisibles: true,
 		styleActiveLine: true,
 		styleActiveSelected: true,
@@ -503,8 +513,10 @@ const inlineEditor = (ChangeHandler) => ({
 	}, (error, editor) => {
 		if(error){
 			console.error(error);
+			callback && callback(error);
 			return;
 		}
+		callback && callback();
 		editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
 		window.Editor = editor;
 		editor.on('change', handlerBoundToDoc);
@@ -785,7 +797,7 @@ const showSystemDocsView = ({ filename, errors }) => {
 	return systemDocsDOM;
 };
 
-function _Editor() {
+function _Editor(callback) {
 	const editor = inlineEditor(ChangeHandler);
 	let editorPreview, editorDom, nothingOpenDom, systemDocsView;
 	let systemDocsErrors = [];
@@ -846,24 +858,28 @@ function _Editor() {
 
 	const switchEditor = (filename, mode, fileBody) => {
 		if(mode === 'systemDoc'){
-			//TODO: does this HAVE to be ran in this case?
-			editor({ code: '', name: '', id: '', filename: '' });
-			editorDom = document.querySelector('.CodeMirror');
+			const editorCallback = () => {
+				editorDom = document.querySelector('.CodeMirror');
+				editorDom && editorDom.classList.add('hidden');
+			};
+			editor({ code: '', name: '', id: '', filename: '', callback: editorCallback });
+
 
 			systemDocsView = showSystemDocsView({ filename, errors: systemDocsErrors });
 			systemDocsView && systemDocsView.classList.remove('hidden');
 
 			editorPreview && editorPreview.classList.add('hidden');
-			editorDom && editorDom.classList.add('hidden');
 			nothingOpenDom && nothingOpenDom.classList.add('hidden');
 
 			return;
 		}
 
 		if(mode === "nothingOpen"){
-			//TODO: does this HAVE to be ran in this case?
-			editor({ code: '', name: '', id: '', filename: '' });
-			editorDom = document.querySelector('.CodeMirror');
+			const editorCallback = () => {
+				editorDom = document.querySelector('.CodeMirror');
+				editorDom && editorDom.classList.add('hidden');
+			};
+			editor({ code: '', name: '', id: '', filename: '', callback: editorCallback });
 
 			nothingOpenDom = showNothingOpen();
 			nothingOpenDom && nothingOpenDom.classList.remove('hidden');
@@ -877,8 +893,12 @@ function _Editor() {
 		const { code = "error", name, id, filename: defaultFile } = getCodeFromService(null, filename);
 
 		if(!showFileInEditor(filename, code)){
-			editor({ code: '', name, id, filename: filename || defaultFile });
-			editorDom = document.querySelector('.CodeMirror');
+			const editorCallback = () => {
+				editorDom = document.querySelector('.CodeMirror');
+				editorDom && editorDom.classList.add('hidden');
+			};
+			editor({ code: '', name: '', id: '', filename: '', callback: editorCallback });
+
 
 			editorPreview = showBinaryPreview({ filename, code });
 			editorPreview && editorPreview.classList.remove('hidden');

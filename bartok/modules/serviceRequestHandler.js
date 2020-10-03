@@ -1,3 +1,13 @@
+let mimeTypes;
+const xfrmMimes = (() => {
+    let cache;
+    return (m={}) => {
+        cache = cache || Object.entries(m).map(([contentType, rest])=>({ contentType, extensions:[], ...rest}));
+        return cache;
+    }
+})();
+const getMime = filename => xfrmMimes(mimeTypes).find(m => m.extensions.includes(filename.split('.').pop()));
+
 const safe = (fn) => {
     try {
         return fn();
@@ -38,6 +48,8 @@ const unique = (array, fn) => {
     }
     return result;
 };
+
+const fetchJSON = async (url, opts) => await (await fetch(url, opts)).json();
 
 function exampleReact() {
     return `
@@ -748,7 +760,7 @@ class ProviderManager {
     }
     async create(provider){
         return await this.store
-            .setItem(provider.id, provider);
+            .setItem(provider.id+'', provider);
     }
     async read(id){
         if(!id){
@@ -764,7 +776,7 @@ class ProviderManager {
         }
         return await this.store
             .setItem(
-                updates.id || provider.id,
+                (updates.id || provider.id)+'',
                 {...provider, ...updates}
             );
     }
@@ -774,8 +786,30 @@ class ProviderManager {
     }
 }
 
+const providerFileChange = async ({ path, code, metaStore, serviceName }) => {
+    const foundParent = await metaStore
+        .iterate((value, key) => {
+            if(value.name === serviceName){
+                return value;
+            }
+        });
+    if(!foundParent || !foundParent.providerUrl) throw new Error('file not saved to provider: service not associated with a provider');
+    const { providerUrl, providerRoot } = foundParent;
+    const pathWithoutParent = path.replace('./' + serviceName, '' );2
+    const filePostUrl = `${providerUrl}file/${providerRoot}${pathWithoutParent}`;
+    const filePostRes = await fetchJSON(filePostUrl, {
+        method: 'POST',
+        body: code
+    });
+    if(filePostRes.error) throw new Error(filePostRes.error)
+    return filePostRes;
+};
+
 (() => {
     console.warn('Service Request Handler - init');
+    (async () => {
+        mimeTypes = await fetchJSON('https://cdn.jsdelivr.net/npm/mime-db@1.45.0/db.json');
+    })();
 
     var driverOrder = [
         localforage.INDEXEDDB,
@@ -806,10 +840,7 @@ class ProviderManager {
             storeName: 'provider',
             description: 'services which connect browser ui to outside world'
         });
-    /* */
     const providerManager = new ProviderManager(providerStore);
-    /* */
-    //console.log({ driver: store.driver() })
 
     // handlerStore comes from SW context
     let app = fakeExpress({ store, handlerStore, metaStore });
@@ -901,7 +932,7 @@ class ProviderManager {
                 providerUrl,
                 tree: providerTree
             };
-            await metaStore.setItem(id, service);
+            await metaStore.setItem(id+'', service);
             service.code = [];
             for (let f = 0; f < providerFiles.length; f++) {
                 const filePath = providerFiles[f];
@@ -932,7 +963,7 @@ class ProviderManager {
                 error: e
             },null,2);
         }
-    }
+    };
 
     app.post('/service/create/:id?', async (params, event) => {
         // event.request.arrayBuffer()
@@ -957,7 +988,7 @@ class ProviderManager {
         //return JSON.stringify({ params, event }, null, 2);
 
         // create the service in store
-        await metaStore.setItem(id, {
+        await metaStore.setItem(id+'', {
             name,
             id,
             tree: {
@@ -1101,38 +1132,24 @@ class ProviderManager {
 
     });
 
+
     app.post('/service/change', async (params, event) => {
-        const body = await event.request.json();
-        const { path, code } = body;
-        //TODO: in the future (maybe) store these changes to a change holding area
-        await store.setItem(path, code);
+        try {
+            const body = await event.request.json();
+            const { path, code } = body;
+            //TODO: in the future (maybe) store these changes to a change holding area
 
-        const parentServiceName = path.split('/').slice(1, 2).join('');
-        const foundParent = await metaStore
-            .iterate((value, key) => {
-                if(value.name === parentServiceName){
-                    return value;
-                }
-            });
-        if(foundParent && foundParent.providerUrl){
-            try {
-                const { providerUrl, providerRoot } = foundParent;
-                const pathWithoutParent = path.replace('./' + parentServiceName, '' );2
-                const filePostUrl = `${providerUrl}file/${providerRoot}${pathWithoutParent}`;
-                const filePostRes = await fetch(filePostUrl, {
-                    method: 'POST',
-                    body: code
-                });
-                const filePostJson = await filePostRes.json();
-                if(filePostJson.error){
-                    return JSON.stringify(filePostJson, null,2);
-                }
-            }catch(saveToProviderError){
-                return JSON.stringify({ saveToProviderError }, null,2);
-            }
+            //HOLDING AREA FOR CHANGES
+            await store.setItem(path, code);
+
+            //UPDATE PROVIDER (should maybe only happen in /service/update/:id? )
+            const serviceName = path.split('/').slice(1, 2).join('');
+            await providerFileChange({ path, code, metaStore, serviceName });
+
+            return JSON.stringify({ result: { path, code }}, null,2)
+        } catch(e){
+            return JSON.stringify({ error }, null, 2);
         }
-
-        return JSON.stringify({ result: { path, code }}, null,2)
     });
 
     app.post('/service/update/:id?', async (params, event) => {
@@ -1141,8 +1158,13 @@ class ProviderManager {
             const body = await event.request.json();
             const { name } = body;
 
-            await metaStore.setItem(id, {
-                name, id, tree: body.tree
+            const preExistingService = (await metaStore.getItem(id+'')) || {};
+
+            await metaStore.setItem(id+'', {
+                ...preExistingService,
+                ...{
+                    name, tree: body.tree
+                }
             });
 
             const storageFiles = await getCodeFromStorageUsingTree(body.tree, store);
@@ -1189,7 +1211,10 @@ class ProviderManager {
                 if(serviceFile.key.includes('/.keep')){
                     continue;
                 }
-                const found = updateAsStore.find(x => x.key === serviceFile.path);
+                const found = updateAsStore.find(x =>
+                    x.key === serviceFile.path ||
+                    ('.' +x.key) === serviceFile.key
+                );
                 if(found) continue;
                 filesToDelete.push(serviceFile.key);
             }
@@ -1207,11 +1232,13 @@ class ProviderManager {
                     '.' + update.key.replace('/welcome/', '/.welcome/'),
                     code
                 );
+                // TODO: if provider exists, then update these files with provider as well!!
             }
             for (let i = 0; i < filesToDelete.length; i++) {
                 const key = filesToDelete[i];
-                console.log(`should remove ${key}`)
-                //await store.removeItem(key);
+                console.log(`removing ${key} from file store`)
+                await store.removeItem(key);
+                // TODO: if provider exists, then delete these files from provider as well!!
             }
 
             return JSON.stringify({
@@ -1361,18 +1388,9 @@ class ProviderManager {
                     return response;
                 }
 
-                if(event.request.url.includes('.mjs') || event.request.url.includes('.js')){
-                    response = new Response(res, {headers:{'Content-Type': 'text/javascript' }});
-                    return response;
-                }
-
-                if(event.request.url.includes('.svg')){
-                    response = new Response(res, {headers:{'Content-Type': 'image/svg' }});
-                    return response;
-                }
-
-                if(event.request.url.includes('.css')){
-                    response = new Response(res, {headers:{'Content-Type': 'text/css' }});
+                const { contentType } = getMime(event.request.url) || {};
+                if(contentType){
+                    response = new Response(res, {headers:{ 'Content-Type': contentType }});
                     return response;
                 }
 
