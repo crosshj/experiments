@@ -1,5 +1,5 @@
 body {
-  color: #777;
+  color: #aaa;
   background: #1a1a1a;
   margin: 3em;
   font-family: sans-serif;
@@ -17,7 +17,10 @@ iframe {
   overflow: hidden;
   width: 43vh;
   height: 35vh;
+  /* display: none; */
 }
+
+#settle { display: none; }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-corner,

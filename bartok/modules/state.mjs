@@ -208,7 +208,7 @@ async function getAllServices(){
 
 const operationDoneHandler = (event) => {
 	if(listenerQueue.length === 0){
-		console.warn('nothing listening!');
+		//console.warn('nothing listening!');
 		return;
 	}
 	const { detail } = event;
@@ -216,7 +216,7 @@ const operationDoneHandler = (event) => {
 
 	const foundQueueItem = listener && listenerQueue.find(x => x.id === listener);
 	if(!foundQueueItem){
-		console.warn(`nothing listening for ${listener}`);
+		//console.warn(`nothing listening for ${listener}`);
 		return false;
 	}
 	listenerQueue = listenerQueue.filter(x => x.id !== listener);
@@ -231,7 +231,7 @@ execTrigger = attachTrigger({
 });
 
 attach({
-	name: 'Terminal',
+	name: 'State',
 	eventName: 'operationDone',
 	listener: operationDoneHandler
 });
