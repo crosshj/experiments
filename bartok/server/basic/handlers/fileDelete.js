@@ -1,5 +1,5 @@
 const fs = require("fs");
-const path = require("path");
+const { resolve } = require("path");
 const rimraf = require("rimraf");
 const { promisify } = require('util');
 
@@ -9,7 +9,6 @@ const deleteFolder = promisify((path, callback) => rimraf(path, {}, callback))
 module.exports = ({ dialog, win }) =>
     async (req, res) => {
         try {
-
             const _path = (req.params || {})['0'];
             const lastChar = (_path || '').slice(-1);
             if(!_path){
@@ -20,11 +19,13 @@ module.exports = ({ dialog, win }) =>
                 res.send(style + 'TODO: browse for a file!');
                 return;
             }
-            const resolvedPath = path.resolve(_path.slice(1));
+            const resolvedPath = resolve(_path.slice(1));
             const isDirectory = (p) => fs.existsSync(p) && fs.lstatSync(p).isDirectory();
             const fileExists = p => fs.existsSync(p);
 
-            if(!fileExists(resolvedPath)){
+            console.log({ resolvedPath, isDirectory: isDirectory(resolvedPath), fileExists: fileExists(resolvedPath)})
+
+            if(fileExists(resolvedPath)){
                 console.log(`file delete: ${resolvedPath}`)
                 await deleteFile(resolvedPath);
             }

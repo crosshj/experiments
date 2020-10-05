@@ -800,8 +800,8 @@ class ProviderManager {
     }
 }
 
-const providerFileChange = async ({ path, code, metaStore, serviceName }) => {
-    const foundParent = await metaStore
+const providerFileChange = async ({ path, code, parent, metaStore, serviceName, deleteFile }) => {
+    const foundParent = parent || await metaStore
         .iterate((value, key) => {
             if(value.name === serviceName){
                 return value;
@@ -809,11 +809,12 @@ const providerFileChange = async ({ path, code, metaStore, serviceName }) => {
         });
     if(!foundParent || !foundParent.providerUrl) throw new Error('file not saved to provider: service not associated with a provider');
     const { providerUrl, providerRoot } = foundParent;
-    const pathWithoutParent = path.replace('./' + serviceName, '' );2
+    const pathWithoutParent = path.replace('./' + (serviceName || foundParent.name), '' );
     const filePostUrl = `${providerUrl}file/${providerRoot}${pathWithoutParent}`;
+
     const filePostRes = await fetchJSON(filePostUrl, {
-        method: 'POST',
-        body: code
+        method: deleteFile ? 'DELETE' : 'POST',
+        body: deleteFile ? undefined : code
     });
     if(filePostRes.error) throw new Error(filePostRes.error)
     return filePostRes;
@@ -1157,8 +1158,8 @@ const providerFileChange = async ({ path, code, metaStore, serviceName }) => {
             await store.setItem(path, code);
 
             //UPDATE PROVIDER (should maybe only happen in /service/update/:id? )
-            const serviceName = path.split('/').slice(1, 2).join('');
-            await providerFileChange({ path, code, metaStore, serviceName });
+            // const serviceName = path.split('/').slice(1, 2).join('');
+            // await providerFileChange({ path, code, metaStore, serviceName });
 
             return JSON.stringify({ result: { path, code }}, null,2)
         } catch(e){
@@ -1173,13 +1174,13 @@ const providerFileChange = async ({ path, code, metaStore, serviceName }) => {
             const { name } = body;
 
             const preExistingService = (await metaStore.getItem(id+'')) || {};
-
-            await metaStore.setItem(id+'', {
+            const service = {
                 ...preExistingService,
                 ...{
                     name, tree: body.tree
                 }
-            });
+            };
+            await metaStore.setItem(id+'', service);
 
             const storageFiles = await getCodeFromStorageUsingTree(body.tree, store);
             const updateAsStore = getCodeAsStorage(body.tree, body.code);
@@ -1246,13 +1247,13 @@ const providerFileChange = async ({ path, code, metaStore, serviceName }) => {
                     '.' + update.key.replace('/welcome/', '/.welcome/'),
                     code
                 );
-                // TODO: if provider exists, then update these files with provider as well!!
+                await providerFileChange({ path: '.' + update.key,  code, parent: service });
             }
             for (let i = 0; i < filesToDelete.length; i++) {
                 const key = filesToDelete[i];
                 console.log(`removing ${key} from file store`)
                 await store.removeItem(key);
-                // TODO: if provider exists, then delete these files from provider as well!!
+                await providerFileChange({ path: key,  parent: service, deleteFile: true });
             }
 
             return JSON.stringify({

@@ -201,6 +201,7 @@
       image-rendering: -webkit-crisp-edges;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
+      background: #111;
     }
 </style>
 
@@ -215,12 +216,17 @@
   var canvas = document.getElementById('canvas');
   var ctx    = canvas.getContext('2d');
 
-  const parsePPM = function(ppm) {
+  const parsePPMHeader = function(ppm) {
     let magic = ppm.trim().split('\n').filter(x=>!!x)[0];
     ([width, height, maxval] = ppm.trim().split('\n').filter(x => !!x)[1].split(' '));
 
     if (magic !== 'P3') throw "only supports type P3";
     if (!(maxval >= 0 && maxval <= 255)) throw "Bit depth of image must be no more than 8";
+  }
+  
+  const parsePPM = function(ppm) {
+    let magic = ppm.trim().split('\n').filter(x=>!!x)[0];
+    ([width, height, maxval] = ppm.trim().split('\n').filter(x => !!x)[1].split(' '));
 
     const values = ppm.trim()
         .split('\n')
@@ -249,10 +255,15 @@
   };
 
   function ppmAsCanvas(ppm){
+    parsePPMHeader(ppm);
+    window.requestAnimationFrame(() => {
+      resizeCanvas();
+    });
     const imageData = parsePPM(ppm);
-    resizeCanvas();
-    ctx.putImageData(imageData, 0, 0);
-    document.querySelector('pre').style.display="none";
+    window.requestAnimationFrame(() => {
+      ctx.putImageData(imageData, 0, 0);
+      document.querySelector('pre').style.display="none";
+    });
   }
 </script>
 

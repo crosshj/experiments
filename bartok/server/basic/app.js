@@ -24,7 +24,15 @@ const fileDelete = require('./handlers/fileDelete.js');
   //app.dock.hide();
 
   const options = {}
-  server.use(corsProxy(options));
+  const isogitCorsProxy = corsProxy(options);
+  server.use((req, res, next) => {
+    try {
+      return isogitCorsProxy(req, res, next);
+    } catch(e){
+      console.log('Error in isogit cors proxy');
+      next();
+    }
+  });
 
   server.set('json spaces', 2);
   server.use(function (req, res, next) {

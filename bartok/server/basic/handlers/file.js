@@ -90,7 +90,16 @@ const file = ({ dialog, win }) =>
                 });
             const response = [
                 '<a href="../">parent</a><br>',
-                ...result.map(x => `<a href="./${x}">${x}</a>`)
+                ...result.map(x => `
+                    <div>
+                        <a href="./${x}">${x}</a>
+                        <button onclick="(async() => {
+                            await fetch('./${x}', { method: 'DELETE'});
+                            document.location.reload();
+                        })()
+                        ">delete</button>
+                    </div>
+                `)
             ].join('<br>\n');
 
             res.send(style + response);
