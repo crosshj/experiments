@@ -1,0 +1,27 @@
+body {
+  color: #777;
+  background: #1a1a1a;
+  margin: 3em;
+  font-family: sans-serif;
+}
+
+iframe {
+  border: 0;
+  width: calc(100% + 6em);
+  height: calc(100% + 40px + 3em);
+  margin: -3em;
+  margin-top: -40px;
+}
+
+.iframeContainer {
+  overflow: hidden;
+  width: 43vh;
+  height: 35vh;
+}
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-corner,
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #888; }
+  ::-webkit-scrollbar-thumb:hover { background: #555; }
+

@@ -88,6 +88,7 @@
         "crystals.bmp": {},
         "example.ppm": {},
         "favicon_package2_v0.16.zip": {},
+        "glitch1.png": {},
         "grey.png": {},
         "image.png": {},
         "jelly.ppm": {},
@@ -151,6 +152,8 @@
         "styles.scss": {}
       }
     },
+    "hello.css": {},
+    "hello.html": {},
     "index.js": {},
     "package.json": {},
     "Readme.md": {},
@@ -359,6 +362,10 @@
       "path": ".welcome/examples/language/fsharp.fs"
     },
     {
+      "name": "glitch1.png",
+      "path": ".welcome/examples/image/glitch1.png"
+    },
+    {
       "name": "gltf.html",
       "path": ".welcome/.templates/gltf.html"
     },
@@ -409,6 +416,14 @@
     {
       "name": "haskell.hs",
       "path": ".welcome/examples/language/haskell.hs"
+    },
+    {
+      "name": "hello.css",
+      "path": ".welcome/hello.css"
+    },
+    {
+      "name": "hello.html",
+      "path": ".welcome/hello.html"
     },
     {
       "name": "hyperscript.js",

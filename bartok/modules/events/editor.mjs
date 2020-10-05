@@ -155,7 +155,7 @@ const serviceSwitchListener = ({ switchEditor }) => async (event) => {
 function attachListener({ switchEditor, messageEditor }){
 	const listener = async function (e) {
 		if([
-			'add-service-folder', 'connect-service-provider', 'open-settings-view'
+			'add-service-folder', 'connect-service-provider', 'open-settings-view', 'open-previous-service'
 			].includes(e.type)
 		){
 			sessionStorage.setItem('editorFile', "systemDoc::" + e.type);
@@ -212,9 +212,15 @@ function attachListener({ switchEditor, messageEditor }){
 	});
 	attach({
 		name: 'Editor',
+		eventName: 'open-previous-service',
+		listener
+	});
+	attach({
+		name: 'Editor',
 		eventName: 'connect-service-provider',
 		listener
 	});
+
 	attach({
 		name: 'Editor',
 		eventName: 'noServiceSelected',

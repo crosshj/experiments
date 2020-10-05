@@ -133,6 +133,7 @@ const fileSelectHandler = ({
 		systemDocsName = {
 			'add-service-folder': 'Open Folder',
 			'connect-service-provider': 'Connect to a Provider',
+			'open-previous-service': 'Open Previous Service',
 			'open-settings-view': 'Settings'
 		}[name.replace('system::', '')];
 	}
@@ -275,6 +276,7 @@ const handlers = {
 	'contextmenu-select': contextMenuSelectHandler,
 	'add-service-folder': systemDocsHandler,
 	'connect-service-provider': systemDocsHandler,
+	'open-previous-service': systemDocsHandler,
 	'open-settings-view': systemDocsHandler
 };
 
@@ -310,6 +312,11 @@ function attachListener(
 	attach({
 		name: 'Tab Bar',
 		eventName: 'add-service-folder',
+		listener
+	});
+	attach({
+		name: 'Tab Bar',
+		eventName: 'open-previous-service',
 		listener
 	});
 	attach({

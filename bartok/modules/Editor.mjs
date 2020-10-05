@@ -7,7 +7,7 @@ import {
 	CursorActivityHandler
 } from './events/editor.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
-import { getCodeFromService , getState} from './state.mjs'
+import { getCodeFromService , getState, getAllServices } from './state.mjs'
 import { codemirrorModeFromFileType } from '../../shared/modules/utilities.mjs'
 
 function htmlToElement(html) {
@@ -168,7 +168,8 @@ const Search = () => {
 const miscSystemSettings = [{
 	name: 'exit-current-service',
 	description: 'Close the current project',
-	button: 'close'
+	button: 'close',
+	onclick: `localStorage.setItem('lastService', ''); document.location.reload()`
 }];
 
 /*
@@ -254,6 +255,15 @@ const SystemDocs = (section, errors) => {
 			background: red;
 			color: red;
 		}
+		#settings-all-services-list li {
+			display: flex;
+			justify-content: space-between;
+			padding: 1em;
+			align-items: center;
+		}
+		#settings-all-services-list {
+			min-height: 400px;
+		}
 	</style>
 	`;
 	if(!section){
@@ -274,7 +284,7 @@ const SystemDocs = (section, errors) => {
 				<div class="settings-grid-2-col">
 					<div>${x.description}</div>
 					<div>
-						<button id="${x.name}">${x.button}</button>
+						<button id="${x.name}" onclick="${x.onclick}">${x.button}</button>
 					</div>
 				</div>
 			`.replace(/				/g, '')
@@ -287,6 +297,16 @@ const SystemDocs = (section, errors) => {
 			TODO: this functionality will take back seat to service provider because it's a one-shot/one-way solution;
 			it's useful, but not as useful.
 		</p>
+	`.replace(/		/g,'');
+
+	const openPreviousService = `
+		<h1>Open Previous Service</h1>
+		<p>
+			Show a list of services each with button that sets lastService and does document reload
+		</p>
+		<ul id="settings-all-services-list">
+			<li></li>
+		</ul>
 	`.replace(/		/g,'');
 
 	const connectServiceProvider = `
@@ -336,12 +356,14 @@ const SystemDocs = (section, errors) => {
 	const allSettings = `
 		${connectServiceProvider}
 		${addServiceFolder}
+		${openPreviousService}
 		${miscSettings}
 	`.replace(/		/g,'');
 
 	const sectionText = {
 		'add-service-folder': addServiceFolder,
 		'connect-service-provider': connectServiceProvider,
+		'open-previous-service': openPreviousService,
 		'open-settings-view': allSettings
 	}[section];
 	return sectionText || '';
@@ -783,6 +805,19 @@ const showSystemDocsView = ({ filename, errors }) => {
 	if(filename){
 		systemDocsDOM.querySelector('.thisSystemDoc')
 			.innerHTML = SystemDocs(filename);
+	}
+	const allServicesList = document.getElementById('settings-all-services-list');
+	if(allServicesList && (filename === 'open-previous-service' || filename === 'open-settings-view')){
+		allServicesList.innerHTML = '<li>loading...</li>';
+		(async () => {
+			const services = await getAllServices();
+			allServicesList.innerHTML = services.map(s => `
+				<li>
+					<span>[ ${s.id} ] ${s.name}</span>
+					<button onclick="localStorage.setItem('lastService', '${s.id}'); document.location.reload()">LOAD</button>
+				</li>
+			`).join('\n');
+		})();
 	}
 	if(errors.length){
 		errors.forEach(error => {

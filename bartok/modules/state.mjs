@@ -1,8 +1,15 @@
 import { isString } from './Types.mjs';
+import {
+	attach, attachTrigger
+} from './Listeners.mjs';
+
+let execTrigger;
+let listenerQueue = [];
 
 let currentService;
 let currentFile;
 let currentFolder;
+let allServices;
 
 const flattenTree = (tree, folderPaths) => {
     const results = [];
@@ -176,7 +183,63 @@ const resetState = () => {
 	state.changedFiles = {};
 };
 
+async function getAllServices(){
+	const queueListener = () => new Promise((resolve, reject) => {
+		const commandQueueId = Math.random().toString().replace('0.', '');
+		listenerQueue.push({
+			id: commandQueueId,
+			after: ({ result={} } = {}) => {
+				allServices = result.result || allServices || []
+				resolve(allServices);
+			}
+		})
+		execTrigger({
+			detail: {
+				operation: 'read',
+				listener: commandQueueId,
+				body: {
+					id: '*'
+				}
+			}
+		});
+	});
+	return await queueListener();
+}
+
+const operationDoneHandler = (event) => {
+	if(listenerQueue.length === 0){
+		console.warn('nothing listening!');
+		return;
+	}
+	const { detail } = event;
+	const { op, id, result, operation, listener } = detail;
+
+	const foundQueueItem = listener && listenerQueue.find(x => x.id === listener);
+	if(!foundQueueItem){
+		console.warn(`nothing listening for ${listener}`);
+		return false;
+	}
+	listenerQueue = listenerQueue.filter(x => x.id !== listener);
+	foundQueueItem.after && foundQueueItem.after({ result: { result } });
+	return true;
+};
+
+execTrigger = attachTrigger({
+	name: 'State',
+	eventName: 'operations',
+	type: 'raw'
+});
+
+attach({
+	name: 'Terminal',
+	eventName: 'operationDone',
+	listener: operationDoneHandler
+});
+
+
+
 export {
+	getAllServices,
 	getCodeFromService, getCurrentFile, getCurrentService,
 	getDefaultFile,
 	setCurrentService,

@@ -53,6 +53,9 @@ const ProjectOpener = () => {
 
 				<button id="connect-service-provider">Connect to a Provider</button>
 				<p>Specify a service to read from and write to.</p>
+
+				<button id="open-previous-service">Load Service</button>
+				<p>Select a previously opened service.</p>
 			</div>
 		</div>
 	`);
@@ -69,6 +72,12 @@ const ProjectOpener = () => {
 		filter: e => openerActions.contains(e.target)
 			&& e.target.tagName === "BUTTON"
 			&& e.target.id === 'connect-service-provider'
+	});
+	connectTrigger({
+		eventName: 'open-previous-service',
+		filter: e => openerActions.contains(e.target)
+			&& e.target.tagName === "BUTTON"
+			&& e.target.id === 'open-previous-service'
 	});
 
 	return _opener;
