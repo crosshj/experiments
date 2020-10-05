@@ -146,7 +146,7 @@ const DownloadButton = () => {
       .join('\n');
     const completedItems = todos
       .filter(x => x.status !== 'active')
-      .map(x => `  - [X] ${x.value}`)
+      .map(x => `  - [x] ${x.value}`)
       .join('\n');
     const markdown =
 `TODO ${dateString}
@@ -207,11 +207,11 @@ const UploadButton = ({ replace }) => {
       }
       const parsed = result
         .split('\n')
-        .filter(x => (x||'').includes('- [X]') || (x||'').includes('- [ ]'))
+        .filter(x => (x||'').includes('- [x]') || (x||'').includes('- [ ]'))
         .map((x, i) => {
-          if(x.includes('[X]')){
+          if(x.includes('[x]')){
             return {
-              value: x.split('[X] ')[1],
+              value: x.split('[x] ')[1],
               status: 'completed',
               order: i
             }

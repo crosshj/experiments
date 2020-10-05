@@ -2,7 +2,6 @@ const { readFileSync } = require('fs');
 const request = require('request');
 const corsProxy = require('@isomorphic-git/cors-proxy/middleware.js');
 const url = require('url');
-//const path = require("path");
 
 const appHTML = readFileSync('app.html', 'utf8');
 const {app, dialog, BrowserWindow, remote } = require('electron');
@@ -25,7 +24,7 @@ const fileDelete = require('./handlers/fileDelete.js');
   //app.dock.hide();
 
   const options = {}
-  server.use(corsProxy(options))
+  server.use(corsProxy(options));
 
   server.set('json spaces', 2);
   server.use(function (req, res, next) {

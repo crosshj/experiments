@@ -139,7 +139,7 @@ https://www.biwascheme.org/
             .filter(x => x.nodeType === 8)
             .map(x => x.data).join('\n');
         if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
-          codeFromComment = `(begin (display "yellow world")`;
+          codeFromComment = `(begin (display "yellow world"))`;
         }
         inputDOM.innerText = codeFromComment;
 

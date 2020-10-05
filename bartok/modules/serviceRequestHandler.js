@@ -494,6 +494,12 @@ class TemplateEngine {
         this.templates.push(newTemp);
     }
 
+    update(name, contents){
+        const ext = name.split('.').shift();
+        const matchingTemplates = this.templates.filter(t=>t.extensions.includes(ext));
+        matchingTemplates.forEach(m => m.body = contents);
+    }
+
     getTemplate(filename='', contents=''){
         const ext = filename.split('.').pop();
         const extMatch = this.templates.find(x => x.extensions.includes(ext));
@@ -551,6 +557,8 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
             const { path, query } = params;
             const cleanPath = decodeURI(path.replace('/::preview::/', ''));
             const previewMode = path.includes('/::preview::/');
+            const templateUrl = path.includes('.templates/');
+
             const filename = previewMode
                 ? cleanPath.split('/').pop()
                 : path.split('/').pop();
@@ -570,6 +578,12 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
 
             if(previewMode){
                 xformedFile = templates.convert(filename, fileJSONString);
+            }
+
+            // NOTE: would rather update template when saved, but templates not available then
+            // for now, this will do
+            if(templateUrl){
+                templates.update(filename, file);
             }
 
             // most likely a blob
