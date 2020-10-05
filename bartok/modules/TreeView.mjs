@@ -59,7 +59,6 @@ const ProjectOpener = () => {
 			</div>
 		</div>
 	`);
-
 	const openerActions = _opener.querySelector('.service-opener-actions');
 	connectTrigger({
 		eventName: 'add-service-folder',
@@ -83,6 +82,35 @@ const ProjectOpener = () => {
 	return _opener;
 };
 
+
+const ScrollShadow = () => {
+	let scrollShadow = htmlToElement(`
+		<div class="scroll-shadow">
+			<style>
+				.scroll-shadow {
+					box-shadow: #000000 0 6px 6px -6px inset;
+					height: 6px;
+					position: absolute;
+					top: 35px;
+					left: 0;
+					right: 0;
+					display: none;
+				}
+			</style>
+		</div>
+	`);
+	treeView.addEventListener('scroll', (event) => {
+		try {
+			event.target.scrollTop > 0
+				? scrollShadow.style.display = "block"
+				: scrollShadow.style.display = "none";
+		} catch(e) {
+			scrollShadow.style.display = "none"
+		}
+	});
+	return scrollShadow;
+}
+
 const TreeMenu = () => {
 	const _treeMenu = document.createElement('div');
 	_treeMenu.id="tree-menu";
@@ -95,11 +123,11 @@ const TreeMenu = () => {
 			<div class="monaco-toolbar">
 					<div class="monaco-action-bar animated">
 						<ul class="actions-container">
-								<li class="action-item hidden">
+								<li class="action-item">
 									<a class="action-label icon explorer-action new-file" role="button" title="New File">
 									</a>
 								</li>
-								<li class="action-item hidden">
+								<li class="action-item">
 									<a class="action-label icon explorer-action new-folder" role="button" title="New Folder">
 									</a>
 								</li>
@@ -116,6 +144,18 @@ const TreeMenu = () => {
 			</div>
 		</div>
 	`;
+	connectTrigger({
+		eventName: 'new-file',
+		filter: e => _treeMenu.contains(e.target)
+			&& e.target.tagName === "A"
+			&& e.target.title === 'New File'
+	});
+	connectTrigger({
+		eventName: 'new-folder',
+		filter: e => _treeMenu.contains(e.target)
+			&& e.target.tagName === "A"
+			&& e.target.title === 'New Folder'
+	});
 	_treeMenu.innerHTML = menuInnerHTML;
 	return _treeMenu;
 };
@@ -215,6 +255,7 @@ const getTreeViewDOM = ({ showOpenService  } = {}) => {
 	const explorerPane = document.body.querySelector('#explorer');
 	explorerPane.appendChild(TreeMenu());
 	explorerPane.appendChild(Search());
+	explorerPane	.appendChild(ScrollShadow(treeView));
 	explorerPane.appendChild(treeView);
 	explorerPane.classList.remove('pane-loading');
 

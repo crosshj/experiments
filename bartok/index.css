@@ -25,10 +25,6 @@ html, body {
   background: transparent !important;
 }
 
-#explorer {
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-}
 
 .CodeMirror .CodeMirror-hscrollbar,
 .CodeMirror .CodeMirror-vscrollbar {
@@ -50,6 +46,19 @@ html, body {
 }
 
 
+#explorer {
+  /* overflow-x: auto !important;
+  overflow-y: auto !important; */
+  overflow: hidden;
+}
+#explorer #tree-view::-webkit-scrollbar {
+  display: none;
+}
+#explorer:hover #tree-view::-webkit-scrollbar {
+  display: block;
+}
+
+#explorer #tree-view::-webkit-scrollbar,
 .CodeMirror-vscrollbar::-webkit-scrollbar,
 .CodeMirror-hscrollbar::-webkit-scrollbar,
 body::-webkit-scrollbar,
@@ -71,7 +80,7 @@ iframe::-webkit-scrollbar,
   bottom: 0.5em !important;
 }
 
-#explorer::-webkit-scrollbar-thumb,
+#explorer #tree-view::-webkit-scrollbar-thumb,
 .CodeMirror-vscrollbar::-webkit-scrollbar-thumb,
 .CodeMirror-hscrollbar::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb,
@@ -79,7 +88,7 @@ iframe::-webkit-scrollbar-thumb{
   background: #ffffff10;
 }
 .hide-native-scrollbar::-webkit-scrollbar-track,
-#explorer::-webkit-scrollbar-track,
+#explorer #tree-view::-webkit-scrollbar-track,
 .CodeMirror-vscrollbar::-webkit-scrollbar-track,
 .CodeMirror-hscrollbar::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track,
@@ -829,12 +838,14 @@ notes-section.loading:after {
 /* js-treeview */
 #tree-view {
   /* padding-left: 12px; */
-  height: calc(100% - 36px);
+  height: calc(100% - 35px);
   color: var(--main-theme-text-color);
   font-weight: 300;
   user-select: none;
   white-space: nowrap;
   font-size: 1.03em;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .tree-leaf.hidden-leaf {
@@ -1008,12 +1019,13 @@ notes-section.loading:after {
   border-radius: 20px;
   background: orange;
   height: 7px;
-  width: 7px;
-  margin-top: 8px;
+  width: 6px;
+  margin-top: 9px;
   border: 0px;
   opacity: 0.4;
   position: absolute;
-  right: 25px;
+  right: 10px;
+  top: -2px;
 }
 
 /* new files and folders */
@@ -1198,15 +1210,16 @@ notes-section.loading:after {
 }
 
 #explorer {
-  overflow: auto;
+  /* overflow: auto; */
   background-color: var(--theme-subdued-color);
   /* background-color: var(--main-theme-color); */
   /* width: 200px; */
-  /* height: 100%; */
-  height: calc(100% + 17px);
+  height: 100%;
+  /* height: calc(100% + 17px); */
   min-width: 200px;
   transition: background-color 2s ease-in;
-  margin-right: -17px;
+  /* margin-right: -17px; */
+  outline: none;
 }
 
 /* container for editor and terminal*/

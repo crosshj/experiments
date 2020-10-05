@@ -13,6 +13,9 @@ function fib(n: i32): i32 {
 }
 
 export function main(): string {
-  let array: i32[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let array: i32[] = new Array<i32>(10);
+  for (let i = 0; i < array.length; ++i) {
+    array[i] = i;
+  }
   return array.map<i32>((i) => fib(i)).join('\n');
 }

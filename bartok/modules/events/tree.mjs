@@ -739,6 +739,16 @@ function attachListener(treeView, JSTreeView, updateTree, {
 		eventName: 'contextmenu-select',
 		listener: contextMenuSelectHandler({ newFile, newFolder })
 	});
+	attach({
+		name: 'Explorer',
+		eventName: 'new-file',
+		listener: () => alert('new-file handler not implemented, use right click menu')
+	});
+	attach({
+		name: 'Explorer',
+		eventName: 'new-folder',
+		listener: () => alert('new-folder handler not implemented, use right click menu')
+	});
 }
 
 const connectTrigger = (args) => attachTrigger({ ...args, name: 'Explorer' });

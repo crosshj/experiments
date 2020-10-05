@@ -1,6 +1,14 @@
 <!-- no-select -->
 <br>
 
+#### 2020-09-29 | 2020-10-05 - languages, CRUD, & tightening overall use
+  - more languages, syntax, templates
+  - tighten provider file CRUD
+  - remove console warnings and update some dependencies
+  - reuse tabs if not changed
+  - mime types in service request handler
+  - better opening and closing services from settings view
+
 #### 2020-09-19 | 2020-09-27 - languages & misc
   - add a ton of language templates, icons, syntax
   - experiment webtorrent
