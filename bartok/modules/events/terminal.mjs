@@ -199,12 +199,16 @@ const terminalTrigger = (write, command, callback) => {
 			callback && callback();
 			return;
 		}
-		write(`\n${res||'Finished.'}\n`);
+		write(`\n${Array.isArray(res)
+			? res.join('\n')
+			: res || 'Finished.'
+		}\n`);
 		callback && callback();
 	};
 
 	trigger({
-		type: currentCommand.name,
+		type: 'operations',
+		detail: { operation: currentCommand.name },
 		params: { ...eventArgs, ...{ callback: cb }},
 		source: 'Terminal'
 	});

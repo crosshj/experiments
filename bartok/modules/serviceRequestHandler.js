@@ -498,6 +498,9 @@ class TemplateEngine {
         const ext = name.split('.').shift();
         const matchingTemplates = this.templates.filter(t=>t.extensions.includes(ext));
         matchingTemplates.forEach(m => m.body = contents);
+        if(!matchingTemplates.length){
+            this.add(name, contents);
+        }
     }
 
     getTemplate(filename='', contents=''){
@@ -588,7 +591,8 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
 
             // most likely a blob
             if(file && file.type && file.size){
-                return file;
+                //xformedFile because there may be a template for blob type file
+                return xformedFile || file;
             }
 
             if(previewMode && !xformedFile){
@@ -622,7 +626,6 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
             handler
         });
     };
-
 
 
     const addServiceHandler = async ({ name, msg }) => {
@@ -1174,6 +1177,11 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             const { name } = body;
 
             const preExistingService = (await metaStore.getItem(id+'')) || {};
+            const parsedCode = !Array.isArray(body.code) && safe(() => JSON.parse(body.code));
+            if(parsedCode && parsedCode.tree){
+                body.tree = parsedCode.tree;
+                body.code = parsedCode.files;
+            }
             const service = {
                 ...preExistingService,
                 ...{
@@ -1236,8 +1244,6 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
 
             for (let i = 0; i < filesToUpdate.length; i++) {
                 const update = filesToUpdate[i];
-                console.log(`should update ${update.key}`);
-
                 let code;
                 try { code = update.value.code.code } catch(e) {}
                 try { code = code || update.value.code } catch(e) {}
@@ -1251,7 +1257,6 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             }
             for (let i = 0; i < filesToDelete.length; i++) {
                 const key = filesToDelete[i];
-                console.log(`removing ${key} from file store`)
                 await store.removeItem(key);
                 await providerFileChange({ path: key,  parent: service, deleteFile: true });
             }

@@ -116,6 +116,12 @@ const TreeMenu = () => {
 	_treeMenu.id="tree-menu";
 	_treeMenu.classList.add("row", "no-margin");
 	const menuInnerHTML = `
+		<style>
+			#tree-menu .title-actions .action-item a {
+				color: inherit;
+				outline: none;
+			}
+		</style>
 		<div class="title-label">
 			<h2 title=""></h2>
 		</div>
@@ -124,11 +130,11 @@ const TreeMenu = () => {
 					<div class="monaco-action-bar animated">
 						<ul class="actions-container">
 								<li class="action-item">
-									<a class="action-label icon explorer-action new-file" role="button" title="New File">
+									<a class="action-label codicon explorer-action codicon-new-file" role="button" title="New File">
 									</a>
 								</li>
 								<li class="action-item">
-									<a class="action-label icon explorer-action new-folder" role="button" title="New Folder">
+									<a class="action-label codicon explorer-action codicon-new-folder" role="button" title="New Folder">
 									</a>
 								</li>
 								<li class="action-item hidden">
@@ -139,11 +145,26 @@ const TreeMenu = () => {
 									<a class="action-label icon explorer-action collapse-explorer" role="button" title="Collapse Folders in Explorer">
 									</a>
 								</li>
+								<li class="action-item">
+									<div class="monaco-dropdown">
+										<div class="dropdown-label">
+											<a class="action-label codicon codicon-toolbar-more" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false" title="Views and More Actions..."></a>
+										</div>
+									</div>
+								</li>
 						</ul>
 					</div>
 			</div>
 		</div>
 	`;
+	_treeMenu.addEventListener('click', (e) => {
+		if(!_treeMenu.contains(e.target)) return;
+		if(e.target.tagName === "A" && e.target.className.includes('codicon-toolbar-more')){
+			alert('not implemented');
+			e.preventDefault();
+			return false;
+		}
+	}, { passive: false })
 	connectTrigger({
 		eventName: 'new-file',
 		filter: e => _treeMenu.contains(e.target)

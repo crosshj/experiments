@@ -8,6 +8,7 @@
     ".templates": {
       "as.html": {},
       "bf.html": {},
+      "bmp.html": {},
       "cljs.html": {},
       "cpp.html": {},
       "d3-graph.html": {},
@@ -18,6 +19,7 @@
       "lisp.html": {},
       "md.html": {},
       "php.html": {},
+      "png.html": {},
       "ppm.html": {},
       "pro.html": {},
       "py.html": {},
@@ -98,7 +100,10 @@
         "svg-lock.svg": {},
         "svg-solar-system.svg": {},
         "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg": {},
-        "wasps_bees.bmp": {}
+        "wasps_bees.bmp": {},
+        "z-brush-gremlin2.jpeg": {},
+        "zbrush-gremlin.gif": {},
+        "zbrush-optimus.gif": {}
       },
       "language": {
         "ada.adb": {},
@@ -170,7 +175,6 @@
       "graph-formats.md": {},
       "isomorphic-git.html": {},
       "language-sql-fetch.html": {},
-      "language-turboscript.html": {},
       "open.folder.html": {},
       "Piksel-LIFE-20200506-191410.piskel": {},
       "preact-hyperscript.htm": {},
@@ -268,6 +272,10 @@
     {
       "name": "blocks.ppm",
       "path": ".welcome/examples/image/blocks.ppm"
+    },
+    {
+      "name": "bmp.html",
+      "path": ".welcome/.templates/bmp.html"
     },
     {
       "name": "boo.js",
@@ -506,10 +514,6 @@
       "path": ".welcome/WIP/language-sql-fetch.html"
     },
     {
-      "name": "language-turboscript.html",
-      "path": ".welcome/WIP/language-turboscript.html"
-    },
-    {
       "name": "lisp.html",
       "path": ".welcome/.templates/lisp.html"
     },
@@ -576,6 +580,10 @@
     {
       "name": "plain.txt",
       "path": ".welcome/examples/document/plain.txt"
+    },
+    {
+      "name": "png.html",
+      "path": ".welcome/.templates/png.html"
     },
     {
       "name": "pony.pony",
@@ -768,6 +776,18 @@
     {
       "name": "windows.bat",
       "path": ".welcome/examples/language/windows.bat"
+    },
+    {
+      "name": "z-brush-gremlin2.jpeg",
+      "path": ".welcome/examples/image/z-brush-gremlin2.jpeg"
+    },
+    {
+      "name": "zbrush-gremlin.gif",
+      "path": ".welcome/examples/image/zbrush-gremlin.gif"
+    },
+    {
+      "name": "zbrush-optimus.gif",
+      "path": ".welcome/examples/image/zbrush-optimus.gif"
     },
     {
       "name": "zig.zig",

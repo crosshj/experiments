@@ -624,20 +624,20 @@ function drawRootNodes({ canvas, listeners, triggers, sidebar }) {
 				parent: nodeName,
 				diff: detail
 			}))
-		});
-
-		node.addEventListener('synthetic-drag', () => {
 			const serviceMapPositionsUI = allParentNodes.map(x => x.getAttribute('transform'));
 			localStorage.setItem("serviceMapPositionsUI", serviceMapPositionsUI);
 		});
 
 		node.onclick = (event) => {
-			Array.from(document.querySelectorAll('#canvas .node.selected'))
-				.forEach(x => x.classList.remove('selected'))
-			node.classList.add('selected');
-			sidebar.nodeSelected({
-				label: nodeName
-			});
+			if(node.classList.contains('selected')){
+				sidebar.nodeSelected({
+					label: nodeName
+				});
+			} else {
+				Array.from(document.querySelectorAll('#canvas .node.selected'))
+					.forEach(x => x.classList.remove('selected'))
+				node.classList.add('selected');
+			}
 		};
 
 		allParentNodes.push(node);
@@ -657,7 +657,6 @@ function drawRootNodes({ canvas, listeners, triggers, sidebar }) {
 			allParentNodes[i].dispatchEvent(event);
 		}
 	}
-
 
 }
 

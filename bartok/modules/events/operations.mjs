@@ -1,3 +1,17 @@
+/*
+
+there are two different ways of handling a Management Operation
+
+1) trigger event.type=operation event with detail.operation = {some management op}
+	- tree does this
+
+2) trigger event.type={some management op} event
+	- terminal does this
+
+THIS IS CONFUSING - going to kill #2
+
+*/
+
 import { attach, attachTrigger } from '../Listeners.mjs';
 import { debounce } from "../../../shared/modules/utilities.mjs";
 
@@ -62,6 +76,8 @@ async function performOp(
 	const foundOpClone = JSON.parse(JSON.stringify(foundOp));
 	foundOpClone.config = foundOpClone.config || {};
 	foundOpClone.config.body = JSON.stringify(body);
+	foundOpClone.eventToBody = foundOp.eventToBody;
+	foundOpClone.eventToParams = foundOp.eventToParams;
 
 	foundOpClone.after = (...args) => {
 		foundOp.after(...args);
@@ -132,15 +148,18 @@ const changeCurrentFolderHandler = ({
 
 const addFolderHandler = ({
 	managementOp, performOperation, externalStateRequest,
-	getCurrentFile, getCurrentService, operations
+	getCurrentFile, getCurrentService, operations,
+	getOperations
 }) => async (event) => {
 	const { detail } = event;
 	const { callback } = detail;
 	const currentService = getCurrentService();
 	const currentFile = getCurrentFile();
+	operations = operations || getOperations(()=>{}, ()=>{});
 	event.detail.operation = event.detail.operation || event.type;
-	const manageOp = managementOp(event, currentService, currentFile);
-	//currentService, operations, performOperation, externalStateRequest
+	const op = managementOp(event);
+	const manageOp = op(event, currentService, currentFile);
+
 	await performOp(
 		currentService, operations, performOperation, externalStateRequest, callback
 	);
@@ -228,9 +247,9 @@ const readFolderHandler = ({
 		: guessCurrentFolder(currentFile, currentService);
 
 	event.detail.operation = 'readFolder';
-	const children = managementOp(event, currentService, currentFile, parent);
+	const op = managementOp(event, currentService, currentFile, currentFolder)
+	const children = op(event, currentService, currentFile, parent);
 
-	console.log({ children });
 	callback && callback(
 		!parent || !children ? 'trouble finding current path or children' : false,
 		children && children.length  ? children.join('\n') : '<empty>'
@@ -305,18 +324,32 @@ const operationsHandler = ({
 		const updateAfter = getUpdateAfter(dummyFunc, dummyFunc, dummyFunc);
 		const readAfter = getReadAfter(dummyFunc);
 		const allOperations = getOperations(updateAfter, readAfter);
+		const { detail } = event;
+		const { callback } = detail;
+
+		if(detail && detail.operation === "showCurrentFolder"){
+			return showCurrentFolderHandler({ getCurrentFile, getCurrentService, getCurrentFolder })(event);
+		}
+		if(detail && detail.operation === "changeCurrentFolder"){
+			return changeCurrentFolderHandler({ getCurrentFile, getCurrentService, getCurrentFolder, setCurrentFolder })(event);
+		}
 
 		const manageOp = managementOp(event);
 		if(manageOp){
 			const currentService = getCurrentService();
 			const currentFile = getCurrentFile();
-			const manOp = manageOp(event, currentService, currentFile);
-			if(!manOp || !manOp.operation === "updateProject"){
-				console.error('assumption is that all management ops result in operation = updateProject');
+			const currentFolder = getCurrentFolder() || guessCurrentFolder(currentFile, currentService);
+			const manageOpResult = manageOp(event, currentService, currentFile, currentFolder);
+			if(!manageOpResult || manageOpResult.operation !== "updateProject"){
+				//some management ops do not require state update!?
+				callback(null, manageOpResult);
+
+				//might be cool to do this another way (but needs work)
+				//triggerOperationDone(manageOpResult);
 				return;
 			}
 			const foundOp = allOperations.find(x => x.name === 'update');
-			const result = await updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp });
+			const result = await updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp: manageOpResult });
 			triggerOperationDone(result);
 			return;
 		}
@@ -420,12 +453,14 @@ const operationDoneHandler = ({
 const handlers = {
 	showCurrentFolderHandler,
 	changeCurrentFolderHandler,
+
 	addFolderHandler,
 	readFolderHandler,
 	deleteFolderHandler,
 	renameFolderHandler,
 	moveFolderHandler,
 	moveFileHandler,
+
 	operationsHandler,
 	operationDoneHandler,
 	'provider-test': providerHandler,
