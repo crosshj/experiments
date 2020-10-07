@@ -12,9 +12,12 @@
       "cljs.html": {},
       "cpp.html": {},
       "d3-graph.html": {},
+      "gif.html": {},
       "gltf.html": {},
       "go.html": {},
       "ipynb.html": {},
+      "jpeg.html": {},
+      "jpg.html": {},
       "jsx.html": {},
       "lisp.html": {},
       "md.html": {},
@@ -27,7 +30,8 @@
       "scm.html": {},
       "sql.html": {},
       "svcv3.html": {},
-      "svg.html": {}
+      "svg.html": {},
+      "zip.html": {}
     },
     "examples": {
       ".deep-folders": {
@@ -97,6 +101,8 @@
         "jr.ppm": {},
         "lame.png": {},
         "languages-templates-progress.bmp": {},
+        "spritesheet.json": {},
+        "spritesheet.png": {},
         "svg-bartok.svg": {},
         "svg-lock.svg": {},
         "svg-solar-system.svg": {},
@@ -371,6 +377,10 @@
       "path": ".welcome/examples/language/fsharp.fs"
     },
     {
+      "name": "gif.html",
+      "path": ".welcome/.templates/gif.html"
+    },
+    {
       "name": "glitch1.png",
       "path": ".welcome/examples/image/glitch1.png"
     },
@@ -469,6 +479,14 @@
     {
       "name": "jelly.ppm",
       "path": ".welcome/examples/image/jelly.ppm"
+    },
+    {
+      "name": "jpeg.html",
+      "path": ".welcome/.templates/jpeg.html"
+    },
+    {
+      "name": "jpg.html",
+      "path": ".welcome/.templates/jpg.html"
     },
     {
       "name": "jr.ppm",
@@ -691,6 +709,14 @@
       "path": ".welcome/WIP/slides-reveal.htm"
     },
     {
+      "name": "spritesheet.json",
+      "path": ".welcome/examples/image/spritesheet.json"
+    },
+    {
+      "name": "spritesheet.png",
+      "path": ".welcome/examples/image/spritesheet.png"
+    },
+    {
       "name": "sql.html",
       "path": ".welcome/.templates/sql.html"
     },
@@ -797,6 +823,10 @@
     {
       "name": "zig.zig",
       "path": ".welcome/examples/language/zig.zig"
+    },
+    {
+      "name": "zip.html",
+      "path": ".welcome/.templates/zip.html"
     },
     {
       "name": "zip_project.html",

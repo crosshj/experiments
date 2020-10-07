@@ -4,16 +4,16 @@
   .background {
     text-align: center;
     margin: 0;
-    background-image: url(file-examples/bartok.svg);
+    background-image: url(examples/image/bartok-logo.svg);
     position: absolute;
-    top: 40;
+    top: 40px;
     bottom: 0;
-    left: 5px;
+    left: 0;
     right: 0;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.15;
+    opacity: 0.04;
     z-index: -1;
   }
 </style>

@@ -463,6 +463,9 @@ PREVIEW
 UNSORTED
 ========
 
+- how to implement a programming language
+  - http://lisperator.net/pltut/
+
 - bundling in browser
   - http://webpack.github.io/playground/
   - https://github.com/systemjs/systemjs

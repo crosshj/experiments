@@ -18,7 +18,7 @@
     ::-webkit-scrollbar-thumb:hover { background: #555; }
     body {
       margin: 3em 1em;
-      color: #eee;
+      color: #bbb;
       font-family: sans-serif;
       background: #1d1d1d;
       display: flex;
@@ -41,6 +41,8 @@
   <script src="https://unpkg.com/file-saver@2.0.0-rc.2/dist/FileSaver.min.js"></script>
 
   <script>
+    // https://stuk.github.io/jszip/documentation/examples.html
+
     (async () => {
       let zipLocation = document.location.href.replace('/::preview::/', '');
       const isZip = zipLocation.split('.').pop() === 'zip';
