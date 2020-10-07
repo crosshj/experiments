@@ -361,16 +361,16 @@ function _Terminal(){
 			updateLockIcon(locked);
 			// return;
 		}
-		if(!supported && doc && doc.includes('<!-- NO_PREVIEW -->')){
-			updateIframeRaw({ src: doc });
-			return;
-		}
+		// if(!supported && doc && doc.includes('<!-- NO_PREVIEW -->')){
+		// 	updateIframeRaw({ src: doc });
+		// 	return;
+		// }
 		if(type ==="forceRefreshOnPersist"){
 			reloadIframe(wait);
 			return;
 		}
 		type !== "forceRefreshOnPersist" && updateLockIcon(locked);
-		if(!supported && !doc) debugger
+		if(!supported && !doc && !url) debugger
 		let src = supported
 			? transform({ name: docName, contents: doc })
 			: (docName||'').includes('jsx')

@@ -74,9 +74,16 @@ function activateHandler(event) {
 }
 
 function fetchHandler(event) {
-	const foundHandler = handlers.find(x => {
-		return x.type === "fetch" && x.route.test(event.request.url);
-	});
+	const routeHandlerBlacklist = [
+		'//(.*)'
+	];
+
+	const safeHandlers = handlers
+		.filter(x => !routeHandlerBlacklist.includes(x.routePattern));
+	const foundHandler = safeHandlers
+		.find(x => {
+			return x.type === "fetch" && x.route.test(event.request.url);
+		});
 	if (foundHandler) {
 		//console.log(foundHandler)
 		return foundHandler.handler(event);

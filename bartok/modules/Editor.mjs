@@ -694,7 +694,7 @@ const showNothingOpen = () => {
 
 const showFileInEditor = (filename, contents) => {
 	const fileType = getFileType(filename);
-	return !['image', 'font', 'audio', 'video'].includes(fileType);
+	return !['image', 'font', 'audio', 'video', 'zip'].includes(fileType);
 }
 
 let binaryPreview;
@@ -750,13 +750,31 @@ const showBinaryPreview = ({
 			video {
 				max-width: 95%;
 			}
+			.image-disclaim {
+				position: absolute;
+				top: 40px;
+				padding: .1em 1em;
+				font-size: 0.55em;
+				display: flex;
+				flex-direction: column;
+				justify-content: start;
+				align-items: start;
+				width: 100%;
+			}
+			#editor-preview pre {
+				font-size: 0.72em;
+				opacity: 0.7;
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				white-space: pre-line;
+			}
 		</style>
 	`;
-	if( fileType === 'image'){
-		binaryPreview.innerHTML = style + `
-			<img class="preview-image" src="${url}">
-		`;
-	} else if (fileType === "audio"){
+	if (fileType === "audio"){
 		binaryPreview.innerHTML = style + `
 			<figure>
 			<audio
@@ -789,7 +807,7 @@ const showBinaryPreview = ({
 		`;
 	} else {
 		binaryPreview.innerHTML = style + `
-			<pre>Unsupported File Type</pre>
+			<pre>No editable text for this file type.</pre>
 		`;
 	}
 	return binaryPreview;

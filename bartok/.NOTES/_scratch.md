@@ -1,7 +1,7 @@
 <!-- no-select -->
 
 why I keep vscode open
-======================
+----------------------
 
 - [ ] service worker flow is not merged to main flow
 - [ ] no search in project / folder
@@ -17,6 +17,21 @@ why I keep vscode open
 - [X] cant CRUD/save a file with service worker
 - [X] highlight is weird (themeing and color issues)
 - [X] no search in file
+
+image processing
+----------------
+- image clustering
+  - keep a bunch of pictures as one file
+  - disassembling: superpixels in javascript - https://github.com/kyamagu/js-segment-annotator/blob/master/js/image/segmentation/slico.js
+  - assembling/packing: https://github.com/mapbox/potpack
+  - image segmentation - https://www.youtube.com/watch?v=ZF-3aORwEc0
+
+- images with extra data
+  - extra: 3d data, notes, etc
+  - https://medium.com/better-programming/hide-data-within-an-image-507f571aab89
+  - https://github.com/exif-js/exif-js
+  - probably should wait until hex viewer is in place before going really far with this
+
 
 2020-09-30 shaders webgl
 ------------------------
@@ -643,34 +658,34 @@ syntax highlighting, etc
 highest paid:
   - Scala
   - [X] Clojure
-  - Go
-  - Erlang
+  - [X] Go
+  - [X] Erlang
   - [X] WebAssembly
-  - Kotlin
-  - Rust,
-  - F#
-  - Elixir
+  - [X] Kotlin
+  - [X] Rust,
+  - [X] F#
+  - [X] Elixir
 
 most popular:
   - [X] Javascript
   - [X] Python
-  - Java
+  - [X] Java
   - [X] PHP
-  - C#
+  - [X] C#
   - [X] C++
-  - TypeScript
+  - [X] TypeScript
   - Shell
   - C
   - [X] Ruby
 
 fast growth:
-  - Dart         532%
-  - Rust         235%
+  - [X] Dart         532%
+  - [X] Rust         235%
   - HCL          213% (config)
-  - Kotlin       182%
-  - TypeScript   161%
+  - [X] Kotlin       182%
+  - [X] TypeScript   161%
   - PowerShell   154%
   - Apex         154% (salesforce)
-  - Python       151%
+  - [X] Python       151%
   - Assembly     149%
-  - Go           147%
+  - [X] Go           147%

@@ -96,6 +96,7 @@
         "jelly.ppm": {},
         "jr.ppm": {},
         "lame.png": {},
+        "languages-templates-progress.bmp": {},
         "svg-bartok.svg": {},
         "svg-lock.svg": {},
         "svg-solar-system.svg": {},
@@ -512,6 +513,10 @@
     {
       "name": "language-sql-fetch.html",
       "path": ".welcome/WIP/language-sql-fetch.html"
+    },
+    {
+      "name": "languages-templates-progress.bmp",
+      "path": ".welcome/examples/image/languages-templates-progress.bmp"
     },
     {
       "name": "lisp.html",

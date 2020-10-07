@@ -30,6 +30,7 @@ const flattenTree = (tree) => {
                     path: parent + key
                 });
             } else {
+                if(!branch[key]){ debugger; }
                 recurse(branch[key], `${parent}${key}/`);
             }
         });
@@ -285,6 +286,10 @@ async function fileSystemTricks({ result, store, cache, metaStore }) {
         }
     }
 
+    if(!result.result[0].name){
+        console.error('cannot set meta store item without name');
+        return;
+    }
     await metaStore.setItem(result.result[0].id+'', {
         name: result.result[0].name,
         id: result.result[0].id,
@@ -589,14 +594,14 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
                 templates.update(filename, file);
             }
 
+            if(previewMode && !xformedFile){
+                return NO_PREVIEW;
+            }
+
             // most likely a blob
             if(file && file.type && file.size){
                 //xformedFile because there may be a template for blob type file
                 return xformedFile || file;
-            }
-
-            if(previewMode && !xformedFile){
-                return NO_PREVIEW;
             }
 
             //TODO: need to know file type so that it can be returned properly
@@ -886,6 +891,10 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
         const filePostUrl = `${providerUrl}file/${providerRoot}${pathWithoutParent}`;
 
         serviceJsonFile.code = JSON.stringify(serviceJson, null, 2);
+        if(!serviceOther.name){
+            console.error('cannot set meta store item without service name');
+            return;
+        }
         await metaStore.setItem(service.id + '', serviceOther);
         await fileStore.setItem(serviceJsonFile.path, serviceJsonFile.code);
         await fetch(filePostUrl, {
@@ -950,6 +959,10 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
                 providerUrl,
                 tree: providerTree
             };
+            if(!service.name){
+                console.error('cannot set meta store item without service name');
+                return;
+            }
             await metaStore.setItem(id+'', service);
             service.code = [];
             for (let f = 0; f < providerFiles.length; f++) {
@@ -1188,6 +1201,10 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
                     name, tree: body.tree
                 }
             };
+            if(!service.name){
+                console.error('cannot set meta store item without name');
+                return;
+            }
             await metaStore.setItem(id+'', service);
 
             const storageFiles = await getCodeFromStorageUsingTree(body.tree, store);

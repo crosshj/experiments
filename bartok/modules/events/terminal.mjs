@@ -380,17 +380,10 @@ const fileSelectHandler = ({ viewUpdate, getCurrentService }) => (event) => {
 		backupForLock.currentFile = doc;
 		backupForLock.currentFileName = next||name;
 	}
-	if(!doc){
-		sessionStorage.setItem('preview', 'noPreview');
-		viewUpdate({ supported: false, doc: NO_PREVIEW });
-		return;
-	}
-	if(doc){
-		const supported = hasTemplate || isHTML || isJSX || isSVC3;
-		const viewArgs = { supported, type, locked, doc, docName: next || name, ...event.detail };
-		viewUpdate(viewArgs);
-		return;
-	}
+	const supported = hasTemplate || isHTML || isJSX || isSVC3;
+	const viewArgs = { supported, type, locked, doc, docName: next || name, ...event.detail };
+	viewUpdate(viewArgs);
+	return;
 };
 
 const terminalActionHandler = ({ terminalActions, viewUpdate }) => (event) => {
