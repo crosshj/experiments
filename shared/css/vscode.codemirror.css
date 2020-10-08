@@ -9,11 +9,18 @@
  .cm-s-vscode-dark span.cm-number {color: #b5cea8}
  .cm-s-vscode-dark span.cm-keyword {line-height: 1em; font-weight: bold; color: #569cd6;}
  .cm-s-vscode-dark span.cm-def {color:#9cdcfe}
- .cm-s-vscode-dark span.cm-variable {color: #ddd6a3}
+ .cm-s-vscode-dark span.cm-def {color: #dcdcaa;}
+
+ /* .cm-s-vscode-dark span.cm-variable {color: #ddd6a3} */
+ .cm-s-vscode-dark span.cm-variable {color: #9cdcfe }
+
  .cm-s-vscode-dark span.cm-variable-2 {color: #9cdcfe}
  .cm-s-vscode-dark span.cm-variable-3,
  .cm-s-vscode-dark span.cm-type {color: #A9B7C6}
- .cm-s-vscode-dark span.cm-property {color: #9cdcfe}
+
+ /* .cm-s-vscode-dark span.cm-property {color: #9cdcfe} */
+ .cm-s-vscode-dark span.cm-property {color: #dcdcaa}
+
  .cm-s-vscode-dark span.cm-operator {color: #d4d4d4}
  .cm-s-vscode-dark .cm-string {color: #ce9178}
  /* .cm-s-vscode-dark .cm-string-2 {color: #6A8759} */

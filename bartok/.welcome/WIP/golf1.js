@@ -1,3 +1,5 @@
+prism = prism || console.info;
+
 console.info(`
 You are given a list of jobs to be done, where each job is represented by a start time and end time. Two jobs are compatible if they don't overlap. Find the largest subset of compatible jobs.
 
@@ -70,7 +72,7 @@ graphFrame.style.marginTop = '-25px';
 document.body.appendChild(graphFrame)
 
 
-console.log(maxCompat.toString())
+prism('javascript', maxCompat.toString())
 
 console.info(`INPUT:\n\t[  [${input.join('],  [')}]  ]`);
 console.info('ANSWER:\n\t[  [' + maxCompat(input).join('],  [') + ']  ]');

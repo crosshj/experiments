@@ -244,8 +244,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
   border-width: 0;
   background: transparent;
-  font-family: inherit;
-  font-size: inherit;
+  /* font-family: inherit; */
+  /* font-size: inherit; */
+  font-size: 1.08em;
   margin: 0;
   white-space: pre;
   word-wrap: normal;
