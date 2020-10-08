@@ -42,44 +42,37 @@
 
   <script>
     // https://stuk.github.io/jszip/documentation/examples.html
+    const getZipContent = (location) => new Promise((resolve, reject) => 
+        JSZipUtils.getBinaryContent(location, (err, data) => resolve([err, data]) )
+    );
 
     (async () => {
       let zipLocation = document.location.href.replace('/::preview::/', '');
       const isZip = zipLocation.split('.').pop() === 'zip';
+      if(!isZip) zipLocation = '../examples/image/bartok-logo.zip'
 
-      if(!isZip){
-        console.log('NOT A ZIP');
-        zipLocation = '../examples/image/bartok-logo.zip'
-      }
-      console.log({ zipLocation })
-      const content = await new JSZip.external.Promise(function (resolve, reject) {
-        JSZipUtils.getBinaryContent(zipLocation, function(err, data) {
-          if (err)return reject(err);
-          resolve(data);
-        });
-      });
-      
+      const [ contentError, content ] = await getZipContent(zipLocation);
+      if(contentError) return console.error('could not get zip content');
+
       const { files, comment, root } = await new JSZip().loadAsync(content)
-      
-      console.log({ files, comment, root });
-      
+
       document.body.innerHTML = `
-      <span>comment: ${comment||''}</span>
-      <span>root: ${root||''}</span>
-      <table>
-        <tr><th>filename</th><th>date</th></tr>
-        ${ Object.entries(files).map(([key, value]) => {
-          return `
-            <tr>
-              <td>${value.name}</td>
-              <td>${value.date.toLocaleString("en")}</td>
-            </tr>
-          `
-          }).sort().join('\n')
-        }
-      </table>
-      `.replace(new RegExp('      ', 'g'), '');
-      
-    })()
+        <span>comment: ${comment||''}</span>
+        <span>root: ${root||''}</span>
+        <table>
+          <tr><th>filename</th><th>date</th></tr>
+          ${ Object.entries(files).map(([key, value]) => {
+            return `
+              <tr>
+                <td>${value.name}</td>
+                <td>${value.date.toLocaleString("en")}</td>
+              </tr>
+            `
+            }).sort().join('\n')
+          }
+        </table>
+      `.replace(new RegExp('        ', 'g'), '');
+
+    })();
   </script>
 </html>

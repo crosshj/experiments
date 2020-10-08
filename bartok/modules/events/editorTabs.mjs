@@ -4,7 +4,7 @@ let tabs = [];
 
 function clearLastTab({ tabs, removeTab }){
 	const lastTab = tabs[tabs.length - 1];
-	if(lastTab.changed) return;
+	if(lastTab.changed || lastTab.touched) return;
 	tabs = tabs.filter(t => t.id !== lastTab.id);
 	removeTab(lastTab);
 	return { tabs, cleared: lastTab };
@@ -54,9 +54,6 @@ function triggerCloseTab(event, fileCloseTrigger){
 	});
 
 }
-
-
-
 
 const fileCloseHandler = ({
 	event, updateTab, removeTab
@@ -178,7 +175,7 @@ const operationDoneHandler = ({
 }) => {
 	const { op, id, result=[] } = event.detail || '';
 	if(op === "update"){
-		tabs.forEach(t => delete t.changed);
+		tabs.forEach(t => { if(t.changed) t.touched=true; delete t.changed; });
 		tabs.map(updateTab);
 		return;
 	}

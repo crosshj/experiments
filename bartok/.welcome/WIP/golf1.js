@@ -1,5 +1,4 @@
-/*
-
+console.info(`
 You are given a list of jobs to be done, where each job is represented by a start time and end time. Two jobs are compatible if they don't overlap. Find the largest subset of compatible jobs.
 
 For example, given the following jobs (there is no guarantee that jobs will be sorted):
@@ -13,17 +12,15 @@ For example, given the following jobs (there is no guarantee that jobs will be s
 [6, 10],
 [8, 11]]
 
-
 Return:
+
 [[1, 4],
 [4, 7],
 [8, 11]]
-
-*/
+`.trim())
 
 /*
 // what I'd really like to do:
-
 function maxCompat(input){
     const graph = input
         .toGraph(([a, b], [a2, b2]) => b <= a2);
@@ -42,14 +39,12 @@ function maxCompat(input) {
         (a1[0] < a2[1] && a1[0] > a2[0]) ||
         (a1[1] < a2[1] && a1[1] > a2[0]) ||
         (!r && intersect(a2, a1, true));
-
     const noInt = input.map(x => input.filter(y => !intersect(x, y)));
     const friend = input
         .map(x => noInt
             .map((y, i) => y
                 .some(z => z[0] === x[0] && z[1] === x[1]) ? i : null)
             .filter(q => q !== null));
-
     return input
         .map((x, i) => ({
             self: x,
@@ -64,3 +59,18 @@ function maxCompat(input) {
         }, [])
         .sort((a, b) => a[0] - b[0]);
 }
+
+const graphFrame = document.createElement('iframe');
+graphFrame.src = 'golf1.graph.json/::preview::/';
+graphFrame.style.width = 'calc(100% + 10px)';
+graphFrame.style.marginLeft = '-5px';
+graphFrame.height = '450px';
+graphFrame.style.border = 'none';
+graphFrame.style.marginTop = '-25px';
+document.body.appendChild(graphFrame)
+
+
+console.log(maxCompat.toString())
+
+console.info(`INPUT:\n\t[  [${input.join('],  [')}]  ]`);
+console.info('ANSWER:\n\t[  [' + maxCompat(input).join('],  [') + ']  ]');

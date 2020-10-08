@@ -1,5 +1,5 @@
 {
-  github.com/kanaka/pascal.js
+  http://kanaka.github.io/pascal.js/
   also awesome - https://github.com/kripken/llvm.js
 }
 program Fibonacci;     

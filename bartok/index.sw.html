@@ -389,6 +389,20 @@
     });
   } else {
     loadUI();
+    setTimeout(() => {
+      try {
+        const originalBSonEvent = ___browserSync___.socket.onevent;
+        ___browserSync___.socket.onevent = (...args) => {
+          console.warn('browsersync wants a reload; but will not get it until it tells me what files changed!');
+          return false;
+          //debugger;
+          //return originalBSonEvent.bind(___browserSync___.socket)(...args);
+        }
+      } catch(e) {
+        console.warn('browsersync not present; is this prod?');
+      }
+    }, 2000);
+
   }
 </script>
 

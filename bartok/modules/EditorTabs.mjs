@@ -1,6 +1,8 @@
 import { attachListener } from './events/editorTabs.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
 
+let triggers = {};
+
 function log(){
 	return console.log.call(null, arguments.map(x =>
 		JSON.stringify(x, null, 2)
@@ -144,6 +146,7 @@ const createTab = (parent, init) => (tabDef) => {
 		tab.classList.remove('new');
 	}
 	tabDef.changed && tab.classList.add('changed');
+	tabDef.touched && tab.classList.add('touched');
 
 	const fileType = getFileType(tabDef.name);
 	let systemType, systemName, systemClass;
@@ -209,6 +212,13 @@ const updateTab = (parent) => (tabDef) => {
 	if(!tabDef.changed && child.classList.contains('changed')){
 		child.classList.remove('changed');
 	}
+
+	if(!tabDef.touched && child.classList.contains('touched')){
+		child.classList.remove('touched');
+	}
+	if(tabDef.touched){
+		child.classList.add('touched');
+	}
 };
 
 const removeTab = (parent) => async (tabDef) => {
@@ -239,9 +249,7 @@ const scrollHorizontally = (el) => function (e) {
 }
 
 function attachWheel(el) {
-  if (!el) {
-    return;
-  }
+  if (!el) return;
 
   if (el.addEventListener) {
     el.addEventListener('mousewheel', scrollHorizontally(el), { passive: true });
@@ -249,6 +257,11 @@ function attachWheel(el) {
   } else {
     el.attachEvent('onmousewheel', scrollHorizontally(el));
   }
+}
+
+function attachDoubleClick(el){
+	if (!el) return;
+	el.addEventListener("dblclick", e => triggers.newFile(e));
 }
 
 const initTabs = (parent) => (tabDefArray=[]) => {
@@ -259,6 +272,7 @@ const initTabs = (parent) => (tabDefArray=[]) => {
 	setTimeout(() => {
 		const tabs = document.querySelector('#editor-tabs');
 		attachWheel(tabs);
+		attachDoubleClick(tabs);
 		const activeTab = document.querySelector('#editor-tabs-container .active');
 		if(activeTab){
 			activeTab.scrollIntoView();
@@ -301,6 +315,9 @@ function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 				background: #ffffff20;
 				display: none;
 			}
+			#editor-tabs-container .tab:not(.touched):not(.changed) > span {
+				font-style: italic;
+			}
 		</style>
 		<div class="scrollable hide-native-scrollbar" id="editor-tabs-container">
 			<div id="editor-tabs" class="row no-margin">
@@ -339,8 +356,16 @@ function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 		removeTab: removeTab(tabsList)
 	});
 
+	//'modal-menu-show'
+	//'new-file-untracked
+
+	// should create a tab with untitled name
+	// should fire an event saying that a new file is created that is untracked
+	triggers.newFile = (e) => setTimeout(() => alert('not implemented'), 0);
+
 	//should not be doing this, rely on event instead!!!
 	//tabsArray && initTabs(tabsList)(tabsArray);
+
 	return tabsContainer;
 }
 

@@ -184,6 +184,14 @@ function ContextPane() {
 		}
 	});
 
+	connectListener({
+		name: 'Context Menu',
+		eventName: 'modal-menu-show',
+		listener: () => {
+			console.error('TODO: context-menu-show versus window.showMenu!');
+		}
+	});
+
 }
 
 export default ContextPane;

@@ -24,15 +24,31 @@ function triggerEvent(name){
 
 }
 
+// TODO: use this pattern instead
+// const triggers = {
+// 	'searchProject': attachTrigger({
+// 		name: 'Hot Keys',
+// 		eventName: 'searchProject',
+// 		type: 'raw'
+// 	}),
+// 	'update': attachTrigger({
+// 		name: 'Hot Keys',
+// 		eventName: 'update',
+// 		type: 'raw'
+// 	})
+// };
+
+// https://stackoverflow.com/questions/6333814/how-does-the-paste-image-from-clipboard-functionality-work-in-gmail-and-google-c
+
 function HotKeys(){
 	const useCapture = true;
 	document.addEventListener('keydown', function(event) {
-		if ((event.ctrlKey || event.metaKey) && event.key === 'F') {
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
 			triggerEvent("searchProject");
 			event.preventDefault();
 			return false;
 		}
-		if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
 			triggerEvent("update");
 			event.preventDefault();
 			return false;

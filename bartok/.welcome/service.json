@@ -18,6 +18,7 @@
       "ipynb.html": {},
       "jpeg.html": {},
       "jpg.html": {},
+      "js.html": {},
       "jsx.html": {},
       "lisp.html": {},
       "md.html": {},
@@ -89,9 +90,11 @@
         "bartok-logo.zip": {},
         "bartok-logo2.png": {},
         "BartokLogo.png": {},
+        "big_o.png": {},
         "blocks.ppm": {},
         "bottles.bmp": {},
         "crystals.bmp": {},
+        "dialogs.bmp": {},
         "example.ppm": {},
         "favicon_package2_v0.16.zip": {},
         "glitch1.png": {},
@@ -164,6 +167,7 @@
         "styles.scss": {}
       }
     },
+    "fullstackIntro.md": {},
     "hello.css": {},
     "hello.html": {},
     "index.js": {},
@@ -277,6 +281,10 @@
       "path": ".welcome/.templates/bf.html"
     },
     {
+      "name": "big_o.png",
+      "path": ".welcome/examples/image/big_o.png"
+    },
+    {
       "name": "blocks.ppm",
       "path": ".welcome/examples/image/blocks.ppm"
     },
@@ -345,6 +353,10 @@
       "path": ".welcome/examples/language/dart.dart"
     },
     {
+      "name": "dialogs.bmp",
+      "path": ".welcome/examples/image/dialogs.bmp"
+    },
+    {
       "name": "dlang.d",
       "path": ".welcome/examples/language/dlang.d"
     },
@@ -375,6 +387,10 @@
     {
       "name": "fsharp.fs",
       "path": ".welcome/examples/language/fsharp.fs"
+    },
+    {
+      "name": "fullstackIntro.md",
+      "path": ".welcome/fullstackIntro.md"
     },
     {
       "name": "gif.html",
@@ -491,6 +507,10 @@
     {
       "name": "jr.ppm",
       "path": ".welcome/examples/image/jr.ppm"
+    },
+    {
+      "name": "js.html",
+      "path": ".welcome/.templates/js.html"
     },
     {
       "name": "json.json",
