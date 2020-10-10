@@ -70,7 +70,14 @@ async function installHandler(event) {
 
 function activateHandler(event) {
 	console.log('service worker activate event');
-	self.clients.claim();
+	event.waitUntil(self.clients.claim())
+	//self.clients.claim();
+	//self.clients.matchAll({ type: 'window' })
+	// 	.then(clients => {
+	// 		for (const client of clients) {
+	// 			client.navigate(client.url);
+	// 		}
+	// 	});
 }
 
 function fetchHandler(event) {

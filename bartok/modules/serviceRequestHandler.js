@@ -1402,13 +1402,14 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
 
     async function serviceAPIRequestHandler(event) {
         console.warn('Service Request Handler - usage');
-
+        console.log(event.request.url);
 
         //TODO: should console log path here so it's known what handler is being used
         event.respondWith(
             (async () => {
                 const serviceAPIMatch = await app.find(event.request.url);
                 if (!serviceAPIMatch) {
+
                     return fetch(event.request.url);
                 }
 

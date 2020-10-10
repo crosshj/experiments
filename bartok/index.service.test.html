@@ -108,28 +108,27 @@ document.addEventListener("DOMContentLoaded", async function(event) {
                     return; // service worker not available
                 }
 
-                const registrations = await navigator.serviceWorker.getRegistrations()
+                registrations = await navigator.serviceWorker.getRegistrations()
+                clients = [];
                 for(let registration of registrations) {
-                    await registration.unregister();
+                    await registration.unregister()
                 }
 
-                document.location.reload();
+                //document.location.reload();
+
+                //https://love2dev.com/blog/how-to-uninstall-a-service-worker/
+                //https://blog.hackages.io/migrating-a-service-worker-from-an-old-domain-to-your-new-domain-69236418051c
 
                 //heavy-handed approach which forces clients to refresh
                 /*
                 for(let registration of registrations) {
-                    registration.unregister()
-                        .then(function() {
-                            return self.clients.matchAll();
-                        })
-                        .then(function(clients) {
-                            clients
-                                .forEach(client => {
-                                    if (client.url && "navigate" in client){
-                                        client.navigate(client.url);
-                                    }
-                                });
-                        });
+                    await registration.unregister()
+                    clients = await self.clients.matchAll();
+                    clients.forEach(client => {
+                        if (client.url && "navigate" in client){
+                            client.navigate(client.url);
+                        }
+                    });
                 }
                 */
             }

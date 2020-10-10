@@ -33,7 +33,7 @@
         color: #666;
     }
 
-    body:before {
+    body.withChrome:before {
         content: '';
         display: block;
         height: 35px;
@@ -45,7 +45,7 @@
         background: #1d1d1deb;
     }
 
-    body:after {
+    body.withChrome:after {
         content: '';
         display: block;
         height: 5px;
@@ -64,6 +64,10 @@
         color: #ccc;
         font-family: sans-serif;
         background: #1a1a1a;
+    }
+  
+    body.withChrome {
+        margin: 4em 20px;
     }
 
     #container {
@@ -166,9 +170,6 @@
     }
 </style>
 <style>
-    body {
-        margin: 4em 20px;
-    }
     .language-input {
         height: 200px;
     }
@@ -268,6 +269,17 @@
 </script>
 
 <script>
+    const getQueryParams = () => {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      return Object.fromEntries(urlParams.entries());
+    }
+    const query = getQueryParams();
+  if(!query.chrome || query.chrome !== "false"){
+    document.body.classList.add('withChrome');
+  }
+  
+  
     const inputDOM = document.querySelector('.language-input');
     const outputDOM = document.querySelector('.language-output');
     const appendScript = (url, callback) => {
