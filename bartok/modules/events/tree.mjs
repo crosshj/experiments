@@ -678,7 +678,7 @@ function attachListener(treeView, JSTreeView, updateTree, {
 	// triggered by Hot Key
 	attach({
 		name: 'Explorer',
-		eventName: 'operations',
+		eventName: 'ui',
 		listener: (event) => {
 			const { detail={} } = event;
 			const { operation } = detail;

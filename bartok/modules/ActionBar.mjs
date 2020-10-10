@@ -173,7 +173,7 @@ function ActionBar(){
 
 	attach({
 		name: 'ActionBar',
-		eventName: 'operations',
+		eventName: 'ui',
 		listener: (event) => {
 			const { detail={} } = event;
 			const { operation } = detail;

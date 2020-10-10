@@ -8,6 +8,8 @@ import motd from "./motd.mjs";
 import { attachEvents, connectTrigger, execCommand } from './events/terminal.mjs';
 import { templateJSX, templateSVC3, transform } from './Templates.mjs';
 
+const iframeSandboxPermissions = "allow-same-origin allow-scripts allow-popups";
+
 let EventTrigger;
 
 function _Terminal(){
@@ -187,7 +189,7 @@ function _Terminal(){
 				border: 0px;
 			}
 		</style>
-		<iframe src="${iframeUrl}"></iframe>
+		<iframe src="${iframeUrl}" sandbox="${iframeSandboxPermissions}"></iframe>
 	`;
 
 	const terminalPane = document.getElementById('terminal')
@@ -320,6 +322,7 @@ function _Terminal(){
 		}
 		previewContainer.removeChild(previewIframe);
 		previewIframe = document.createElement('iframe');
+		previewIframe.setAttribute('sandbox', iframeSandboxPermissions)
 		previewContainer.appendChild(previewIframe);
 
 		alreadyUpdatedOnce = true;

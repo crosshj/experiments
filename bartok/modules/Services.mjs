@@ -1,5 +1,7 @@
 import { attachListener } from './events/services.mjs';
 
+const unique = arr => Array.from(new Set(arr));
+
 function simpleDrag(name, el, onMouseMove){
 	let currentX, currentY;
 	let startX, startY, dragging;
@@ -554,8 +556,9 @@ function makeDraggable(el){
 }
 
 function drawRootNodes({ canvas, listeners, triggers, sidebar }) {
-	let keys = Object.keys(listeners)
-		.sort((a, b) => listeners[a].length - listeners[b].length)
+	const keyLength = k => (listeners[k]||[]).length + (triggers[k]||[]).length;
+	let keys = unique([...Object.keys(listeners), ...Object.keys(triggers)])
+		.sort((a, b) => keyLength[a] - keyLength[b])
 		.reverse();
 
 	let rippled = [];
@@ -589,7 +592,7 @@ function drawRootNodes({ canvas, listeners, triggers, sidebar }) {
 	for (var i = 0, len = keys.length; i < len; i++) {
 		const [x, y] = layout[i];
 		const children = [
-			...listeners[keys[i]],
+			...(listeners[keys[i]] || []),
 			...(triggers[keys[i]] || [])
 				.map(key => ({ key, type: 'trigger' }))
 		];
