@@ -3,6 +3,8 @@ import {
 	attach, attachTrigger
 } from './Listeners.mjs';
 
+import ext from '../../shared/icons/seti/ext.json.mjs';
+
 let execTrigger;
 let listenerQueue = [];
 
@@ -11,6 +13,35 @@ let currentFile;
 let currentFolder;
 let allServices;
 
+const sortAlg = (alg, propFn=(x=>x)) => {
+	if(alg === 'alpha'){
+		const lowSafe = (x='') => x.toLowerCase();
+		return (a, b) => {
+				if(lowSafe(propFn(a)) < lowSafe(propFn(b))) { return -1; }
+				if(lowSafe(propFn(a)) > lowSafe(propFn(b))) { return 1; }
+				return 0;
+		}
+	}
+	return (a, b) => propFn(a) - propFn(b);
+}
+
+function getFileType(fileName=''){
+	let type = 'default';
+	const extension = ((
+			fileName.match(/\.[0-9a-z]+$/i) || []
+		)[0] ||''
+	).replace(/^\./, '');
+
+	//console.log(extension)
+	if(ext[extension]){
+		type=ext[extension];
+	}
+	if(extension === 'md'){
+		type = 'info';
+	}
+	return type;
+}
+
 const flattenTree = (tree, folderPaths) => {
     const results = [];
     const recurse = (branch, parent = '/') => {
@@ -18,19 +49,19 @@ const flattenTree = (tree, folderPaths) => {
         leaves.map(key => {
             const children = Object.keys(branch[key]);
             if(!children || !children.length){
-                results.push({
-                    name: key,
-                    code: parent + key,
-                    path: parent + key
-                });
+							results.push({
+									name: key,
+									code: parent + key,
+									path: parent + key
+							});
             } else {
-				if(folderPaths){
-					results.push({
-						name: key,
-						path: parent + key
-					});
-				}
-                recurse(branch[key], `${parent}${key}/`);
+							if(folderPaths){
+								results.push({
+									name: key,
+									path: parent + key
+								});
+							}
+              recurse(branch[key], `${parent}${key}/`);
             }
         });
     };
@@ -54,6 +85,14 @@ function getDefaultFile(service){
 	} catch(e){}
 	return defaultFile || "index.js";
 }
+
+const getCurrentServiceTree = ({ flat, folders }={}) => {
+	return flat
+	? flattenTree(currentService.tree, folders)
+		.map(({ name, path}={})=>({ name, path, type: getFileType(name) }))
+		.sort(sortAlg('alpha', x=>x.name))
+	: currentService.tree;
+};
 
 // has side effects of setting current code
 const getCurrentService = ({ pure }={}) => {
@@ -240,7 +279,8 @@ attach({
 
 export {
 	getAllServices,
-	getCodeFromService, getCurrentFile, getCurrentService,
+	getCodeFromService, getCurrentFile,
+	getCurrentService, getCurrentServiceTree,
 	getDefaultFile,
 	setCurrentService,
 	getCurrentFolder, setCurrentFolder,

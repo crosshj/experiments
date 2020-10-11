@@ -3,6 +3,8 @@ import {
 	attachTrigger as connectTrigger
 } from './Listeners.mjs';
 
+import { getCurrentServiceTree } from './state.mjs';
+
 const safe = fn => { try{ return fn(); } catch(e){} }
 
 function htmlToElement(html) {
@@ -102,9 +104,20 @@ function PaletteModal(parentEl){
 		}
 		.palette-suggest ul li {
 			padding: 3px 10px 3px 10px;
+			display: flex;
 		}
 		.palette-suggest ul li.selected {
 			background: rgba(var(--main-theme-highlight-color), 0.3);
+		}
+		.palette-file [class^="icon-"]:before {
+			width: 10px;
+		}
+		.palette-file-name {
+
+		}
+		.palette-file-path {
+			opacity: .6;
+	    padding-left: 12px;
 		}
 	</style>`;
 
@@ -113,8 +126,13 @@ function PaletteModal(parentEl){
 	};
 	const getFileItems = () => {
 		return new Promise((resolve) => {
-			const fakeResults = new Array(10).fill().map((x, i) => `icon - filename${i} - folder`);
-			setTimeout(() => resolve(fakeResults), 3000);
+			const files = getCurrentServiceTree({ flat: true, folders: false });
+			const fileList = files.map(({name, path, type}) => ({
+				name,
+				type,
+				path: path.replace('/'+name, '')
+			}));
+			resolve(fileList);
 		})
 	};
 
@@ -136,6 +154,7 @@ function PaletteModal(parentEl){
 	`.replace(/		/g,''));
 	const modalMenu = paletteModal.querySelector('.palette-menu');
 	const suggestList = paletteModal.querySelector('.palette-suggest');
+	const searchInput = modalMenu.querySelector('.palette-input input');
 
 	const modalClickListener = (event) => {
 		const modalWasClicked = modalMenu.contains(event.target);
@@ -145,8 +164,14 @@ function PaletteModal(parentEl){
 		//todo - trigger some event here
 	};
 
+	let selected;
 	const keyListener =  function(event){
 		const handler = {
+			"Enter": () => {
+				console.log(selected.innerText)
+				paletteModal.hide();
+				selected = undefined;
+			},
 			"Escape": paletteModal.hide,
 			"ArrowUp": () => {
 				const selectedEl = suggestList.querySelector('li.selected');
@@ -157,6 +182,7 @@ function PaletteModal(parentEl){
 				previous.scrollIntoView({
 					behavior: 'smooth', block: 'nearest'
 				});
+				selected = previous;
 			},
 			"ArrowDown": () => {
 				const selectedEl = suggestList.querySelector('li.selected');
@@ -167,6 +193,7 @@ function PaletteModal(parentEl){
 				next.scrollIntoView({
 					behavior: 'smooth', block: 'nearest'
 				});
+				selected = next;
 			}
 		}[event.key];
 		if(handler){
@@ -175,17 +202,58 @@ function PaletteModal(parentEl){
 			return false;
 		}
 	}
-
+	let inputChangeListener;
 	paletteModal.show = async (event) => {
-		const listHTML = arr => `<ul>${
-			arr.map((x,i) => `<li${i===0?' class="selected"':''}>${x}</li>`)
+		searchInput.value = '';
+		const listHTML = (arr, template, search) => `<ul>${
+			arr.map((x,i) => `<li${i===0?' class="selected"':''}>${template(x, search)}</li>`)
 			.join('\n')
 		}</ul>`;
 
+		const searchPallete = async () => {
+			const fileTemplate = ({ name, type, path }, search) => `
+				<div class="palette-file icon-${type}"></div>
+				<div class="palette-file-name">${name}</div>
+				<div class="palette-file-path">${path}</div>
+			`;
+			const files = await getFileItems();
+			let listEl;
+			const render = (term) => {
+				const _files = term
+					? files.filter(x => x.name.toLowerCase().includes(term.toLowerCase()))
+					: files;
+				listEl.innerHTML = listHTML(_files, fileTemplate, term);
+			};
+			const handler = (list) => {
+				listEl = list || listEl;
+				render();
+			};
+			handler.search = render;
+			return handler;
+		};
+
+		const commandPallete = async () => {
+			const commandTemplate = (command, search) => command;
+			const commands = await getCommandItems();
+			let listEl;
+			const render = (term) => {
+				const _commands = term
+					? commands.filter(x => x.toLowerCase().includes(term.toLowerCase()))
+					: commands;
+				listEl.innerHTML = listHTML(_commands, commandTemplate, term);
+			};
+			const handler = (list) => {
+				listEl = list || listEl;
+				render();
+			};
+			handler.search = render;
+			return handler;
+		};
+
 		const listHandler = {
 			"savePalette": async () => {},
-			"commandPalette": async (listEl) => listEl.innerHTML = listHTML(await getCommandItems()),
-			"searchPalette": async (listEl) => listEl.innerHTML = listHTML(await getFileItems())
+			"commandPalette": await commandPallete(),
+			"searchPalette": await searchPallete()
 		}[safe(() => event.detail.operation)];
 		if(!listHandler) return console.error(`unable to display palette for: ${event.detail}!`);
 
@@ -194,14 +262,23 @@ function PaletteModal(parentEl){
 
 		paletteModal.classList.add('open');
 		parentEl.show();
-		setTimeout(() => modalMenu.querySelector('.palette-input input').focus(), 0);
+
+		setTimeout(() => searchInput.focus(), 0);
+		inputChangeListener = (event) => {
+			listHandler.search(event.target.value);
+		};
+		searchInput.addEventListener('input', inputChangeListener);
+
 		document.body.addEventListener('click', modalClickListener, true);
 		modalMenu.addEventListener("blur", modalClickListener, true);
 		document.body.addEventListener('keydown', keyListener, true);
+
 	};
 	paletteModal.hide = (event) => {
 		parentEl.hide();
 		paletteModal.classList.remove('open');
+		searchInput.removeEventListener('input', inputChangeListener);
+		inputChangeListener = undefined;
 		document.body.removeEventListener('keydown', keyListener, true);
 		document.body.removeEventListener('click', modalClickListener, true);
 		modalMenu.removeEventListener('blur', modalClickListener, true);
