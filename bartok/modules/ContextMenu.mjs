@@ -108,33 +108,21 @@ function PaletteModal(parentEl){
 		}
 		.palette-suggest ul li.selected {
 			background: rgba(var(--main-theme-highlight-color), 0.3);
+			background: #0d3048;
 		}
 		.palette-file [class^="icon-"]:before {
 			width: 10px;
 		}
-		.palette-file-name {
-
+		.palette-suggest span { white-space:pre; }
+		.palette-suggest .highlight {
+			color: rgba(var(--main-theme-highlight-color), 1);
 		}
+		.palette-file-name {}
 		.palette-file-path {
 			opacity: .6;
 	    padding-left: 12px;
 		}
 	</style>`;
-
-	const getCommandItems = async () => {
-		return new Array(100).fill().map((x, i) => `Command ${i}`);
-	};
-	const getFileItems = () => {
-		return new Promise((resolve) => {
-			const files = getCurrentServiceTree({ flat: true, folders: false });
-			const fileList = files.map(({name, path, type}) => ({
-				name,
-				type,
-				path: path.replace('/'+name, '')
-			}));
-			resolve(fileList);
-		})
-	};
 
 	paletteModal = htmlToElement(`
 		<div id="paletteModal">
@@ -142,7 +130,7 @@ function PaletteModal(parentEl){
 			<div class="palette-menu" tabindex="-1">
 				<div class="palette-title">Title</div>
 				<div class="palette-input">
-					<input type="text">
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="">
 					<button>OK</button>
 				</div>
 				<div class="palette-progress"></div>
@@ -210,10 +198,51 @@ function PaletteModal(parentEl){
 			.join('\n')
 		}</ul>`;
 
+		const highlight = (term="", str="") => {
+			const caseMap = str.split('').map(x => x.toLowerCase() === x ? 'lower' : 'upper');
+			let html = '<span>' +
+				str.toLowerCase()
+					.split(term.toLowerCase())
+					.join(`</span><span class="highlight">${term.toLowerCase()}</span><span>`) +
+			'</span>';
+			html = html.split('');
+
+			let intag = false;
+			for (let char = 0, i=0; i < html.length; i++) {
+				const thisChar = html[i];
+				if(thisChar === '<'){
+					intag = true;
+					continue;
+				}
+				if(thisChar === '>'){
+					intag = false;
+					continue;
+				}
+				if(intag) continue;
+
+				if(caseMap[char] === 'upper'){
+					html[i] = html[i].toUpperCase();
+				}
+				char++;
+			}
+			return html.join('');
+		};
+
 		const searchPallete = async () => {
+			const getFileItems = () => {
+				return new Promise((resolve) => {
+					const files = getCurrentServiceTree({ flat: true, folders: false });
+					const fileList = files.map(({name, path, type}) => ({
+						name,
+						type,
+						path: path.replace('/'+name, '')
+					}));
+					resolve(fileList);
+				})
+			};
 			const fileTemplate = ({ name, type, path }, search) => `
 				<div class="palette-file icon-${type}"></div>
-				<div class="palette-file-name">${name}</div>
+				<div class="palette-file-name">${search ? highlight(search, name) : name}</div>
 				<div class="palette-file-path">${path}</div>
 			`;
 			const files = await getFileItems();
@@ -222,7 +251,8 @@ function PaletteModal(parentEl){
 				const _files = term
 					? files.filter(x => x.name.toLowerCase().includes(term.toLowerCase()))
 					: files;
-				listEl.innerHTML = listHTML(_files, fileTemplate, term);
+				const noMatch = [{ name: 'No matches', path: '' }];
+				listEl.innerHTML = listHTML(_files.length ? _files : noMatch, fileTemplate, term);
 			};
 			const handler = (list) => {
 				listEl = list || listEl;
@@ -233,14 +263,18 @@ function PaletteModal(parentEl){
 		};
 
 		const commandPallete = async () => {
-			const commandTemplate = (command, search) => command;
+			const getCommandItems = async () => {
+				return new Array(100).fill().map((x, i) => `Command ${i}`);
+			};
+			const commandTemplate = (command, search) => search ? highlight(search, command) : command;
 			const commands = await getCommandItems();
 			let listEl;
 			const render = (term) => {
 				const _commands = term
 					? commands.filter(x => x.toLowerCase().includes(term.toLowerCase()))
 					: commands;
-				listEl.innerHTML = listHTML(_commands, commandTemplate, term);
+				const noMatch = ['No matches'];
+				listEl.innerHTML = listHTML(_commands.length ? _commands : noMatch, commandTemplate, term);
 			};
 			const handler = (list) => {
 				listEl = list || listEl;
