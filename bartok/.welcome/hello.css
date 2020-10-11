@@ -18,7 +18,11 @@ iframe {
   /* display: none; */
 }
 
-#settle { display: none; }
+#settle {
+  /* display: none; */
+  font-size: 3em;
+  padding: 1em 0;
+}
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-corner,

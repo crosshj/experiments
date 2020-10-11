@@ -18,6 +18,44 @@ why I keep vscode open
 - [X] highlight is weird (themeing and color issues)
 - [X] no search in file
 
+2020-10-11 todo
+---------------
+- minimap
+- split editor (mutliple editor panes)
+- preview performance issues
+- javascript/modular templates (vs html-only)
+- terminal watch file
+- messaging between template and editor
+- preview hot reloading
+- dynamic/virtual files (to feed into preview)
+- settings integration with service worker
+- delay loading all services
+- delay loading service on initial load (loading all code-BAD)
+- diff view
+- improved/cleaner service map
+- system services connected to each other
+- service details in service map
+- file search connected
+- command palette commands
+- go to line number
+- working directory in terminal prompt
+- connect context menu commands
+- untracked files (Untitled-1)
+- paste image / file
+- arrange images on single image (use spritemap techniques/code)
+- clean up and connect listeners/triggers
+- hover highlighting expand/collapse indicators
+- themes: font/colors
+- automatic add vendor deps to service manifest (cached offline)
+- package storage (like package.json/node_modules)
+- all terminal commands working well (like unix)
+- git support integrated
+- share project (zip/torrent
+- one template/multiple file extensions supported 
+- import css in jsx files
+- connect action bar things
+- tabs versus spaces switching
+
 image processing
 ----------------
 - image clustering
