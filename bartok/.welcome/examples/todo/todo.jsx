@@ -20,7 +20,10 @@ const App = () => {
     <div class="app">
       <div class="container">
         <Header name="⚡ todo ⚡"/>
-        <Actions replaceAll={replaceAll} useStore={useStore}/>
+        <Actions
+          replaceAll={replaceAll}
+          useStore={useStore}
+        />
         <Body
           todos={todos}
           addTodo={addTodo}
