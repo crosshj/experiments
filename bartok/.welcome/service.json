@@ -159,17 +159,25 @@
         "windows.bat": {},
         "zig.zig": {}
       },
-      "react-todo.jsx": {},
-      "react2.jsx": {},
       "style": {
         "styles.css": {},
         "styles.less": {},
         "styles.scss": {}
+      },
+      "todo": {
+        "todo-actions.jsx": {},
+        "todo-body.jsx": {},
+        "todo-footer.jsx": {},
+        "todo-header.jsx": {},
+        "todo-state.mjs": {},
+        "todo.jsx": {},
+        "todo.scss": {}
       }
     },
     "fullstackIntro.md": {},
     "hello.css": {},
     "hello.html": {},
+    "hello.scss": {},
     "index.js": {},
     "package.json": {},
     "Readme.md": {},
@@ -190,8 +198,6 @@
       "Piksel-LIFE-20200506-191410.piskel": {},
       "preact-hyperscript.htm": {},
       "quotaIssue.js": {},
-      "react-import.css": {},
-      "react-import.jsx": {},
       "react-imported.mjs": {},
       "react-notes.md": {},
       "reveal.html": {},
@@ -461,6 +467,10 @@
       "path": ".welcome/hello.html"
     },
     {
+      "name": "hello.scss",
+      "path": ".welcome/hello.scss"
+    },
+    {
       "name": "hyperscript.js",
       "path": ".welcome/examples/language/hyperscript.js"
     },
@@ -669,28 +679,12 @@
       "path": ".welcome/.templates/rb.html"
     },
     {
-      "name": "react-import.css",
-      "path": ".welcome/WIP/react-import.css"
-    },
-    {
-      "name": "react-import.jsx",
-      "path": ".welcome/WIP/react-import.jsx"
-    },
-    {
       "name": "react-imported.mjs",
       "path": ".welcome/WIP/react-imported.mjs"
     },
     {
       "name": "react-notes.md",
       "path": ".welcome/WIP/react-notes.md"
-    },
-    {
-      "name": "react-todo.jsx",
-      "path": ".welcome/examples/react-todo.jsx"
-    },
-    {
-      "name": "react2.jsx",
-      "path": ".welcome/examples/react2.jsx"
     },
     {
       "name": "Readme.md",
@@ -787,6 +781,34 @@
     {
       "name": "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg",
       "path": ".welcome/examples/image/the-shannara-chronicles-tree-forest-guardian-tv-series.jpg"
+    },
+    {
+      "name": "todo-actions.jsx",
+      "path": ".welcome/examples/todo/todo-actions.jsx"
+    },
+    {
+      "name": "todo-body.jsx",
+      "path": ".welcome/examples/todo/todo-body.jsx"
+    },
+    {
+      "name": "todo-footer.jsx",
+      "path": ".welcome/examples/todo/todo-footer.jsx"
+    },
+    {
+      "name": "todo-header.jsx",
+      "path": ".welcome/examples/todo/todo-header.jsx"
+    },
+    {
+      "name": "todo-state.mjs",
+      "path": ".welcome/examples/todo/todo-state.mjs"
+    },
+    {
+      "name": "todo.jsx",
+      "path": ".welcome/examples/todo/todo.jsx"
+    },
+    {
+      "name": "todo.scss",
+      "path": ".welcome/examples/todo/todo.scss"
     },
     {
       "name": "typescript.ts",

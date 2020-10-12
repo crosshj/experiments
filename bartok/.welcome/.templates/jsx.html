@@ -8,7 +8,8 @@
         content="react, using preact and transpiled with babel">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
-  <base target="_blank" href="../../">
+    <script src="/shared/vendor/stylus.min.js"></script>
+    <base target="_blank" href="../../">
 </head>
 
 <style>
@@ -58,9 +59,16 @@
 
 <script>
     const codeIn = document.querySelector('code_in');
-    const codeFromComment = Array.from(codeIn.childNodes)
+    let codeFromComment = Array.from(codeIn.childNodes)
         .filter(x => x.nodeType === 8)
         .map(x => x.data).join('\n');
+    if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+      codeFromComment = `
+        import '../hello.scss';
+        function App(){ return 'hello world'; }
+      `;
+    }
+
     const inputDOM = document.getElementById('jsxScript');
     let input = inputDOM.innerText;
 
@@ -72,6 +80,9 @@
                 const h = window.h;
                 window.createClass = window.h;
                 window.createElement = window.h;
+
+                //{{ IMPORTS }}
+
                 //console.log(window.h);
         `.replace(/            /g, '');
         const obilgatory2 = `
@@ -86,28 +97,102 @@
     xfrmScript.type = "module";
     xfrmScript.id = 'jsxScriptXfrm';
 
+    const alreadyAppended = {};
     const appendScript = (url, callback) => {
         var script = document.createElement('script');
         script.crossOrigin = "anonymous";
         script.onload = callback;
         script.src = url;
-        document.head.appendChild(script);
+        document.body.appendChild(script);
     };
+
+    const appendStyleSheet = (url) => {
+        if(alreadyAppended[url]){ return; }
+        return new Promise(async (resolve, reject) => {
+            alreadyAppended[url] = true;
+            const cssBody = await (await fetch(url)).text();
+            const style = document.createElement('style');
+            style.id = 'foo'
+            //stylus.render(css, opts)
+            style.textContent = stylus.render(cssBody);
+            /*
+            const style = document.createElement('link');
+            style.rel = "stylesheet";
+            style.crossOrigin = "anonymous";
+            style.onload = resolve;
+            style.href = url;
+            */
+            document.head.appendChild(style);
+        });
+    };
+
+    function myCssPlugin() {
+      return {
+        visitor: {
+          ImportDeclaration(path) {
+            let isCss;
+            try {
+              isCss = path.node.source.value.includes('.css') ||
+                path.node.source.value.includes('.scss');
+            }catch(e){}
+            if(!isCss) return;
+            appendStyleSheet(path.node.source.value)
+            path.remove();
+            return;
+          },
+        },
+      };
+    }
+
+    const jsxToTransform = [];
+    function myJsxPlugin() {
+      return {
+        visitor: {
+          ImportDeclaration(path) {
+            let isJsx;
+            try { isJsx = path.node.source.value.includes('.jsx'); }
+            catch(e){}
+            if(!isJsx) return;
+            jsxToTransform.push(path.node);
+            path.remove();
+            return;
+          },
+        },
+      };
+    }
+    async function transformDeps(){
+      let output = [];
+      for(var i=0; i<jsxToTransform.length; i++){
+        const node = jsxToTransform[i];
+        const source = await (await fetch(node.source.value)).text();
+        output.push(
+          Babel.transform(source, {
+              plugins: [ myJsxPlugin ],
+              presets: [
+                  ["env", { "modules": false }],
+                  'react'
+              ],
+              sourceType: "module"
+          }).code.replace('export ', '')
+        );
+      }
+      return output.reverse().join('\n\n');
+    }
 
     const appendBabel = () => {
         const babelUrl = "/shared/vendor/babel.min.js";
-        const babelAppendCallback = () => {
-            const output = Babel.transform(input, {
+        const babelAppendCallback = async () => {
+            let output = Babel.transform(input, {
+                plugins: [ myCssPlugin, myJsxPlugin ],
                 presets: [
                     ["env", { "modules": false }],
                     'react'
                 ],
                 sourceType: "module"
             }).code;
-            //console.log('BABELFY!');
-            //console.log({ output });
+            output = output.replace('//{{ IMPORTS }}', '\n\n'+ await transformDeps());
             xfrmScript.innerHTML = output;
-            document.head.appendChild(xfrmScript);
+            document.body.appendChild(xfrmScript);
         };
         appendScript(babelUrl, babelAppendCallback);
     };
