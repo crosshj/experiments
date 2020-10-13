@@ -1,6 +1,16 @@
 /*
 https://stackoverflow.com/questions/490908/paste-an-image-from-clipboard-using-javascript/4400761
 https://stackoverflow.com/questions/8578136/how-to-read-a-file-on-paste-event-in-html5
+
+# arrange/pack images
+https://github.com/jakesgordon/bin-packing
+
+# metadata
+# EXIF
+https://code.flickr.net/2012/06/01/parsing-exif-client-side-using-javascript-2/
+https://github.com/exif-js/exif-js
+# steganography
+https://github.com/petereigenschink/steganography.js/
 */
 const pretty = async (thing) => await prism('javascript', JSON.stringify(thing, null, 2));
 

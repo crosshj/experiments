@@ -186,12 +186,22 @@ const SystemDocs = (section, errors) => {
 	<style>
 		#editor-system-doc {
 			font-size: inherit;
-			margin: 0 2em;
+			margin: 0;
 			display: flex;
 			flex-direction: column;
-			justify-content: center;
+			justify-content: start;
 			align-items: center;
+			height: 100%;
+			overflow: auto;
+			width: 100%;
+			padding-bottom: 100px;
 		}
+		#editor-system-doc::-webkit-scrollbar { width: 5px; height: 5px; }
+		#editor-system-doc::-webkit-scrollbar-corner,
+		#editor-system-doc::-webkit-scrollbar-track { background: transparent; }
+		#editor-system-doc:hover::-webkit-scrollbar-thumb { background: #333; }
+		#editor-system-doc::-webkit-scrollbar-thumb { background: transparent; }
+
 		#editor-system-doc h1 {
 			font-size: 1.1em;
 			font-variant: all-petite-caps;
