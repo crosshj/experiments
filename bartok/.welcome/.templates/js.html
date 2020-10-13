@@ -85,7 +85,7 @@
             document.head.appendChild(style);
         });
     };
-    const appendUrls = async (urls) => {
+    window.appendUrls = async (urls) => {
       const queue = Array.isArray(urls) ? urls : [ urls ];
       
       for(var i=0; i<queue.length; i++){
@@ -136,26 +136,32 @@
       codeFromComment = `${codeFromComment}`;
 
       console.bak = console.log;
-      console.log = (text) => {
+      console.log = (...args) => {
+        const text = args[0];
         const el = document.createElement('pre');
         el.innerText = text;
         document.body.appendChild(el);
+        console.bak(...args);
       };
 
       console.bakInfo = console.info;
-      console.info = (text) => {
-          const el = document.createElement('pre');
-          el.innerText = text;
-          el.className = "info";
-          document.body.appendChild(el);
+      console.info = (...args) => {
+        const text = args[0];
+        const el = document.createElement('pre');
+        el.innerText = text;
+        el.className = "info";
+        document.body.appendChild(el);
+        console.bakInfo(...args);
       };
 
       console.bakError = console.error;
-      console.error = (text) => {
-          const el = document.createElement('pre');
-          el.innerText = text;
-          el.className = "error";
-          document.body.appendChild(el);
+      console.error = (...args) => {
+        const text = args[0];
+        const el = document.createElement('pre');
+        el.innerText = text;
+        el.className = "error";
+        document.body.appendChild(el);
+        console.bakError(...args);
       };
 
       try {
@@ -163,8 +169,8 @@
         if(result && result.then){
           result.catch(console.error)
         }
-      } catch(e) {
-        console.error(e);
+      } catch(error) {
+        console.error({ error });
       }
   </script>
 </html>

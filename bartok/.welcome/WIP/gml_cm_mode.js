@@ -1,6 +1,6 @@
 const ohmScript = "https://unpkg.com/ohm-js@15.2.1/dist/ohm.min.js";
 
-const graphExample = `
+const gmlExample = `
   graph [
     label "Hello, I am a graph"
     comment "This is a sample graph"
@@ -59,21 +59,13 @@ const graphPEG = `
   }
 `.trim().replace(/  /g, '');
 
+//convert from GML to JSON using ohm.js
 async function Template(){
-  const appendScript = (url) => {
-      return new Promise((resolve, reject) => {
-          var script = document.createElement('script');
-          script.crossOrigin = "anonymous";
-          script.onload = resolve;
-          script.src = url;
-          document.head.appendChild(script);
-      });
-  };
-  await appendScript(ohmScript);
+  await appendUrls(ohmScript);
   //console.info(Object.keys(ohm).join('\n'))
   const g = ohm.grammar(graphPEG)
   //console.info(Object.keys(g).join('\n'))
-  const match = g.match(graphExample);
+  const match = g.match(gmlExample);
   //match.succeeded() ? console.info('Grammar Success') : console.error('Grammar Fail');
 
   const reduce = (c) => c.value().reduce((a,o) => o(a), {});
@@ -95,7 +87,8 @@ async function Template(){
     x.name = x.label;
     delete x.label;
   })
-  prism('javascript', JSON.stringify(parsed, null, 2))
+  const message = '// GML -> JSON\n\n';
+  prism('javascript', message + JSON.stringify(parsed, null, 2))
 }
 
 async function Syntax(){
