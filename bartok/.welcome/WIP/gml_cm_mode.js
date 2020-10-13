@@ -92,6 +92,9 @@ async function Template(){
 }
 
 async function Syntax(){
+  // https://codemirror.net/demo/simplemode.html
+
+
   const CodeMirror = {
     defineMode: () => {},
     defineSimpleMode: () => {}

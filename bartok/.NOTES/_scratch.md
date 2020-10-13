@@ -51,7 +51,7 @@ why I keep vscode open
 - all terminal commands working well (like unix)
 - git support integrated
 - share project (zip/torrent
-- one template/multiple file extensions supported 
+- one template/multiple file extensions supported
 - import css in jsx files
 - connect action bar things
 - tabs versus spaces switching
@@ -617,6 +617,11 @@ UNSORTED
 - support:
   Rust, Julia, Swift, APL, ML, lisp, C#, OCaml, F#, other??
   https://codemirror.net/mode/index.html
+    - apl:
+      - https://codemirror.net/mode/apl/index.html
+      - http://microapl.com/apl_help/ch_000_030.htm
+      - https://www.gnu.org/software/apl/apl.html
+      - https://github.com/PlanetAPL/gnu-apl/blob/master/README-3-keyboard
 
 - color picker in file edit mode
 

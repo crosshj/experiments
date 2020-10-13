@@ -1165,9 +1165,24 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
 
 
     app.post('/service/change', async (params, event) => {
+        let jsonData;
         try {
-            const body = await event.request.json();
-            const { path, code } = body;
+            const clonedRequest = event.request.clone();
+            jsonData = await clonedRequest.json();
+        } catch(e) {}
+
+        let fileData;
+        try {
+            if(!jsonData){
+                const formData = await event.request.formData();
+                jsonData = JSON.parse(formData.get('json'));
+                fileData = formData.get('file');
+            }
+        } catch(e) {}
+
+        try {
+            let { path, code } = jsonData;
+            if(fileData){ code = fileData || ''; }
             //TODO: in the future (maybe) store these changes to a change holding area
 
             //HOLDING AREA FOR CHANGES
@@ -1176,9 +1191,12 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             //UPDATE PROVIDER (should maybe only happen in /service/update/:id? )
             // const serviceName = path.split('/').slice(1, 2).join('');
             // await providerFileChange({ path, code, metaStore, serviceName });
-
-            return JSON.stringify({ result: { path, code }}, null,2)
-        } catch(e){
+            const metaData = () => ''; //TODO
+            return JSON.stringify({ result: {
+                path,
+                code: fileData ? metaData(fileData) : code
+            }}, null,2)
+        } catch(error) {
             return JSON.stringify({ error }, null, 2);
         }
     });
