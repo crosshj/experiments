@@ -15,7 +15,7 @@ https://github.com/exif-js/exif-js
 https://github.com/petereigenschink/steganography.js/
 
 
-*** pasting image does not result in file being saved in provider ***
+*** pasting image does not result in file being saved in provider OR being created in current service tree ***
 
 */
 

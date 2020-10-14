@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" id="html">
   <head>
     <title></title>
     <meta charset="utf-8">
@@ -13,8 +13,20 @@
   <style>
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #888; }
-    ::-webkit-scrollbar-thumb:hover { background: #555; }
+    ::-webkit-scrollbar-thumb { background-color: transparent; }
+    ::-webkit-scrollbar-thumb:hover { background: #2a2a2a; }
+    body:hover::-webkit-scrollbar-thumb { background-color:#555 }
+    
+    /* fix hover in body margins- ugh */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
     body {
       margin: 3em 1em;
       color: #bbb;
@@ -100,6 +112,14 @@
         }
         console.error('error appendUrl: ' + url);
       }
+    }
+    
+    window.htmlToElement = function htmlToElement(html) {
+      var template = document.createElement('template');
+      html = html.trim(); // Never return a text node of whitespace as the result
+      template.innerHTML = html;
+      //also would be cool to remove indentation from all lines
+      return template.content.firstChild;
     }
 
     const prismUrls = [

@@ -697,7 +697,9 @@ syntax highlighting, etc
 - http://www.digibarn.com/collections/posters/tongues/tongues.jpg
 
 #### languages
-- https://github.com/drujensen/fib - fibonacci in a lot of languages
+- fibonacci in a lot of languages
+  - https://rosettacode.org/wiki/Fibonacci_sequence
+  - https://github.com/drujensen/fib
 - https://learnworthy.net/top-10-most-popular-language-of-2019-according-to-github/
 - https://madnight.github.io/githut/#/pull_requests/2020/2
 
@@ -720,18 +722,18 @@ most popular:
   - [X] C#
   - [X] C++
   - [X] TypeScript
-  - Shell
-  - C
+  - [ ] Shell
+  - [ ] C
   - [X] Ruby
 
 fast growth:
   - [X] Dart         532%
   - [X] Rust         235%
-  - HCL          213% (config)
+  - [ ] HCL          213% (config)
   - [X] Kotlin       182%
   - [X] TypeScript   161%
-  - PowerShell   154%
-  - Apex         154% (salesforce)
+  - [ ] PowerShell   154%
+  - [ ] Apex         154% (salesforce)
   - [X] Python       151%
-  - Assembly     149%
+  - [ ] Assembly     149%
   - [X] Go           147%
