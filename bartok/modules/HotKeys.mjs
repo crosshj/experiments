@@ -52,6 +52,218 @@ function triggerEvent(type, name){
 function HotKeys(){
 	const useCapture = true;
 	document.addEventListener('keydown', function(event) {
+
+		if (event.shiftKey && event.altKey && event.key === 'ArrowLeft') {
+			triggerEvent("ui", "prevDocument");
+			event.preventDefault();
+			return false;
+		}
+		if (event.shiftKey && event.altKey && event.key === 'ArrowRight') {
+			triggerEvent("ui", "nextDocument");
+			event.preventDefault();
+			return false;
+		}
+
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
+			triggerEvent("ui", "searchProject");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "commandPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "searchPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+			triggerEvent("operations", "update");
+			event.preventDefault();
+			return false;
+		}
+		if (event.ctrlKey && event.which === 9) {
+			// this will only work with electron
+			triggerEvent("nextTab");
+			event.preventDefault();
+			return false;
+		}
+	}, useCapture);
+	document.addEventListener('keydown', function(event) {
+
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowLeft') {
+			triggerEvent("ui", "prevDocument");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowRight') {
+			triggerEvent("ui", "nextDocument");
+			event.preventDefault();
+			return false;
+		}
+
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
+			triggerEvent("ui", "searchProject");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "commandPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "searchPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+			triggerEvent("operations", "update");
+			event.preventDefault();
+			return false;
+		}
+		if (event.ctrlKey && event.which === 9) {
+			// this will only work with electron
+			triggerEvent("nextTab");
+			event.preventDefault();
+			return false;
+		}
+	}, useCapture);
+	document.addEventListener('keydown', function(event) {
+
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowLeft') {
+			triggerEvent("ui", "prevDocument");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowRight') {
+			triggerEvent("ui", "nextDocument");
+			event.preventDefault();
+			return false;
+		}
+
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
+			triggerEvent("ui", "searchProject");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "commandPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "searchPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+			triggerEvent("operations", "update");
+			event.preventDefault();
+			return false;
+		}
+		if (event.ctrlKey && event.which === 9) {
+			// this will only work with electron
+			triggerEvent("nextTab");
+			event.preventDefault();
+			return false;
+		}
+	}, useCapture);
+	document.addEventListener('keydown', function(event) {
+
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowLeft') {
+			triggerEvent("ui", "prevDocument");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowRight') {
+			triggerEvent("ui", "nextDocument");
+			event.preventDefault();
+			return false;
+		}
+
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
+			triggerEvent("ui", "searchProject");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "commandPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "searchPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+			triggerEvent("operations", "update");
+			event.preventDefault();
+			return false;
+		}
+		if (event.ctrlKey && event.which === 9) {
+			// this will only work with electron
+			triggerEvent("nextTab");
+			event.preventDefault();
+			return false;
+		}
+	}, useCapture);
+	document.addEventListener('keydown', function(event) {
+
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowLeft') {
+			triggerEvent("ui", "prevDocument");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowRight') {
+			triggerEvent("ui", "nextDocument");
+			event.preventDefault();
+			return false;
+		}
+
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
+			triggerEvent("ui", "searchProject");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "commandPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'p') {
+			triggerEvent("ui", "searchPalette");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+			triggerEvent("operations", "update");
+			event.preventDefault();
+			return false;
+		}
+		if (event.ctrlKey && event.which === 9) {
+			// this will only work with electron
+			triggerEvent("nextTab");
+			event.preventDefault();
+			return false;
+		}
+	}, useCapture);
+	document.addEventListener('keydown', function(event) {
+
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowLeft') {
+			triggerEvent("ui", "prevDocument");
+			event.preventDefault();
+			return false;
+		}
+		if ((event.ctrlKey || event.metaKey) && event.altKey && event.key === 'ArrowRight') {
+			triggerEvent("ui", "nextDocument");
+			event.preventDefault();
+			return false;
+		}
+
 		if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'f') {
 			triggerEvent("ui", "searchProject");
 			event.preventDefault();

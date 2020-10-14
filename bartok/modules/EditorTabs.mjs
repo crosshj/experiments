@@ -361,7 +361,7 @@ function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 
 	// should create a tab with untitled name
 	// should fire an event saying that a new file is created that is untracked
-	triggers.newFile = (e) => setTimeout(() => alert('not implemented'), 0);
+	triggers.newFile = (e) => setTimeout(() => console.warn('new file: not implemented'), 0);
 
 	//should not be doing this, rely on event instead!!!
 	//tabsArray && initTabs(tabsList)(tabsArray);

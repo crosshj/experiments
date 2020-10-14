@@ -263,7 +263,28 @@ const systemDocsHandler = ({
 	});
 }
 
+const uiHandler = ({ event, triggers, updateTab }) => {
+	const { fileSelect } = triggers;
+	const { detail } = event;
+	const { operation } = detail;
+	const doHandle = {
+		'prevDocument': () => {
+			// TODO: determine what tab is previous
+			// fileSelect it
+			console.warn('prevDocument: not implemented!')
+		},
+		'nextDocument': () => {
+			// TODO: determine what tab is next
+			// fileSelect it
+			console.warn('nextDocument: not implemented!')
+		},
+	}[operation];
+	if(!doHandle) return;
+	doHandle();
+};
+
 const handlers = {
+	'ui': uiHandler,
 	'click': clickHandler,
 	'fileSelect': fileSelectHandler,
 	'fileClose': fileCloseHandler,
@@ -300,6 +321,12 @@ function attachListener(
 			event, container, initTabs, createTab, updateTab, removeTab, showMenu, triggers
 		});
 	};
+
+	attach({
+		name: 'Tab Bar',
+		eventName: 'ui',
+		listener
+	});
 
 	attach({
 		name: 'Tab Bar',

@@ -86,13 +86,13 @@ https://github.com/kripken/sql.js
 </style>
 
 <script>
-    const scriptUrl = "https://sql-js.github.io/sql.js/dist/sql-wasm.js";
+    const scriptUrl = "/shared/vendor/sql-wasm.js";
 
     (async () => {
         const { code, doEach, doAfter } = await letsGo(scriptUrl);
 
         try {
-            await initSqlJs({ locateFile: filename => `https://sql-js.github.io/sql.js/dist/${filename}` });
+            const SQL = await initSqlJs({ locateFile: filename => `/shared/vendor/${filename}` });
             const db = new SQL.Database();
             const result = db.exec(code);
             const mappedResult = result[0].values

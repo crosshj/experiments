@@ -160,7 +160,7 @@ const TreeMenu = () => {
 	_treeMenu.addEventListener('click', (e) => {
 		if(!_treeMenu.contains(e.target)) return;
 		if(e.target.tagName === "A" && e.target.className.includes('codicon-toolbar-more')){
-			alert('not implemented');
+			console.warn('toolbar-more: not implemented');
 			e.preventDefault();
 			return false;
 		}

@@ -523,7 +523,6 @@ function ContextPane() {
 			const { detail } = event;
 			const toHandle = ["savePalette", "commandPalette", "searchPalette"];
 			if(!toHandle.includes(detail.operation)) return;
-			// alert(`${detail.operation}: not implemented`)
 			paletteModal.show(event);
 		}
 	});

@@ -742,12 +742,12 @@ function attachListener(treeView, JSTreeView, updateTree, {
 	attach({
 		name: 'Explorer',
 		eventName: 'new-file',
-		listener: () => alert('new-file handler not implemented, use right click menu')
+		listener: () => console.warn('new-file handler not implemented, use right click menu')
 	});
 	attach({
 		name: 'Explorer',
 		eventName: 'new-folder',
-		listener: () => alert('new-folder handler not implemented, use right click menu')
+		listener: () => console.warn('new-folder handler not implemented, use right click menu')
 	});
 }
 
