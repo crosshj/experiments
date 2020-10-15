@@ -17,6 +17,10 @@ example tasks
 - something, something probabily/statistics with it
 - fractal deformation of it
 
+some libs:
+  - http://borischumichev.github.io/everpolate/
+  - ...
+
 */
 
 
