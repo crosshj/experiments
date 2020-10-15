@@ -15,7 +15,7 @@ https://github.com/exif-js/exif-js
 https://github.com/petereigenschink/steganography.js/
 
 
-*** pasting image does not result in file being saved in provider OR being created in current service tree ***
+*** pasting image does not result in file being saved in provider***
 
 */
 
@@ -26,7 +26,9 @@ async function saveImageToService(item){
   const changeUrl = '/bartok/service/change';
   const body = {
     code: '',
-    path: './.welcome/paste-image.png'
+    path: './.welcome/paste-image.png',
+    service: '.welcome',
+    command: 'upsert'
   };
   const formData  = new FormData();
   formData.append('json', JSON.stringify(body, null, 2));

@@ -138,7 +138,8 @@ https://codemirror.net/mode/stylus/index.html
           ImportDeclaration(path) {
             let isCss;
             try {
-              isCss = path.node.source.value.includes('.css') ||
+              isCss = path.node.source.value.includes('.css')||
+                path.node.source.value.includes('.styl') ||
                 path.node.source.value.includes('.scss');
             }catch(e){}
             if(!isCss) return;

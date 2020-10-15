@@ -1,6 +1,7 @@
 {
   http://kanaka.github.io/pascal.js/
   also awesome - https://github.com/kripken/llvm.js
+  - https://badassjs.com/post/39573969361/llvmjs-llvm-itself-compiled-to-javascript-via
 }
 program Fibonacci;     
 var

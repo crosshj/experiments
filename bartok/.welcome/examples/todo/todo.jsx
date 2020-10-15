@@ -1,4 +1,4 @@
-import './todo.scss';
+import './todo.styl';
 
 import { Header } from './todo-header.jsx';
 import { Body } from './todo-body.jsx';

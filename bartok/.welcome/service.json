@@ -117,6 +117,7 @@
       },
       "language": {
         "ada.adb": {},
+        "apl.apl": {},
         "assemblyscript.as": {},
         "brainfuck.bf": {},
         "clojure.cljs": {},
@@ -162,7 +163,8 @@
       "style": {
         "styles.css": {},
         "styles.less": {},
-        "styles.scss": {}
+        "styles.scss": {},
+        "styles.styl": {}
       },
       "todo": {
         "todo-actions.jsx": {},
@@ -171,7 +173,7 @@
         "todo-header.jsx": {},
         "todo-state.mjs": {},
         "todo.jsx": {},
-        "todo.scss": {}
+        "todo.styl": {}
       }
     },
     "fullstackIntro.md": {},
@@ -180,6 +182,7 @@
     "hello.scss": {},
     "index.js": {},
     "package.json": {},
+    "paste-image.png": {},
     "Readme.md": {},
     "service.json": {},
     "WIP": {
@@ -188,17 +191,23 @@
       "color-picker.html": {},
       "css-3d.html": {},
       "css-doodle.html": {},
+      "gml_cm_mode.js": {},
+      "golden-layout.css": {},
+      "golden-layout.js": {},
       "golf1.graph.json": {},
       "golf1.js": {},
       "golf2.js": {},
       "graph-formats.md": {},
       "isomorphic-git.html": {},
       "language-sql-fetch.html": {},
+      "mathematics.css": {},
+      "mathematics.js": {},
       "open.folder.html": {},
+      "paste-image.css": {},
+      "paste-image.js": {},
       "Piksel-LIFE-20200506-191410.piskel": {},
       "preact-hyperscript.htm": {},
       "quotaIssue.js": {},
-      "react-imported.mjs": {},
       "react-notes.md": {},
       "reveal.html": {},
       "slides-reveal.htm": {},
@@ -241,6 +250,10 @@
     {
       "name": "angular9.html",
       "path": ".welcome/WIP/angular9.html"
+    },
+    {
+      "name": "apl.apl",
+      "path": ".welcome/examples/language/apl.apl"
     },
     {
       "name": "as.html",
@@ -411,12 +424,24 @@
       "path": ".welcome/.templates/gltf.html"
     },
     {
+      "name": "gml_cm_mode.js",
+      "path": ".welcome/WIP/gml_cm_mode.js"
+    },
+    {
       "name": "go.html",
       "path": ".welcome/.templates/go.html"
     },
     {
       "name": "golang.go",
       "path": ".welcome/examples/language/golang.go"
+    },
+    {
+      "name": "golden-layout.css",
+      "path": ".welcome/WIP/golden-layout.css"
+    },
+    {
+      "name": "golden-layout.js",
+      "path": ".welcome/WIP/golden-layout.js"
     },
     {
       "name": "golf1.graph.json",
@@ -587,6 +612,14 @@
       "path": ".welcome/examples/document/markdown2.md"
     },
     {
+      "name": "mathematics.css",
+      "path": ".welcome/WIP/mathematics.css"
+    },
+    {
+      "name": "mathematics.js",
+      "path": ".welcome/WIP/mathematics.js"
+    },
+    {
       "name": "md.html",
       "path": ".welcome/.templates/md.html"
     },
@@ -613,6 +646,18 @@
     {
       "name": "pascal.pas",
       "path": ".welcome/examples/language/pascal.pas"
+    },
+    {
+      "name": "paste-image.css",
+      "path": ".welcome/WIP/paste-image.css"
+    },
+    {
+      "name": "paste-image.js",
+      "path": ".welcome/WIP/paste-image.js"
+    },
+    {
+      "name": "paste-image.png",
+      "path": ".welcome/paste-image.png"
     },
     {
       "name": "perl.pl",
@@ -677,10 +722,6 @@
     {
       "name": "rb.html",
       "path": ".welcome/.templates/rb.html"
-    },
-    {
-      "name": "react-imported.mjs",
-      "path": ".welcome/WIP/react-imported.mjs"
     },
     {
       "name": "react-notes.md",
@@ -751,6 +792,10 @@
       "path": ".welcome/examples/style/styles.scss"
     },
     {
+      "name": "styles.styl",
+      "path": ".welcome/examples/style/styles.styl"
+    },
+    {
       "name": "svcv3.html",
       "path": ".welcome/.templates/svcv3.html"
     },
@@ -807,8 +852,8 @@
       "path": ".welcome/examples/todo/todo.jsx"
     },
     {
-      "name": "todo.scss",
-      "path": ".welcome/examples/todo/todo.scss"
+      "name": "todo.styl",
+      "path": ".welcome/examples/todo/todo.styl"
     },
     {
       "name": "typescript.ts",

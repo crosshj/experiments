@@ -1,6 +1,7 @@
 <!-- no-select -->
 <br>
 
+# mirrors thought/code experiment
 
 ### model each person as an imperfect "mirror" of self and environment
   - overall level of imperfection may vary by individual

@@ -1,12 +1,57 @@
 <!DOCTYPE html>
 <html>
-  <head></head>
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <base target="_blank" href="../../">
+  </head>
 
   <style>
-    body{ margin: 3em; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #888; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
+    body {
+      margin: 3em 1em;
+      color: #bbb;
+      font-family: sans-serif;
+      background: #1d1d1d;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: start;
+    }
+    span, table { width: 100%; background: #8881; padding: 1em; box-sizing: border-box; }
+    table tr th { text-align: left; font-weight: normal; padding-bottom: 1em; }
+    table tr td:last-child,
+    table tr th:last-child { text-align: center; }
+    span, table { margin-bottom: 2em; }
+    a {
+      color: #5a8;
+    }
+    button {
+      color: inherit;
+      border: 1px solid;
+      background: transparent;
+      min-width: 15em;
+      margin-bottom: 2em;
+      padding: 10px;
+    }
+    button:hover {
+       background: #8888;
+      color: #ccc;
+    }
+    button:focus { outline: none; }
   </style>
 
   <body>
+    <p>
+      Also see. <a href="http://localhost:3222/bartok/.welcome/.templates/zip.html/::preview::/">../.templates/zip.html</a>
+    </p>
     <button id="downloadZip">Download ZIP</button>
     <button id="uploadZip" onclick="alert('not implemented!')">Upload ZIP</button>
     <button id="downloadCanvasZip" onclick="alert('not implemented!')">Download Canvas ZIP</button>

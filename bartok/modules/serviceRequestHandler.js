@@ -39,6 +39,19 @@ const flattenTree = (tree) => {
     return results;
 };
 
+const treeInsertFile = (path, tree) => {
+    const splitPath = path.split('/')
+        .filter(x => !!x && x !== '.');
+    const newTree = JSON.parse(JSON.stringify(tree));
+    let currentPointer = newTree;
+    splitPath.forEach(x => {
+        currentPointer[x] = currentPointer[x] || {};
+        currentPointer = currentPointer[x];
+    });
+    return newTree;
+}
+
+
 const unique = (array, fn) => {
     const result = [];
     const map = new Map();
@@ -1181,16 +1194,20 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
         } catch(e) {}
 
         try {
-            let { path, code } = jsonData;
+            let { path, code, command, service } = jsonData;
             if(fileData){ code = fileData || ''; }
-            //TODO: in the future (maybe) store these changes to a change holding area
 
-            //HOLDING AREA FOR CHANGES
             await store.setItem(path, code);
 
-            //UPDATE PROVIDER (should maybe only happen in /service/update/:id? )
-            // const serviceName = path.split('/').slice(1, 2).join('');
-            // await providerFileChange({ path, code, metaStore, serviceName });
+            if(command === 'upsert'){
+                const serviceToUpdate = await metaStore.iterate((value, key) => {
+                    if(value.name === service ) return value;
+                    return;
+                });
+                serviceToUpdate.tree = treeInsertFile(path, serviceToUpdate.tree);
+                await metaStore.setItem(serviceToUpdate.id+'', serviceToUpdate);
+            }
+
             const metaData = () => ''; //TODO
             return JSON.stringify({ result: {
                 path,
@@ -1243,6 +1260,7 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
 
             const filesToUpdate = [];
             const filesToDelete = [];
+            const binaryFiles = [];
 
             // update or create all files in update
             for (let i = 0; i < updateAsStore.length; i++) {
@@ -1256,6 +1274,7 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
                     continue;
                 }
                 if(typeof storageFile.code !== 'string'){
+                    binaryFiles.push(file);
                     continue;
                 }
                 if(file.value && file.value.code === storageFile.code){
@@ -1263,6 +1282,11 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
                 }
                 filesToUpdate.push(file);
             }
+
+            // TOFO: binary files
+            console.warn(`may need to update binary files!`);
+            console.log(binaryFiles.map(x => x.key ));
+
             // delete any storage files that are not in service
             for (let i = 0; i < allServiceFiles.length; i++) {
                 const serviceFile = allServiceFiles[i];
@@ -1277,6 +1301,7 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
                 filesToDelete.push(serviceFile.key);
             }
 
+            // update files
             for (let i = 0; i < filesToUpdate.length; i++) {
                 const update = filesToUpdate[i];
                 let code;
@@ -1290,6 +1315,7 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
                 );
                 await providerFileChange({ path: '.' + update.key,  code, parent: service });
             }
+            // delete files
             for (let i = 0; i < filesToDelete.length; i++) {
                 const key = filesToDelete[i];
                 await store.removeItem(key);

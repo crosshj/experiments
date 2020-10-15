@@ -681,9 +681,10 @@ const operations = ({ viewUpdate, getCurrentService }) => (event) => {
 		const { code } = selectedFile || {};
 		return code;
 	};
-	const contents = lastChange
+	const contents = (lastChange
 		? lastChange
-		: getFileFromService(name);
+		: getFileFromService(name)
+	) || '';
 	const hasTemplate = isSupported({ name, contents });
 	if(locked && currentFileName !== name){
 		backupForLock.currentFile = contents;

@@ -225,16 +225,24 @@ function createGraph({
     xaxis: axisConfig,
     yaxis: axisConfig
   };
+  const options = {
+    displaylogo: false,
+    responsive: true,
+    displayModeBar: false, // popover bar
+    staticPlot: true       // no hover effects
+  };
 
-  const plot = Plotly.newPlot(this[key], data, layout);
-  
+
+  const plot = Plotly.newPlot(this[key], data, layout, options);
+
+  /*
   window.addEventListener('resize', () => {
     Plotly.relayout(key, {
       width: window.innerWidth-30 > 1010 ? 1010 : window.innerWidth-30,
       height: 400
     });
   })
-  
+  */
 }
 
 
