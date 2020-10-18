@@ -102,6 +102,7 @@ image processing
 - demo driven development, versus ticket or changelog driven
 - delivery versus debt (false dichotomy?)
 - *.todo, *.slides, *.graph - all services should come with "native" support for these
+  - graphs - https://en.wikipedia.org/wiki/Category:Infographics
 - *.settings - treat settings as templated files with a common UI?
 - connect git
 	- https://github.com/isomorphic-git/isomorphic-git

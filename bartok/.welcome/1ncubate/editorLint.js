@@ -8,6 +8,11 @@ https://github.com/angelozerr/codemirror-lint-eslint - might be able to get esli
 
 https://www.unpkg.com/browse/codemirror@5.58.1/addon/lint/
 
+would be nice to:
+  - run eslint
+  - OR define rules for JSHINT in some configuration file
+  - run prettier
+  - lint before updating preview (use as protection)
 */
 
 const deps = [
