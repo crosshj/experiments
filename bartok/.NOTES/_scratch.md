@@ -641,6 +641,8 @@ UNSORTED
 - http://petercollingridge.appspot.com/svg-editor - optimizes SVGs
 
 - SVG URL Encoder (for CSS) - https://yoksel.github.io/url-encoder/
+- SVG minifier - https://www.svgminify.com/
+- SVG loading spinners - https://loading.io/spinner/
 
 - ascii text
 - http://patorjk.com/software/taag/#p=testall&f=Graffiti&t=notes

@@ -1,11 +1,3 @@
-const deps = [
-  "https://unpkg.com/html2canvas@1.0.0-alpha.12/dist/html2canvas.min.js",
-  "/shared/vendor/codemirror.js",
-  "/shared/css/codemirror.css",
-  "/shared/css/vscode.codemirror.css",
-  "/shared/vendor/codemirror/mode.bundle.js",
-];
-
 /*
 https://stackoverflow.com/questions/12652769/rendering-html-elements-to-canvas
 http://html2canvas.hertzen.com/
@@ -15,6 +7,15 @@ https://github.com/alterfan/minimap
 https://github.com/microsoft/vscode/blob/master/src/vs/editor/browser/viewParts/minimap/minimapCharRenderer.ts
 
 */
+
+const deps = [
+  '../shared.styl',
+  "https://unpkg.com/html2canvas@1.0.0-alpha.12/dist/html2canvas.min.js",
+  "/shared/vendor/codemirror.js",
+  "/shared/css/codemirror.css",
+  "/shared/css/vscode.codemirror.css",
+  "/shared/vendor/codemirror/mode.bundle.js",
+];
 
 const dummyText = (new Array(1000))
   .fill()

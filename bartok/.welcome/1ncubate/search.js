@@ -11,6 +11,8 @@ todo:
 - integrate with service request handler
 - integrate with client
 
+- would it be quicker and simpler to just parse all files line by line and return results as available?
+  - should probably ask this question on a larger(different) data set
 
 */
 const deps = [
@@ -21,7 +23,7 @@ const deps = [
 const unique = arr => Array.from(new Set(arr));
 
 (async () => {
-  const searchTerm = "default";
+  const searchTerm = "todo";
 
   await appendUrls(deps)
   const exampleService = (await (await fetch('../../service/read/779')).json()).result[0];
