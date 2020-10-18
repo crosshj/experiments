@@ -22,6 +22,7 @@ example tasks
 
 const deps = [
   "https://unpkg.com/plotly.js@1.56.0/dist/plotly.min.js",
+  "../shared.styl",
   "./mathematics.css"
 ];
 

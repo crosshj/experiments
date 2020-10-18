@@ -7,61 +7,9 @@
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
+    <script src="/shared/vendor/stylus.min.js"></script>
     <base target="_blank" href="../../">
   </head>
-
-  <style>
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background-color: transparent; }
-    ::-webkit-scrollbar-thumb:hover { background: #2a2a2a; }
-    body:hover::-webkit-scrollbar-thumb { background-color:#555 }
-    
-    /* fix hover in body margins- ugh */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
-
-    body {
-      margin: 3em 1em;
-      color: #bbb;
-      font-family: sans-serif;
-      background: #1d1d1d;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: start;
-      max-width: 1010px;
-    }
-    @media (min-width: 1024px) {
-      body {
-        margin: 3em auto;
-      }
-    }
-    pre {
-      white-space: pre-wrap;
-      width: 100%;
-      box-sizing: border-box;
-      margin: 1em auto;
-    }
-    pre.info {
-      background: #8881;
-      padding: 1em;
-    }
-    pre.error {
-      background: #f772;
-      color: #fcc;
-      padding: 1em;
-    }
-    body pre[class*="language-"] {
-      background: #242424;
-    }
-  </style>
 
   <code_in>
 <!--
@@ -72,8 +20,8 @@
   <body></body>
 
   <script>
+    const delay = ms => new Promise(res => setTimeout(res, ms));
     const alreadyAppended = {};
-
     const appendScript = (url) => {
         if(alreadyAppended[url]){ return; }
         return new Promise((resolve, reject) => {
@@ -85,6 +33,7 @@
             document.head.appendChild(script);
         });
     };
+    /*
     const appendStyleSheet = (url) => {
         if(alreadyAppended[url]){ return; }
         return new Promise((resolve, reject) => {
@@ -97,12 +46,27 @@
             document.head.appendChild(style);
         });
     };
-    window.appendUrls = async (urls) => {
-      const queue = Array.isArray(urls) ? urls : [ urls ];
-      
+    */
+    const appendStyleSheet = (url) => {
+        if(alreadyAppended[url]) return;
+        return new Promise(async (resolve, reject) => {
+            alreadyAppended[url] = true;
+            const cssBody = await (await fetch(url)).text();
+            const style = document.createElement('style');
+            style.id = 'foo-'+Math.random().toString().replace('0.','')
+            style.textContent = stylus.render(cssBody);
+            document.head.appendChild(style);
+            resolve();
+        });
+    };
+    window.appendUrls = async (urls=[]) => {
+      const queue = Array.isArray(urls)
+        ? [ ...urls ]
+        : [ urls ];
+
       for(var i=0; i<queue.length; i++){
         const url = queue[i];
-        if(url.split('.').pop() === "css"){
+        if(["css", "styl"].includes(url.split('.').pop()) ){
           await appendStyleSheet(url);
           continue;
         }
@@ -149,6 +113,7 @@
           .map(x => x.data).join('\n');
       if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
         codeFromComment = `
+          appendUrls(['../shared.styl']);
           console.info("hello world");
           prism('javascript', 'console.log("hello world")');
         `.replace(new RegExp('        ', 'g'), '');
@@ -178,7 +143,7 @@
       console.error = (...args) => {
         const text = args[0];
         const el = document.createElement('pre');
-        el.innerText = typeof text === 'object'
+        el.innerHTML = typeof text === 'object'
           ? JSON.stringify(text, null, 2)
           : text;
         el.className = "error";
@@ -186,13 +151,27 @@
         console.bakError(...args);
       };
 
+      //let AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
+      const runCode = (code) => {
+        const jsTemplateRun = new Function(`
+          try {
+            ${code}
+          } catch(e){
+            console.error({ ...e, stack: e.stack.split('\\n') });
+          }
+        `);
+        jsTemplateRun.name = "jsTemplateRun";
+        jsTemplateRun.displayName = "jsTemplateRun";
+        return jsTemplateRun();
+      }
+      
       try {
-        const result = eval(codeFromComment);
+        const result = runCode(codeFromComment);
         if(result && result.then){
           result.catch(console.error)
         }
       } catch(error) {
-        console.error({ error });
+        console.error({ ...error, message: error.message, stack: error.stack.split('\n') });
       }
   </script>
 </html>

@@ -275,11 +275,10 @@
       return Object.fromEntries(urlParams.entries());
     }
     const query = getQueryParams();
-  if(!query.chrome || query.chrome !== "false"){
-    document.body.classList.add('withChrome');
-  }
-  
-  
+    if(!query.chrome || query.chrome !== "false"){
+      document.body.classList.add('withChrome');
+    }
+
     const inputDOM = document.querySelector('.language-input');
     const outputDOM = document.querySelector('.language-output');
     const appendScript = (url, callback) => {

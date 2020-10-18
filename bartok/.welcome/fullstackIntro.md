@@ -10,8 +10,20 @@
   - think of these like sub-addresses on an ip
   - each computer has a number of ports which a program can communicate on
 
+
+<script>
+  const concepts = document.querySelector('#fundamentalconcepts')
+  concepts.style.color = '#aaf';
+</script>
+
+```javascript
+  const concepts = document.querySelector('#fundamentalconcepts')
+  concepts.style.color = '#aaf';
+```
+
 ### important commands
   - npm init
   - npm install -S express
   - node index
+
 

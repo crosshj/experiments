@@ -23,6 +23,7 @@
       "lisp.html": {},
       "md.html": {},
       "php.html": {},
+      "piskel.html": {},
       "png.html": {},
       "ppm.html": {},
       "pro.html": {},
@@ -34,6 +35,58 @@
       "svg.html": {},
       "zip.html": {}
     },
+    "1ncubate": {
+      "auth0.md": {},
+      "downloadZip.js": {},
+      "dropFile.js": {},
+      "editorLint.js": {},
+      "golden-layout.css": {},
+      "golden-layout.js": {},
+      "isomorphic-git.html": {},
+      "minimap.js": {},
+      "paste-image.css": {},
+      "paste-image.js": {},
+      "search.js": {},
+      "templateMessages.js": {},
+      "webtorrent_share.html": {},
+      "zip_project.html": {}
+    },
+    "3xplore": {
+      "golf1.graph.json": {},
+      "golf1.js": {},
+      "golf2.js": {},
+      "mathematics.css": {},
+      "mathematics.js": {},
+      "react-notes.md": {},
+      "scratch.js": {},
+      "_dimensional.md": {},
+      "_docu_fiddling.md": {},
+      "_mirrors.md": {},
+      "_sort.flashing.md": {}
+    },
+    "5ketch": {
+      "css-3d.html": {},
+      "css-doodle.html": {}
+    },
+    "5upport": {
+      "angular9.html": {},
+      "gml_cm_mode.js": {},
+      "graph-formats.md": {},
+      "language-sql-fetch.html": {},
+      "Piksel-LIFE-20200506-191410.piskel": {},
+      "preact-hyperscript.htm": {},
+      "reveal.html": {},
+      "slides-reveal.htm": {},
+      "wasm.binaryen.html": {}
+    },
+    "7ool": {
+      "color-picker.html": {},
+      "open.folder.html": {},
+      "quotaIssue.js": {},
+      "sw.clientServer.htm": {},
+      "_bartok.tools.html": {}
+    },
+    "aileen.js": {},
     "examples": {
       ".deep-folders": {
         "fee": {
@@ -185,71 +238,40 @@
     "paste-image.png": {},
     "Readme.md": {},
     "service.json": {},
-    "WIP": {
-      "angular9.html": {},
-      "auth0.md": {},
-      "color-picker.html": {},
-      "css-3d.html": {},
-      "css-doodle.html": {},
-      "gml_cm_mode.js": {},
-      "golden-layout.css": {},
-      "golden-layout.js": {},
-      "golf1.graph.json": {},
-      "golf1.js": {},
-      "golf2.js": {},
-      "graph-formats.md": {},
-      "isomorphic-git.html": {},
-      "language-sql-fetch.html": {},
-      "mathematics.css": {},
-      "mathematics.js": {},
-      "open.folder.html": {},
-      "paste-image.css": {},
-      "paste-image.js": {},
-      "Piksel-LIFE-20200506-191410.piskel": {},
-      "preact-hyperscript.htm": {},
-      "quotaIssue.js": {},
-      "react-notes.md": {},
-      "reveal.html": {},
-      "slides-reveal.htm": {},
-      "sw.clientServer.htm": {},
-      "wasm.binaryen.html": {},
-      "webtorrent_share.html": {},
-      "zip_project.html": {},
-      "_bartok.tools.html": {},
-      "_dimensional.md": {},
-      "_docu_fiddling.md": {},
-      "_mirrors.md": {},
-      "_sort.flashing.md": {}
-    }
+    "shared.styl": {}
   },
   "files": [
     {
       "name": "_bartok.tools.html",
-      "path": ".welcome/WIP/_bartok.tools.html"
+      "path": ".welcome/7ool/_bartok.tools.html"
     },
     {
       "name": "_dimensional.md",
-      "path": ".welcome/WIP/_dimensional.md"
+      "path": ".welcome/3xplore/_dimensional.md"
     },
     {
       "name": "_docu_fiddling.md",
-      "path": ".welcome/WIP/_docu_fiddling.md"
+      "path": ".welcome/3xplore/_docu_fiddling.md"
     },
     {
       "name": "_mirrors.md",
-      "path": ".welcome/WIP/_mirrors.md"
+      "path": ".welcome/3xplore/_mirrors.md"
     },
     {
       "name": "_sort.flashing.md",
-      "path": ".welcome/WIP/_sort.flashing.md"
+      "path": ".welcome/3xplore/_sort.flashing.md"
     },
     {
       "name": "ada.adb",
       "path": ".welcome/examples/language/ada.adb"
     },
     {
+      "name": "aileen.js",
+      "path": ".welcome/aileen.js"
+    },
+    {
       "name": "angular9.html",
-      "path": ".welcome/WIP/angular9.html"
+      "path": ".welcome/5upport/angular9.html"
     },
     {
       "name": "apl.apl",
@@ -269,7 +291,7 @@
     },
     {
       "name": "auth0.md",
-      "path": ".welcome/WIP/auth0.md"
+      "path": ".welcome/1ncubate/auth0.md"
     },
     {
       "name": "bartok-logo-black.png",
@@ -333,7 +355,7 @@
     },
     {
       "name": "color-picker.html",
-      "path": ".welcome/WIP/color-picker.html"
+      "path": ".welcome/7ool/color-picker.html"
     },
     {
       "name": "cpp.cpp",
@@ -357,11 +379,11 @@
     },
     {
       "name": "css-3d.html",
-      "path": ".welcome/WIP/css-3d.html"
+      "path": ".welcome/5ketch/css-3d.html"
     },
     {
       "name": "css-doodle.html",
-      "path": ".welcome/WIP/css-doodle.html"
+      "path": ".welcome/5ketch/css-doodle.html"
     },
     {
       "name": "d3-graph.html",
@@ -378,6 +400,18 @@
     {
       "name": "dlang.d",
       "path": ".welcome/examples/language/dlang.d"
+    },
+    {
+      "name": "downloadZip.js",
+      "path": ".welcome/1ncubate/downloadZip.js"
+    },
+    {
+      "name": "dropFile.js",
+      "path": ".welcome/1ncubate/dropFile.js"
+    },
+    {
+      "name": "editorLint.js",
+      "path": ".welcome/1ncubate/editorLint.js"
     },
     {
       "name": "elixr.ex",
@@ -425,7 +459,7 @@
     },
     {
       "name": "gml_cm_mode.js",
-      "path": ".welcome/WIP/gml_cm_mode.js"
+      "path": ".welcome/5upport/gml_cm_mode.js"
     },
     {
       "name": "go.html",
@@ -437,23 +471,23 @@
     },
     {
       "name": "golden-layout.css",
-      "path": ".welcome/WIP/golden-layout.css"
+      "path": ".welcome/1ncubate/golden-layout.css"
     },
     {
       "name": "golden-layout.js",
-      "path": ".welcome/WIP/golden-layout.js"
+      "path": ".welcome/1ncubate/golden-layout.js"
     },
     {
       "name": "golf1.graph.json",
-      "path": ".welcome/WIP/golf1.graph.json"
+      "path": ".welcome/3xplore/golf1.graph.json"
     },
     {
       "name": "golf1.js",
-      "path": ".welcome/WIP/golf1.js"
+      "path": ".welcome/3xplore/golf1.js"
     },
     {
       "name": "golf2.js",
-      "path": ".welcome/WIP/golf2.js"
+      "path": ".welcome/3xplore/golf2.js"
     },
     {
       "name": "graph-cytoscape.cx",
@@ -473,7 +507,7 @@
     },
     {
       "name": "graph-formats.md",
-      "path": ".welcome/WIP/graph-formats.md"
+      "path": ".welcome/5upport/graph-formats.md"
     },
     {
       "name": "grey.png",
@@ -517,7 +551,7 @@
     },
     {
       "name": "isomorphic-git.html",
-      "path": ".welcome/WIP/isomorphic-git.html"
+      "path": ".welcome/1ncubate/isomorphic-git.html"
     },
     {
       "name": "java.java",
@@ -585,7 +619,7 @@
     },
     {
       "name": "language-sql-fetch.html",
-      "path": ".welcome/WIP/language-sql-fetch.html"
+      "path": ".welcome/5upport/language-sql-fetch.html"
     },
     {
       "name": "languages-templates-progress.bmp",
@@ -613,15 +647,19 @@
     },
     {
       "name": "mathematics.css",
-      "path": ".welcome/WIP/mathematics.css"
+      "path": ".welcome/3xplore/mathematics.css"
     },
     {
       "name": "mathematics.js",
-      "path": ".welcome/WIP/mathematics.js"
+      "path": ".welcome/3xplore/mathematics.js"
     },
     {
       "name": "md.html",
       "path": ".welcome/.templates/md.html"
+    },
+    {
+      "name": "minimap.js",
+      "path": ".welcome/1ncubate/minimap.js"
     },
     {
       "name": "mlerpo.md",
@@ -637,7 +675,7 @@
     },
     {
       "name": "open.folder.html",
-      "path": ".welcome/WIP/open.folder.html"
+      "path": ".welcome/7ool/open.folder.html"
     },
     {
       "name": "package.json",
@@ -649,11 +687,11 @@
     },
     {
       "name": "paste-image.css",
-      "path": ".welcome/WIP/paste-image.css"
+      "path": ".welcome/1ncubate/paste-image.css"
     },
     {
       "name": "paste-image.js",
-      "path": ".welcome/WIP/paste-image.js"
+      "path": ".welcome/1ncubate/paste-image.js"
     },
     {
       "name": "paste-image.png",
@@ -673,7 +711,11 @@
     },
     {
       "name": "Piksel-LIFE-20200506-191410.piskel",
-      "path": ".welcome/WIP/Piksel-LIFE-20200506-191410.piskel"
+      "path": ".welcome/5upport/Piksel-LIFE-20200506-191410.piskel"
+    },
+    {
+      "name": "piskel.html",
+      "path": ".welcome/.templates/piskel.html"
     },
     {
       "name": "plain.txt",
@@ -693,7 +735,7 @@
     },
     {
       "name": "preact-hyperscript.htm",
-      "path": ".welcome/WIP/preact-hyperscript.htm"
+      "path": ".welcome/5upport/preact-hyperscript.htm"
     },
     {
       "name": "pro.html",
@@ -713,7 +755,7 @@
     },
     {
       "name": "quotaIssue.js",
-      "path": ".welcome/WIP/quotaIssue.js"
+      "path": ".welcome/7ool/quotaIssue.js"
     },
     {
       "name": "raku.raku",
@@ -725,7 +767,7 @@
     },
     {
       "name": "react-notes.md",
-      "path": ".welcome/WIP/react-notes.md"
+      "path": ".welcome/3xplore/react-notes.md"
     },
     {
       "name": "Readme.md",
@@ -733,7 +775,7 @@
     },
     {
       "name": "reveal.html",
-      "path": ".welcome/WIP/reveal.html"
+      "path": ".welcome/5upport/reveal.html"
     },
     {
       "name": "rlang.r",
@@ -756,12 +798,24 @@
       "path": ".welcome/.templates/scm.html"
     },
     {
+      "name": "scratch.js",
+      "path": ".welcome/3xplore/scratch.js"
+    },
+    {
+      "name": "search.js",
+      "path": ".welcome/1ncubate/search.js"
+    },
+    {
       "name": "service.json",
       "path": ".welcome/service.json"
     },
     {
+      "name": "shared.styl",
+      "path": ".welcome/shared.styl"
+    },
+    {
       "name": "slides-reveal.htm",
-      "path": ".welcome/WIP/slides-reveal.htm"
+      "path": ".welcome/5upport/slides-reveal.htm"
     },
     {
       "name": "spritesheet.json",
@@ -817,11 +871,15 @@
     },
     {
       "name": "sw.clientServer.htm",
-      "path": ".welcome/WIP/sw.clientServer.htm"
+      "path": ".welcome/7ool/sw.clientServer.htm"
     },
     {
       "name": "swift.swift",
       "path": ".welcome/examples/language/swift.swift"
+    },
+    {
+      "name": "templateMessages.js",
+      "path": ".welcome/1ncubate/templateMessages.js"
     },
     {
       "name": "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg",
@@ -865,7 +923,7 @@
     },
     {
       "name": "wasm.binaryen.html",
-      "path": ".welcome/WIP/wasm.binaryen.html"
+      "path": ".welcome/5upport/wasm.binaryen.html"
     },
     {
       "name": "wasps_bees.bmp",
@@ -885,7 +943,7 @@
     },
     {
       "name": "webtorrent_share.html",
-      "path": ".welcome/WIP/webtorrent_share.html"
+      "path": ".welcome/1ncubate/webtorrent_share.html"
     },
     {
       "name": "wee.js",
@@ -917,7 +975,7 @@
     },
     {
       "name": "zip_project.html",
-      "path": ".welcome/WIP/zip_project.html"
+      "path": ".welcome/1ncubate/zip_project.html"
     }
   ]
 }
