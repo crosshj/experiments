@@ -18,106 +18,58 @@ https://github.com/tinysearch/tinysearch
 */
 const deps = [
   '../shared.styl',
-  //'https://www.unpkg.com/js-worker-search@1.4.1/dist/js-worker-search.js'
+  'https://www.unpkg.com/flexsearch@0.6.32/dist/flexsearch.min.js'
 ];
 
-
-
-function WebWorker(fn) {
-    const fnString = `(${fn.toString().trim()})()`;
-    const worker = new Worker(URL.createObjectURL(new Blob([fnString])));
-    const wrapped = function(args, cb){
-        worker.onmessage = function (e){
-            cb(e.data);
-        }
-        worker.postMessage(args);
-    };
-    wrapped.close = worker.terminate;
-    wrapped.worker = worker;
-    wrapped.message = (fnName, args) => new Promise((resolve, reject) => {
-      worker.onmessage = resolve;
-      worker.postMessage({ fnName, args });
-    });
-    return wrapped;
-}
-
-function SearchWorker(){
-  function searchWorkerSrc(){
-    self.window = self;
-    //lame faking of modules system for js-worker-search
-    self.window.module = {
-      set exports(m) { this.modules.push(m); },
-      modules: []
-    };
-    self.importScripts('https://www.unpkg.com/js-worker-search@1.4.1/dist/js-worker-search.js');
-
-    const SearchApi = window.module.modules[0].default;
-    const INDEX_MODES = window.module.modules[0].INDEX_MODES;
-    const searchApi = new SearchApi();
-
-    onmessage = function(e) {
-      const { fnName, args } = e.data;
-      const handler = {
-        index: async () => {
-          await searchApi.indexDocument(args.name, args.code);
-          postMessage({ result: `${args.name} indexed` })
-        },
-        search: async () => {
-          const result = await searchApi.search(args);
-          postMessage({ result })
-        }
-      }[fnName];
-      if(!handler) return postMessage({ error: `function: ${fnName} not found` });
-      handler();
-    }
-  };
-
-  const worker = WebWorker(searchWorkerSrc);
-  const DELAY = 3000;
-  worker.index = (doc) => new Promise(async (resolve, reject) => {
-    const { data: { result } } = await worker.message('index', doc);
-    setTimeout(() => {
-      resolve(result);
-    }, DELAY);
-  });
-  worker.search = async (term) => {
-    const { data: { result } } = await worker.message('search', term);
-    return result;
-  }
-  return worker;
-}
-
 (async () => {
+  const searchTerm = "code";
+
   await appendUrls(deps)
   const exampleService = (await (await fetch('../../service/read/779')).json()).result[0];
 
-  const searchWork = SearchWorker();
-  
-  for(var i=0; i < exampleService.code.length-5; i++){
-    const theDoc = exampleService.code[i];
-    console.log(theDoc.name)
-    //await searchWork.index(theDoc);
-  }
-  
-  
-  //const indexResult = await searchWork.index(exampleService.code[0]);
-  //console.log(indexResult);
-  //const searchResult = await searchWork.search('the');
-  //console.log(searchResult);
-  /*
-  console.info(Object.keys(exampleService));
-  const SearchApi = window.module.modules[0].default;
-  const INDEX_MODES = window.module.modules[0].INDEX_MODES;
-  const searchApi = new SearchApi({
-    indexMode: INDEX_MODES.PREFIXES
+  var index = new FlexSearch({
+      encode: "icase",
+      tokenize: "reverse",
+      //threshold: 8,
+      //resolution: 9,
+      //depth: 1,
+      async: true,
+      worker: 1,
+      cache: false
   });
+
   for(var i=0; i < exampleService.code.length; i++){
     const theDoc = exampleService.code[i];
-    console.info(theDoc.name);
-    await searchApi.indexDocument(theDoc.name, theDoc.code);
+    await index.add(i, theDoc.code);
   }
-  const result = await searchApi.search('editor');
-  console.log('result=')
-  console.info(JSON.stringify(result, null, 2))
-  */
+
+  const search = (term, opts={}) => new Promise((resolve, reject) => index.search(term, opts, resolve));
+  const res = await search(searchTerm, { limit: false, page: 0+"", suggest: false });
+
+  const getMatches = (theDoc, searchTerm) => {
+    let matches = theDoc.code.split('\n')
+      .map((x, i) => ({ lineNumber: i, text:x }))
+      .filter(x => x.text.toLowerCase().includes(searchTerm));
+    if(matches.length > 0){
+      console.info(theDoc.name + '\n\n' + JSON.stringify(matches, null, 2))
+    } else {
+      console.info(theDoc.name + '\n\n ( false positive? )' )
+    }
+    return matches;
+  };
+  if(Array.isArray(res)){
+    for(var k=0; k<res.length; k++){
+      console.log(`Results#: ${k}`);
+      for(var m=0; m<res[k].result.length; m++){
+        const theDoc = exampleService.code[res[k].result[m]];
+        getMatches(theDoc, searchTerm);
+      }
+    }
+    return;
+  }
+  for(var j=0; j<res.length; j++){
+    const theDoc = exampleService.code[j];
+    getMatches(theDoc, searchTerm);
+  }
+
 })()
