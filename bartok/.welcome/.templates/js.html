@@ -33,7 +33,6 @@
             document.head.appendChild(script);
         });
     };
-    /*
     const appendStyleSheet = (url) => {
         if(alreadyAppended[url]){ return; }
         return new Promise((resolve, reject) => {
@@ -46,8 +45,7 @@
             document.head.appendChild(style);
         });
     };
-    */
-    const appendStyleSheet = (url) => {
+    const appendCompiledStyleSheet = (url) => {
         if(alreadyAppended[url]) return;
         return new Promise(async (resolve, reject) => {
             alreadyAppended[url] = true;
@@ -66,8 +64,12 @@
 
       for(var i=0; i<queue.length; i++){
         const url = queue[i];
-        if(["css", "styl"].includes(url.split('.').pop()) ){
+        if(["css"].includes(url.split('.').pop()) ){
           await appendStyleSheet(url);
+          continue;
+        }
+        if(["styl"].includes(url.split('.').pop()) ){
+          await appendCompiledStyleSheet(url);
           continue;
         }
         if(url.split('.').pop() === "js"){

@@ -115,5 +115,5 @@ function showPreviousImage(){
   - CTRL-V to paste\n
   - if image, then "../paste-image.png" will be updated and page refreshed
   `);
-  await appendUrls('./paste-image.css');
+  await appendUrls('../shared.styl');
 })();

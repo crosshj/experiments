@@ -69,8 +69,10 @@ const createGraph = async (graphObject) => {
   try {
     message = await recieveMessage();
     graph.querySelector('iframe').contentWindow.postMessage(graphObject, "*");
-    await delay(1000);
-    graph.classList.remove('loading');
+    (async()=>{
+      await delay(1000);
+      graph.classList.remove('loading');
+    })()
   } catch(e){
     message = e;
   }
@@ -92,6 +94,7 @@ const createGraph = async (graphObject) => {
       {source:'bar',target:'baz',weight:1}
     ]
   };
+  // ^^^ why can't JSON.stringify output json that looks JUST like this?? [irritating]
   const graph = await createGraph(exampleGraph);
-  await prism('json', JSON.stringify(exampleGraph,null, 2));
+  await prism('json', JSON.stringify(exampleGraph));
 })()
