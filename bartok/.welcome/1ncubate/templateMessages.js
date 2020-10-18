@@ -63,13 +63,13 @@ const recieveMessage = (timeout=10000) => {
 const createGraph = async (graphObject) => {
   const graph = await createIframe('../.templates/d3-graph.html/::preview::/?message=true&chrome=false');
   graph.style.width = '100%'
-  graph.style.height =  "18em";
+  graph.style.height =  "32em";
 
   console.info('TODO: graph should refresh on resize and basic config options should/could be provided');
   try {
     message = await recieveMessage();
     graph.querySelector('iframe').contentWindow.postMessage(graphObject, "*");
-    await delay(1500);
+    await delay(1000);
     graph.classList.remove('loading');
   } catch(e){
     message = e;
@@ -81,14 +81,17 @@ const createGraph = async (graphObject) => {
   await appendUrls(deps);
   const exampleGraph = {
     nodes: [
-      {id: 7, name:"foo", radius:20, color: "red"},
-      {id: 8, name:"bar", radius:20, color: "white"},
-      {id: 10, name:"baz", radius:20, color: "black"}
+      {id: 'foo', name:"foo", radius:20, color: "red", fx: 340, fy: 60},
+      {id: 'bar', name:"bar", radius:20, color: "white", fy: 180, fx: 300},
+      {id: 'blank', name:"", radius:10, color: "green", fx: 540, fy: 180},
+      {id: 'big', name:"biggie", radius:100, color: "yellow", fx: 600, fy: 360},
+      {id: 'baz', name:"baz", radius:20, color: "black", fy: 250, fx: 400}
     ],
     links: [
-      {source:10,target:7,weight:1},
-      {source:10,target:8,weight:1}
+      {source:'foo',target:'bar',weight:1},
+      {source:'bar',target:'baz',weight:1}
     ]
   };
   const graph = await createGraph(exampleGraph);
+  await prism('json', JSON.stringify(exampleGraph,null, 2));
 })()
