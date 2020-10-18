@@ -1,18 +1,15 @@
 /*
 
-worker:
-https://github.com/bvaughn/js-worker-search
+todo:
 
-
-unsure about worker:
-https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html
-https://www.npmjs.com/package/flexsearch
-http://elasticlunr.com/
-https://pouchdb.com/
-https://lunrjs.com/
-
-wasm
-https://github.com/tinysearch/tinysearch
+- make sure results match VS Code's results
+  - return multiple results per line
+- verify loss of speed is only in building index, not search
+  - provide a search box and change searches on the fly
+  - measure time to search
+- update a document and search again based on that update
+- integrate with service request handler
+- integrate with client
 
 
 */
@@ -21,55 +18,69 @@ const deps = [
   'https://www.unpkg.com/flexsearch@0.6.32/dist/flexsearch.min.js'
 ];
 
+const unique = arr => Array.from(new Set(arr));
+
 (async () => {
-  const searchTerm = "code";
+  const searchTerm = "default";
 
   await appendUrls(deps)
   const exampleService = (await (await fetch('../../service/read/779')).json()).result[0];
 
+  const t0 = performance.now();
   var index = new FlexSearch({
       encode: "icase",
-      tokenize: "reverse",
-      //threshold: 8,
-      //resolution: 9,
-      //depth: 1,
+      tokenize: "full",
+      threshold: 1,
+      resolution: 3,
+      //depth: 3,
       async: true,
-      worker: 1,
-      cache: false
+      worker: 5,
+      cache: true
   });
 
   for(var i=0; i < exampleService.code.length; i++){
     const theDoc = exampleService.code[i];
     await index.add(i, theDoc.code);
   }
-
+  const t1 = performance.now();
+  console.log(`Indexing took ${Number(t1 - t0).toFixed(2)} milliseconds.`);
+  
   const search = (term, opts={}) => new Promise((resolve, reject) => index.search(term, opts, resolve));
   const res = await search(searchTerm, { limit: false, page: 0+"", suggest: false });
 
+  const t2 = performance.now();
+  console.log(`Search took ${Number(t2 - t1).toFixed(2)} milliseconds.`);
+
   const getMatches = (theDoc, searchTerm) => {
     let matches = theDoc.code.split('\n')
-      .map((x, i) => ({ lineNumber: i, text:x }))
-      .filter(x => x.text.toLowerCase().includes(searchTerm));
-    if(matches.length > 0){
-      console.info(theDoc.name + '\n\n' + JSON.stringify(matches, null, 2))
-    } else {
-      console.info(theDoc.name + '\n\n ( false positive? )' )
-    }
+      .map((x, i) => ({
+        lineNumber: i,
+        colNumber: x.toLowerCase().indexOf(searchTerm.toLowerCase()),
+        lineText: x,
+        docName: theDoc.name
+      }))
+      .filter(x => x.colNumber !== -1);
     return matches;
   };
-  if(Array.isArray(res)){
+  console.info(JSON.stringify(res,null,2))
+  let allMatches = [];
+  if(Array.isArray(res) && typeof res[0] === 'object'){
     for(var k=0; k<res.length; k++){
-      console.log(`Results#: ${k}`);
       for(var m=0; m<res[k].result.length; m++){
         const theDoc = exampleService.code[res[k].result[m]];
-        getMatches(theDoc, searchTerm);
+        allMatches = [...allMatches, ...getMatches(theDoc, searchTerm)];
       }
     }
-    return;
-  }
-  for(var j=0; j<res.length; j++){
-    const theDoc = exampleService.code[j];
-    getMatches(theDoc, searchTerm);
+  } else {
+    for(var j=0; j<res.length; j++){
+      const theDoc = exampleService.code[j];
+      allMatches = [...allMatches, ...getMatches(theDoc, searchTerm)];
+    }
   }
 
+  const totalFiles = unique(allMatches.map(x=>x.docName));
+  console.info(`Searching for "${searchTerm}": ${allMatches.length} results in ${totalFiles.length} files`);
+  console.info(JSON.stringify(totalFiles,null,2))
+  console.info(JSON.stringify(allMatches,null,2))
+  
 })()
