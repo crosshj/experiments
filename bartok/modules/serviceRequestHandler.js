@@ -1448,37 +1448,35 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
         console.warn('Service Request Handler - usage');
         console.log(event.request.url);
 
-        //TODO: should console log path here so it's known what handler is being used
-        event.respondWith(
-            (async () => {
-                const serviceAPIMatch = await app.find(event.request.url);
-                if (!serviceAPIMatch) {
+        const serviceAPIMatch = await app.find(event.request.url);
 
-                    return fetch(event.request.url);
-                }
+        const res = serviceAPIMatch
+            ? await serviceAPIMatch.exec(event)
+            : 'no match in service request listener!';
+        let response;
 
-                const res = await serviceAPIMatch.exec(event);
-                let response;
+        // if(res && res.type){ //most likely a blob
+        //     response = new Response(res, {headers:{'Content-Type': res.type }});
+        //     return response;
+        // }
 
-                if(res && res.type){ //most likely a blob
-                    response = new Response(res, {headers:{'Content-Type': res.type }});
-                    return response;
-                }
+        if(event.request.url.includes('/::preview::/')){
+            response = new Response(res, {headers:{'Content-Type': 'text/html'}});
+            return response;
+        }
 
-                if(event.request.url.includes('/::preview::/')){
-                    response = new Response(res, {headers:{'Content-Type': 'text/html'}});
-                    return response;
-                }
+        let { contentType } = getMime(event.request.url) || {};
+        if(!contentType && serviceAPIMatch && !res.type){
+            ;({ contentType } = getMime('.json'));
+        }
 
-                const { contentType } = getMime(event.request.url) || {};
-                if(contentType){
-                    response = new Response(res, {headers:{ 'Content-Type': contentType }});
-                    return response;
-                }
+        if(contentType){
+            response = new Response(res, {headers:{ 'Content-Type': contentType || res.type }});
+            return response;
+        }
 
-                return new Response(res);
-            })()
-        );
+        return new Response(res);
+
         // should be able to interact with instantiated services as well,
         // ie. all '.welcome' files should be available
         // each instantiated service should have its own store

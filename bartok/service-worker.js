@@ -7,8 +7,8 @@ importScripts('/shared/vendor/json5v-2.0.0.min.js');
 
 self.addEventListener('install', installHandler);
 self.addEventListener('activate', activateHandler);
-self.addEventListener('fetch', fetchHandler);
-self.addEventListener('foreignfetch', fetchHandler);
+self.addEventListener('fetch', asyncFetchHandler);
+self.addEventListener('foreignfetch', asyncFetchHandler);
 self.addEventListener('message', messageHandler);
 self.addEventListener('sync', syncHandler);
 self.addEventListener('push', pushHandler);
@@ -20,19 +20,22 @@ const driverOrder = [
 	localforage.WEBSQL,
 	localforage.LOCALSTORAGE,
 ];
-const handlerStore = localforage
-	.createInstance({
+let handlerStore;
+function getHandlerStore(){
+	return handlerStore || localforage.createInstance({
 		driver: driverOrder,
 		name: 'serviceWorker',
 		version: 1.0,
 		storeName: 'handlerStore',
 		description: 'used after app has booted when service worker is updated'
 	});
+}
+handlerStore = getHandlerStore();
 
-(async() => {
-	//TODO: in install/activate handlers, this probably won't work the way expected
-	// ie, these handlers do not come back after SW is idle or terminated
-	await handlerStore
+const activateHandlers = async () => {
+	handlerStore = getHandlerStore();
+
+	return await handlerStore
 		.iterate((value, key) => {
 			const {
 				type, route, handlerName, handlerText
@@ -60,8 +63,7 @@ const handlerStore = localforage
 				handlerName, handlerText
 			});
 		});
-})();
-
+}
 
 async function installHandler(event) {
 	console.log('service worker install event');
@@ -70,14 +72,32 @@ async function installHandler(event) {
 
 function activateHandler(event) {
 	console.log('service worker activate event');
-	event.waitUntil(self.clients.claim())
-	//self.clients.claim();
+	event.waitUntil(
+		(async () => {
+			await self.clients.claim()
+			return await activateHandlers();
+		})()
+	);
+	// cause clients to reload?
 	//self.clients.matchAll({ type: 'window' })
 	// 	.then(clients => {
 	// 		for (const client of clients) {
 	// 			client.navigate(client.url);
 	// 		}
 	// 	});
+}
+
+function asyncFetchHandler(event){
+	event.respondWith(async function() {
+		if(!handlers.length){
+			await activateHandlers();
+		}
+		const res = await fetchHandler(event);
+		// if(!res){
+		// 	return new Response('error handling this request!  see service-worker.js', {headers:{'Content-Type': 'text/html'}});
+		// }
+		return res;
+  }());
 }
 
 function fetchHandler(event) {
@@ -100,8 +120,12 @@ function fetchHandler(event) {
 		event.request.url.includes('https://crosshj.auth0.com') ||
 
 		event.request.url.includes('index.bootstrap') ||
-		event.request.url.includes('localhost:3333') ||
+		event.request.url.includes('localhost:3333')
+	) {
+		return fetch(event.request.url);
+	}
 
+	if (
 		event.request.url.includes('browser-sync/socket.io') ||
 		event.request.url.includes('browser-sync/browser-sync-client') ||
 		event.request.url.includes('?browsersync=') // this is how css gets injected
@@ -116,7 +140,7 @@ function fetchHandler(event) {
 			event.request.headers.get('cache-control') === 'no-cache'
 		)
 	) {
-		return;
+		return fetch(event.request.url);
 	}
 	// if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
 	// 	debugger;
@@ -132,12 +156,10 @@ function fetchHandler(event) {
 
 	if(event.request.url.includes('unpkg')){
 		console.error(`NOT AVAILABLE OFFLINE: ${event.request.url}`);
-		return;
+		return fetch(event.request.url);
 	}
 
-	event.respondWith(
-		caches.match(event.request)
-	);
+	return caches.match(event.request);
 }
 
 function messageHandler(event) {

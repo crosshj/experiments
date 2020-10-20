@@ -44,7 +44,6 @@
       "golden-layout.js": {},
       "isomorphic-git.html": {},
       "minimap.js": {},
-      "paste-image.css": {},
       "paste-image.js": {},
       "search.js": {},
       "templateMessages.js": {},
@@ -52,7 +51,6 @@
       "zip_project.html": {}
     },
     "3xplore": {
-      "golf1.graph.json": {},
       "golf1.js": {},
       "golf2.js": {},
       "mathematics.css": {},
@@ -478,10 +476,6 @@
       "path": ".welcome/1ncubate/golden-layout.js"
     },
     {
-      "name": "golf1.graph.json",
-      "path": ".welcome/3xplore/golf1.graph.json"
-    },
-    {
       "name": "golf1.js",
       "path": ".welcome/3xplore/golf1.js"
     },
@@ -684,10 +678,6 @@
     {
       "name": "pascal.pas",
       "path": ".welcome/examples/language/pascal.pas"
-    },
-    {
-      "name": "paste-image.css",
-      "path": ".welcome/1ncubate/paste-image.css"
     },
     {
       "name": "paste-image.js",
