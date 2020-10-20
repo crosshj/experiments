@@ -52,6 +52,9 @@
     <p>
       Also see. <a href="http://localhost:3222/bartok/.welcome/.templates/zip.html/::preview::/">../.templates/zip.html</a>
     </p>
+    <p>
+      Also see. <a href="downloadZip.js/::preview::/">downloadZip.js/::preview::/</a>
+    </p>
     <button id="downloadZip">Download ZIP</button>
     <button id="uploadZip" onclick="alert('not implemented!')">Upload ZIP</button>
     <button id="downloadCanvasZip" onclick="alert('not implemented!')">Download Canvas ZIP</button>
@@ -75,7 +78,7 @@
       }`
     }];
 
-      async function zipFiles(){
+    async function zipFiles(){
       var zip = new JSZip();
       files.forEach(file => {
         zip.file(file.name, file.code);

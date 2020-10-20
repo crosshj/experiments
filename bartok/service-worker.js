@@ -88,6 +88,51 @@ function activateHandler(event) {
 }
 
 function asyncFetchHandler(event){
+	if (
+		event.request.url.includes('https://crosshj.auth0.com') ||
+		event.request.url.includes('index.bootstrap') ||
+		event.request.url.includes('localhost:3333')
+	) {
+		return;
+	}
+	if (
+		event.request.url.includes('browser-sync/socket.io') ||
+		event.request.url.includes('browser-sync/browser-sync-client') ||
+		event.request.url.includes('?browsersync=') // this is how css gets injected
+	) {
+		return;
+	}
+	// do not use or update cache
+	if (event.request.cache === 'no-store' ||
+		(
+			event.request.headers.get('pragma') === 'no-cache' &&
+			event.request.headers.get('cache-control') === 'no-cache'
+		)
+	) {
+		return;
+	}
+
+	// if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
+	// 	debugger;
+	// 	return;
+	// }
+
+	// if (
+	// 	!event.request.url.includes('/bartok/') &&
+	// 	!event.request.url.includes('/shared/')
+	// ) {
+	// 	return;
+	// }
+
+	if(event.request.url.includes('unpkg')){
+		console.error(`NOT AVAILABLE OFFLINE: ${event.request.url}`);
+		return;
+	}
+
+	if(event.request.url.includes('https://webtorrent.io/torrents/')){
+		return;
+	}
+
 	event.respondWith(async function() {
 		if(!handlers.length){
 			await activateHandlers();
@@ -115,50 +160,6 @@ function fetchHandler(event) {
 		//console.log(foundHandler)
 		return foundHandler.handler(event);
 	}
-
-	if (
-		event.request.url.includes('https://crosshj.auth0.com') ||
-
-		event.request.url.includes('index.bootstrap') ||
-		event.request.url.includes('localhost:3333')
-	) {
-		return fetch(event.request.url);
-	}
-
-	if (
-		event.request.url.includes('browser-sync/socket.io') ||
-		event.request.url.includes('browser-sync/browser-sync-client') ||
-		event.request.url.includes('?browsersync=') // this is how css gets injected
-	) {
-		return;
-	}
-
-	// do not use or update cache
-	if (event.request.cache === 'no-store' ||
-		(
-			event.request.headers.get('pragma') === 'no-cache' &&
-			event.request.headers.get('cache-control') === 'no-cache'
-		)
-	) {
-		return fetch(event.request.url);
-	}
-	// if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
-	// 	debugger;
-	// 	return;
-	// }
-
-	// if (
-	// 	!event.request.url.includes('/bartok/') &&
-	// 	!event.request.url.includes('/shared/')
-	// ) {
-	// 	return;
-	// }
-
-	if(event.request.url.includes('unpkg')){
-		console.error(`NOT AVAILABLE OFFLINE: ${event.request.url}`);
-		return fetch(event.request.url);
-	}
-
 	return caches.match(event.request);
 }
 

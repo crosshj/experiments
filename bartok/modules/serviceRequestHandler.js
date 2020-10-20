@@ -1445,8 +1445,8 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
     });
 
     async function serviceAPIRequestHandler(event) {
-        console.warn('Service Request Handler - usage');
-        console.log(event.request.url);
+        //console.warn('Service Request Handler - usage');
+        //console.log(event.request.url);
 
         const serviceAPIMatch = await app.find(event.request.url);
 
