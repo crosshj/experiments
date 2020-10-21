@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Service Pattern V3</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="mobile-web-app-capable" content="yes">
-  </head>
-  <script>
+const deps = ['../shared.styl'];
+
+const initSvcPattern = () => {
     let solution;
     const logIndent = 4;
     const logLeftSideSize = 5;
@@ -15,7 +8,8 @@
     let lastLoggedScopeId = 0;
 
     const _writeLog = (str) => {
-      const output = document.getElementById('output');
+      const output = document.createElement('div');
+      document.body.appendChild(output)
       output.innerHTML += `\n${str}`;
     };
 
@@ -88,13 +82,23 @@
       solution.desc.push(desc);
       solution.type.push('step');
     };
+}
 
-  </script>
+(async () => {
 
-  <pre id="output" style="margin-top: 50px;color: #ddd;line-height: 10px;">
-  </pre>
+  await appendUrls(deps);
+  initSvcPattern();
 
-	<script>
+  const doThing = Solution('do a bunch of cool things', (context, next) => { next(); });
+  Step('do one thing', (context, next) => { next(); });
+  Step('do two thing', (context, next) => { next(); });
+  Step('do three thing', (context, next) => { next(); });
 
-</script>
-</html>
+  doThing();
+  doThing();
+  doThing();
+  doThing();
+  doThing();
+  doThing();
+
+})()

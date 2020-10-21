@@ -10,6 +10,7 @@ const gmlExample = `
     node [
       id 1
       label "node 1"
+      script "() => {}"
       thisIsASampleAttribute 42
     ]
     node [

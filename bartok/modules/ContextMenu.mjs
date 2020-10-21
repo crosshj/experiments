@@ -152,12 +152,32 @@ function PaletteModal(parentEl){
 		//todo - trigger some event here
 	};
 
+	const triggerSelectFile = (el) => {
+		if(!el){
+			console.error('could not find selected element in palette modal');
+			return;
+		}
+		const filename = el.querySelector('.palette-file-name').textContent;
+		if(!filename) {
+			console.log(el.innerText)
+			return;
+		}
+		// TODO: should be doing this with triggers
+		const event = new CustomEvent('fileSelect', {
+			bubbles: true,
+			detail: {
+				name: filename
+			}
+		});
+		document.body.dispatchEvent(event);
+	};
+
 	let selected;
 	const keyListener =  function(event){
 		const handler = {
 			"Enter": () => {
-				console.log(selected.innerText)
 				paletteModal.hide();
+				triggerSelectFile(selected || suggestList.querySelector('.selected'));
 				selected = undefined;
 			},
 			"Escape": paletteModal.hide,
