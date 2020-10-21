@@ -21,6 +21,7 @@
       "js.html": {},
       "jsx.html": {},
       "lisp.html": {},
+      "lua.html": {},
       "md.html": {},
       "php.html": {},
       "piskel.html": {},
@@ -31,7 +32,6 @@
       "rb.html": {},
       "scm.html": {},
       "sql.html": {},
-      "svcv3.html": {},
       "svg.html": {},
       "zip.html": {}
     },
@@ -57,6 +57,7 @@
       "mathematics.js": {},
       "react-notes.md": {},
       "scratch.js": {},
+      "svcv3pattern.js": {},
       "_dimensional.md": {},
       "_docu_fiddling.md": {},
       "_mirrors.md": {},
@@ -234,6 +235,7 @@
     "index.js": {},
     "package.json": {},
     "paste-image.png": {},
+    "randy.js": {},
     "Readme.md": {},
     "service.json": {},
     "shared.styl": {}
@@ -628,6 +630,10 @@
       "path": ".welcome/examples/language/lisp.lisp"
     },
     {
+      "name": "lua.html",
+      "path": ".welcome/.templates/lua.html"
+    },
+    {
       "name": "lua.lua",
       "path": ".welcome/examples/language/lua.lua"
     },
@@ -752,6 +758,10 @@
       "path": ".welcome/examples/language/raku.raku"
     },
     {
+      "name": "randy.js",
+      "path": ".welcome/randy.js"
+    },
+    {
       "name": "rb.html",
       "path": ".welcome/.templates/rb.html"
     },
@@ -840,8 +850,8 @@
       "path": ".welcome/examples/style/styles.styl"
     },
     {
-      "name": "svcv3.html",
-      "path": ".welcome/.templates/svcv3.html"
+      "name": "svcv3pattern.js",
+      "path": ".welcome/3xplore/svcv3pattern.js"
     },
     {
       "name": "svg-bartok.svg",
