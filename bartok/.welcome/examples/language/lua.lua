@@ -1,11 +1,16 @@
 -- import ../../shared.styl
 
 local function fib(n)
-  if n <= 1 then return 1 end
-  return fib(n - 1) + fib(n - 2)
+  local function inner(m)
+    if m < 2 then
+      return m
+    end
+    return inner(m-1) + inner(m-2)
+  end
+  return inner(n)
 end
 
-for i = 0,8,1
+for i = 0,9,1
 do 
    print(fib(i))
 end
