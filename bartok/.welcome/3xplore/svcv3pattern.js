@@ -90,6 +90,7 @@ const initSvcPattern = () => {
   initSvcPattern();
 
   const doThing = Solution('do a bunch of cool things', (context, next) => { next(); });
+  
   Step('do one thing', (context, next) => { next(); });
   Step('do two thing', (context, next) => { next(); });
   Step('do three thing', (context, next) => { next(); });

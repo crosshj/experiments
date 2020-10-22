@@ -34,8 +34,14 @@ function getFileType(fileName = '') {
 	if (extension === 'scratch') {
 		type = "markdown";
 	}
+	if (extension === 'piskel') {
+		type = "application/json";
+	}
 	if (extension === 'bugs') {
 		type = "markdown";
+	}
+	if (extension === 'wat') {
+		type = "text/webassembly";
 	}
 	if (extension === 'htm' || extension === 'html') {
 		type = {
@@ -591,6 +597,7 @@ const inlineEditor = (ChangeHandler) => ({
 			].find(x => line.text.includes(x));
 
 			const isfirstLineOfJSON = (
+				filename.includes('.piskel') ||
 				filename.includes('.json') ||
 				filename.includes('.gltf') ||
 				filename.includes('.ipynb')

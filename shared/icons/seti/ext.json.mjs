@@ -180,6 +180,8 @@ export default {
     "pony": "pony",
 
     "ppm": "ppm",
+    "wat": "wat",
+    "piskel": "image",
 
     "scratch": "smarty",
     "bugs": "platformio"

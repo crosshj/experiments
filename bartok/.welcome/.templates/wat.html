@@ -87,9 +87,17 @@
       .map(x => x.data).join('\n');
   if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
     codeFromComment = `
-    ( import ../shared.styl )
-    : HELLO ." hello world " CR ;
-    HELLO
+    ;; import ../shared.styl
+    (module
+      (import "env" "jsprint" (func $jsprint (param i32)))
+      (memory $0 1)
+      (data (i32.const 0) "hello world\\00")
+      (export "memory" (memory $0))
+      (func $helloworld
+        (call $jsprint (i32.const 0))
+      )
+      (export "main" (func $helloworld))
+    )
     `.replace(new RegExp('    ', 'g'), '');
   }
 
@@ -97,19 +105,14 @@
   codeFromComment = codeFromComment
     .split('\n')
     .filter(x => {
-      const isImport = x.includes('( import');
+      const isImport = x.includes(';; import');
       if(isImport){
-        imports.push(x.replace('( import', '').trim().slice(0, -1).trim())
+        imports.push(x.replace(';; import', '').trim())
       }
       return !isImport;
     })
     .join('\n');
   window.codeFromComment = codeFromComment;
-</script>
-
-<script type="module">
-  import WAForth from '/shared/vendor/waforth/WAForth.js';
-  window.WAForth = WAForth;
 </script>
 
 <script id="run-code">
@@ -119,9 +122,6 @@
       ...imports
     ];
     await appendUrls(deps)
-
-    const watUrl = '/shared/vendor/waforth/waforth.wat';
-    const watText = await (await fetch(watUrl)).text();;
     const wasmBinary = '';
 
     const outputEl = document.createElement('pre');
@@ -129,32 +129,6 @@
     document.body.appendChild(outputEl);
 
     let output = '';
-    let forth;
-    function getForth(wasmModule){
-      forth = new WAForth(wasmModule);
-      forth.onEmit = c => {
-        output = output + String.fromCharCode(c);
-        if(String.fromCharCode(c) === '\n'){
-          if(output === 'ok\n'){
-            output = "";
-            return;
-          }
-          outputEl.innerText += output.replace(' ok', '');
-          console.log(output);
-          output = "";
-        }
-      };
-      const x = forth.start()
-        .then(
-          () => {
-            forth.run(codeFromComment);
-          },
-          err => {
-            console.error(err);
-          }
-        );
-      return x;
-    }
     var FEATURES = [
       'exceptions',
       'mutable_globals',
@@ -169,12 +143,36 @@
     ];
     const features = {};
     const wabt = await WabtModule()
-    var module = wabt.parseWat('waforth.wast', watText, features);
+    var module = wabt.parseWat('module.wast', codeFromComment, features);
     module.resolveNames();
     module.validate(features);
     var binaryOutput = module.toBinary({log: true, write_debug_names:true});
 
-    await getForth(binaryOutput.buffer);
-    //console.log(output, forth)
+    const {instance} = await WebAssembly.instantiate(binaryOutput.buffer, {
+      env: {
+        jsprint: function jsprint(byteOffset) {
+          var s = '';
+          var a = new Uint8Array(memory.buffer);
+          for (var i = byteOffset; a[i]; i++) {
+            s += String.fromCharCode(a[i]);
+          }
+          outputEl.innerText = s;
+          console.log(s);
+        },
+        jsIntPrint: function jsIntPrint(byteOffset) {
+          var s = '';
+          var a = new Uint8Array(memory.buffer);
+          for (var i = byteOffset; a[i]; i++) {
+            s += a[i];
+          }
+          s = Number(s);
+          outputEl.innerText = outputEl.innerText + s + '\n';
+          console.log(s);
+        }
+      }
+    })
+    const memory = instance.exports.memory;
+    instance.exports.main();
+
   })()
 </script>

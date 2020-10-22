@@ -1,4 +1,9 @@
-// https://gist.github.com/rflechner/2b59e81381bc59306dff9cc4147d4f18
+(*
+
+https://gist.github.com/rflechner/2b59e81381bc59306dff9cc4147d4f18
+
+see sample csharp for notes on how to get this compiling
+*)
 
 let rec fiboRec =
   function

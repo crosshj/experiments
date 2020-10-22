@@ -12,6 +12,7 @@
       "cljs.html": {},
       "cpp.html": {},
       "d3-graph.html": {},
+      "fth.html": {},
       "gif.html": {},
       "gltf.html": {},
       "go.html": {},
@@ -33,6 +34,7 @@
       "scm.html": {},
       "sql.html": {},
       "svg.html": {},
+      "wat.html": {},
       "zip.html": {}
     },
     "1ncubate": {
@@ -72,7 +74,7 @@
       "gml_cm_mode.js": {},
       "graph-formats.md": {},
       "language-sql-fetch.html": {},
-      "Piksel-LIFE-20200506-191410.piskel": {},
+      "Piksel-LIFE-20200506.piskel": {},
       "preact-hyperscript.htm": {},
       "reveal.html": {},
       "slides-reveal.htm": {},
@@ -209,6 +211,7 @@
         "sql.sql": {},
         "swift.swift": {},
         "typescript.ts": {},
+        "wasm.wat": {},
         "windows.bat": {},
         "zig.zig": {}
       },
@@ -440,6 +443,10 @@
     {
       "name": "fsharp.fs",
       "path": ".welcome/examples/language/fsharp.fs"
+    },
+    {
+      "name": "fth.html",
+      "path": ".welcome/.templates/fth.html"
     },
     {
       "name": "fullstackIntro.md",
@@ -706,8 +713,8 @@
       "path": ".welcome/examples/language/php.php"
     },
     {
-      "name": "Piksel-LIFE-20200506-191410.piskel",
-      "path": ".welcome/5upport/Piksel-LIFE-20200506-191410.piskel"
+      "name": "Piksel-LIFE-20200506.piskel",
+      "path": ".welcome/5upport/Piksel-LIFE-20200506.piskel"
     },
     {
       "name": "piskel.html",
@@ -926,8 +933,16 @@
       "path": ".welcome/5upport/wasm.binaryen.html"
     },
     {
+      "name": "wasm.wat",
+      "path": ".welcome/examples/language/wasm.wat"
+    },
+    {
       "name": "wasps_bees.bmp",
       "path": ".welcome/examples/image/wasps_bees.bmp"
+    },
+    {
+      "name": "wat.html",
+      "path": ".welcome/.templates/wat.html"
     },
     {
       "name": "webgl-duck.gltf",

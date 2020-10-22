@@ -9,6 +9,7 @@ const writeFile = promisify(fs.writeFile);
 var scriptName = path.basename(__filename);
 const bundleName = '../mode.bundle.js';
 const priority = [
+  'simple.js',
   'xml.js',
   'javascript.js',
   'css.js',

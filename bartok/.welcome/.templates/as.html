@@ -72,6 +72,7 @@ https://www.assemblyscript.org/
                     }
                 }
             };
+            // console.log(outputs['module.wat'])
             var compiled = await WebAssembly.compile(outputs['module.wasm']);
             var module = await loader.instantiate(compiled, importObj)
             const { main, __getString } = module.exports

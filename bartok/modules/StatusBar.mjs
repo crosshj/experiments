@@ -97,6 +97,12 @@ function StatusBar(){
 		if(type.name && type.name.includes('html')){
 			docType = 'html';
 		}
+		if(type === 'wat'){
+			docType = 'WebAssembly'
+		}
+		if(type === 'piskel'){
+			docType = 'Piskel'
+		}
 		if(type === 'default'){
 			docType = 'Plain Text'
 		}

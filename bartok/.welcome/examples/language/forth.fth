@@ -1,7 +1,7 @@
 ( import ../../shared.styl )
 
 : FIB ( n -- fib )
-  0 1 ROT 0 
+  0 1 ROT 0
   DO
     OVER + SWAP
   LOOP DROP CR ;

@@ -699,6 +699,11 @@ syntax highlighting, etc
 - http://matt.might.net/articles/best-programming-languages/
 - http://www.digibarn.com/collections/posters/tongues/tongues.jpg
 
+- https://github.com/NeekSandhu/codemirror-textmate
+  - some day I want a sophisticated system for adding language highlight
+  - would like to support highlighting formats from other editors (textmate, others, ???)
+  - would like these to load and unload as needed
+
 #### languages
 - fibonacci in a lot of languages
   - https://rosettacode.org/wiki/Fibonacci_sequence

@@ -1,3 +1,22 @@
+/*
+
+https://github.com/SteveSanderson/Blazor
+
+https://github.com/migueldeicaza/mono-wasm
+
+http://www.kumpera.com/wasm/fsharp.html
+
+http://www.kumpera.com/wasm/driver.html
+
+http://www.hipbyte.com/~lrz/mono-wasm-hello/
+
+
+-- does everything
+https://www.strathweb.com/2019/06/building-a-c-interactive-shell-in-a-browser-with-blazor-webassembly-and-roslyn/
+https://csharpinteractive.azurewebsites.net/
+
+*/
+
 using System;
 
 public class Fib {

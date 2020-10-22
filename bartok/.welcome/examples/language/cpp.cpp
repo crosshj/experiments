@@ -1,29 +1,31 @@
 #include <iostream>
+using namespace std;
 
-inline void fibmul(int* f, int* g){
-    int tmp = f[0]*g[0] + f[1]*g[1];
-    f[1] = f[0]*g[1] + f[1]*(g[0] + g[1]);
-    f[0] = tmp;
-}
-
-int fibonacci(int n){
-    int f[] = { 1, 0 };
-    int g[] = { 0, 1 };
-    while (n > 0) {
-        if (n & 1) {
-            fibmul(f, g);
-            --n;
-        } else {
-            fibmul(g, g);
-            n >>= 1;
+int* fib(int n){
+    int t1 = 0, t2 = 1, nextTerm = 0;
+    int results [10];
+    for (int i = 0; i < n; ++i) {
+        if(i == 0) {
+            results[i] = t1;
+            continue;
         }
+        if(i == 1){
+            results[i] = t2;
+            continue;
+        }
+        nextTerm = t1 + t2;
+        t1 = t2;
+        t2 = nextTerm;
+        results[i] = nextTerm;
     }
-    return f[1];
+    return results;
 }
 
 int main(){
-    for (int i = 0; i < 10; ++i){
-        cout << fibonacci(i) << endl;
+    int n = 10;
+    int* results = fib(n);
+    for (int i = 0; i < 10; ++i) {
+      cout << results[i] << endl;
     }
     return 0;
 }

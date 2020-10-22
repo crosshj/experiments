@@ -1,3 +1,5 @@
+% https://tylerscript.dev/bringing-the-beam-to-webassembly-with-lumen
+
 -module(fib).
 
 -export([start/0]).
