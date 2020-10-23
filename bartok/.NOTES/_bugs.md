@@ -1,6 +1,5 @@
+<!-- no-select -->
 
-
-- terminal does not fit size of container when page and panel is resized
 
 - files that have same name across tree will show bugs!
 
@@ -8,3 +7,29 @@
 
 
 
+
+
+
+# DELETE ERROR
+
+1) one at a time, open some files and makes changes and save them
+2) create a new file
+3) add some text and save
+4) with file still open, delete the file using tree menu
+
+file does not get deleted
+
+5) refresh the browser
+6) try to delete the file again
+
+file is deleted, but "no file opened" screen shows up in editor and stays that way until another file is selected
+
+
+
+# SERVICE SWITCH ERROR
+
+1) open some files
+2) switch project
+
+files stay open
+should close, also should settings stay open when switching?

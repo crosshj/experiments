@@ -11,6 +11,9 @@ there are two different ways of handling a Management Operation
 THIS IS CONFUSING - going to kill #2
 
 */
+import {
+	getOpenedFiles
+} from '../state.mjs';
 
 import { attach, attachTrigger } from '../Listeners.mjs';
 import { debounce } from "../../../shared/modules/utilities.mjs";
@@ -316,7 +319,7 @@ const operationsHandler = ({
 	getState, resetState,
 	getOperations, getReadAfter, getUpdateAfter,
 	performOperation, operationsListener,
-	triggerOperationDone
+	triggerOperationDone, getChainedTrigger
 }) => async (event) => {
 	try {
 		// deprecate from dummyFunc -> updateAfter -> readAfter;
@@ -348,9 +351,15 @@ const operationsHandler = ({
 				//triggerOperationDone(manageOpResult);
 				return;
 			}
+
+			// deleteFolder, addFolder, moveFile, moveFolder(?) needs to handle non-callback flow (operationDone)
 			const foundOp = allOperations.find(x => x.name === 'update');
 			const result = await updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp: manageOpResult });
 			triggerOperationDone(result);
+			const chainedTrigger = getChainedTrigger(event);
+			if(chainedTrigger){
+				await chainedTrigger();
+			}
 			return;
 		}
 
@@ -469,33 +478,53 @@ const handlers = {
 	fileChangeHandler
 };
 
+const getChainedTrigger = ({ triggers }) => (event) => {
+	const handler = {
+		addFile: async () => {
+			triggers.triggerFileSelect({
+				detail: {
+					name: event.detail.filename
+				}
+			});
+		},
+		deleteFile: async () => {
+			const opened = getOpenedFiles();
+			let next;
+			if(opened.length){
+				next = opened[opened.length -1].name
+			}
+			triggers.triggerFileClose({
+				detail: {
+					name: event.detail.filename,
+					next
+				}
+			});
+		}
+	}[event.detail.operation];
+	return handler;
+};
+
 function attachListeners(args){
-	const triggerServiceSwitchNotify = attachTrigger({
-		name: 'Operations',
-		eventName: 'service-switch-notify',
-		type: 'raw'
-	});
-	const triggerOperationDone = attachTrigger({
-		name: 'Operations',
-		eventName: 'operationDone',
-		type: 'raw'
-	});
+	const triggers = {
+		triggerServiceSwitchNotify: attachTrigger({ name: 'Operations', eventName: 'service-switch-notify', type: 'raw' }),
+		triggerOperationDone: attachTrigger({ name: 'Operations', eventName: 'operationDone', type: 'raw' }),
+		triggerFileSelect: attachTrigger({ name: 'Operations', eventName: 'fileSelect', type: 'raw' }),
+		triggerFileClose: attachTrigger({ name: 'Operations', eventName: 'fileClose', type: 'raw' }),
+	};
 	const mapListeners = (handlerName) => {
 		const eventName = handlerName.replace('Handler', '');
 		attach({
 			name: 'Operations',
 			eventName,
 			listener: handlers[handlerName]({
-				triggerServiceSwitchNotify,
-				triggerOperationDone,
+				...triggers,
+				getChainedTrigger: getChainedTrigger({ triggers }),
 				...args
 			})
 		});
 	};
 	Object.keys(handlers).map(mapListeners);
-	return {
-		triggerServiceSwitchNotify, triggerOperationDone
-	};
+	return triggers;
 }
 
 const connectTrigger = (args) => attachTrigger({ ...args, name: 'Operations' });

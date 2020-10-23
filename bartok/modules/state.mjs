@@ -13,6 +13,13 @@ let currentFile;
 let currentFolder;
 let allServices;
 
+
+const state = {
+	changedFiles: {},
+	openedFiles: {}
+};
+
+
 const sortAlg = (alg, propFn=(x=>x)) => {
 	if(alg === 'alpha'){
 		const lowSafe = (x='') => x.toLowerCase();
@@ -176,10 +183,6 @@ function getCodeFromService(service, file){
 	};
 }
 
-const state = {
-	changedFiles: {}
-};
-
 function getState({ folderPaths, serviceRelative }={}){
 	//TODO: should probably pull only latest state change
 	let paths;
@@ -207,6 +210,8 @@ function setState(change){
 	}
 	state.changedFiles[stateKey]
 		.push({ name, id, code, filename });
+
+	openFile({ name: filename });
 	return currentFile;
 }
 
@@ -275,7 +280,40 @@ attach({
 	listener: operationDoneHandler
 });
 
+function openFile({ name, ...other }){
+	const order = state.openedFiles[name]
+		? state.openedFiles[name].order
+		: ( Math.max(Object.entries(state.openedFiles).map(([k,v]) => v.order)) || -1) + 1;
+	state.openedFiles[name] = {
+		name, ...other, order
+	};
+}
 
+function closeFile({ name}){
+	state.openedFiles = Object.fromEntries(
+		Object.entries(state.openedFiles)
+			.map(([key,value]) => value)
+			.filter(x => x.name !== name)
+			.sort((a,b) => a.order - b.order)
+			.map((x, i) => {
+				return { ...x, order: i };
+			})
+			.map(x => [x.name, x])
+	);
+}
+
+function moveFile({ name, order}){
+	state.openedFiles[name].order = order;
+}
+
+function getOpenedFiles(){
+	return Object.entries(state.openedFiles)
+			.map(([key,value]) => value)
+			.sort((a,b) => a.order - b.order)
+			.map((x, i) => {
+				return { ...x, ...{ order: i } };
+			});
+}
 
 export {
 	getAllServices,
@@ -284,5 +322,6 @@ export {
 	getDefaultFile,
 	setCurrentService,
 	getCurrentFolder, setCurrentFolder,
-	getState, setState, resetState
+	getState, setState, resetState,
+	openFile, closeFile, moveFile, getOpenedFiles
 };

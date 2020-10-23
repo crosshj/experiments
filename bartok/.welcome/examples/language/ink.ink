@@ -1,3 +1,5 @@
+` https://github.com/thesephist/ink `
+
 ` fibonacci sequence generator `
 
 log := load('std').log

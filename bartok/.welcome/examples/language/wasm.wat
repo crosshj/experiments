@@ -1,6 +1,9 @@
 ;; import ../../shared.styl
 
 ;; https://hacks.mozilla.org/2017/02/creating-and-working-with-webassembly-modules/
+;; https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format
+;; https://github.com/WebAssembly/interface-types/issues/18
+;; https://learnxinyminutes.com/docs/wasm/
 
 (module
   (import "env" "jsIntPrint" (func $import0 (param i32 i32)))
@@ -14,7 +17,7 @@
   (data (i32.const 24) "\n" )  ;; \n is eq 10
   (data (i32.const 28) "" )    ;; t1
   (data (i32.const 32) "\01" ) ;; nextTerm
-  (data (i32.const 36) "" )
+  (data (i32.const 36) "" )    ;; ???
 
   (export "main" (func $fib))
   (func $fib
