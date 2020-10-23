@@ -104,4 +104,5 @@ const deps = [
 
   console.info(`INPUT:\n\t[  [${input.join('],  [')}]  ]`);
   console.info('ANSWER:\n\t[  [' + maxCompat(input).join('],  [') + ']  ]');
-})()
+})();
+

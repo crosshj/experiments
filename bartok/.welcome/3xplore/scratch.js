@@ -1,3 +1,6 @@
+const deps = [
+  '../shared.styl'
+];
 
 // data 1
 {
@@ -326,34 +329,40 @@ all items from data 2 should be updated with info from data 1
 can this be made easier/quicker to write?
 
 */
-const sort = (arr, prop) => {
-  return arr.sort(function(a, b){
-      if(prop){
-        if(a[prop] < b[prop]) { return -1; }
-        if(a[prop] > b[prop]) { return 1; }
+
+(async () => {
+  await appendUrls(deps);
+
+  const sort = (arr, prop) => {
+    return arr.sort(function(a, b){
+        if(prop){
+          if(a[prop] < b[prop]) { return -1; }
+          if(a[prop] > b[prop]) { return 1; }
+          return 0;
+        }
+        if(a < b) { return -1; }
+        if(a > b) { return 1; }
         return 0;
-      }
-      if(a < b) { return -1; }
-      if(a > b) { return 1; }
-      return 0;
-  })
-}
-
-const p = parameters.split("\n").filter(x=>!!x);
-const p2 = parametersPush.split("\n").filter(x=>!!x);
-
-const newP2 = [];
-const removeLastComma = str => str.substr(0, str.lastIndexOf(','))
-
-for(var i=0; i<p2.length; i++){
-  const stringWithoutLastComma = removeLastComma(p2[i])
-  if(!stringWithoutLastComma) continue;
-  const pushP = JSON.parse(stringWithoutLastComma);
-  const found = p.find(x => x.includes('{ "name": "' + pushP.name + '"'));
-  if(found){
-    newP2.push(removeLastComma(found).trim())
-  } else {
-    newP2.push(JSON.stringify(pushP, null, ' ').replace(/\n/g,''))
+    })
   }
-}
-console.info(sort(newP2).join(',\n'))
+
+  const p = parameters.split("\n").filter(x=>!!x);
+  const p2 = parametersPush.split("\n").filter(x=>!!x);
+
+  const newP2 = [];
+  const removeLastComma = str => str.substr(0, str.lastIndexOf(','))
+
+  for(var i=0; i<p2.length; i++){
+    const stringWithoutLastComma = removeLastComma(p2[i])
+    if(!stringWithoutLastComma) continue;
+    const pushP = JSON.parse(stringWithoutLastComma);
+    const found = p.find(x => x.includes('{ "name": "' + pushP.name + '"'));
+    if(found){
+      newP2.push(removeLastComma(found).trim())
+    } else {
+      newP2.push(JSON.stringify(pushP, null, ' ').replace(/\n/g,''))
+    }
+  }
+  prism('javascript', sort(newP2).join(',\n'))
+
+})()
