@@ -183,8 +183,10 @@ function PaletteModal(parentEl){
 			"Escape": paletteModal.hide,
 			"ArrowUp": () => {
 				const selectedEl = suggestList.querySelector('li.selected');
-				const previous = selectedEl.previousElementSibling;
-				if(!previous) return;
+				let previous = selectedEl.previousElementSibling;
+				if(!previous) {
+					previous = suggestList.querySelector('li:last-child')
+				};
 				selectedEl.classList.remove('selected');
 				previous.classList.add('selected');
 				previous.scrollIntoView({
@@ -194,8 +196,10 @@ function PaletteModal(parentEl){
 			},
 			"ArrowDown": () => {
 				const selectedEl = suggestList.querySelector('li.selected');
-				const next = selectedEl.nextElementSibling;
-				if(!next) return;
+				let next = selectedEl.nextElementSibling;
+				if(!next) {
+					next = suggestList.querySelector('li:first-child')
+				};
 				selectedEl.classList.remove('selected');
 				next.classList.add('selected');
 				next.scrollIntoView({
