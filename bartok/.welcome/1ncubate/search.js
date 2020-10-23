@@ -23,18 +23,27 @@ const deps = [
 const unique = arr => Array.from(new Set(arr));
 
 (async () => {
-  const searchTerm = "todo";
+  const searchTerm = "wasm";
 
   await appendUrls(deps)
-  const exampleService = (await (await fetch('../../service/read/779')).json()).result[0];
+  const exampleService = (await (await fetch('../../service/read/778')).json()).result[0];
 
   const t0 = performance.now();
+  /*
   var index = new FlexSearch({
       encode: "icase",
       tokenize: "full",
       threshold: 1,
       resolution: 3,
       //depth: 3,
+      async: true,
+      worker: 5,
+      cache: true
+  });
+  */
+  
+  var index = new FlexSearch("speed", {
+      encode: "icase",
       async: true,
       worker: 5,
       cache: true
