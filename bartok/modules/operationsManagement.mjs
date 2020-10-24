@@ -88,10 +88,39 @@ function uberManageOp({
 
 
 function addFile(e, currentService, currentFile) {
-	let { filename, parent, listener } = e.detail;
+	let { filename, parent, listener, untracked } = e.detail;
 	let manageOp, currentServiceCode, treeEntryAdded;
 	if(parent){
 		filename = parent + '/' + filename;
+	}
+
+	if(untracked){
+		currentServiceCode = JSON.parse(JSON.stringify(currentService.code));
+		const currentlyUsedNumbers = currentServiceCode
+			.filter(x => x.name.includes('Untitled-'))
+			.map(x => Number(x.name.replace('Untitled-','')));
+		let foundNumber;
+		let potentialNumber=1;
+		while(!foundNumber){
+			if(currentlyUsedNumbers.includes(potentialNumber)){
+				potentialNumber++;
+				continue;
+			}
+			foundNumber = potentialNumber
+		}
+		const untitledName = `Untitled-${foundNumber}`;
+		e.detail.filename = untitledName;
+		currentServiceCode.push({
+			name: untitledName,
+			untracked: true,
+			code: ""
+		});
+		manageOp = {
+			operation: "updateProject",
+			listener
+		};
+		currentService.code = currentServiceCode;
+		return manageOp;
 	}
 
 	try {
@@ -104,6 +133,10 @@ function addFile(e, currentService, currentFile) {
 			name: file || filename,
 			code: ""
 		});
+
+		if(e.detail.untracked){
+
+		}
 
 		let alreadyPlaced;
 		if(file){

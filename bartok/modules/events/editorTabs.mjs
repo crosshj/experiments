@@ -4,7 +4,7 @@ let tabs = [];
 
 function clearLastTab({ tabs, removeTab }){
 	const lastTab = tabs[tabs.length - 1];
-	if(lastTab.changed || lastTab.touched) return;
+	if(lastTab.changed || lastTab.touched || lastTab.name.includes('Untitled-')) return;
 	tabs = tabs.filter(t => t.id !== lastTab.id);
 	removeTab(lastTab);
 	return { tabs, cleared: lastTab };
@@ -77,6 +77,7 @@ const fileCloseHandler = ({
 	updateTab(nextTab);
 };
 
+//TODO: move this to the UI
 const clickHandler = ({
 	event, container, triggers
 }) => {
@@ -146,7 +147,11 @@ const fileSelectHandler = ({
 	createTab({
 		name, active: true, id, changed
 	});
-	const { cleared, tabs: newTabs } = firstLoad ? {} : (clearLastTab({ tabs, removeTab }) || {});
+	const shouldClearTab = !name.includes('Untitled-')
+
+	const { cleared, tabs: newTabs } = firstLoad
+		? {}
+		: (shouldClearTab && clearLastTab({ tabs, removeTab }) || {});
 	if(newTabs) tabs = newTabs;
 	if(cleared) tabsToUpdate = tabsToUpdate.filter(t => t.id !== cleared.id);
 	tabsToUpdate.map(updateTab);
@@ -302,18 +307,29 @@ function attachListener(
 	container,
 	{ initTabs, createTab, updateTab, removeTab }
 ){
+
 	const triggers = {
-		'fileClose': attachTrigger({
+		fileClose: attachTrigger({
 			name: 'Tab Bar',
 			eventName: 'fileClose',
 			type: 'raw'
 		}),
-		'fileSelect': attachTrigger({
+		fileSelect: attachTrigger({
 			name: 'Tab Bar',
 			eventName: 'fileSelect',
 			type: 'raw'
+		}),
+		addFileUntracked: attachTrigger({
+			name: 'Tab Bar',
+			eventName: 'operations',
+			type: 'raw',
+			data: {
+				operation: 'addFile',
+				untracked: true
+			}
 		})
 	};
+
 	const listener = async function (event) {
 		const showMenu = () => window.showMenu;
 
@@ -390,6 +406,8 @@ function attachListener(
 		eventName: 'contextmenu-select',
 		listener
 	});
+
+	return triggers;
 }
 
 export {

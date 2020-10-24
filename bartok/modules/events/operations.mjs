@@ -344,6 +344,11 @@ const operationsHandler = ({
 			const currentFolder = getCurrentFolder() || guessCurrentFolder(currentFile, currentService);
 			const manageOpResult = manageOp(event, currentService, currentFile, currentFolder);
 			if(!manageOpResult || manageOpResult.operation !== "updateProject"){
+				if(!callback){
+					debugger;
+					return;
+				}
+
 				//some management ops do not require state update!?
 				callback(null, manageOpResult);
 

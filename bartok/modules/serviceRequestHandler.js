@@ -727,33 +727,55 @@ const fakeExpress = ({ store, handlerStore, metaStore }) => {
     return app;
 };
 
-async function getCodeFromStorageUsingTree(tree, store){
+async function getCodeFromStorageUsingTree(tree, store, serviceName){
     // flatten the tree (include path)
     // pass back array of  { name: filename, code: path, path }
     const files = flattenTree(tree);
+
+    const allFilesFromService = {};
+    await store.iterate((value, key) => {
+        if(key.startsWith(`./${serviceName}/`)){
+            allFilesFromService[key] = {
+                key,
+                code: value,
+                untracked: true
+            };
+        }
+    })
 
     // UI should call network(sw) for file
     // BUT for now, will bundle entire filesystem with its contents
     for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        let code;
+        let storedFile;
         if(file.path.includes('/welcome/')){
-            code = await store.getItem('.' + file.path.replace('/welcome/', '/.welcome/'));
+            storedFile = allFilesFromService['.' + file.path.replace('/welcome/', '/.welcome/')];
         } else {
-            code = await store.getItem('.' + file.path);
+            storedFile = allFilesFromService['.' + file.path];
         }
-        file.code = code;
+        file.code = storedFile ? storedFile.code : '';
+        storedFile && (storedFile.untracked = false);
+
         // OMG, live it up in text-only world... for now (templates code expects text format)
         file.code = file.size
             ? null
             : file.code;
     }
 
-    return files; // aka code array
+    const untracked = Object.entries(allFilesFromService)
+        .map(([, value]) => value)
+        .filter(x => x.untracked === true)
+        .map((x) => ({
+            ...x,
+            name: x.key.split('/').pop(),
+            path: x.key
+        }));
+
+    return [ ...files, ...untracked ]; // aka code array
 }
 
 // this makes a service from UI look like files got from storage
-function getCodeAsStorage(tree, files){
+function getCodeAsStorage(tree, files, serviceName){
     const flat = flattenTree(tree);
     for (let index = 0; index < flat.length; index++) {
         const file = flat[index];
@@ -762,7 +784,16 @@ function getCodeAsStorage(tree, files){
             value: files.find(x => x.name === file.path.split('/').pop())
         };
     }
-    return flat;
+    const untracked = files.filter(x => x.untracked)
+        .map((file, i) => ({
+            key: `/${serviceName}/${file.name}`,
+            value: {
+                code: file.code,
+                name: file.name,
+                path: `/${serviceName}/`
+            }
+        }));
+    return [...flat, ...untracked];
 }
 
 /*
@@ -1135,7 +1166,7 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             //TODO: may not want to return all code!!!
             for(var i=0, len=savedServices.length; i<len; i++){
                 const service = savedServices[i];
-                const code = await getCodeFromStorageUsingTree(service.tree, store);
+                const code = await getCodeFromStorageUsingTree(service.tree, store, service.name);
                 service.code = code;
             }
             //console.log({ defaults, savedServices });
@@ -1156,7 +1187,7 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
         const foundService = await metaStore.getItem(params.id);
 
         if(foundService){
-            foundService.code = await getCodeFromStorageUsingTree(foundService.tree, store);
+            foundService.code = await getCodeFromStorageUsingTree(foundService.tree, store, foundService.name);
             return JSON.stringify({
                 result: [ foundService ]
             }, null, 2);
@@ -1242,8 +1273,8 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             }
             await metaStore.setItem(id+'', service);
 
-            const storageFiles = await getCodeFromStorageUsingTree(body.tree, store);
-            const updateAsStore = getCodeAsStorage(body.tree, body.code);
+            const storageFiles = await getCodeFromStorageUsingTree(body.tree, store, service.name);
+            const updateAsStore = getCodeAsStorage(body.tree, body.code, service.name);
 
             const allServiceFiles = [];
             await store

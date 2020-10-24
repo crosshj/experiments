@@ -1,7 +1,7 @@
 import { attachListener } from './events/editorTabs.mjs';
 import ext from '../../shared/icons/seti/ext.json.mjs'
 
-let triggers = {};
+let triggers;
 
 function log(){
 	return console.log.call(null, arguments.map(x =>
@@ -261,7 +261,7 @@ function attachWheel(el) {
 
 function attachDoubleClick(el){
 	if (!el) return;
-	el.addEventListener("dblclick", e => triggers.newFile(e));
+	el.addEventListener("dblclick", e => triggers.addFileUntracked(e));
 }
 
 const initTabs = (parent) => (tabDefArray=[]) => {
@@ -349,7 +349,7 @@ function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 	one idea I have not tried is to put padding divs to the left and right of tabs list; maybe later
 	*/
 
-	attachListener(tabsContainer, {
+	triggers = attachListener(tabsContainer, {
 		initTabs: initTabs(tabsList),
 		createTab: createTab(tabsList),
 		updateTab: updateTab(tabsList),
@@ -357,11 +357,6 @@ function EditorTabs(tabsArray = [{ name: "loading...", active: true }]){
 	});
 
 	//'modal-menu-show'
-	//'new-file-untracked
-
-	// should create a tab with untitled name
-	// should fire an event saying that a new file is created that is untracked
-	triggers.newFile = (e) => setTimeout(() => console.warn('new file: not implemented'), 0);
 
 	//should not be doing this, rely on event instead!!!
 	//tabsArray && initTabs(tabsList)(tabsArray);

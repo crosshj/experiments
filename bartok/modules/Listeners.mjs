@@ -41,10 +41,13 @@ future todo:
 */
 
 
-function trigger({ type, params, source, data, detail }){
+function trigger({ e, type, params, source, data, detail }){
+	const _data = typeof data === "function"
+		? data(e)
+		: data || {};
 	//console.log(`triggering event: ${type}`);
 	const defaultDetail = {
-		data,
+		..._data,
 		...params,
 		...{ source }
 	};
@@ -61,7 +64,7 @@ let triggerClickListener;
 const attachTrigger = function attachTrigger({
 	name, // the module that is attaching the listener
 	type='click', // the input event name, eg. "click"
-	data, // a function to get data to include with fired event
+	data, // an object or function to get data to include with fired event
 	eventName, // the name of the event(s) that triggers are attached for (can also be a function or an array)
 	filter // a function that will filter out input events that are of no concern
 }){
@@ -69,6 +72,8 @@ const attachTrigger = function attachTrigger({
 		const triggerName = `${eventName}__${name}`;
 		const _trigger = (args) => trigger({
 			...args,
+			e: args,
+			data,
 			type: eventName,
 			source: name
 		});
