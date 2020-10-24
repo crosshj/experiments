@@ -19,17 +19,23 @@ const state = {
 	openedFiles: {}
 };
 
-
-const sortAlg = (alg, propFn=(x=>x)) => {
+const sortAlg = (propFn=(x=>x), alg='alpha') => {
 	if(alg === 'alpha'){
 		const lowSafe = (x='') => x.toLowerCase();
 		return (a, b) => {
-				if(lowSafe(propFn(a)) < lowSafe(propFn(b))) { return -1; }
-				if(lowSafe(propFn(a)) > lowSafe(propFn(b))) { return 1; }
-				return 0;
+			const afilename = lowSafe(propFn(a)).split('.').slice(0,-1).join('.') || lowSafe(propFn(a));
+			const bfilename = lowSafe(propFn(b)).split('.').slice(0,-1).join('.') || lowSafe(propFn(b));
+			console.log(afilename)
+			if(afilename < bfilename) { return -1; }
+			if(afilename > bfilename) { return 1; }
+			const aExt = lowSafe(propFn(a)).replace(afilename, '');
+			const bExt = lowSafe(propFn(b)).replace(bfilename, '');
+			if(aExt < bExt) { return -1; }
+			if(aExt > bExt) { return 1; }
+			return (a, b) => propFn(a) - propFn(b);
 		}
 	}
-	return (a, b) => propFn(a) - propFn(b);
+	console.log(`sort algorithm not found: ${alg}`)
 }
 
 function getFileType(fileName=''){
@@ -97,7 +103,7 @@ const getCurrentServiceTree = ({ flat, folders }={}) => {
 	return flat
 	? flattenTree(currentService.tree, folders)
 		.map(({ name, path}={})=>({ name, path, type: getFileType(name) }))
-		.sort(sortAlg('alpha', x=>x.name))
+		.sort(sortAlg(x=>x.name))
 	: currentService.tree;
 };
 

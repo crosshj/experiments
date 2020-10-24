@@ -101,8 +101,28 @@ const fileSelectHandler = (e) => {
 	});
 	if(found){
 		tree.selected = name || next;
-		found.classList.add('selected')
+		found.classList.add('selected');
+
+		//also open all parent folders
+		let parentNode = found.parentNode;
+		while(parentNode.id ? parentNode.id !== "tree-view" : true){
+			if(parentNode.classList.contains('tree-child-leaves')){
+				parentNode.classList.remove('hidden');
+			}
+			parentNode = parentNode.parentNode;
+		}
+		if(found.scrollIntoViewIfNeeded){
+			const opt_center = true;
+			found.scrollIntoViewIfNeeded(opt_center)
+		} else {
+			found.scrollIntoView({
+				behavior: 'smooth',
+				block: 'center'
+			});
+		}
+
 	}
+
 }
 
 const folderSelectHandler = (e) => {

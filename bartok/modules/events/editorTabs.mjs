@@ -1,6 +1,31 @@
 import { attach, attachTrigger } from '../Listeners.mjs';
-import { getDefaultFile } from '../state.mjs';
+import { getDefaultFile, getState } from '../state.mjs';
 let tabs = [];
+
+function copyPath(data, relative){
+	const state = getState();
+	const { name } = data;
+	let url;
+	try{
+		url = state.paths
+			.find(x => x.name === name)
+			.path
+			.replace('/welcome/', '/.welcome/')
+			.replace(/^\//, './');
+	} catch(e){}
+	if(!url) {
+		console.log('TODO: make Copy Path work with folders!');
+		return;
+	}
+	const path = relative ? url : new URL(url, document.baseURI).href;
+	navigator.clipboard.writeText(path)
+		.then(x => console.log(`Wrote path to clipboard: ${path}`))
+		.catch(e => {
+			console.error(`Error writing path to clipboard: ${path}`)
+			console.error(e);
+		});
+}
+
 
 function clearLastTab({ tabs, removeTab }){
 	const lastTab = tabs[tabs.length - 1];
@@ -212,23 +237,49 @@ const contextMenuHandler = ({ event, showMenu }) => {
 	if(!editorDom.contains(event.target)){ return true; }
 	event.preventDefault();
 
-	//TODO: maybe these should be defined in UI Module
-	const listItems = [
-		'Close', 'Close Others', 'Close to the Right', 'Close Saved', 'Close All',
-		'seperator',
+	const tabBarClicked = event.target.id === 'editor-tabs';
+	const theTab = !tabBarClicked && event.target.classList.contains('tab')
+		? event.target
+		: undefined;
+	const theTabId = theTab && theTab.id;
+	const tab = theTab && tabs.find(x => x.id === theTabId);
+	// TODO: maybe these should be defined in UI Module
+	// filter actions based on whether tab was found or not
+	const barClickItems = [
+		{ name: 'Close All', disabled: true },
+	];
+	const multiTabsItems = [
+		'Close', { name: 'Close Others', disabled: true }, { name: 'Close All', disabled: true },
+		'-------------------',
 		'Copy Path', 'Copy Relative Path',
-		'seperator',
+		'-------------------',
 		'Reveal in Side Bar',
-		'seperator',
-		'Keep Open', 'Pin',
-	]
-		.map(x => x === 'seperator'
+		'-------------------',
+		{ name: 'Keep Open', disabled: true }, { name: 'Pin', disabled: true },
+	];
+	const tabClickItems = [
+		'Close',
+		'-------------------',
+		'Copy Path', 'Copy Relative Path',
+		'-------------------',
+		'Reveal in Side Bar',
+		'-------------------',
+		{ name: 'Keep Open', disabled: true }, { name: 'Pin', disabled: true },
+	];
+
+	const listItems = (tab
+		? tabs.length > 1 ? multiTabsItems : tabClickItems
+		: barClickItems
+	)
+		.map(x => x === '-------------------'
 			? 'seperator'
-			: { name: x, disabled: true }
+			: typeof x === 'string'
+				? { name: x, disabled: false }
+				: x
 		);
 	let data;
 	try {
-		data = {}
+		data = { tab }
 	} catch(e) {}
 
 	if(!data){
@@ -246,12 +297,25 @@ const contextMenuHandler = ({ event, showMenu }) => {
 	return false;
 };
 
-const contextMenuSelectHandler = ({ event, newFile }) => {
+const contextMenuSelectHandler = ({ event,triggers }) => {
 	const { which, parent, data } = (event.detail || {});
-	if(parent !== 'Tab Bar'){
-		//console.log('Tab Bar ignored a context-select event');
-		return;
-	}
+	if(parent !== 'Tab Bar') return;
+	const NOT_IMPLEMENTED = (fn) => () => setTimeout(()=>alert(fn + ': not implemented'),0);
+	const handler = {
+		close: ({tab}) => triggers.fileClose({ detail: tab }),
+		closeothers: NOT_IMPLEMENTED('closeothers'),
+		closeall: NOT_IMPLEMENTED('closeall'),
+		copypath: ({ tab }) => copyPath(tab),
+		copyrelativepath: ({ tab }) => copyPath(tab, 'relative'),
+		revealinsidebar: ({tab}) => {
+			triggers.fileSelect({ detail: tab });
+			document.getElementById('explorer').focus();
+		},
+		keepopen: NOT_IMPLEMENTED('keepopen'),
+		pin: NOT_IMPLEMENTED('pin')
+	}[which.toLowerCase().replace(/ /g, '')];
+
+	handler && handler(data);
 };
 
 const systemDocsHandler = ({

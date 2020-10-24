@@ -203,7 +203,8 @@ function PaletteModal(parentEl){
 				selectedEl.classList.remove('selected');
 				next.classList.add('selected');
 				next.scrollIntoView({
-					behavior: 'smooth', block: 'nearest'
+					behavior: 'smooth',
+					block: 'nearest'
 				});
 				selected = next;
 			}
