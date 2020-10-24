@@ -517,11 +517,15 @@ const inlineEditor = (ChangeHandler) => ({
 	};
 
 	function settings(){
+		const storedSettings = JSON.parse(localStorage.getItem('editorSettings')||'{}');
 		return {
 			tabSize: 2,
-			indentWithTabs: false
+			indentWithTabs: false,
+			...storedSettings
 		}
 	}
+
+
 	const { indentWithTabs, tabSize } = settings();
 
 

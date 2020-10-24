@@ -1,5 +1,14 @@
 import { attachListeners } from './events/statusBar.mjs';
 
+function getSettings(){
+	const storedSettings = JSON.parse(localStorage.getItem('editorSettings')||'{}');
+	return {
+		tabSize: 2,
+		indentWithTabs: false,
+		...storedSettings
+	}
+}
+
 let bar;
 function StatusBar(){
 	if (bar) {
@@ -7,6 +16,8 @@ function StatusBar(){
 	}
 	const statusBar = document.createElement('div');
 	statusBar.id = "status-bar";
+	const settings = getSettings();
+	const tabSettingsElString = (s) => `${s.indentWithTabs ? 'Tab Size' : 'Spaces'}: <span class="tab-size">${s.tabSize}</span>`
 	statusBar.innerHTML = `
 	<style>
 		#status-bar {
@@ -54,20 +65,27 @@ function StatusBar(){
 	</div>
 
 	<div class="statusbar-item right">
-	 <div class="editor-statusbar-item">
-		 <a class="editor-status-selection" title="Go to Line" style="">
-			 Ln <span class="line-number">--</span>,
-			 Col <span class="column-number">--</span>
-		</a>
-		 <a class="editor-status-indentation hidden" title="Select Indentation" style="">
-			Tab Size: <span class="tab-size">2</span>
-		</a>
-		 <a class="editor-status-encoding hidden" title="Select Encoding" style="">UTF-8</a>
-		 <a class="editor-status-eol hidden" title="Select End of Line Sequence" style="">LF</a>
-		 <a class="editor-status-mode" title="Select Language Mode" style="">--</a>
+		<div class="editor-statusbar-item">
+			<a class="editor-status-selection" title="Go to Line" style="">
+				Ln <span class="line-number">--</span>,
+				Col <span class="column-number">--</span>
+			</a>
+			<a class="editor-status-indentation" title="Select Indentation" style="">${tabSettingsElString(settings)}</a>
+			<a class="editor-status-encoding hidden" title="Select Encoding" style="">UTF-8</a>
+			<a class="editor-status-eol hidden" title="Select End of Line Sequence" style="">LF</a>
+			<a class="editor-status-mode" title="Select Language Mode" style="">--</a>
 		</div>
 	</div>
-	`;
+`;
+
+	const tabSettingsEl = statusBar.querySelector('.editor-status-indentation');
+	tabSettingsEl.addEventListener("click", () => {
+		console.warn('pop up menu to select tab size and indentation style');
+		settings.indentWithTabs = !settings.indentWithTabs;
+		localStorage.setItem('editorSettings', JSON.stringify(settings));
+		tabSettingsEl.innerHTML = tabSettingsElString(settings);
+		Editor.setOption("indentWithTabs", settings.indentWithTabs);
+	});
 
 	function setLineNumber(number){
 		const el = statusBar.querySelector('.editor-status-selection .line-number');
