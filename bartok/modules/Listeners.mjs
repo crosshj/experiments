@@ -44,7 +44,7 @@ future todo:
 function trigger({ e, type, params, source, data, detail }){
 	const _data = typeof data === "function"
 		? data(e)
-		: data || {};
+		: data || detail.data || {};
 	//console.log(`triggering event: ${type}`);
 	const defaultDetail = {
 		..._data,
@@ -55,7 +55,7 @@ function trigger({ e, type, params, source, data, detail }){
 	const event = new CustomEvent(type, {
 		bubbles: true,
 		detail: detail
-			? { ...defaultDetail, ...detail, data  }
+			? { ...defaultDetail, ...detail, data: _data }
 			: defaultDetail
 	});
 	window.dispatchEvent(event);

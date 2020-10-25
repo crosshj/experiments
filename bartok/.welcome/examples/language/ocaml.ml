@@ -1,3 +1,5 @@
+(* import ../../shared.styl *)
+
 (*
 https://github.com/sebmarkbage/ocamlrun-wasm
 https://try.ocamlpro.com/ uses js_of_ocaml
