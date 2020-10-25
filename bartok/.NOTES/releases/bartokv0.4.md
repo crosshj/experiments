@@ -62,7 +62,7 @@
   - [X] improved loading
   - [X] recall last used file
   - [X] recall previous tabs
-  - [ ] context menu for tabs (close all / other)
+  - [X] context menu for tabs (close all / other)
   - [ ] per file, remember scroll position (on file reload & page reload)
 
 ### status bar

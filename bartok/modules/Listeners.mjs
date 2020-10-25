@@ -44,7 +44,7 @@ future todo:
 function trigger({ e, type, params, source, data, detail }){
 	const _data = typeof data === "function"
 		? data(e)
-		: data || detail.data || {};
+		: data || (detail||{}).data || {};
 	//console.log(`triggering event: ${type}`);
 	const defaultDetail = {
 		..._data,

@@ -28,7 +28,7 @@ Current State
 
 ##### terminal
   - [ ] cleanup commands (like unix)
-  - [ ] some resize issues remain (scrollbars)?
+  - [X] some resize issues remain (scrollbars)?
   - [ ] mouse clicks on terminal to select menu items (?)
   - [ ] loading spinner & done checkmark
     - https://stackoverflow.com/questions/2685435/cooler-ascii-spinners
