@@ -24,6 +24,7 @@
       "lisp.html": {},
       "lua.html": {},
       "md.html": {},
+      "ml.html": {},
       "pas.html": {},
       "php.html": {},
       "piskel.html": {},
@@ -45,6 +46,7 @@
       "editorLint.js": {},
       "golden-layout.css": {},
       "golden-layout.js": {},
+      "hexedit.js": {},
       "isomorphic-git.html": {},
       "minimap.js": {},
       "paste-image.js": {},
@@ -535,6 +537,10 @@
       "path": ".welcome/hello.scss"
     },
     {
+      "name": "hexedit.js",
+      "path": ".welcome/1ncubate/hexedit.js"
+    },
+    {
       "name": "hyperscript.js",
       "path": ".welcome/examples/language/hyperscript.js"
     },
@@ -669,6 +675,10 @@
     {
       "name": "minimap.js",
       "path": ".welcome/1ncubate/minimap.js"
+    },
+    {
+      "name": "ml.html",
+      "path": ".welcome/.templates/ml.html"
     },
     {
       "name": "mlerpo.md",
