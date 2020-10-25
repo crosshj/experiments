@@ -25,7 +25,6 @@ const sortAlg = (propFn=(x=>x), alg='alpha') => {
 		return (a, b) => {
 			const afilename = lowSafe(propFn(a)).split('.').slice(0,-1).join('.') || lowSafe(propFn(a));
 			const bfilename = lowSafe(propFn(b)).split('.').slice(0,-1).join('.') || lowSafe(propFn(b));
-			console.log(afilename)
 			if(afilename < bfilename) { return -1; }
 			if(afilename > bfilename) { return 1; }
 			const aExt = lowSafe(propFn(a)).replace(afilename, '');

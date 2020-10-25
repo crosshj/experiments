@@ -20,3 +20,4 @@ begin
     writeln(i, ' : ', result)
   end
 end.
+
