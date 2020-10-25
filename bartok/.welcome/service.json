@@ -24,6 +24,7 @@
       "lisp.html": {},
       "lua.html": {},
       "md.html": {},
+      "pas.html": {},
       "php.html": {},
       "piskel.html": {},
       "png.html": {},
@@ -241,7 +242,8 @@
     "randy.js": {},
     "Readme.md": {},
     "service.json": {},
-    "shared.styl": {}
+    "shared.styl": {},
+    "todo.untracked.md": {}
   },
   "files": [
     {
@@ -689,6 +691,10 @@
       "path": ".welcome/package.json"
     },
     {
+      "name": "pas.html",
+      "path": ".welcome/.templates/pas.html"
+    },
+    {
       "name": "pascal.pas",
       "path": ".welcome/examples/language/pascal.pas"
     },
@@ -919,6 +925,10 @@
     {
       "name": "todo.styl",
       "path": ".welcome/examples/todo/todo.styl"
+    },
+    {
+      "name": "todo.untracked.md",
+      "path": ".welcome/todo.untracked.md"
     },
     {
       "name": "typescript.ts",

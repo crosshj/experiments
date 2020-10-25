@@ -113,6 +113,7 @@
 	(async() => {
 		const outputEl = document.createElement('pre');
 		outputEl.className = "log";
+		outputEl.textContent = 'loading...';
 		document.body.appendChild(outputEl);
 
 		const deps = [
@@ -136,6 +137,12 @@
 					if (window.XHR_PREFIX && url.substr(0,4).toLowerCase() !== "http") {
 						url = XHR_PREFIX + url;
 					}
+					//rest[0] = true; //async xhr
+					/*
+						synchronous xhr causes lots of warnings.. skips service worker
+						probably needs a lib rewrite to fix this
+						could run in a worker to fix, maybe
+					*/
 					return orig_open.apply(this, [method, url].concat(rest));
 			};
 		})(XMLHttpRequest.prototype);
@@ -151,7 +158,6 @@
 		XHR_PREFIX = "/shared/vendor/pascal/"
 		const parser = new parse.Parser();
 		let ast = parser.parse(codeFromComment);
-		console.log(ast)
 
 		const IR_API = new IR();
 		const ir = IR_API.normalizeIR(IR_API.toIR(ast));
@@ -162,8 +168,15 @@
 		print = function(x) { js += x; };
 		compile(ir);
 
-		Module.print = print = function(x) { outputEl.textContent += x + '\n'; };
-		eval(js); 
+		let startedPrint = false;
+		Module.print = print = function(x) {
+			if(!startedPrint){
+				startedPrint = true;
+				outputEl.textContent = '';
+			}
+			outputEl.textContent += x + '\n';
+		};
+		eval(js);
 
 	})()
 </script>

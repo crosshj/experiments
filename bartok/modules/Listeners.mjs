@@ -40,7 +40,7 @@ future todo:
 
 */
 
-
+// this thing is used too many ways... SIGH
 function trigger({ e, type, params, source, data, detail }){
 	const _data = typeof data === "function"
 		? data(e)
@@ -49,12 +49,13 @@ function trigger({ e, type, params, source, data, detail }){
 	const defaultDetail = {
 		..._data,
 		...params,
-		...{ source }
+		...{ source },
+		data: _data
 	};
 	const event = new CustomEvent(type, {
 		bubbles: true,
 		detail: detail
-			? { ...defaultDetail, ...detail  }
+			? { ...defaultDetail, ...detail, data  }
 			: defaultDetail
 	});
 	window.dispatchEvent(event);

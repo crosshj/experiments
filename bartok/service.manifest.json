@@ -65,7 +65,7 @@
 
             "https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css",
             "https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/css/vendor/prism.css",
-            "https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/css/vendor/notebook.css",
+            "https://cdn.jsdelivr.net/gh/jsvine/nbpreview@mathjax-support/css/vendor/notebook.css",
             "https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/css/nbpreview.css",
             "https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/marked.min.js",
             "https://cdn.jsdelivr.net/gh/jsvine/nbpreview@master/js/vendor/ansi_up.min.js",
