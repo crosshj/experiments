@@ -80,21 +80,21 @@ const deps = [
       {id: "[8, 11]", name: "[8, 11]", radius:30, color: "#bb3"}
     ],
     "links":[
-      {source: "[0, 6]",target:"[6, 10]", weight:2.0},
-      {source: "[0, 6]",target:"[8, 11]", weight:1.8},
+      {source: "[0, 6]",target:"[6, 10]", weight:2.0, right: true },
+      {source: "[0, 6]",target:"[8, 11]", weight:1.8, right: true },
 
-      {source: "[1, 4]",target:"[4, 7]", weight:1.2},
-      {source: "[1, 4]",target:"[5, 9]", weight:1.4},
-      {source: "[1, 4]",target:"[6, 10]", weight:1.4},
-      {source: "[1, 4]",target:"[8, 11]", weight:1.4},
+      {source: "[1, 4]",target:"[4, 7]", weight:1.2, right: true},
+      {source: "[1, 4]",target:"[5, 9]", weight:1.4, right: true},
+      {source: "[1, 4]",target:"[6, 10]", weight:1.4, right: true},
+      {source: "[1, 4]",target:"[8, 11]", weight:1.4, right: true},
 
-      {source: "[3, 5]",target:"[5, 9]", weight:1.2},
-      {source: "[3, 5]",target:"[6, 10]", weight:1.2},
-      {source: "[3, 5]",target:"[8, 11]", weight:1.0},
+      {source: "[3, 5]",target:"[5, 9]", weight:1.2, right: true},
+      {source: "[3, 5]",target:"[6, 10]", weight:1.2, right: true},
+      {source: "[3, 5]",target:"[8, 11]", weight:1.0, right: true},
 
-      {source: "[3, 8]",target:"[8, 11]", weight:1.6},
+      {source: "[3, 8]",target:"[8, 11]", weight:1.6, right: true},
 
-      {source:"[4, 7]",target:"[8, 11]", weight:1.2}
+      {source:"[4, 7]",target:"[8, 11]", weight:1.2, right: true}
     ]
   };
 
