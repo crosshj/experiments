@@ -208,6 +208,7 @@ const NO_PREVIEW = `
 			height: calc(100vh - 40px);
 			overflow: hidden;
 			color: #ccc;
+			background: #1d1d1d;
 			font-family: sans-serif;
 		}
 	</style>
@@ -820,6 +821,178 @@ fetch, cache, DB, storage - these should be passed in
 // TODO: what if this handler needs things to be stored when it is first loaded?
 
 */
+
+
+const UIManagerRead = async (manager) => {
+    async function populateCache() {
+        let tree = {};
+        const code = [];
+        const cache = await caches.open(cacheName);
+        const keys = await cache.keys();
+
+        for(var i=0, len=keys.length; i<len; i++){
+            const request = keys[i];
+            const split = request.url.split(/(\/bartok\/|\/shared\/)/);
+            split.shift();
+            const pathSplit = split.join('').split('/').filter(x=>!!x);
+            let current = tree;
+            for(var j=0, jlen=pathSplit.length; j<jlen; j++){
+                const leafName = pathSplit[j];
+                if(!leafName){
+                    continue;
+                }
+                current[leafName] = current[leafName] || {};
+                current = current[leafName];
+            }
+
+            let name = (pathSplit[pathSplit.length-1]||"").replace("/", "");
+            const _code = await (await cache.match(request)).text();
+            code.push({
+                name,
+                code: _code,
+                url: request.url
+            });
+        }
+
+        tree = { ...tree.bartok, ...tree };
+        delete tree.bartok;
+
+        const bartokCode = {
+            id: manager.id,
+            name: manager.name,
+            tree: { [manager.name]: tree },
+            code
+        };
+        manager.cache = bartokCode;
+    }
+
+    function applyChangedToCache(changed, cache){
+        const overlayCode = JSON.parse(JSON.stringify(cache.code));
+        //TODO: should handle tree but not right now...
+        Object.entries(changed).forEach(([ key, value ]) => {
+            const changeFilename = key.split('/').pop();
+            const foundCachedFile = overlayCode.find(x => x.name === changeFilename);
+            foundCachedFile && (foundCachedFile.code = value);
+        });
+        return { ...cache, code: overlayCode };
+    }
+
+    if(!manager.cache) await populateCache();
+
+    let overlayedWithChanges;
+    if(Object.keys(manager.changed).length){
+        overlayedWithChanges = applyChangedToCache(manager.changed, manager.cache)
+    }
+
+    return JSON.stringify({
+        result: [ overlayedWithChanges || manager.cache ]
+    }, null, 2);
+};
+
+const UIManagerUpdate = async (manager, { service }) => {
+    // update caches with changed files
+    const cache = await caches.open(cacheName);
+    const changesAsArray = Object.entries(manager.changed);
+    for(var i=0, len=changesAsArray.length; i<len; i++){
+        const [key, value] = changesAsArray[i];
+        const fileName = key.split('/').pop();
+        const managerCachedFile = manager.cache.code.find(x => x.name === fileName);
+        const { url } = managerCachedFile;
+        const { contentType } = getMime(url) || {};
+        const headers = { 'content-type': contentType || '' };
+        const response = new Response(value, { headers });
+
+        await cache.put(url, response);
+        managerCachedFile.code = value;
+    }
+
+    // read service.manifest.json
+    //const manifest = manager.cache.code.find(x => x.name === 'service.manifest.json');
+    //console.log({ manifest });
+
+    console.warn('TODO: save files to backend (if provider is available?)');
+    // TODO: tell UI to refresh?
+
+    manager.changed = {};
+    await manager.changeStore.setItem('UIManagerChanged', manager.changed);
+
+    return JSON.stringify({
+        result: [ service ]
+    }, null, 2);
+};
+
+const UIManagerChange = async (manager, { path, code }) => {
+    manager.changed[path] = code;
+
+    console.warn(`changed a file at: ${path}`);
+
+    await manager.changeStore.setItem('UIManagerChanged', manager.changed);
+
+    return JSON.stringify({
+        result: { path, code }
+    });
+};
+
+const UIManagerInit = async (manager, { handlerStore, changeStore }) => {
+    manager.changeStore = changeStore;
+    manager.changed = await changeStore.getItem('UIManagerChanged') || {};
+
+    const route = `/${manager.name}/(.*)`;
+    const handler = "./modules/serviceRequestHandler.js";
+
+    // this is the service worker's handlers
+    let foundHandler;
+    let currentTry = 0;
+    const giveUp = 5;
+    const timeBetweenTries = 3000;
+    while(!foundHandler && currentTry < giveUp){
+        foundHandler = handlers.find(x => x.handlerName === handler);
+        if(!foundHandler){
+            currentTry++;
+            await new Promise(r => setTimeout(r, timeBetweenTries))
+        }
+    }
+    if(!foundHandler) return console.error('could not find a handler to base UIManager handler on!')
+
+    const foundExactHandler = foundHandler && handlers
+        .find(x =>
+            x.handlerName === handler && x.routePattern === route
+        );
+    if(foundExactHandler) return;
+    handlers.push({
+        type: foundHandler.type,
+        routePattern: route,
+        route: new RegExp(route),
+        handler: foundHandler.handler,
+        handlerName: handler,
+        handlerText: foundHandler.handlerText
+    });
+    await handlerStore.setItem(route, {
+        type,
+        route,
+        handlerName: handler,
+        handlerText: foundHandler.handlerText
+    });
+}
+
+const UIManagerAddChanged = (manager) => {
+
+};
+
+class UIManager {
+    static id = 0
+    static name = "fiug"
+
+    static changeStore = undefined
+    static cache = undefined
+    static changed = undefined
+
+    static init = (handlerStore, changeStore) => UIManagerInit(this, { handlerStore, changeStore })
+    static read = () => UIManagerRead(this)
+    static update = (args) => UIManagerUpdate(this, args)
+    static change = (args) => UIManagerChange(this, args)
+}
+
 class ProviderManager {
     constructor(store) {
         this.store = store;
@@ -907,10 +1080,20 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             storeName: 'provider',
             description: 'services which connect browser ui to outside world'
         });
+    const changeStore = localforage
+        .createInstance({
+            driver: driverOrder,
+            name: 'serviceRequest',
+            version: 1.0,
+            storeName: 'changes',
+            description: 'keep track of changes across service worker restart'
+        });
     const providerManager = new ProviderManager(providerStore);
 
     // handlerStore comes from SW context
     let app = fakeExpress({ store, handlerStore, metaStore });
+
+    UIManager.init(handlerStore, changeStore);
 
     const providerUpdateServiceJson = async ({ service, metaStore, fileStore }) => {
         const serviceJsonFile = service.code.find(x => x.path.includes('/service.json'));
@@ -1106,53 +1289,11 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
         //THIS ENDPOINT SHOULD BE (but is not now) AS DUMB AS:
         // - if id passed, return that id from DB
         // - if no id passed (or * passed), return all services from DB
-
         const cacheHeader = event.request.headers.get('x-cache');
 
-        if(Number(params.id) === 0){
-            const cache = await caches.open(cacheName);
-            const keys = await cache.keys();
-            let tree = {};
-            const code = [];
-
-            for(var i=0, len=keys.length; i<len; i++){
-                const request = keys[i];
-                const split = request.url.split(/(\/bartok\/|\/shared\/)/);
-                split.shift();
-                const pathSplit = split.join('').split('/').filter(x=>!!x);
-                let current = tree;
-                for(var j=0, jlen=pathSplit.length; j<jlen; j++){
-                    const leafName = pathSplit[j];
-                    if(!leafName){
-                        continue;
-                    }
-                    current[leafName] = current[leafName] || {};
-                    current = current[leafName];
-                }
-
-                let name = (pathSplit[pathSplit.length-1]||"").replace("/", "");
-                const _code = await (await cache.match(request)).text();
-                code.push({ name, code: _code });
-            }
-
-            const name = 'fugue ui';
-
-            tree = { ...tree.bartok, ...tree };
-            delete tree.bartok;
-
-            const bartokCode = {
-                result: [{
-                    id: 0,
-                    name,
-                    tree: { [name]: tree },
-                    code
-                }]
-            }
-            return JSON.stringify(bartokCode, null, 2);
-        }
+        if(Number(params.id) === 0) return await UIManager.read();
 
         const defaults = defaultServices();
-
 
         //if not id, return all services
         if (!params.id || params.id === '*') {
@@ -1228,6 +1369,9 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             let { path, code, command, service } = jsonData;
             if(fileData){ code = fileData || ''; }
 
+            if(service && service === UIManager.name)
+                return UIManager.change({ path, code, command, service });
+
             await store.setItem(path, code);
 
             if(command === 'upsert'){
@@ -1255,12 +1399,17 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             const body = await event.request.json();
             const { name } = body;
 
-            const preExistingService = (await metaStore.getItem(id+'')) || {};
             const parsedCode = !Array.isArray(body.code) && safe(() => JSON.parse(body.code));
             if(parsedCode && parsedCode.tree){
                 body.tree = parsedCode.tree;
                 body.code = parsedCode.files;
             }
+
+            if(id === UIManager.id || id === UIManager.id.toString())
+                return UIManager.update({ service: body });
+
+            const preExistingService = (await metaStore.getItem(id+'')) || {};
+
             const service = {
                 ...preExistingService,
                 ...{
@@ -1478,6 +1627,13 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
     async function serviceAPIRequestHandler(event) {
         //console.warn('Service Request Handler - usage');
         //console.log(event.request.url);
+
+        try {
+            const splitPath = event.request.url.replace(location.origin, '').split('/');
+            if(splitPath.includes('::preview::') && splitPath.includes(UIManager.name)){
+                return new Response(NO_PREVIEW, {headers:{ 'Content-Type': 'text/html' }})
+            }
+        }catch(e){}
 
         const serviceAPIMatch = await app.find(event.request.url);
 

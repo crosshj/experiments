@@ -260,8 +260,9 @@ const readFolderHandler = ({
 };
 
 const fileChangeHandler = (...args) => debounce((event) => {
-	const { getState, getOperations, performOperation, triggerOperationDone } = args[0];
+	const { getState, getOperations, performOperation, triggerOperationDone, getCurrentService } = args[0];
 	const state = getState();
+	const service = getCurrentService().name;
 	const operations = getOperations();
 	const changeOp = (operations||[]).find(x => x.name === 'change');
 
@@ -270,7 +271,7 @@ const fileChangeHandler = (...args) => debounce((event) => {
 
 	(async() => {
 		const results = await performOperation(changeOp, {
-			path, code
+			path, code, service
 		});
 		triggerOperationDone(results);
 	})();

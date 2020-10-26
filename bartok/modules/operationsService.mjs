@@ -56,7 +56,7 @@ function getOperations(updateAfter, readAfter) {
 		eventToBody: ({ body = {} }) => {
 			const { name, id } = body;
 			if (!name) throw new Error('name is required when updating service');
-			if (!id) throw new Error('id is required when updating service');
+			if (!id && typeof id !== "number") throw new Error('id is required when updating service');
 			return JSON.stringify(body, null, 2);
 		},
 	}, {
@@ -65,9 +65,9 @@ function getOperations(updateAfter, readAfter) {
 		config: {
 			method: 'POST'
 		},
-		eventToBody: ({ path, code } = {}) => {
+		eventToBody: ({ path, code, service } = {}) => {
 			if (!path) throw new Error('path is required when changing service files');
-			return JSON.stringify({ path, code: code || '' }, null, 2);
+			return JSON.stringify({ path, code: code || '', service }, null, 2);
 		},
 	}, {
 		name: 'delete',
