@@ -1,19 +1,31 @@
-class Greeter {
-  greeting: string;
-  constructor (message: string) {
-    this.greeting = message;
-  }
-  greet() {
-    return "Hello, " + this.greeting;
-  }
-}
+/*
+*/
 
-var greeter = new Greeter("world");
+const deps = [
+	'../../shared.styl'
+];
 
-var button = document.createElement('button')
-button.innerText = "Say Hello"
-button.onclick = function() {
-  alert(greeter.greet())
-}
+(async () => {
+	await appendUrls(deps);
 
-document.body.appendChild(button);
+	function fib(n: number): number {
+		let a = 0;
+		let b = 1;
+		if (n <= 0){
+			return a;
+		}
+		while (--n) {
+			const t = a + b;
+			a = b;
+			b = t;
+		}
+		return b;
+	}
+	
+	let results: number[] = [];
+	for(var i=0, len=10; i<len; i++){
+		results.push(fib(i))
+	}
+	console.log(results.join('\n'))
+
+})();
