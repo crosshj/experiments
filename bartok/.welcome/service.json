@@ -36,6 +36,7 @@
       "scm.html": {},
       "sql.html": {},
       "svg.html": {},
+      "ts.html": {},
       "wat.html": {},
       "zip.html": {}
     },
@@ -939,6 +940,10 @@
     {
       "name": "todo.untracked.md",
       "path": ".welcome/todo.untracked.md"
+    },
+    {
+      "name": "ts.html",
+      "path": ".welcome/.templates/ts.html"
     },
     {
       "name": "typescript.ts",
