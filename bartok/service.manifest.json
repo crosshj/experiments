@@ -141,6 +141,10 @@
             "/shared/vendor/llvm.js/shell.js",
             "/shared/vendor/llvm.js/utility.js",
 
+            "/shared/vendor/julia/hello-no-bysyncify.js",
+            "/shared/vendor/julia/hello-no-bysyncify.data",
+            "/shared/vendor/julia/hello-no-bysyncify.wasm",
+
             "https://unpkg.com/three@0.115.0/build/three.js",
             "https://unpkg.com/three@0.115.0/examples/js/controls/OrbitControls.js",
             "https://unpkg.com/three@0.115.0/examples/js/loaders/GLTFLoader.js",

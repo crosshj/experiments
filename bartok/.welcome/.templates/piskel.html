@@ -44,10 +44,10 @@ probably also worth referncing: https://github.com/piskelapp/piskel
       font-family: sans-serif;
       background: #1d1d1d;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: start;
       max-width: 1010px;
+      justify-content: center;
+      align-items: center;
+      height: 90vh;
     }
     @media (min-width: 1024px) {
       body {
@@ -85,6 +85,11 @@ probably also worth referncing: https://github.com/piskelapp/piskel
       left: 0;
     }
     .image-parent .image-container .image-display {
+      image-rendering: pixelated;
+    }
+    
+    canvas {
+      width: 100%;
       image-rendering: pixelated;
     }
   </style>
@@ -192,6 +197,8 @@ probably also worth referncing: https://github.com/piskelapp/piskel
         `.replace(new RegExp('        ', 'g'), '');
       }
 
+      //codeFromComment = await (await fetch('../examples/image/Piskel-LIFE-20200506.piskel')).text()
+
       console.bak = console.log;
       console.log = (...args) => {
         const text = args[0];
@@ -241,37 +248,45 @@ probably also worth referncing: https://github.com/piskelapp/piskel
           return a;
         }, [])
         const frameWidth = parsed.piskel.width;
-        const imagePar = document.createElement('div');
-        imagePar.classList.add('image-parent');
-        imagePar.style.height = parsed.piskel.height + 'px';
-        imagePar.style.width = parsed.piskel.width + 'px';
         
-        images.forEach(x => {
-          const imageCont = document.createElement('div');
-          imageCont.classList.add('image-container');
-          const img = document.createElement('img');
-          img.classList.add('image-display');
-          //img.style.backgroundImage = `url(${x})`
-          img.src = x.img;
-          imageCont.appendChild(img);
-          imagePar.appendChild(imageCont);
-          imageCont.style.width = parsed.piskel.width + 'px';
-          imageCont.style.height = parsed.piskel.height + 'px';
-          let i = 0;
-          setInterval(() => {
-            if(i==x.frameCount) i = 0;
-            const amount = i * frameWidth;
-            img.style.transform = `translateX(-${amount}px)`
-            i++;
-          }, 1000/parsed.piskel.fps)
-        });
-        document.body.appendChild(imagePar);
+        const canv = document.createElement('canvas');
+        canv.id = "canvas"
+        document.body.appendChild(canv);
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.globalCompositeOperation = 'source-over';
+        
+        canv.width = parsed.piskel.width;
+        canv.height = parsed.piskel.height;
 
+        images.forEach(x => {
+          x.imageEl = new Image();
+          x.imageEl.src=x.img;
+        })
+        
+        let i = 0;
+        function draw(){
+          ctx.clearRect(0, 0, canv.width, canv.height);
+
+          if(i === images[0].frameCount) i = 0;
+          images.forEach(x => {
+            ctx.save();
+            ctx.drawImage(x.imageEl, -1*i*parsed.piskel.width, 0);
+            ctx.restore();
+          })
+          i++;
+          setTimeout(() => {
+            window.requestAnimationFrame(draw);
+          }, 1000/parsed.piskel.fps)
+        }
+        window.requestAnimationFrame(draw);
+
+        /*
         let parsedPretty = JSON.stringify(parsed, null, 2)
         Object.keys(layouts).forEach(key => {
           parsedPretty = parsedPretty.replace('"'+key+'"', JSON.stringify(layouts[key]))
         });
         await prism('json', parsedPretty);
+        */
 
       }
       

@@ -1,3 +1,4 @@
+# import ../../shared.styl
 #=
 
 use https://github.com/Keno/julia-wasm
@@ -5,8 +6,10 @@ use https://github.com/Keno/julia-wasm
 =#
 
 function fib(n)
-  if n <= 1 return 1 end
-  return fib(n - 1) + fib(n - 2)
+	if n <= 1 return n end
+	return fib(n - 1) + fib(n - 2)
 end
 
-println(fib(46))
+for i in 0:9
+	println(fib(i))
+end

@@ -17,6 +17,7 @@
       "gltf.html": {},
       "go.html": {},
       "ipynb.html": {},
+      "jl.html": {},
       "jpeg.html": {},
       "jpg.html": {},
       "js.html": {},
@@ -78,7 +79,6 @@
       "gml_cm_mode.js": {},
       "graph-formats.md": {},
       "language-sql-fetch.html": {},
-      "Piksel-LIFE-20200506.piskel": {},
       "preact-hyperscript.htm": {},
       "reveal.html": {},
       "slides-reveal.htm": {},
@@ -162,6 +162,7 @@
         "jr.ppm": {},
         "lame.png": {},
         "languages-templates-progress.bmp": {},
+        "Piskel-LIFE-20200506.piskel": {},
         "spritesheet.json": {},
         "spritesheet.png": {},
         "svg-bartok.svg": {},
@@ -578,6 +579,10 @@
       "path": ".welcome/examples/image/jelly.ppm"
     },
     {
+      "name": "jl.html",
+      "path": ".welcome/.templates/jl.html"
+    },
+    {
       "name": "jpeg.html",
       "path": ".welcome/.templates/jpeg.html"
     },
@@ -730,8 +735,8 @@
       "path": ".welcome/examples/language/php.php"
     },
     {
-      "name": "Piksel-LIFE-20200506.piskel",
-      "path": ".welcome/5upport/Piksel-LIFE-20200506.piskel"
+      "name": "Piskel-LIFE-20200506.piskel",
+      "path": ".welcome/examples/image/Piskel-LIFE-20200506.piskel"
     },
     {
       "name": "piskel.html",
