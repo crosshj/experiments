@@ -37,6 +37,7 @@
       "scm.html": {},
       "sql.html": {},
       "svg.html": {},
+      "texturepacker.html": {},
       "ts.html": {},
       "wat.html": {},
       "zip.html": {}
@@ -909,6 +910,10 @@
     {
       "name": "templateMessages.js",
       "path": ".welcome/1ncubate/templateMessages.js"
+    },
+    {
+      "name": "texturepacker.html",
+      "path": ".welcome/.templates/texturepacker.html"
     },
     {
       "name": "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg",
