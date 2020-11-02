@@ -112,13 +112,13 @@ body
         right: 10px
         font-stretch: ultra-expanded
         color: transparent
-      &:hover,
-      &:hover span
+      &:not(.invisible):hover,
+      &:not(.invisible):hover span
         color: #bbb !important
         background: #444
-      &:hover:after,
-      &:hover span,
-      &:hover input
+      &:not(.invisible):hover:after,
+      &:not(.invisible):hover span,
+      &:not(.invisible):hover input
         color: inherit
       &.completed span
         color: #6e6e6e
