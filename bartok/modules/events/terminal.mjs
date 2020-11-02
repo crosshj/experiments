@@ -532,8 +532,11 @@ const _execCommand = (execTrigger) => ({ command, loading, done }) => {
 			body.id = "*";
 			after = ({ result }) => {
 				loading('DONE');
+				const services = (result.result||[])
+					.sort((a, b) => Number(a.id||0)-Number(b.id||0))
+					.map(x => `${(x.id||0).toString().padStart(5, ' ')}   ${x.name}`).join('\n')
 				loading(`\n
-				${result.result.map(x => `${x.id.toString().padStart(5, ' ')}   ${x.name}`).join('\n')}
+				${services}
 				\n`.replace(/\t/g, ''));
 				done();
 			};
