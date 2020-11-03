@@ -189,6 +189,10 @@ useDefault: false
 	#container.markdown-body pre {
 		background-color: #ffffff11;
 	}
+	
+	svg.bob {
+		filter: invert(1) brightness(0.65);
+	}
 </style>
 
 <body>
@@ -400,68 +404,7 @@ useDefault: false
 			//console.log({templateInput});
 
 			if (templateInput === ('{{' + 'markdown' + '}}')) {
-				templateInput = `
-        \`\`\` ascii-diagram
-        +-----------------------------------------------------------+
-        |        SERVICE MAP                                        |
-        +-----------------------------------------------------------+
-        |                                                           |
-        |      +---------------------+ +---------------------+      |
-        |      | TEMPLATES           | | CONFIG              |      |
-        |      +---------------------+ +---------------------+      |
-        |      |                     | |                     |      |
-        |      | construction        | | connection          |      |
-        |      |                     | |                     |      |
-        |      |                     | |                     |      |
-        |      |                     | |                     |      |
-        |      |                     | |                     |      |
-        |      +---------------------+ +---------------------+      |
-        |                                                           |
-        |      +---------------------------------------------+      |
-        |      | SERVICE 1                                   |      |
-        |      +---------------------------------------------+      |
-        |      |                                             |      |
-        |      |  +---------+    +---------+    +---------+  |      |
-        |      |  |         |    |         |    |         |  |      |
-        |      |  | FILE 1  |    | FILE 2  |    | FILE 3  |  |      |
-        |      |  |         |    |         |    |         |  |      |
-        |      |  +---------+    +---------+    +---------+  |      |
-        |      |                                             |      |
-        |      +---------------------------------------------+      |
-        |                                                           |
-        |      +---------------------------------------------+      |
-        |      | SERVICE 2                                   |      |
-        |      +---------------------------------------------+      |
-        |      |                                             |      |
-        |      |  +---------+    +---------+    +---------+  |      |
-        |      |  |         |    |         |    |         |  |      |
-        |      |  | FILE 1  |    | FILE 2  |    | FILE 3  |  |      |
-        |      |  |         |    |         |    |         |  |      |
-        |      |  +---------+    +---------+    +---------+  |      |
-        |      |                                             |      |
-        |      +---------------------------------------------+      |
-        |                                                           |
-        +-----------------+---+-------------------------------------+
-                          |   ^
-                       A1 |   | A2
-                          v   |
-                  +-------+---+--------+   B1   +------------+
-                  | Local Storage      +------->+            |
-                  +--------------------+        |  Browser   |
-                  |                    |   B2   |  Storage   |
-                  |                    +<-------+            |
-                  +-------+---+--------+        +------------+
-                          |   ^
-                        C1| C2|
-                          v   |
-                  +-----------+--------+   D1   +------------+
-                  | Bartok Backend     +------->+            |
-                  +--------------------+        |  Server    |
-                  |                    |   D2   |  Storage   |
-                  |                    +<-------+            |
-                  +--------------------+        +------------+
-        \`\`\`
-				`.split('\n').map(x => x.replace(/        /, '')).join('\n').trim()
+				templateInput = `hello world`.split('\n').map(x => x.replace(/        /, '')).join('\n').trim()
 			}
 			if (templateInput.includes('</html>')) {
 				console.log(templateInput)
@@ -499,7 +442,8 @@ useDefault: false
 					const input = asciiDiagrams[i].textContent;
 					const svgText = await window.svgbob_convert(input);
 					const svgEl = htmlToElement(svgText);
-					asciiDiagrams[i].parentNode.insertBefore(svgEl, asciiDiagrams[i]);
+					asciiDiagrams[i].parentNode.parentNode.insertBefore(svgEl, asciiDiagrams[i].parentNode);
+					asciiDiagrams[i].parentNode.parentNode.removeChild(asciiDiagrams[i].parentNode);
 				}
 			})()
 			
