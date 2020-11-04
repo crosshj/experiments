@@ -18,13 +18,13 @@ function useStore({ filter }={}) {
 	});
 
 	const reorder = useCallback(({ item, order }) => {
-		const { todos = [], activeFilter='all', counts } = value;
+		const { todos = [], activeFilter='all' } = value;
 
 		todos.find(x => x.value === item).order = order;
 
 		setValue({
+			...value,
 			todos,
-			counts,
 			activeFilter
 		});
 	}, [value]);
@@ -32,6 +32,7 @@ function useStore({ filter }={}) {
 	const replaceAll = useCallback((submitted) => {
 		const { todos = [], activeFilter='all' } = value;
 		setValue({
+			...value,
 			todos: submitted,
 			counts: getCounts(submitted),
 			activeFilter
@@ -44,14 +45,27 @@ function useStore({ filter }={}) {
 		counts.active++;
 		counts.all++;
 		const newTodo = {
-			value: submitted,
+			value: submitted + ` [created: ${(new Date()).toLocaleString('en')}]`,
 			status: 'active',
 			order: todos.filter(x => x.status === "active").length
 		};
 		setValue({
+			...value,
 			todos: [ ...todos, newTodo ],
 			counts,
 			activeFilter
+		});
+	}, [value]);
+	
+	const searchTodo = useCallback((submitted) => {
+		const { todos = [], activeFilter='all', searchTerm } = value;
+		const counts = getCounts(todos);
+		setValue({
+			...value,
+			todos,
+			counts,
+			activeFilter,
+			searchTerm: submitted
 		});
 	}, [value]);
 
@@ -62,8 +76,9 @@ function useStore({ filter }={}) {
 			? 'completed'
 			: 'active';
 		theItem.order = Number.MIN_SAFE_INTEGER;
-		theItem.value += ` [COMPLETED: ${(new Date()).toLocaleString('en')}]`;
+		theItem.value += ` [completed: ${(new Date()).toLocaleString('en')}]`;
 		setValue({
+			...value,
 			todos,
 			counts: getCounts(todos),
 			activeFilter
@@ -71,22 +86,22 @@ function useStore({ filter }={}) {
 	}, [value]);
 
 	const filterTodos = useCallback((which) => {
-		const { todos = [], counts } = value;
+		const { todos = [] } = value;
 		setValue({
+			...value,
 			todos,
-			counts,
 			activeFilter: which
 		});
 	}, [value]);
 
 	const state = value
 		? {
+			...value,
 			todos: (filter || value.activeFilter) === 'all'
 				? value.todos
 				: (value.todos||[]).filter(
 						x => x.status === (filter || value.activeFilter)
-				),
-			activeFilter: value.activeFilter
+				)
 		}
 		: {
 			todos: undefined,
@@ -127,6 +142,7 @@ function useStore({ filter }={}) {
 		replaceAll,
 		reorder,
 		addTodo,
+		searchTodo,
 		checkItem,
 		filterTodos
 	};

@@ -1,10 +1,19 @@
-export const Body = ({ todos=[], addTodo, check, reorder }) => {
-	const add = (event) => {
-		const inputText = document.getElementById('inputBox').value;
-		addTodo(inputText);
-		event.preventDefault();
-	};
+const paramsPattern = /\[(.*?):(.*?)\]/g;
+const extractParams = (s) => {
+	let extracted = s.match(paramsPattern);
+	return extracted.map(x => {
+		const split = x.replace(/^\[/,'').replace(/\]$/,'').split(':');
+		return {
+				[split[0].trim()]: split[1].trim()
+		}
+	});
+};
 
+const ignoreParams = (s) =>  (s||'').replace(paramsPattern, '').trim();
+
+export const Body = ({ todos=[], active, addTodo, searchTodo, searchTerm, checkItem, reorder }) => {
+	const isSearchView = ['all', 'completed'].includes(active)
+	
 	const drop = (e) => {
 		const item = e.dataTransfer.getData('text');
 		e.dataTransfer.clearData();
@@ -24,24 +33,82 @@ export const Body = ({ todos=[], addTodo, check, reorder }) => {
 			: '';
 	};
 
+	const getTodoClass = todo => {
+		const sepClass = seperatorRowClass(todo);
+		const isInvisible = todo.hidden
+			|| (
+				isSearchView
+				&& !sepClass
+				&& searchTerm
+				&& !todo.value.toLowerCase().includes(searchTerm.toLowerCase())
+			)
+			|| (
+				isSearchView && sepClass && searchTerm
+			)
+		return todo.status + sepClass +
+			(isInvisible ? ' invisible' : '')
+	};
+	
 	const spacer = {
 		hidden: true,
 		order: todos.length
-	}
+	};
+
+	const searchBarAction = {
+		active: {
+			text: 'ADD',
+			value: '',
+			handler: (event) => {
+				const inputText = document.getElementById('inputBox').value;
+				addTodo(inputText);
+				event.preventDefault();
+			}
+		},
+		all: {
+			text: 'SEARCH',
+			value: searchTerm,
+			handler: (event) => {
+				console.log('...handler')
+				const inputText = document.getElementById('inputBox').value;
+				searchTodo(inputText);
+				event.preventDefault();
+			}
+		},
+		completed: {
+			text: 'SEARCH',
+			value: searchTerm,
+			handler: (event) => {
+				console.log('...handler')
+				const inputText = document.getElementById('inputBox').value;
+				searchTodo(inputText);
+				event.preventDefault();
+			}
+		}
+	}[active];
+	isSearchView && (searchBarAction.onChange = searchBarAction.handler);
 
 	return (
 		<div class="todo-body">
 			<div class="input-container">
-					<form onSubmit={add}>
-						<input id="inputBox" type="text" value="" autocomplete="off"/>
-						<button onClick={add}>ADD</button>
-					</form>
+				<form onSubmit={searchBarAction.handler}>
+					<input
+						id="inputBox"
+						type="text"
+						value={searchBarAction.value}
+						autocomplete="off"
+						onInput={searchBarAction.onChange || (() => {})}
+					/>
+					<button
+						onClick={searchBarAction.handler}
+						className={searchBarAction.text.toLowerCase()}
+					>{searchBarAction.text}</button>
+				</form>
 			</div>
 			<ul>
 				{[...(todos||[]), spacer].map((todo, i) => (
 					<li
 						data-order={todo.order}
-						class={todo.status + seperatorRowClass(todo) + (todo.hidden ? ' invisible' : '')}
+						class={getTodoClass(todo)}
 						draggable="true"
 						onDragStart={ (e) => {
 							e.dataTransfer
@@ -59,11 +126,11 @@ export const Body = ({ todos=[], addTodo, check, reorder }) => {
 							type="checkbox"
 							droppable="false"
 							defaultChecked={todo.status==="completed"}
-							onChange={() => check(todo.value)}
+							onChange={() => checkItem(todo.value)}
 						/> }
 						<span
 							droppable="false"
-						>{todo.value}</span>
+						>{isSearchView ? todo.value : ignoreParams(todo.value)}</span>
 					</li>
 				))}
 			</ul>

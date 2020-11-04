@@ -10,10 +10,10 @@ const useStore = getState({ useState, useCallback });
 
 const App = () => {
 	const {
-		value, addTodo, checkItem, filterTodos, replaceAll, reorder
+		value, ...actions
 	} = useStore();
 	const {
-		todos=[], counts, activeFilter='all'
+		todos=[], counts, activeFilter='all', searchTerm
 	} = value || {};
 
 	return (
@@ -21,17 +21,16 @@ const App = () => {
 			<div class="container">
 				<Header name="⚡ todo ⚡"/>
 				<Actions
-					replaceAll={replaceAll}
+					{ ...actions }
 					useStore={useStore}
 				/>
 				<Body
+					active={activeFilter}
 					todos={todos}
-					addTodo={addTodo}
-					check={checkItem}
-					reorder={reorder}
+					{ ...actions }
 				/>
 				<Footer
-					filter={filterTodos}
+					{ ...actions }
 					active={activeFilter}
 					counts={counts}
 				/>
