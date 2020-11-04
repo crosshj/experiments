@@ -1,3 +1,5 @@
+<!-- no-select -->
+
 # 2020-10-23 - things I have known myself to be sick of
 
 - hearing people gripe or argue about the behavior of huge corporations instead of spending resources on smaller projects/vendors/companies who are better positioned to behave properly

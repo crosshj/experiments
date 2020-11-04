@@ -23,7 +23,7 @@
 <div style="height: 100%"></div>
 
 
-<img src="https://imgs.xkcd.com/comics/is_it_worth_the_time.png" style="max-height:unset; width: 100%; margin: auto;"/>
+<img src="{{PROXY}}/https://imgs.xkcd.com/comics/is_it_worth_the_time.png" style="max-height:unset; width: 100%; margin: auto;"/>
 
   - this chart is sort of a slippery grok, but the intent/effect is golden and the math seems legit
   - there may be a few things lost when considering creating a feature vs automating a task
@@ -71,7 +71,7 @@
 
 ### templates
   - [X] templates run through service worker
-  - [ ] match based on tag in file contents
+  - [X] match based on tag in file contents
 
 ### preview
   - [X] default file should load in preview on page load

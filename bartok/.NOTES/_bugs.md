@@ -7,10 +7,7 @@
 
 
 
-
-
-
-# DELETE ERROR
+## DELETE ERROR
 
 1) one at a time, open some files and makes changes and save them
 2) create a new file
@@ -26,7 +23,7 @@ file is deleted, but "no file opened" screen shows up in editor and stays that w
 
 
 
-# SERVICE SWITCH ERROR
+## SERVICE SWITCH ERROR
 
 1) open some files
 2) switch project

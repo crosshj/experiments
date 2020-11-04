@@ -8,7 +8,7 @@ import motd from "./motd.mjs";
 import { attachEvents, connectTrigger, execCommand } from './events/terminal.mjs';
 import { templateJSX, templateSVC3, transform } from './Templates.mjs';
 
-const iframeSandboxPermissions = "allow-same-origin allow-scripts allow-popups allow-modals allow-downloads";
+const iframeSandboxPermissions = "allow-same-origin allow-scripts allow-popups allow-modals allow-downloads allow-forms";
 
 let EventTrigger;
 

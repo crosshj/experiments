@@ -52,7 +52,8 @@ const deps = [
           .map(x => noInt
               .map((y, i) => y
                   .some(z => z[0] === x[0] && z[1] === x[1]) ? i : null)
-              .filter(q => q !== null));
+              .filter(q => q !== null)
+           );
       return input
           .map((x, i) => ({
               self: x,

@@ -20,7 +20,7 @@
   - [ ] !!! hook up new file icon
   - [ ] !!! hook up new folder action
   - [ ] rename project/service
-  - [ ] open parent folders when file/folder selected
+  - [X] open parent folders when file/folder selected
     - selected from tabs
     - selected in terminal
 
@@ -41,11 +41,11 @@
   - [ ] !!! authorization
 
 ### status bar
-  - [ ] !!! connected to indent settings
+  - [X] !!! connected to indent settings
   - [ ] connected to encoding type
   - [ ] connected to line ending
 
 ### service map
-  - [ ] show registered triggers in map
+  - [X] show registered triggers in map
 
 
