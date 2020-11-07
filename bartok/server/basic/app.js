@@ -60,7 +60,7 @@ const fileDelete = require('./handlers/fileDelete.js');
     _path += '?' + queryString;
     console.log(`PROXY: ${_path}`)
     request(_path).pipe(res);
-  })
+  });
 
   server.get('/', (req, res) => {
     res.send(appHTML);

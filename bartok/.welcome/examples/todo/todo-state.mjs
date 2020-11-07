@@ -60,6 +60,7 @@ function useStore({ filter }={}) {
 	const searchTodo = useCallback((submitted) => {
 		const { todos = [], activeFilter='all', searchTerm } = value;
 		const counts = getCounts(todos);
+		console.log({ submitted })
 		setValue({
 			...value,
 			todos,

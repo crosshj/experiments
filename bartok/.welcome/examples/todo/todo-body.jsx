@@ -68,7 +68,6 @@ export const Body = ({ todos=[], active, addTodo, searchTodo, searchTerm, checkI
 			text: 'SEARCH',
 			value: searchTerm,
 			handler: (event) => {
-				console.log('...handler')
 				const inputText = document.getElementById('inputBox').value;
 				searchTodo(inputText);
 				event.preventDefault();
@@ -78,7 +77,6 @@ export const Body = ({ todos=[], active, addTodo, searchTodo, searchTerm, checkI
 			text: 'SEARCH',
 			value: searchTerm,
 			handler: (event) => {
-				console.log('...handler')
 				const inputText = document.getElementById('inputBox').value;
 				searchTodo(inputText);
 				event.preventDefault();

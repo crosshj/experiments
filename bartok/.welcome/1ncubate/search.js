@@ -2,21 +2,24 @@
 
 todo:
 
-- [ ] put search in worker so the UI/service worker is not blocked
-- [x] make sure results match VS Code's results
-	- return multiple results per line
-- [x] verify loss of speed is only in building index, not search
-	- provide a search box and change searches on the fly
-	- measure time to search
+- [ ] include files/directory
+- [ ] exclude files/directory
 - [ ] update a document and search again based on that update
 - [ ] integrate with service request handler
 - [ ] integrate with client
 - [ ] open a file at a given line and column
-- [ ] search across all services
-- [ ] should use paging and inifinite scroll to increase perf on large results (see the way VSCode does this)
-- [ ] add collapse/expand to results
 - [ ] add file path to search results
-
+- [ ] search across all services
+- [x] improve UI is not blocked/janky: async/await & requestAnimationFrame
+- [x] make sure results match VS Code's results
+- [x] return multiple results per line
+- [x] verify loss of speed is only in building index, not search
+- [x] provide a search box and change searches on the fly
+- [x] measure time to search
+- [x] cap results at 1000 / handle large data sets reasonably well, see the way VSCode does this
+- [x] add collapse/expand to results
+- [LATER] should use paging and inifinite scroll to increase perf on large results
+- [LATER] put search in worker so the UI/service worker is not blocked
 - [YES?] would it be quicker and simpler to just parse all files line by line and return results as available?
 	- should probably ask this question on a larger(different) data set
 
@@ -27,27 +30,13 @@ const deps = [
 ];
 
 const unique = arr => Array.from(new Set(arr));
-const HTMLUtils = new function() {
-		var rules = [
-				{ expression: /&/g, replacement: '&amp;'  }, // keep this rule at first position
-				{ expression: /</g, replacement: '&lt;'   },
-				{ expression: />/g, replacement: '&gt;'   },
-				{ expression: /"/g, replacement: '&quot;' },
-				{ expression: /'/g, replacement: '&#039;' }
-		];
-
-		this.escape = function(html) {
-				var result = html;
-
-				for (var i = 0; i < rules.length; ++i) {
-						var rule = rules[i];
-
-						result = result.replace(rule.expression, rule.replacement);
-				}
-
-				return result;
-		}
-};
+const htmlEscape = html => [
+	[/&/g, '&amp;'], //must be first
+	[/</g, '&lt;'],
+	[/>/g, '&gt;'],
+	[/"/g, '&quot;'],
+	[/'/g, '&#039;']
+].reduce((a,o) => a.replace(...o), html);
 const highlight = (term="", str="") => {
 	const caseMap = str.split('').map(x => x.toLowerCase() === x ? 'lower' : 'upper');
 	let html = '<span>' +
@@ -69,7 +58,6 @@ const highlight = (term="", str="") => {
 			continue;
 		}
 		if(intag) continue;
-
 		if(caseMap[char] === 'upper'){
 			html[i] = html[i].toUpperCase();
 		}
@@ -79,7 +67,7 @@ const highlight = (term="", str="") => {
 };
 const debounce = (func, wait, immediate) => {
 	var timeout;
-	return function() {
+	return async function() {
 		var context = this, args = arguments;
 		var later = function() {
 			timeout = null;
@@ -91,7 +79,13 @@ const debounce = (func, wait, immediate) => {
 		if (callNow) func.apply(context, args);
 	};
 };
-
+/*		 @font-face {
+			font-family: 'seti';
+			src: url(/shared/fonts/seti.woff2) format('woff2');
+			font-weight: normal;
+			font-style: normal;
+		}
+*/
 
 const SearchBoxHTML = () => {
 	const style = `
@@ -127,13 +121,81 @@ const SearchBoxHTML = () => {
 			font-size: .9em;
 			list-style: none;
 			white-space: nowrap;
+			margin-top: 0.3em;
 		}
 		.search-summary {
 			font-size: .85em;
 			opacity: 0.7;
 		}
-		.search-results > li ul { padding-left: 2em; }
+		.search-results > li ul {
+			padding-left: 1.4em;
+		}
+		.search-results .foldable {
+			cursor: pointer;
+		}
+		.search-results .foldable ul { display: none; }
+		.search-results .foldable > div span {
+			padding-left: 0.4em;
+			pointer-events: none;
+			user-select: none;
+		}
+		.search-results .foldable > div:before {
+			margin-left: 0px;
+			margin-right: 7px;
+			content: '>';
+			font-family: consolas, monospace;
+			display: inline-block;
+		}
+		.search-results .foldable.open ul { display: block; }
+		.search-results .foldable.open > div:before {
+			margin-left: 2px;
+			margin-right: 5px;
+			content: '>';
+			transform-origin: 5px 8.5px;
+			transform: rotateZ(90deg);
+		}
 		.field-container label { font-size: .75em; }
+
+
+		 @font-face {
+			font-family: 'seti';
+			src: url(/shared/fonts/seti.woff2) format('woff2');
+			font-weight: normal;
+			font-style: normal;
+		}
+		.icon-html:before,
+		.icon-json:before,
+		.icon-info:before {
+			font-family: 'seti';
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			font-style: normal;
+			font-variant: normal;
+			font-weight: normal;
+			text-decoration: none;
+			text-transform: none;
+			width: 22px;
+			height: 22px;
+			display: inline-block;
+			-webkit-font-smoothing: antialiased;
+			vertical-align: top;
+			flex-shrink: 0;
+			font-size: 21px;
+			margin-top: -1px;
+			margin-left: -7px;
+		}
+		.icon-info:before {
+			content: '\\E048';
+			color: #519aba;
+		}
+		.icon-json:before {
+			content: '\\E043';
+			color: #e37933;
+		}
+		.icon-html:before {
+			content: '\\E050';
+			color: #ff9800;
+		}
 	</style>
 	`;
 
@@ -183,18 +245,38 @@ class SearchBox {
 		this.attachListeners();
 		document.body.appendChild(main);
 	}
+
 	attachListeners(){
-		this.dom.term.addEventListener('input', debounce((event) => {
+		const debouncedInputListener = debounce((event) => {
 			const term = event.target.value;
-			if(!term || !this.searchFn){
+			if(!this.searchFn){
 				this.updateResults([],'');
 				this.updateSummary({});
 				return;
 			}
 			this.search(term);
-		}, 300), true);
+		}, 250, false);
+		this.dom.term.addEventListener('input', (e) => {
+			this.updateSummary({ loading: true });
+			this.updateResults({ loading: true });
+			debouncedInputListener(e);
+		})
+		this.dom.results.addEventListener('click', (e) => {
+			const handler = {
+				'DIV foldable': () => e.target.parentNode.classList.add('open'),
+				'DIV foldable open': () => e.target.parentNode.classList.remove('open')
+			}[`${e.target.tagName} ${e.target.parentNode.className}`];
+			
+			if(handler) return handler();
+		})
 	}
 	async search(term){
+		this.searchTerm = term;
+		if(!term){
+			this.updateResults([],'');
+			this.updateSummary({});
+			return;
+		}
 		const { allMatches, time, searchTerm } = await this.searchFn(term);
 		this.updateSummary({ allMatches, time, searchTerm: term });
 		this.updateResults(allMatches, term);
@@ -202,7 +284,11 @@ class SearchBox {
 	updateTerm(term){
 		this.dom.term.value = term;
 	}
-	updateResults(list=[], searchTerm){
+	async updateResults(list=[], searchTerm){
+		if(list.loading){
+			this.dom.results.innerHTML = '';
+			return;
+		}
 		const totalFiles = unique(list.map(x=>x.docName))
 			.map(x => ({
 				filename: x,
@@ -212,20 +298,59 @@ class SearchBox {
 			const found = totalFiles.find(y => y.filename.toLowerCase() === x.docName.toLowerCase());
 			found.results.push(x);
 		});
-		this.dom.results.innerHTML = totalFiles
-			.map(x => `
-				<li>
-					<span>${x.filename}<span>
-					<ul>${x.results.map(r => `
-						<li>
-							${highlight(searchTerm, HTMLUtils.escape(r.lineText.trim()))}
-						</li>
-					`).join('\n')}</ul>
-				</li>
-			`)
-			.join('\n');
+
+		this.dom.results.innerHTML = '';
+
+		for(var i=0; i<totalFiles.length;i++) {
+			if(searchTerm !== this.searchTerm){
+				return;
+			}
+			await new Promise((resolve) => {
+				if(searchTerm !== this.searchTerm){
+					return resolve();
+				}
+				const x = totalFiles[i];
+				const deDupeResults = x.results
+					.filter((r, i, arr) => {
+						return i === 0 || r.lineText !== x.results[i-1].lineText
+					});
+				const items = ['html', 'json', 'info'];
+				const iconClass = "icon-" + items[Math.floor(Math.random() * items.length)];
+				const fileResultsEl = htmlToElement(`
+					<li class="foldable open">
+						<div><span class="${iconClass}">${x.filename}</span></div>
+						<ul>${deDupeResults
+						.map((r,i) => `
+							<li>
+								${highlight(searchTerm, htmlEscape(r.lineText.trim()))}
+							</li>
+						`).join('\n')}</ul>
+					</li>
+				`);
+				if(deDupeResults.length < 10){
+					if(searchTerm !== this.searchTerm){
+						return resolve();
+					}
+					this.dom.results.appendChild(fileResultsEl);
+					return resolve();
+				}
+				window.requestAnimationFrame(async () => {
+					if(searchTerm !== this.searchTerm){
+						return resolve();
+					}
+					this.dom.results.appendChild(fileResultsEl)
+					setTimeout(function() {
+							resolve();
+					}, 0);
+				});
+			});
+		}
 	}
-	updateSummary({ allMatches, time, searchTerm }){
+	updateSummary({ allMatches, time, searchTerm, loading }){
+		if(loading){
+			this.dom.summary.innerHTML = '';
+			return;
+		}
 		if(!allMatches || !allMatches.length){
 			this.dom.summary.innerHTML = 'No results';
 			return;
@@ -235,38 +360,52 @@ class SearchBox {
 				filename: x,
 				results: []
 			}));
-		let results = 0;
-		allMatches.forEach(x => {
-			results += (x.lineText.toLowerCase().split(searchTerm.toLowerCase()).length -1 )
-		});
-		const pluralRes = results>1 ? "s" : ''
+		const pluralRes = allMatches.length > 1 ? "s" : ''
 		const pluralFile = totalFiles.length > 1 ? "s" : ''
-		this.dom.summary.innerHTML = `${results} result${pluralRes} in ${totalFiles.length} file${pluralFile}, ${time.toFixed(2)} ms`;
+		this.dom.summary.innerHTML = `${allMatches.length} result${pluralRes} in ${totalFiles.length} file${pluralFile}, ${time.toFixed(2)} ms`;
 	}
 }
 
+const getMatches = (theDoc, searchTerm, overlap) => {
+	if(typeof theDoc.code !== "string") return [];
 
-const getMatches = (theDoc, searchTerm) => {
-	if(typeof theDoc.code !== "string"){
-		return [];
-	}
-	let matches = theDoc.code.split('\n')
-		.map((x, i) => ({
-			lineNumber: i,
-			colNumber: x.toLowerCase().indexOf(searchTerm.toLowerCase()),
-			lineText: x,
-			docName: theDoc.name
-		}))
-		.filter(x => x.colNumber !== -1);
+	const stringIndexAll = (str, term, overlap) => {
+		var indices = [];
+		for(var i=0; i<str.length;i++) {
+			i = str.toLowerCase().indexOf(term.toLowerCase(), i);
+			if(i === -1) break;
+			indices.push(i);
+			if(!overlap & term.length > 1) i+= (term.length-1)
+		}
+		return indices
+	};
+	const getLineResults = (all, lineText, lineNumber) => {
+		const columns = stringIndexAll(lineText, searchTerm);
+		columns.forEach(colNumber => {
+			all.push({
+				lineNumber,
+				colNumber,
+				lineText,
+				docName: theDoc.name
+			});
+		});
+		return all;
+	};
+	const matches = theDoc.code.split('\n').reduce(getLineResults, []);
 	return matches;
 };
 
 const gangsterSearch = async (searchTerm, service) => {
+	const MAX_RESULTS = 10000;
 	const files = service.code;
 	let allMatches = [];
 	for(var k=0; k < files.length; k++){
 		const theDoc = files[k];
 		allMatches = [...allMatches, ...getMatches(theDoc, searchTerm)];
+		if(allMatches.length >= MAX_RESULTS){
+			allMatches = allMatches.slice(0, MAX_RESULTS);
+			break;
+		}
 	}
 	return allMatches;
 };
@@ -329,8 +468,6 @@ const flexSearchIndex = async (service) => {
 	}));
 	const exampleService = (await (await fetch('../../service/read/778')).json()).result[0];
 
-
-	
 	var index = useFlexSearch && await flexSearchIndex(exampleService);
 	const search = async (term) => {
 		const t1 = performance.now();
@@ -338,7 +475,6 @@ const flexSearchIndex = async (service) => {
 			? await flexSearch(index, term, exampleService)
 			: await gangsterSearch(term, exampleService);
 		const t2 = performance.now();
-
 		const time = Number(t2 - t1);
 		return { allMatches, time };
 	};
