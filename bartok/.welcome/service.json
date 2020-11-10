@@ -43,18 +43,23 @@
       "zip.html": {}
     },
     "1ncubate": {
+      "ascii-diagram.md": {},
       "auth0.md": {},
       "downloadZip.js": {},
       "dropFile.js": {},
       "editorLint.js": {},
+      "editor_diff.js": {},
       "golden-layout.css": {},
       "golden-layout.js": {},
       "hexedit.js": {},
+      "hexedit.styl": {},
       "isomorphic-git.html": {},
       "minimap.js": {},
       "paste-image.js": {},
       "search.js": {},
+      "streams.js": {},
       "templateMessages.js": {},
+      "webcam.js": {},
       "webtorrent_share.html": {},
       "zip_project.html": {}
     },
@@ -164,6 +169,7 @@
         "lame.png": {},
         "languages-templates-progress.bmp": {},
         "Piskel-LIFE-20200506.piskel": {},
+        "screaming for vengence album cover judas priest.bmp": {},
         "spritesheet.json": {},
         "spritesheet.png": {},
         "svg-bartok.svg": {},
@@ -238,6 +244,7 @@
       }
     },
     "fullstackIntro.md": {},
+    "generator_notes.md": {},
     "hello.css": {},
     "hello.html": {},
     "hello.scss": {},
@@ -248,6 +255,7 @@
     "Readme.md": {},
     "service.json": {},
     "shared.styl": {},
+    "todo.categories.md": {},
     "todo.untracked.md": {}
   },
   "files": [
@@ -290,6 +298,10 @@
     {
       "name": "as.html",
       "path": ".welcome/.templates/as.html"
+    },
+    {
+      "name": "ascii-diagram.md",
+      "path": ".welcome/1ncubate/ascii-diagram.md"
     },
     {
       "name": "assemblyscript.as",
@@ -420,6 +432,10 @@
       "path": ".welcome/1ncubate/dropFile.js"
     },
     {
+      "name": "editor_diff.js",
+      "path": ".welcome/1ncubate/editor_diff.js"
+    },
+    {
       "name": "editorLint.js",
       "path": ".welcome/1ncubate/editorLint.js"
     },
@@ -458,6 +474,10 @@
     {
       "name": "fullstackIntro.md",
       "path": ".welcome/fullstackIntro.md"
+    },
+    {
+      "name": "generator_notes.md",
+      "path": ".welcome/generator_notes.md"
     },
     {
       "name": "gif.html",
@@ -542,6 +562,10 @@
     {
       "name": "hexedit.js",
       "path": ".welcome/1ncubate/hexedit.js"
+    },
+    {
+      "name": "hexedit.styl",
+      "path": ".welcome/1ncubate/hexedit.styl"
     },
     {
       "name": "hyperscript.js",
@@ -832,6 +856,10 @@
       "path": ".welcome/3xplore/scratch.js"
     },
     {
+      "name": "screaming for vengence album cover judas priest.bmp",
+      "path": ".welcome/examples/image/screaming for vengence album cover judas priest.bmp"
+    },
+    {
       "name": "search.js",
       "path": ".welcome/1ncubate/search.js"
     },
@@ -862,6 +890,10 @@
     {
       "name": "sql.sql",
       "path": ".welcome/examples/language/sql.sql"
+    },
+    {
+      "name": "streams.js",
+      "path": ".welcome/1ncubate/streams.js"
     },
     {
       "name": "styles.css",
@@ -940,6 +972,10 @@
       "path": ".welcome/examples/todo/todo-state.mjs"
     },
     {
+      "name": "todo.categories.md",
+      "path": ".welcome/todo.categories.md"
+    },
+    {
       "name": "todo.jsx",
       "path": ".welcome/examples/todo/todo.jsx"
     },
@@ -978,6 +1014,10 @@
     {
       "name": "wat.html",
       "path": ".welcome/.templates/wat.html"
+    },
+    {
+      "name": "webcam.js",
+      "path": ".welcome/1ncubate/webcam.js"
     },
     {
       "name": "webgl-duck.gltf",
