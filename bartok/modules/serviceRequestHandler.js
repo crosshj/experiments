@@ -593,6 +593,7 @@ class ServiceSearch {
 
 		//console.log(`init: ${performance.now() - this.timer.t1} ms`)
 
+		let streamResultCount = 0;
 		this.stream = new ReadableStream({
 			start(controller) {},
 
@@ -601,18 +602,25 @@ class ServiceSearch {
 			// when done with all files, close controller
 			async pull(controller){
 				while(true){
-					const q1 = performance.now()
-					const result = fileSearch.next(term);
-					if(result === -1 && currentFileIndex === files.length - 1){
+					try {
+						const result = fileSearch.next(term);
+						const doneReading = streamResultCount >= MAX_RESULTS
+							|| (result === -1 && currentFileIndex === files.length - 1);
+						if(doneReading){
+							controller.close();
+							return;
+						}
+						if(result === -1){
+							await fileSearch.load(files[++currentFileIndex]);
+							continue;
+						}
+						streamResultCount++;
+						controller.enqueue(encoder.encode(JSON.stringify(result)+'\n'));
+					} catch(e) {
+						console.log(e)
 						controller.close();
 						return;
 					}
-					if(result === -1){
-						await fileSearch.load(files[++currentFileIndex]);
-						continue;
-					}
-					//console.log(`q: ${performance.now() - q1} ms`)
-					controller.enqueue(encoder.encode(JSON.stringify(result)+'\n'));
 				}
 			}
 		});

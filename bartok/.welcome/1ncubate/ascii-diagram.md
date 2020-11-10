@@ -5,6 +5,9 @@
 draw ascii, output svg
 drawing ascii: [http://asciiflow.com/](http://asciiflow.com/)
 
+- should show loading spinner when loading
+- should be able to fill closed shapes
+
 
 ``` ascii-diagram
 

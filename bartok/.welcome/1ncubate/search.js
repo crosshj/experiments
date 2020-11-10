@@ -2,14 +2,13 @@
 
 todo:
 
-- [ ] include files/directory
-- [ ] exclude files/directory
-- [ ] update a document and search again based on that update
-- [ ] integrate with service request handler
 - [ ] integrate with client
 - [ ] open a file at a given line and column
-- [ ] add file path to search results
-- [ ] search across all services
+- [x] update a document and search again based on that update
+- [x] integrate with service request handler
+- [x] include files/directory
+- [x] add file path to search results
+- [x] search across all services
 - [x] improve UI is not blocked/janky: async/await & requestAnimationFrame
 - [x] make sure results match VS Code's results
 - [x] return multiple results per line
@@ -18,6 +17,9 @@ todo:
 - [x] measure time to search
 - [x] cap results at 1000 / handle large data sets reasonably well, see the way VSCode does this
 - [x] add collapse/expand to results
+- [LATER] search result summary should update as search is in progress
+- [LATER] exclude files/directory
+- [LATER] single character search terms (and maybe others) should result in collapsed file results which continue search after expanded
 - [LATER] should use paging and inifinite scroll to increase perf on large results
 - [LATER] put search in worker so the UI/service worker is not blocked
 - [YES?] would it be quicker and simpler to just parse all files line by line and return results as available?
@@ -37,13 +39,20 @@ const htmlEscape = html => [
 	[/"/g, '&quot;'],
 	[/'/g, '&#039;']
 ].reduce((a,o) => a.replace(...o), html);
-const highlight = (term="", str="") => {
+const highlight = (term="", str="", limit) => {
 	const caseMap = str.split('').map(x => x.toLowerCase() === x ? 'lower' : 'upper');
-	let html = '<span>' +
-		str.toLowerCase()
-			.split(term.toLowerCase())
-			.join(`</span><span class="highlight">${term.toLowerCase()}</span><span>`) +
-	'</span>';
+	
+	const splitstring = str.toLowerCase().split(term.toLowerCase())
+	let html = '<span>' + (
+		limit === 1
+			? splitstring[0] + 
+				`</span><span class="highlight">${term.toLowerCase()}</span><span>` +
+				splitstring.slice(1).join(term.toLowerCase())
+			: splitstring
+				.join(`</span><span class="highlight">${term.toLowerCase()}</span><span>`)
+	) + '</span>';
+	if(limit = 1){
+	}
 	html = html.split('');
 
 	let intag = false;
@@ -111,7 +120,7 @@ const SearchBoxHTML = () => {
 			margin-bottom: 1em;
 		}
 		.search-results > li ul > li {
-			font-size: .9em;
+			font-size: .95em;
 			list-style: none;
 			white-space: nowrap;
 			margin-top: 0.3em;
@@ -245,10 +254,13 @@ class SearchBox {
 
 	attachListeners(){
 		const debouncedInputListener = debounce((event) => {
-			const term = event.target.value;
+			const term = this.dom.term.value;
+			const include = this.dom.include.value;
+			const exclude = this.dom.exclude.value;
 			if(!this.searchFn){
 				this.updateResults([],'');
 				this.updateSummary({});
+				this.searchStream({ term, include, exclude })
 				return;
 			}
 			this.search(term);
@@ -257,7 +269,17 @@ class SearchBox {
 			this.updateSummary({ loading: true });
 			this.updateResults({ loading: true });
 			debouncedInputListener(e);
-		})
+		});
+		this.dom.include.addEventListener('input', (e) => {
+			this.updateSummary({ loading: true });
+			this.updateResults({ loading: true });
+			debouncedInputListener(e);
+		});
+		this.dom.exclude.addEventListener('input', (e) => {
+			this.updateSummary({ loading: true });
+			this.updateResults({ loading: true });
+			debouncedInputListener(e);
+		});
 		this.dom.results.addEventListener('click', (e) => {
 			const handler = {
 				'DIV foldable': () => e.target.parentNode.classList.add('open'),
@@ -267,6 +289,7 @@ class SearchBox {
 			if(handler) return handler();
 		})
 	}
+
 	async searchStream({ term, include, exclude }){
 		this.updateResults([],'');
 		this.updateSummary({});
@@ -277,39 +300,76 @@ class SearchBox {
 		const decoder = new TextDecoder("utf-8");
 		const timer = { t1: performance.now() }
 		let allMatches = [];
+		let malformed;
+		let resultsInDom = false;
 		while(true){
 			const { done, value } = await reader.read();
 			if(done) break;
-			const results = decoder.decode(value).split('\n').filter(x=>!!x)
-			results.forEach(x => {
-				try{
+			let results = decoder.decode(value, { stream: true });
+			if(malformed){
+				results = malformed.trim() + results.trim();
+				malformed = '';
+			}
+			if(results.trim()[results.trim().length-1] !== '}'){
+				results = results.split('\n');
+				malformed = results.pop()
+				results = results.join('\n');
+			}
+			results = results.split('\n').filter(x=>!!x);
+			
+			const addFileResultsLineEl = (result) => {
+				const limit = 1; //only highlight one occurence
+				const listItemEl = (Array.isArray(result) ? result : [result])
+					.map((r,i) => `
+						<li>
+							${highlight(term, htmlEscape(r.text.trim()), limit)}
+						</li>
+					`);
+				return listItemEl;
+			};
+			const createFileResultsEl = (result, index) => {
+				const items = ['html', 'json', 'info'];
+				const iconClass = "icon-" + items[Math.floor(Math.random() * items.length)];
+				const open = (term.length > 1 || !resultsInDom) ? 'open' : '';
+				const fileResultsEl = htmlToElement(`
+					<li class="foldable ${open}" data-path="${result.file}">
+						<div>
+							<span class="${iconClass}">${result.docName}</span>
+							<span class="doc-path">${result.path}</span>
+						</div>
+						<ul>${addFileResultsLineEl(result).join('\n')}</ul>
+					</li>
+				`);
+				return fileResultsEl;
+			};
+			
+			for(var rindex=0; rindex<results.length; rindex++){
+				const x = results[rindex];
+				try {
 					const parsed = JSON.parse(x)
 					parsed.docName = parsed.file.split('/').pop();
 					parsed.path = parsed.file.replace('/'+parsed.docName, '').replace(/^\.\//, '')
 					allMatches.push(parsed)
-					const items = ['html', 'json', 'info'];
-					const iconClass = "icon-" + items[Math.floor(Math.random() * items.length)];
-					const fileResultsEl = htmlToElement(`
-						<li class="foldable open">
-							<div>
-								<span class="${iconClass}">${parsed.docName}</span>
-								<span class="doc-path">${parsed.path}</span>
-							</div>
-							<ul>${[parsed]
-							.map((r,i) => `
-								<li>
-									${highlight(term, htmlEscape(r.text.trim()))}
-								</li>
-							`).join('\n')}</ul>
-						</li>
-					`);
-					window.requestAnimationFrame(async () => {
-						this.dom.results.appendChild(fileResultsEl)
+
+					window.requestAnimationFrame(() => {
+						const existingFileResultsEl = this.dom.results.querySelector(`li[data-path="${parsed.file}"] ul`);
+						let newLineItems;
+						if(existingFileResultsEl){
+							newLineItems = addFileResultsLineEl(parsed);
+						}
+						if(newLineItems){
+							const elementItems = newLineItems.map(htmlToElement);
+							existingFileResultsEl.append(...elementItems);
+							return;
+						}
+						const fileResultsEl = createFileResultsEl(parsed, rindex);
+						this.dom.results.appendChild(fileResultsEl);
+						resultsInDom = true;
 					});
 				} catch(e){
-					console.error(`trouble parsing: ${x}, ${e}`)
+					console.warn(`trouble parsing: ${x}, ${e}`)
 				}
-			})
+			}
 		}
 		allMatches = allMatches.map(x => ({
 			...x,
@@ -318,6 +378,7 @@ class SearchBox {
 		timer.t2 = performance.now();
 		this.updateSummary({ allMatches, time: timer.t2 - timer.t1, searchTerm: term })
 	}
+
 	async search(term){
 		this.searchTerm = term;
 		if(!term){
@@ -329,7 +390,9 @@ class SearchBox {
 		this.updateSummary({ allMatches, time, searchTerm: term });
 		this.updateResults(allMatches, term);
 	}
+
 	updateTerm(term){ this.dom.term.value = term; }
+
 	updateInclude(path){ this.dom.include.value = path; }
 	
 	async updateResults(list=[], searchTerm, append){
@@ -394,6 +457,7 @@ class SearchBox {
 			});
 		}
 	}
+
 	updateSummary({ allMatches, time, searchTerm, loading }){
 		if(loading){
 			this.dom.summary.innerHTML = '';
@@ -413,8 +477,6 @@ class SearchBox {
 		this.dom.summary.innerHTML = `${allMatches.length} result${pluralRes} in ${totalFiles.length} file${pluralFile}, ${time.toFixed(2)} ms`;
 	}
 }
-
-
 
 const getMatches = (theDoc, searchTerm, overlap) => {
 	if(typeof theDoc.code !== "string") return [];
@@ -510,8 +572,8 @@ const flexSearchIndex = async (service) => {
 (async () => {
 
 	const useFlexSearch = false;
-	const searchTerm = "provid" + "er";
-	const path = './.welcome'
+	const searchTerm = "fo"+"rc";
+	const path = './'
 
 	await appendUrls(deps.filter(x => {
 		return useFlexSearch
@@ -544,4 +606,4 @@ const flexSearchIndex = async (service) => {
 	await searchBox.search(searchTerm);
 	*/
 
-})();
+})(); 
