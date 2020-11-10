@@ -79,13 +79,6 @@ const debounce = (func, wait, immediate) => {
 		if (callNow) func.apply(context, args);
 	};
 };
-/*		 @font-face {
-			font-family: 'seti';
-			src: url(/shared/fonts/seti.woff2) format('woff2');
-			font-weight: normal;
-			font-style: normal;
-		}
-*/
 
 const SearchBoxHTML = () => {
 	const style = `
@@ -111,7 +104,7 @@ const SearchBoxHTML = () => {
 			margin: 0;
 			left: 15px;
 			right: 15px;
-			font-size: 0.95em;
+			font-size: 0.9em;
 		}
 		.search-results > li {
 			list-style: none;
@@ -132,6 +125,9 @@ const SearchBoxHTML = () => {
 		}
 		.search-results .foldable {
 			cursor: pointer;
+		}
+		.search-results span.doc-path {
+			opacity: .5;
 		}
 		.search-results .foldable ul { display: none; }
 		.search-results .foldable > div span {
@@ -227,6 +223,7 @@ const SearchBoxHTML = () => {
 
 	return html;
 };
+
 class SearchBox {
 	dom
 	searchFn
@@ -270,6 +267,57 @@ class SearchBox {
 			if(handler) return handler();
 		})
 	}
+	async searchStream({ term, include, exclude }){
+		this.updateResults([],'');
+		this.updateSummary({});
+
+		const base = new URL('../../service/search', location.href).href
+		const res = (await fetch(`${base}/?term=${term}&include=${include||''}&exclude=${exclude||''}`));
+		const reader = res.body.getReader()
+		const decoder = new TextDecoder("utf-8");
+		const timer = { t1: performance.now() }
+		let allMatches = [];
+		while(true){
+			const { done, value } = await reader.read();
+			if(done) break;
+			const results = decoder.decode(value).split('\n').filter(x=>!!x)
+			results.forEach(x => {
+				try{
+					const parsed = JSON.parse(x)
+					parsed.docName = parsed.file.split('/').pop();
+					parsed.path = parsed.file.replace('/'+parsed.docName, '').replace(/^\.\//, '')
+					allMatches.push(parsed)
+					const items = ['html', 'json', 'info'];
+					const iconClass = "icon-" + items[Math.floor(Math.random() * items.length)];
+					const fileResultsEl = htmlToElement(`
+						<li class="foldable open">
+							<div>
+								<span class="${iconClass}">${parsed.docName}</span>
+								<span class="doc-path">${parsed.path}</span>
+							</div>
+							<ul>${[parsed]
+							.map((r,i) => `
+								<li>
+									${highlight(term, htmlEscape(r.text.trim()))}
+								</li>
+							`).join('\n')}</ul>
+						</li>
+					`);
+					window.requestAnimationFrame(async () => {
+						this.dom.results.appendChild(fileResultsEl)
+					});
+				} catch(e){
+					console.error(`trouble parsing: ${x}, ${e}`)
+				}
+			})
+		}
+		allMatches = allMatches.map(x => ({
+			...x,
+			docName: x.file.split('/').pop()
+		}))
+		timer.t2 = performance.now();
+		this.updateSummary({ allMatches, time: timer.t2 - timer.t1, searchTerm: term })
+	}
 	async search(term){
 		this.searchTerm = term;
 		if(!term){
@@ -281,10 +329,10 @@ class SearchBox {
 		this.updateSummary({ allMatches, time, searchTerm: term });
 		this.updateResults(allMatches, term);
 	}
-	updateTerm(term){
-		this.dom.term.value = term;
-	}
-	async updateResults(list=[], searchTerm){
+	updateTerm(term){ this.dom.term.value = term; }
+	updateInclude(path){ this.dom.include.value = path; }
+	
+	async updateResults(list=[], searchTerm, append){
 		if(list.loading){
 			this.dom.results.innerHTML = '';
 			return;
@@ -365,6 +413,8 @@ class SearchBox {
 		this.dom.summary.innerHTML = `${allMatches.length} result${pluralRes} in ${totalFiles.length} file${pluralFile}, ${time.toFixed(2)} ms`;
 	}
 }
+
+
 
 const getMatches = (theDoc, searchTerm, overlap) => {
 	if(typeof theDoc.code !== "string") return [];
@@ -458,19 +508,29 @@ const flexSearchIndex = async (service) => {
 
 
 (async () => {
+
 	const useFlexSearch = false;
-	const searchTerm = "li" + "st";
+	const searchTerm = "provid" + "er";
+	const path = './.welcome'
 
 	await appendUrls(deps.filter(x => {
 		return useFlexSearch
 			? true
 			: !x.includes('flexsearch');
 	}));
+	
+	const searchBox = new SearchBox({});
+	searchBox.updateTerm(searchTerm);
+	searchBox.updateInclude(path)
+	searchBox.searchStream({ term: searchTerm, include: path })
+	return
+	
+	/*
+	const t1 = performance.now();
 	const exampleService = (await (await fetch('../../service/read/778')).json()).result[0];
 
 	var index = useFlexSearch && await flexSearchIndex(exampleService);
 	const search = async (term) => {
-		const t1 = performance.now();
 		const allMatches = useFlexSearch
 			? await flexSearch(index, term, exampleService)
 			: await gangsterSearch(term, exampleService);
@@ -482,5 +542,6 @@ const flexSearchIndex = async (service) => {
 
 	searchBox.updateTerm(searchTerm);
 	await searchBox.search(searchTerm);
+	*/
 
 })();

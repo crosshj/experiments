@@ -26,7 +26,7 @@ const App = () => {
 				/>
 				<Body
 					active={activeFilter}
-					todos={todos}
+					{ ...value }
 					{ ...actions }
 				/>
 				<Footer

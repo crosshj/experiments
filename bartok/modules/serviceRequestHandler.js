@@ -473,7 +473,19 @@ const pathToRegex = {
                 query: (regex.exec(url)[2]||"").split('?')[1]
             })
         }
-    })()
+    })(),
+    '/service/search/': (() => {
+        const safeUrl = u => u[u.length-1] === '/'
+          ? u
+          : u + '/';
+        const regex = new RegExp(
+            /^((?:.*))\/service\/search\/.*$/i
+        );
+        return {
+            match: url => regex.test(safeUrl(url)),
+            params: url => Object.fromEntries(url.split('?').pop().split('&').map(x => x.split('=')))
+        }
+    })(),
 };
 
 const genericPath = (pathString) => {
@@ -489,6 +501,147 @@ const genericPath = (pathString) => {
         })
     }
 };
+
+
+
+class FileSearch {
+	path
+	term
+	lines
+
+	currentLine
+	currentColumn
+
+	constructor(fileStore){
+		this.fileStore = fileStore;
+	}
+	async load(path){
+		this.path = path;
+		const file = await this.fileStore.getItem(path);
+		if(typeof file !== "string"){
+			this.done = true;
+			return;
+		}
+		this.lines = file.split('\n')
+			.map(x => x.toLowerCase());
+		this.reset()
+	}
+	reset(){
+		this.currentLine = 0;
+		this.currentColumn = 0;
+		this.done = false;
+	}
+	next(term){
+		if(this.done) return -1;
+		if(!this.lines || !this.path) return -1;
+
+		if(term.toLowerCase() !== this.term){
+			this.term = term.toLowerCase();
+			this.reset();
+		}
+		while(true){
+			const oldIndex = this.currentColumn;
+			const newIndex = (this.lines[this.currentLine]||'').indexOf(this.term, this.currentColumn);
+			if(newIndex === -1){
+				this.currentColumn = 0;
+				this.currentLine++;
+				if(this.currentLine > this.lines.length -1){
+					this.done = true;
+					return -1;
+				}
+				continue;
+			}
+			this.currentColumn = newIndex+1;
+			return {
+				file: this.path,
+				line: this.currentLine,
+				column: this.currentColumn-1,
+				text: this.lines[this.currentLine]
+					// TODO: break on previous word seperator
+					.slice(oldIndex === 0
+						 ? Math.max(0, newIndex-30)
+						 : oldIndex+this.term.length-1, Math.max(newIndex + 30 + this.term.length)
+					)
+					.trim()
+			};
+		}
+	}
+}
+const MAX_RESULTS = 10000;
+const encoder = new TextEncoder()
+
+class ServiceSearch {
+	timer
+	stream
+	async init({ term, include="./", /*exclude,*/ fileStore }){
+		this.timer = {
+			t1: performance.now()
+		};
+		const cache = {};
+		await fileStore.iterate((value, key) => {
+			if(!key.startsWith(include)) return;
+			cache[key] = value;
+		})
+		const fileStoreCache = {
+			getItem: async (key) => cache[key]
+		}
+		const fileSearch = new FileSearch(fileStoreCache);
+		let count = 0;
+		let currentFileIndex = -1;
+
+		const files = Object.keys(cache);
+
+		//console.log(`init: ${performance.now() - this.timer.t1} ms`)
+
+		this.stream = new ReadableStream({
+			start(controller) {},
+
+			// if it has search term, queue up search results per occurence
+			// if not, search files until one is found with search term in it
+			// when done with all files, close controller
+			async pull(controller){
+				while(true){
+					const q1 = performance.now()
+					const result = fileSearch.next(term);
+					if(result === -1 && currentFileIndex === files.length - 1){
+						controller.close();
+						return;
+					}
+					if(result === -1){
+						await fileSearch.load(files[++currentFileIndex]);
+						continue;
+					}
+					//console.log(`q: ${performance.now() - q1} ms`)
+					controller.enqueue(encoder.encode(JSON.stringify(result)+'\n'));
+				}
+			}
+		});
+
+	}
+	// does this ever need to be awaited?
+	async search(handler){
+		const reader = this.stream.getReader();
+		let ct = 0;
+		while(true){
+			const { done, value } = await reader.read();
+			if(done) break;
+			handler(value)
+			ct++;
+			if(ct === MAX_RESULTS) break
+		}
+		this.timer.t2 = performance.now();
+
+		// should this be returned or passed to handler?
+		// or should this be avoided and result totals passed with each stream item?
+		handler({
+			summary: {
+				timer: this.timer.t2 - this.timer.t1,
+				count: ct
+			}
+		});
+	}
+
+}
 
 class TemplateEngine {
     templates=[];
@@ -1222,6 +1375,15 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             },null,2);
         }
     };
+
+    app.get('/service/search/', async (params, event) => {
+        const serviceSearch = new ServiceSearch();
+        await serviceSearch.init({
+          ...params,
+          fileStore: store
+        });
+        return serviceSearch.stream;
+    });
 
     app.post('/service/create/:id?', async (params, event) => {
         // event.request.arrayBuffer()

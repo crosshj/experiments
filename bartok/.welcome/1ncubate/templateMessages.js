@@ -21,7 +21,7 @@ const deps = [
       {id: 'foo',   name:"foo",    radius:20,  color: "red",    fx: 340, fy: 60},
       {id: 'bar',   name:"bar",    radius:20,  color: "white",  fx: 300, fy: 180},
       {id: 'baz',   name:"baz",    radius:20,  color: "black",  fx: 400, fy: 250},
-      {id: 'blank', name:"ittie",       radius:10,  color: "green",  fx: 540, fy: 180},
+      {id: 'blank', name:"ittie",  radius:10,  color: "green",  fx: 540, fy: 180},
       {id: 'big',   name:"biggie", radius:100, color: "yellow", fx: 600, fy: 360},
     ],
     links: [
