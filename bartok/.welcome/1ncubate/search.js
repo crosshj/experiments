@@ -574,20 +574,22 @@ const flexSearchIndex = async (service) => {
 	const useFlexSearch = false;
 	const searchTerm = "fo"+"rc";
 	const path = './'
+	const useServiceRequestHandlerSearch = true;
 
 	await appendUrls(deps.filter(x => {
 		return useFlexSearch
 			? true
 			: !x.includes('flexsearch');
 	}));
-	
-	const searchBox = new SearchBox({});
-	searchBox.updateTerm(searchTerm);
-	searchBox.updateInclude(path)
-	searchBox.searchStream({ term: searchTerm, include: path })
-	return
-	
-	/*
+
+	if(useServiceRequestHandlerSearch){
+		const searchBox = new SearchBox({});
+		searchBox.updateTerm(searchTerm);
+		searchBox.updateInclude(path)
+		searchBox.searchStream({ term: searchTerm, include: path })
+		return
+	}
+
 	const t1 = performance.now();
 	const exampleService = (await (await fetch('../../service/read/778')).json()).result[0];
 
@@ -604,6 +606,6 @@ const flexSearchIndex = async (service) => {
 
 	searchBox.updateTerm(searchTerm);
 	await searchBox.search(searchTerm);
-	*/
+
 
 })(); 
