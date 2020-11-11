@@ -31,7 +31,7 @@ wish list:
 	- markov chains
 	- lots of probability stuff
 	- lots of matrix and graph stuff
-	- ...
+	- k-means
 
 */
 
