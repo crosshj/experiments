@@ -1,22 +1,7 @@
 /*
-
-todo:
-
 - [ ] integrate with client
 - [ ] open a file at a given line and column
-- [x] update a document and search again based on that update
-- [x] integrate with service request handler
-- [x] include files/directory
-- [x] add file path to search results
-- [x] search across all services
-- [x] improve UI is not blocked/janky: async/await & requestAnimationFrame
-- [x] make sure results match VS Code's results
-- [x] return multiple results per line
-- [x] verify loss of speed is only in building index, not search
-- [x] provide a search box and change searches on the fly
-- [x] measure time to search
-- [x] cap results at 1000 / handle large data sets reasonably well, see the way VSCode does this
-- [x] add collapse/expand to results
+
 - [LATER] search result summary should update as search is in progress
 - [LATER] exclude files/directory
 - [LATER] single character search terms (and maybe others) should result in collapsed file results which continue search after expanded
@@ -24,70 +9,77 @@ todo:
 - [LATER] put search in worker so the UI/service worker is not blocked
 - [YES?] would it be quicker and simpler to just parse all files line by line and return results as available?
 	- should probably ask this question on a larger(different) data set
-
 */
 const deps = [
-	'../shared.styl',
-	'https://www.unpkg.com/flexsearch@0.6.32/dist/flexsearch.min.js'
+	'../shared.styl'
 ];
 
-const unique = arr => Array.from(new Set(arr));
-const htmlEscape = html => [
-	[/&/g, '&amp;'], //must be first
-	[/</g, '&lt;'],
-	[/>/g, '&gt;'],
-	[/"/g, '&quot;'],
-	[/'/g, '&#039;']
-].reduce((a,o) => a.replace(...o), html);
-const highlight = (term="", str="", limit) => {
-	const caseMap = str.split('').map(x => x.toLowerCase() === x ? 'lower' : 'upper');
-	
-	const splitstring = str.toLowerCase().split(term.toLowerCase())
-	let html = '<span>' + (
-		limit === 1
-			? splitstring[0] + 
-				`</span><span class="highlight">${term.toLowerCase()}</span><span>` +
-				splitstring.slice(1).join(term.toLowerCase())
-			: splitstring
-				.join(`</span><span class="highlight">${term.toLowerCase()}</span><span>`)
-	) + '</span>';
-	if(limit = 1){
-	}
-	html = html.split('');
+const utils = (() => {
+	const unique = arr => Array.from(new Set(arr));
+	const htmlEscape = html => [
+		[/&/g, '&amp;'], //must be first
+		[/</g, '&lt;'],
+		[/>/g, '&gt;'],
+		[/"/g, '&quot;'],
+		[/'/g, '&#039;']
+	].reduce((a,o) => a.replace(...o), html);
+	const highlight = (term="", str="", limit) => {
+		const caseMap = str.split('').map(x => x.toLowerCase() === x ? 'lower' : 'upper');
 
-	let intag = false;
-	for (let char = 0, i=0; i < html.length; i++) {
-		const thisChar = html[i];
-		if(thisChar === '<'){
-			intag = true;
-			continue;
+		const splitstring = str.toLowerCase().split(term.toLowerCase())
+		let html = '<span>' + (
+			limit === 1
+				? splitstring[0] + 
+					`</span><span class="highlight">${term.toLowerCase()}</span><span>` +
+					splitstring.slice(1).join(term.toLowerCase())
+				: splitstring
+					.join(`</span><span class="highlight">${term.toLowerCase()}</span><span>`)
+		) + '</span>';
+		if(limit = 1){
 		}
-		if(thisChar === '>'){
-			intag = false;
-			continue;
+		html = html.split('');
+
+		let intag = false;
+		for (let char = 0, i=0; i < html.length; i++) {
+			const thisChar = html[i];
+			if(thisChar === '<'){
+				intag = true;
+				continue;
+			}
+			if(thisChar === '>'){
+				intag = false;
+				continue;
+			}
+			if(intag) continue;
+			if(caseMap[char] === 'upper'){
+				html[i] = html[i].toUpperCase();
+			}
+			char++;
 		}
-		if(intag) continue;
-		if(caseMap[char] === 'upper'){
-			html[i] = html[i].toUpperCase();
-		}
-		char++;
-	}
-	return html.join('');
-};
-const debounce = (func, wait, immediate) => {
-	var timeout;
-	return async function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
+		return html.join('');
 	};
-};
+	const debounce = (func, wait, immediate) => {
+		var timeout;
+		return async function() {
+			var context = this, args = arguments;
+			var later = function() {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) func.apply(context, args);
+		};
+	};
+
+	return {
+		unique,
+		htmlEscape,
+		highlight,
+		debounce
+	};
+})();
 
 const SearchBoxHTML = () => {
 	const style = `
@@ -235,10 +227,8 @@ const SearchBoxHTML = () => {
 
 class SearchBox {
 	dom
-	searchFn
 
-	constructor({ search }){
-		this.searchFn = search;
+	constructor(){
 		const main = htmlToElement(SearchBoxHTML());
 		this.dom = {
 			main,
@@ -253,17 +243,13 @@ class SearchBox {
 	}
 
 	attachListeners(){
-		const debouncedInputListener = debounce((event) => {
+		const debouncedInputListener = utils.debounce((event) => {
 			const term = this.dom.term.value;
 			const include = this.dom.include.value;
 			const exclude = this.dom.exclude.value;
-			if(!this.searchFn){
-				this.updateResults([],'');
-				this.updateSummary({});
-				this.searchStream({ term, include, exclude })
-				return;
-			}
-			this.search(term);
+			this.updateResults([],'');
+			this.updateSummary({});
+			this.searchStream({ term, include, exclude })
 		}, 250, false);
 		this.dom.term.addEventListener('input', (e) => {
 			this.updateSummary({ loading: true });
@@ -291,7 +277,7 @@ class SearchBox {
 	}
 
 	async searchStream({ term, include, exclude }){
-		this.updateResults([],'');
+		this.dom.results.innerHTML = '';;
 		this.updateSummary({});
 
 		const base = new URL('../../service/search', location.href).href
@@ -301,7 +287,7 @@ class SearchBox {
 		const timer = { t1: performance.now() }
 		let allMatches = [];
 		let malformed;
-		let resultsInDom = false;
+		this.resultsInDom = false;
 		while(true){
 			const { done, value } = await reader.read();
 			if(done) break;
@@ -316,145 +302,71 @@ class SearchBox {
 				results = results.join('\n');
 			}
 			results = results.split('\n').filter(x=>!!x);
-			
-			const addFileResultsLineEl = (result) => {
-				const limit = 1; //only highlight one occurence
-				const listItemEl = (Array.isArray(result) ? result : [result])
-					.map((r,i) => `
-						<li>
-							${highlight(term, htmlEscape(r.text.trim()), limit)}
-						</li>
-					`);
-				return listItemEl;
-			};
-			const createFileResultsEl = (result, index) => {
-				const items = ['html', 'json', 'info'];
-				const iconClass = "icon-" + items[Math.floor(Math.random() * items.length)];
-				const open = (term.length > 1 || !resultsInDom) ? 'open' : '';
-				const fileResultsEl = htmlToElement(`
-					<li class="foldable ${open}" data-path="${result.file}">
-						<div>
-							<span class="${iconClass}">${result.docName}</span>
-							<span class="doc-path">${result.path}</span>
-						</div>
-						<ul>${addFileResultsLineEl(result).join('\n')}</ul>
-					</li>
-				`);
-				return fileResultsEl;
-			};
-			
-			for(var rindex=0; rindex<results.length; rindex++){
-				const x = results[rindex];
-				try {
-					const parsed = JSON.parse(x)
-					parsed.docName = parsed.file.split('/').pop();
-					parsed.path = parsed.file.replace('/'+parsed.docName, '').replace(/^\.\//, '')
-					allMatches.push(parsed)
-
-					window.requestAnimationFrame(() => {
-						const existingFileResultsEl = this.dom.results.querySelector(`li[data-path="${parsed.file}"] ul`);
-						let newLineItems;
-						if(existingFileResultsEl){
-							newLineItems = addFileResultsLineEl(parsed);
-						}
-						if(newLineItems){
-							const elementItems = newLineItems.map(htmlToElement);
-							existingFileResultsEl.append(...elementItems);
-							return;
-						}
-						const fileResultsEl = createFileResultsEl(parsed, rindex);
-						this.dom.results.appendChild(fileResultsEl);
-						resultsInDom = true;
-					});
-				} catch(e){
-					console.warn(`trouble parsing: ${x}, ${e}`)
-				}
-			}
+			this.updateResults(results, allMatches, term);
+			this.updateSummary({
+				allMatches,
+				time: performance.now() - timer.t1,
+				searchTerm: term 
+			});
 		}
-		allMatches = allMatches.map(x => ({
-			...x,
-			docName: x.file.split('/').pop()
-		}))
-		timer.t2 = performance.now();
-		this.updateSummary({ allMatches, time: timer.t2 - timer.t1, searchTerm: term })
-	}
-
-	async search(term){
-		this.searchTerm = term;
-		if(!term){
-			this.updateResults([],'');
-			this.updateSummary({});
-			return;
-		}
-		const { allMatches, time, searchTerm } = await this.searchFn(term);
-		this.updateSummary({ allMatches, time, searchTerm: term });
-		this.updateResults(allMatches, term);
 	}
 
 	updateTerm(term){ this.dom.term.value = term; }
 
 	updateInclude(path){ this.dom.include.value = path; }
-	
-	async updateResults(list=[], searchTerm, append){
-		if(list.loading){
-			this.dom.results.innerHTML = '';
-			return;
-		}
-		const totalFiles = unique(list.map(x=>x.docName))
-			.map(x => ({
-				filename: x,
-				results: []
-			}));
-		list.forEach(x => {
-			const found = totalFiles.find(y => y.filename.toLowerCase() === x.docName.toLowerCase());
-			found.results.push(x);
-		});
 
-		this.dom.results.innerHTML = '';
-
-		for(var i=0; i<totalFiles.length;i++) {
-			if(searchTerm !== this.searchTerm){
-				return;
-			}
-			await new Promise((resolve) => {
-				if(searchTerm !== this.searchTerm){
-					return resolve();
-				}
-				const x = totalFiles[i];
-				const deDupeResults = x.results
-					.filter((r, i, arr) => {
-						return i === 0 || r.lineText !== x.results[i-1].lineText
-					});
-				const items = ['html', 'json', 'info'];
-				const iconClass = "icon-" + items[Math.floor(Math.random() * items.length)];
-				const fileResultsEl = htmlToElement(`
-					<li class="foldable open">
-						<div><span class="${iconClass}">${x.filename}</span></div>
-						<ul>${deDupeResults
-						.map((r,i) => `
-							<li>
-								${highlight(searchTerm, htmlEscape(r.lineText.trim()))}
-							</li>
-						`).join('\n')}</ul>
+	async updateResults(results, allMatches, term){
+		const addFileResultsLineEl = (result) => {
+			const limit = 1; //only highlight one occurence
+			const listItemEl = (Array.isArray(result) ? result : [result])
+				.map((r,i) => `
+					<li>
+						${utils.highlight(term, utils.htmlEscape(r.text.trim()), limit)}
 					</li>
 				`);
-				if(deDupeResults.length < 10){
-					if(searchTerm !== this.searchTerm){
-						return resolve();
+			return listItemEl;
+		};
+		const createFileResultsEl = (result, index) => {
+			const items = ['html', 'json', 'info'];
+			const iconClass = "icon-" + items[Math.floor(Math.random() * items.length)];
+			const open = (term.length > 1 || !this.resultsInDom) ? 'open' : '';
+			const fileResultsEl = htmlToElement(`
+				<li class="foldable ${open}" data-path="${result.file}">
+					<div>
+						<span class="${iconClass}">${result.docName}</span>
+						<span class="doc-path">${result.path}</span>
+					</div>
+					<ul>${addFileResultsLineEl(result).join('\n')}</ul>
+				</li>
+			`);
+			return fileResultsEl;
+		};
+		for(var rindex=0; rindex<results.length; rindex++){
+			const x = results[rindex];
+			try {
+				const parsed = JSON.parse(x)
+				parsed.docName = parsed.file.split('/').pop();
+				parsed.path = parsed.file.replace('/'+parsed.docName, '').replace(/^\.\//, '')
+				allMatches.push(parsed)
+
+				window.requestAnimationFrame(() => {
+					const existingFileResultsEl = this.dom.results.querySelector(`li[data-path="${parsed.file}"] ul`);
+					let newLineItems;
+					if(existingFileResultsEl){
+						newLineItems = addFileResultsLineEl(parsed);
 					}
+					if(newLineItems){
+						const elementItems = newLineItems.map(htmlToElement);
+						existingFileResultsEl.append(...elementItems);
+						return;
+					}
+					const fileResultsEl = createFileResultsEl(parsed, rindex);
 					this.dom.results.appendChild(fileResultsEl);
-					return resolve();
-				}
-				window.requestAnimationFrame(async () => {
-					if(searchTerm !== this.searchTerm){
-						return resolve();
-					}
-					this.dom.results.appendChild(fileResultsEl)
-					setTimeout(function() {
-							resolve();
-					}, 0);
+					this.resultsInDom = true;
 				});
-			});
+			} catch(e){
+				console.warn(`trouble parsing: ${x}, ${e}`)
+			}
 		}
 	}
 
@@ -467,7 +379,7 @@ class SearchBox {
 			this.dom.summary.innerHTML = 'No results';
 			return;
 		}
-		const totalFiles = unique(allMatches.map(x=>x.docName))
+		const totalFiles = utils.unique(allMatches.map(x=>x.docName))
 			.map(x => ({
 				filename: x,
 				results: []
@@ -478,134 +390,15 @@ class SearchBox {
 	}
 }
 
-const getMatches = (theDoc, searchTerm, overlap) => {
-	if(typeof theDoc.code !== "string") return [];
-
-	const stringIndexAll = (str, term, overlap) => {
-		var indices = [];
-		for(var i=0; i<str.length;i++) {
-			i = str.toLowerCase().indexOf(term.toLowerCase(), i);
-			if(i === -1) break;
-			indices.push(i);
-			if(!overlap & term.length > 1) i+= (term.length-1)
-		}
-		return indices
-	};
-	const getLineResults = (all, lineText, lineNumber) => {
-		const columns = stringIndexAll(lineText, searchTerm);
-		columns.forEach(colNumber => {
-			all.push({
-				lineNumber,
-				colNumber,
-				lineText,
-				docName: theDoc.name
-			});
-		});
-		return all;
-	};
-	const matches = theDoc.code.split('\n').reduce(getLineResults, []);
-	return matches;
-};
-
-const gangsterSearch = async (searchTerm, service) => {
-	const MAX_RESULTS = 10000;
-	const files = service.code;
-	let allMatches = [];
-	for(var k=0; k < files.length; k++){
-		const theDoc = files[k];
-		allMatches = [...allMatches, ...getMatches(theDoc, searchTerm)];
-		if(allMatches.length >= MAX_RESULTS){
-			allMatches = allMatches.slice(0, MAX_RESULTS);
-			break;
-		}
-	}
-	return allMatches;
-};
-
-const flexSearch = async (index, searchTerm, exampleService) => {
-	const search = (term, opts={}) => new Promise((resolve, reject) => index.search(term, opts, resolve));
-	const res = await search(searchTerm, { limit: false, page: 0+"", suggest: false });
-	const formatFlexSearch = (res) => {
-		//console.info(JSON.stringify(res,null,2))
-		let allMatches = [];
-		if(Array.isArray(res) && typeof res[0] === 'object'){
-			for(var k=0; k<res.length; k++){
-				for(var m=0; m<res[k].result.length; m++){
-					const theDoc = exampleService.code[res[k].result[m]];
-					allMatches = [...allMatches, ...getMatches(theDoc, searchTerm)];
-				}
-			}
-		} else {
-			for(var j=0; j<res.length; j++){
-				const theDoc = exampleService.code[j];
-				allMatches = [...allMatches, ...getMatches(theDoc, searchTerm)];
-			}
-		}
-		return allMatches;
-	}
-	const allMatches = formatFlexSearch(res);
-	return allMatches;
-};
-
-const flexSearchIndex = async (service) => {
-	const t0 = performance.now();
-	var index = new FlexSearch("speed", {
-		encode: "icase",
-		tokenize: "reverse",
-		async: true,
-		worker: 5,
-		cache: true
-	});
-	for(var i=0; i < service.code.length; i++){
-		const theDoc = service.code[i];
-		if(typeof theDoc.code !== "string"){
-			continue;
-		}
-		await index.add(i, theDoc.code);
-	}
-	const t1 = performance.now();
-	console.log(`Indexing took ${Number(t1 - t0).toFixed(2)} milliseconds.`);
-	return index;
-};
-
 
 (async () => {
-
-	const useFlexSearch = false;
 	const searchTerm = "fo"+"rc";
 	const path = './'
-	const useServiceRequestHandlerSearch = true;
 
-	await appendUrls(deps.filter(x => {
-		return useFlexSearch
-			? true
-			: !x.includes('flexsearch');
-	}));
+	await appendUrls(deps);
 
-	if(useServiceRequestHandlerSearch){
-		const searchBox = new SearchBox({});
-		searchBox.updateTerm(searchTerm);
-		searchBox.updateInclude(path)
-		searchBox.searchStream({ term: searchTerm, include: path })
-		return
-	}
-
-	const t1 = performance.now();
-	const exampleService = (await (await fetch('../../service/read/778')).json()).result[0];
-
-	var index = useFlexSearch && await flexSearchIndex(exampleService);
-	const search = async (term) => {
-		const allMatches = useFlexSearch
-			? await flexSearch(index, term, exampleService)
-			: await gangsterSearch(term, exampleService);
-		const t2 = performance.now();
-		const time = Number(t2 - t1);
-		return { allMatches, time };
-	};
-	const searchBox = new SearchBox({ search });
-
+	const searchBox = new SearchBox({});
 	searchBox.updateTerm(searchTerm);
-	await searchBox.search(searchTerm);
-
-
+	searchBox.updateInclude(path)
+	searchBox.searchStream({ term: searchTerm, include: path })
 })(); 
