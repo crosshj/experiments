@@ -246,7 +246,7 @@ const setupEditor = function(){
 	});
 });
 
-	const cm = CodeMirror(editorDiv, {
+	window.cm = CodeMirror(editorDiv, {
 		lineNumbers: true,
 		//autofocus: true,
 		tabSize: 2,
