@@ -1,14 +1,16 @@
 /*
-- [ ] integrate with client
 - [ ] open a file at a given line and column
+- [ ] proper icons for search result files
+- [ ] right click on folder in explorer tree to search within folder
+- [ ] context menu for searched items
+- [ ] fix: saving with search active causes icons in tree to be default icon
+- [ ] search initializes in current service directory (or recalls search directory)
+- [ ] remember when search was active sidebar item
 
-- [LATER] search result summary should update as search is in progress
 - [LATER] exclude files/directory
 - [LATER] single character search terms (and maybe others) should result in collapsed file results which continue search after expanded
 - [LATER] should use paging and inifinite scroll to increase perf on large results
-- [LATER] put search in worker so the UI/service worker is not blocked
-- [YES?] would it be quicker and simpler to just parse all files line by line and return results as available?
-	- should probably ask this question on a larger(different) data set
+
 */
 const deps = [
 	'../shared.styl'
@@ -389,7 +391,6 @@ class SearchBox {
 		this.dom.summary.innerHTML = `${allMatches.length} result${pluralRes} in ${totalFiles.length} file${pluralFile}, ${time.toFixed(2)} ms`;
 	}
 }
-
 
 (async () => {
 	const searchTerm = "fo"+"rc";

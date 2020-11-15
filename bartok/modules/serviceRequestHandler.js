@@ -1514,8 +1514,6 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
         };
         await fileSystemTricks({ result, store, metaStore, cache: cacheHeader });
         return  JSON.stringify(result, null, 2)
-        //const foo = await store.getItem("foo");
-
     });
 
 

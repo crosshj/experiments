@@ -7,20 +7,27 @@ const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
 var scriptName = path.basename(__filename);
-const bundleName = '../mode.bundle.js';
+const bundleName = '../addon.bundle.js';
 const priority = [
-  'simple.js',
-  'xml.js',
-  'javascript.js',
-  'css.js',
-  'clike.js',
-  'mllike.js',
-  'htmlmixed.js',
-  'htmlembedded.js',
+  'doc-state.js',
+
+  'codemirror-scrollpastend.js',
+  'codemirror-search.js',
+  'codemirror-show-invisibles.js',
+
+  'foldcode.js',
+  'foldgutter.js',
+  'brace-fold.js',
+  'xml-fold.js',
+  'indent-fold.js',
+  'markdown-fold.js',
+  'comment-fold.js',
+
+  'panel.js',
 ];
 const ignore = [
   scriptName,
-  'codemirror-javascript.js'
+  '_fold.bundle.js',
 ];
 const exclude = (file) => file.includes('.json') ||
   file.includes('node_modules') ||
@@ -33,9 +40,9 @@ const exclude = (file) => file.includes('.json') ||
     ...(await readdir('./')).filter(x => !exclude(x))
   ];
   let allText = `/*
-    Codemirror Mode Bundle
+    Codemirror Addon Bundle
     ${new Date().toLocaleString('en')}\n
-    MODES: ${files.map(x=>x.replace('.js','')).join(', ')}
+    ADDONS: ${files.map(x=>x.replace('.js','')).join(', ')}
     */`.replace(new RegExp('    ','g'), '')
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -50,4 +57,4 @@ const exclude = (file) => file.includes('.json') ||
       `.replace(new RegExp('      ','g'), '');
   }
   await writeFile(bundleName, allText)
-})()
+})();
