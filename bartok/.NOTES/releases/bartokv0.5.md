@@ -14,15 +14,15 @@ Current State
 ##### meta
   - [ ] themes fixed
   - [ ] cleaner loading view
-  - [ ] import files
-  - [ ] export files
+  - [X] import files
+  - [X] export files
 
 ##### paneView
 
 ##### explorer
 
 ##### editor
-  - [ ] linter - https://codemirror.net/demo/lint.html
+  - [X] linter - https://codemirror.net/demo/lint.html
   - [ ] show 80 char limit line
   - [ ] scrolled shadow at top to indicate file is scrolled down
 

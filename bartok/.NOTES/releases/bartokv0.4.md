@@ -42,20 +42,20 @@
 
 ### meta
   - [X] service worker and IndexDB (localforage)
-  - [ ] edit bartok in bartok
+  - [X] edit bartok in bartok
   - [X] upload binary files
-  - [ ] upload whole folder
+  - [X] upload whole folder
   - [X] pop out preview
   - [X] languages for preview
   - [X] search icon (magnifer) should be connected to somehting
 
 ### panes
   - [X] pane position/size remembered (on page reload)
-  - [ ] close/hide panes and remember this (on page reload)
+  - [X] close/hide panes and remember this (on page reload)
 
 ### explorer
   - [X] recall open folders and selected file (on page reload)
-  - [ ] recall scroll position on page reload (or scroll selected into view)
+  - [X] recall scroll position on page reload (or scroll selected into view)
 
 ### editor
   - [X] syntax highlight for clojure
@@ -63,7 +63,7 @@
   - [X] recall last used file
   - [X] recall previous tabs
   - [X] context menu for tabs (close all / other)
-  - [ ] per file, remember scroll position (on file reload & page reload)
+  - [X] per file, remember scroll position (on file reload & page reload)
 
 ### status bar
   - [X] connected to line & col #

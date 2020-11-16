@@ -4,13 +4,13 @@ why I keep vscode open
 ----------------------
 
 - [ ] service worker flow is not merged to main flow
-- [ ] no search in project / folder
+- [X] no search in project / folder
 
 - [ ] awkward integration with file system
 - [ ] buggy file management
 
 
-- [ ] doesn't recall scroll position
+- [X] doesn't recall scroll position
 - [X] doesn't recall code collapse
 
 - [X] can't dev/edit bartok in bartok
@@ -20,41 +20,41 @@ why I keep vscode open
 
 2020-10-11 todo
 ---------------
-- minimap
-- split editor (mutliple editor panes)
-- preview performance issues
-- javascript/modular templates (vs html-only)
-- terminal watch file
-- messaging between template and editor
-- preview hot reloading
-- dynamic/virtual files (to feed into preview)
-- settings integration with service worker
-- delay loading all services
-- delay loading service on initial load (loading all code-BAD)
-- diff view
-- improved/cleaner service map
-- system services connected to each other
-- service details in service map
-- file search connected
-- command palette commands
-- go to line number
-- working directory in terminal prompt
-- connect context menu commands
-- untracked files (Untitled-1)
-- paste image / file
-- arrange images on single image (use spritemap techniques/code)
-- clean up and connect listeners/triggers
-- hover highlighting expand/collapse indicators
-- themes: font/colors
-- automatic add vendor deps to service manifest (cached offline)
-- package storage (like package.json/node_modules)
-- all terminal commands working well (like unix)
-- git support integrated
-- share project (zip/torrent
-- one template/multiple file extensions supported
-- import css in jsx files
-- connect action bar things
-- tabs versus spaces switching
+- [ ] minimap
+- [ ] split editor (mutliple editor panes)
+- [ ] preview performance issues
+- [ ] javascript/modular templates (vs html-only)
+- [ ] terminal watch file
+- [ ] preview hot reloading
+- [ ] dynamic/virtual files (to feed into preview)
+- [ ] settings integration with service worker
+- [ ] delay loading all services
+- [ ] delay loading service on initial load (loading all code-BAD)
+- [ ] diff view
+- [ ] improved/cleaner service map
+- [ ] system services connected to each other
+- [ ] service details in service map
+- [ ] command palette commands
+- [ ] go to line number
+- [ ] working directory in terminal prompt
+- [ ] connect context menu commands
+- [ ] arrange images on single image (use spritemap techniques/code)
+- [ ] clean up and connect listeners/triggers
+- [ ] hover highlighting expand/collapse indicators
+- [ ] themes: font/colors
+- [ ] automatic add vendor deps to service manifest (cached offline)
+- [ ] package storage (like package.json/node_modules)
+- [ ] all terminal commands working well (like unix)
+- [ ] git support integrated
+- [ ] share project (zip/torrent
+- [ ] one template/multiple file extensions supported
+- [ ] connect action bar things
+- [X] messaging between template and editor
+- [X] file search connected
+- [X] import css in jsx files
+- [X] untracked files (Untitled-1)
+- [X] paste image / file
+- [X] tabs versus spaces switching
 
 image processing
 ----------------
@@ -681,6 +681,16 @@ web assembly
 - many languages wasm - https://github.com/appcypher/awesome-wasm-langs
 - https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/
 - implicit http caching, streaming - https://v8.dev/blog/wasm-code-caching
+- https://webassembly.sh/
+- https://wapm.io/
+- https://wapm.io/package/JeremyLikness/wasi-ubasic
+- create a map of wasm tech
+	- wasmtime / wasi
+	- wasmer - https://github.com/wasmerio/wasmer
+	- emscripten
+	- https://wiki.nikitavoloboev.xyz/web/webassembly
+	- wabt vs binaryen
+	- https://github.com/appcypher/awesome-wasm-runtimes - seems very server bound
 
 
 syntax highlighting, etc
