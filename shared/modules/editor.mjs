@@ -53,13 +53,10 @@ const codeMirrorBespinThemeCssUrl = "../shared/css/bespin.css";
 const cmVSCodeUrl = "../shared/css/vscode.codemirror.css";
 
 const codeMirrorJsUrl = "../shared/vendor/codemirror.js";
-const codeMirrorScrollPastUrl = "../shared/vendor/codemirror-scrollpastend.js";
-const codeMirrorShowInvisibles = "../shared/vendor/codemirror-show-invisibles.js"
-const codeMirrorSearch = "../shared/vendor/codemirror-search.js";
 
 const codeMirrorJsSyntaxUrl = "../shared/vendor/codemirror/mode/javascript.js";
 
-const codeMirrorFoldBundleUrl = '../shared/vendor/codemirror/addons/_fold.bundle.js'
+const codeMirrorAddonBundleUrl = '../shared/vendor/codemirror/addon.bundle.js'
 
 const appendScript = (url, callback) => {
 	var script = document.createElement('script');
@@ -89,13 +86,7 @@ const codeMirrorCss = (callback) => {
 
 const codeMirrorJs = (callback) => {
 	appendScript(codeMirrorJsUrl, () => {
-		appendScript(codeMirrorFoldBundleUrl, () => {
-			appendScript(codeMirrorSearch, () => {
-				appendScript(codeMirrorScrollPastUrl, () => {
-					appendScript(codeMirrorShowInvisibles, callback);
-				});
-			});
-		});
+		appendScript(codeMirrorAddonBundleUrl, callback);
 	});
 };
 
@@ -224,8 +215,6 @@ const allTheEditorThings = ({ text='', ...opts } = {}, callback) => {
 		opts.mode = opts.mode.mimeType || opts.mode || mode;
 		window.Editor.toTextArea();
 		const theEditor = setupEditor(_text, opts || {});
-		//theEditor.setOption("mode", mode);
-		//theEditor.setOption("theme", "default");
 		window.Editor = theEditor;
 		callback(null, theEditor);
 		return;

@@ -1,6 +1,6 @@
 /*
 Codemirror Addon Bundle
-11/15/2020, 2:11:07 AM
+11/15/2020, 6:36:39 PM
 
 ADDONS: doc-state, codemirror-scrollpastend, codemirror-search, codemirror-show-invisibles, foldcode, foldgutter, brace-fold, xml-fold, indent-fold, markdown-fold, comment-fold, panel
 */
@@ -59,7 +59,9 @@ further reference, see defineExtension here https://codemirror.net/doc/manual.ht
 	const SCROLL_MARGIN = 50;
 	const allDocs = {};
 
-	CodeMirror.defineOption('docStore', () => {},(cm, localforage) => {
+	CodeMirror.defineOption('docStore', () => {}, (cm, localforage) => {
+		if(!localforage || !localforage.createInstance) return;
+
 		const driverOrder = [
 			localforage.INDEXEDDB,
 			localforage.WEBSQL,
@@ -130,14 +132,14 @@ further reference, see defineExtension here https://codemirror.net/doc/manual.ht
 		if(currentDoc && name === currentDoc.name) return;
 
 		const initialized = !!allDocs[name];
-		const storedDoc = initialized
-				? undefined
-				: await this.options.docStore.getItem(name);
+		const storedDoc = await this.options.docStore.getItem(name);
 
 		let newDoc = (allDocs[name] || {}).editor || CodeMirror.Doc('', mode || storedDoc.mode);
 		newDoc.name = name;
 		if(storedDoc){
-			newDoc = rehydrateDoc(newDoc, storedDoc);
+			newDoc = rehydrateDoc(newDoc, { ...storedDoc, ...{ text, mode, scrollTop, scrollLeft }});
+		} else {
+			newDoc = rehydrateDoc(newDoc, { text, mode, scrollTop, scrollLeft });
 		}
 		currentDoc = {
 			name,

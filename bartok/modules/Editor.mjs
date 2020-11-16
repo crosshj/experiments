@@ -10,6 +10,8 @@ import ext from "../../shared/icons/seti/ext.json.mjs";
 import { getCodeFromService, getState, getAllServices } from "./state.mjs";
 import { codemirrorModeFromFileType } from "../../shared/modules/utilities.mjs";
 
+import '/shared/vendor/localforage.min.js';
+
 function htmlToElement(html) {
   var template = document.createElement("template");
   html = html.trim(); // Never return a text node of whitespace as the result
@@ -538,120 +540,163 @@ const inlineEditor = (ChangeHandler) => ({
 
   const { indentWithTabs, tabSize } = settings();
 
-  Editor(
-    {
-      text: code || "",
-      lineNumbers: true,
-      mode,
-      addModeClass: true,
-      autocorrect: true,
-      // scrollbarStyle: 'native',
-      tabSize,
-      indentWithTabs,
-      showInvisibles: true,
-      styleActiveLine: true,
-      styleActiveSelected: true,
-      matchBrackets: true,
-      lineWrapping: true,
-      scrollPastEnd: true,
-      foldGutter: true,
-      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-      foldOptions: {
-        widget: (from, to) => {
-          return "...";
-        },
-        minFoldSize: 3,
-      },
-    },
-    (error, editor) => {
-      if (error) {
-        console.error(error);
-        callback && callback(error);
-        return;
+  const editorCallback = (error, editor) => {
+    if (error) {
+      console.error(error);
+      callback && callback(error);
+      return;
+    }
+    callback && callback();
+    editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
+    window.Editor = editor;
+    editor.on("change", handlerBoundToDoc);
+    editor.on("cursorActivity", onCursorActivity);
+    editor.on("scrollCursorIntoView", onScrollCursor);
+    editor.setOption("styleActiveLine", { nonEmpty: true });
+    editor.setOption("extraKeys", extraKeys);
+
+    let editorState = {
+      unfolded: [],
+      scroll: 0,
+    };
+    const stateStorageKey = `state::${name}::${filename}`;
+    try {
+      const storedState = JSON.parse(sessionStorage.getItem(stateStorageKey));
+      if (storedState && storedState.unfolded) {
+        editorState = storedState;
       }
-      callback && callback();
-      editor.setOption("theme", darkEnabled ? "vscode-dark" : "default");
-      window.Editor = editor;
-      editor.on("change", handlerBoundToDoc);
-      editor.on("cursorActivity", onCursorActivity);
-      editor.on("scrollCursorIntoView", onScrollCursor);
-      editor.setOption("styleActiveLine", { nonEmpty: true });
-      editor.setOption("extraKeys", extraKeys);
+    } catch (e) {}
 
-      let editorState = {
-        unfolded: [],
-        scroll: 0,
-      };
-      const stateStorageKey = `state::${name}::${filename}`;
-      try {
-        const storedState = JSON.parse(sessionStorage.getItem(stateStorageKey));
-        if (storedState && storedState.unfolded) {
-          editorState = storedState;
-        }
-      } catch (e) {}
+    editor.on("fold", (cm, from, to) => {
+      cm.addLineClass(from.line, "wrap", "folded");
+    });
+    editor.on("unfold", (cm, from, to) => {
+      cm.removeLineClass(from.line, "wrap", "folded");
+    });
 
-      editor.on("fold", (cm, from, to) => {
-        cm.addLineClass(from.line, "wrap", "folded");
-      });
-      editor.on("unfold", (cm, from, to) => {
-        cm.removeLineClass(from.line, "wrap", "folded");
-      });
+    const MIN_DOC_FOLD_LENGTH = 150;
+    let cursor = 0;
+    editor.lastLine() > MIN_DOC_FOLD_LENGTH &&
+      editor.eachLine(editor.firstLine(), editor.lastLine(), function (line) {
+        // todo: store these exceptions in user config?
+        const shouldNotFold = [
+          "<html>",
+          "<head>",
+          "<svg",
+          "<!--",
+          "code_in",
+          "# welcome!",
+        ].find((x) => line.text.includes(x));
 
-      const MIN_DOC_FOLD_LENGTH = 150;
-      let cursor = 0;
-      editor.lastLine() > MIN_DOC_FOLD_LENGTH &&
-        editor.eachLine(editor.firstLine(), editor.lastLine(), function (line) {
-          // todo: store these exceptions in user config?
-          const shouldNotFold = [
-            "<html>",
-            "<head>",
-            "<svg",
-            "<!--",
-            "code_in",
-            "# welcome!",
-          ].find((x) => line.text.includes(x));
+        const isfirstLineOfJSON =
+          (filename.includes(".piskel") ||
+            filename.includes(".json") ||
+            filename.includes(".gltf") ||
+            filename.includes(".ipynb")) &&
+          cursor === 0;
 
-          const isfirstLineOfJSON =
-            (filename.includes(".piskel") ||
-              filename.includes(".json") ||
-              filename.includes(".gltf") ||
-              filename.includes(".ipynb")) &&
-            cursor === 0;
-
-          if (shouldNotFold || isfirstLineOfJSON) {
-            cursor++;
-            return;
-          }
-          // children of the folded
-          const alreadyFolded = editor.isFolded({ line: cursor, ch: 0 });
-          if (alreadyFolded) {
-            cursor++;
-            return;
-          }
-
-          editor.foldCode({ line: cursor, ch: 0 }, null, "fold");
+        if (shouldNotFold || isfirstLineOfJSON) {
           cursor++;
-        });
-
-      editorState.unfolded.forEach((line) =>
-        editor.foldCode({ line, ch: 0 }, null, "unfold")
-      );
-
-      editor.on("fold", (cm, from, to) => {
-        editorState.unfolded = editorState.unfolded.filter(
-          (x) => x !== from.line
-        );
-        sessionStorage.setItem(stateStorageKey, JSON.stringify(editorState));
-      });
-
-      editor.on("unfold", (cm, from, to) => {
-        if (editorState.unfolded.includes(from.line)) {
           return;
         }
-        editorState.unfolded.push(from.line);
-        sessionStorage.setItem(stateStorageKey, JSON.stringify(editorState));
+        // children of the folded
+        const alreadyFolded = editor.isFolded({ line: cursor, ch: 0 });
+        if (alreadyFolded) {
+          cursor++;
+          return;
+        }
+
+        editor.foldCode({ line: cursor, ch: 0 }, null, "fold");
+        cursor++;
       });
-    }
+
+    editorState.unfolded.forEach((line) =>
+      editor.foldCode({ line, ch: 0 }, null, "unfold")
+    );
+
+    editor.on("fold", (cm, from, to) => {
+      editorState.unfolded = editorState.unfolded.filter(
+        (x) => x !== from.line
+      );
+      sessionStorage.setItem(stateStorageKey, JSON.stringify(editorState));
+    });
+
+    editor.on("unfold", (cm, from, to) => {
+      if (editorState.unfolded.includes(from.line)) {
+        return;
+      }
+      editorState.unfolded.push(from.line);
+      sessionStorage.setItem(stateStorageKey, JSON.stringify(editorState));
+    });
+  };
+
+  const editorOptions = {
+    text: code || "",
+    docStore: window.localforage,
+    lineNumbers: true,
+    mode,
+    addModeClass: true,
+    autocorrect: true,
+    // scrollbarStyle: 'native',
+    tabSize,
+    indentWithTabs,
+    showInvisibles: true,
+    styleActiveLine: true,
+    styleActiveSelected: true,
+    matchBrackets: true,
+    lineWrapping: true,
+    scrollPastEnd: true,
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+    foldOptions: {
+      widget: (from, to) => {
+        return "...";
+      },
+      minFoldSize: 3,
+    },
+  };
+
+  if(window.Editor){
+    const { text } = editorOptions;
+    /*
+      This (loadDoc) is good in the sense that it reduces some dependency on shared/editor, but it is confusing and error-prone
+        - too many listeners get attached and not removed
+        - state is spread out and difficult to manage
+        - too many lines of code to comprehend; not straightforward
+        - too much is done in "ui"
+
+      CLEAN THIS UP
+      0. name should include full path of file
+      1. all document attributes should save/restore to/from service request handler (unless they are default?)
+        - document text
+        - mode
+        - selections
+        - cursor position
+        - history
+        - scroll position
+        - folded vs unfolded
+        - indentation preference: tabs, spaces, size
+        - line wrap preference
+      2. addon should expose/attach/detach ONE event for all of these when they change (instead of three)
+        - this should be an event unique to addon so it's not confused with CodeMirror events
+      3. when file is restored from outside browser UI, service request handler should delete/overwrite some/all these?
+      4. editorCallback sucks; can it be removed?
+
+    */
+    window.Editor.loadDoc({
+      name: filename,
+      text, mode
+    });
+    window.Editor.on("change", handlerBoundToDoc);
+    window.Editor.on("cursorActivity", onCursorActivity);
+    window.Editor.on("scrollCursorIntoView", onScrollCursor);
+    editorCallback(null, window.Editor);
+    return;
+  }
+
+  Editor(
+    editorOptions,
+    editorCallback
   );
 };
 

@@ -56,6 +56,7 @@
       "isomorphic-git.html": {},
       "minimap.js": {},
       "paste-image.js": {},
+      "recall-scroll.js": {},
       "search.js": {},
       "streams.js": {},
       "templateMessages.js": {},
@@ -130,7 +131,10 @@
         "video.mp4": {}
       },
       "data": {
-        "json.json": {}
+        "csv.csv": {},
+        "ini.ini": {},
+        "json.json": {},
+        "yaml.yml": {}
       },
       "document": {
         "jupyter.ipynb": {},
@@ -408,6 +412,10 @@
       "path": ".welcome/5ketch/css-doodle.html"
     },
     {
+      "name": "csv.csv",
+      "path": ".welcome/examples/data/csv.csv"
+    },
+    {
       "name": "d3-graph.html",
       "path": ".welcome/.templates/d3-graph.html"
     },
@@ -578,6 +586,10 @@
     {
       "name": "index.js",
       "path": ".welcome/index.js"
+    },
+    {
+      "name": "ini.ini",
+      "path": ".welcome/examples/data/ini.ini"
     },
     {
       "name": "ink.ink",
@@ -828,6 +840,10 @@
       "path": ".welcome/Readme.md"
     },
     {
+      "name": "recall-scroll.js",
+      "path": ".welcome/1ncubate/recall-scroll.js"
+    },
+    {
       "name": "reveal.html",
       "path": ".welcome/5upport/reveal.html"
     },
@@ -1042,6 +1058,10 @@
     {
       "name": "windows.bat",
       "path": ".welcome/examples/language/windows.bat"
+    },
+    {
+      "name": "yaml.yml",
+      "path": ".welcome/examples/data/yaml.yml"
     },
     {
       "name": "z-brush-gremlin2.jpeg",
