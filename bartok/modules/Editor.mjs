@@ -656,7 +656,7 @@ const inlineEditor = (ChangeHandler) => ({
     },
   };
 
-  if(window.Editor){
+  if(false && window.Editor){
     const { text } = editorOptions;
     /*
       This (loadDoc) is good in the sense that it reduces some dependency on shared/editor, but it is confusing and error-prone
@@ -664,6 +664,7 @@ const inlineEditor = (ChangeHandler) => ({
         - state is spread out and difficult to manage
         - too many lines of code to comprehend; not straightforward
         - too much is done in "ui"
+        - addon is too complicated
 
       CLEAN THIS UP
       0. name should include full path of file

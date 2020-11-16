@@ -48,10 +48,11 @@ export const Body = ({ todos=[], active, addTodo, searchTodo, searchTerm, checkI
 		return todo.status + sepClass +
 			(isInvisible ? ' invisible' : '')
 	};
-	
+
 	const spacer = {
 		hidden: true,
-		order: todos.length
+		order: todos.length,
+		status: active
 	};
 
 	const searchBarAction = {
