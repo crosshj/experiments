@@ -467,6 +467,14 @@ class SearchBox {
 			this.searchStream({ term, include, exclude })
 		}, 250, false);
 		this.dom.term.addEventListener('input', (e) => {
+			const term = this.dom.term.value;
+			if(!term){
+				this.term = '';
+				this.updateSummary({});
+				this.dom.results.innerHTML = '';
+				this.updateResults([], '');
+				return;
+			}
 			this.updateSummary({ loading: true });
 			this.updateResults({ loading: true });
 			debouncedInputListener(e);
