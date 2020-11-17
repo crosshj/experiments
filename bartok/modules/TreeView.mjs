@@ -356,6 +356,7 @@ const SearchBoxHTML = () => {
 		.search-results > li > div span,
 		.search-results > li ul > li span {
 			position: relative;
+			white-space: nowrap;
 		}
 		.search-results > li > div .hover-highlight,
 		.search-results > li ul > li .hover-highlight {

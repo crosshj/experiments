@@ -49,6 +49,7 @@
       "dropFile.js": {},
       "editorLint.js": {},
       "editor_diff.js": {},
+      "fiug-bundle.js": {},
       "golden-layout.css": {},
       "golden-layout.js": {},
       "hexedit.js": {},
@@ -56,6 +57,7 @@
       "isomorphic-git.html": {},
       "minimap.js": {},
       "paste-image.js": {},
+      "psd-converter.js": {},
       "recall-scroll.js": {},
       "search.js": {},
       "streams.js": {},
@@ -173,6 +175,7 @@
         "lame.png": {},
         "languages-templates-progress.bmp": {},
         "Piskel-LIFE-20200506.piskel": {},
+        "psd.psd": {},
         "screaming for vengence album cover judas priest.bmp": {},
         "spritesheet.json": {},
         "spritesheet.png": {},
@@ -180,6 +183,8 @@
         "svg-lock.svg": {},
         "svg-solar-system.svg": {},
         "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg": {},
+        "timeline.psd": {},
+        "timeline2.psd": {},
         "wasps_bees.bmp": {},
         "z-brush-gremlin2.jpeg": {},
         "zbrush-gremlin.gif": {},
@@ -466,6 +471,10 @@
     {
       "name": "favicon_package2_v0.16.zip",
       "path": ".welcome/examples/image/favicon_package2_v0.16.zip"
+    },
+    {
+      "name": "fiug-bundle.js",
+      "path": ".welcome/1ncubate/fiug-bundle.js"
     },
     {
       "name": "forth.fth",
@@ -808,6 +817,14 @@
       "path": ".welcome/examples/language/prolog.pro"
     },
     {
+      "name": "psd-converter.js",
+      "path": ".welcome/1ncubate/psd-converter.js"
+    },
+    {
+      "name": "psd.psd",
+      "path": ".welcome/examples/image/psd.psd"
+    },
+    {
       "name": "py.html",
       "path": ".welcome/.templates/py.html"
     },
@@ -966,6 +983,14 @@
     {
       "name": "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg",
       "path": ".welcome/examples/image/the-shannara-chronicles-tree-forest-guardian-tv-series.jpg"
+    },
+    {
+      "name": "timeline.psd",
+      "path": ".welcome/examples/image/timeline.psd"
+    },
+    {
+      "name": "timeline2.psd",
+      "path": ".welcome/examples/image/timeline2.psd"
     },
     {
       "name": "todo-actions.jsx",
