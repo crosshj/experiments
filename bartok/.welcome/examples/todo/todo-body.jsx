@@ -50,9 +50,9 @@ export const Body = ({ todos=[], active, addTodo, searchTodo, searchTerm, checkI
 	};
 
 	const spacer = {
-		hidden: true,
 		order: todos.length,
-		status: active
+		value: '',
+		status: 'dragSpacer'
 	};
 
 	const searchBarAction = {

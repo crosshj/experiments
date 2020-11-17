@@ -125,8 +125,12 @@ body
 			&.dragOver
 				border-top: 1px solid
 			&.invisible
+				display none
+			&.dragSpacer
 				opacity 0
-			&.invisible.dragOver
+				span, div, input
+					display none
+			&.dragSpacer.dragOver
 				opacity 1
 			&.seperator
 				input, span
