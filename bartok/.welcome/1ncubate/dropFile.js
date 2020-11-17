@@ -21,8 +21,8 @@ const deps = [
         flex-direction: column;
         width: 100%;
         height: 30em;
-        background: rgba(136, 136, 136, 0.1);
-        border: 3px dashed rgb(136, 136, 136);
+        background: rgba(10, 10, 10, 0.1);
+        border: 2px dashed rgb(100, 100, 100);
         border-radius: 3px;
         margin: 2em 0px;
         justify-content: center;

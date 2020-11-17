@@ -10301,6 +10301,9 @@ if (typeof window === "object" && (typeof ENVIRONMENT_IS_PTHREAD === "undefined"
             } catch (e) {}
         }
         function post(msg) {
+            console.log(msg);
+            return; // added by Harrison ^^^
+
             var http = new XMLHttpRequest;
             ++emrun_num_post_messages_in_flight;
             http.onreadystatechange = function() {

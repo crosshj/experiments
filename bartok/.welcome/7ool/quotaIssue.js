@@ -13,29 +13,50 @@
 
 */
 
+const deps = [
+	'../shared.styl',
+];
 
+function formatBytes(bytes) {
+  var marker = 1024; // Change to 1000 if required
+  var decimal = 3; // Change as required
+  var kiloBytes = marker; // One Kilobyte is 1024 bytes
+  var megaBytes = marker * marker; // One MB is 1024 KB
+  var gigaBytes = marker * marker * marker; // One GB is 1024 MB
+  var teraBytes = marker * marker * marker * marker; // One TB is 1024 GB
 
-// query
-let queryCallback = (used, granted) => 
-  console.log('we are using', used, 'bytes of', granted/1024/1024/1024, 'gigabytes');
-navigator.webkitTemporaryStorage
-  .queryUsageAndQuota( queryCallback, console.error );
-
-
-
-
-// query Storage API
-if ('storage' in navigator && 'estimate' in navigator.storage) {
-  navigator.storage.estimate()
-    .then(function(estimate){
-        console.log(`Using ${estimate.usage} out of ${estimate.quota} bytes.`);
-    });
+  // return bytes if less than a KB
+  if(bytes < kiloBytes) return bytes + " Bytes";
+  // return KB if less than a MB
+  else if(bytes < megaBytes) return(bytes / kiloBytes).toFixed(decimal) + " KB";
+  // return MB if less than a GB
+  else if(bytes < gigaBytes) return(bytes / megaBytes).toFixed(decimal) + " MB";
+  // return GB if less than a TB
+  else return(bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
+(async () => {
 
-// requestQuota - probably does not work on temporary storage
-let newQuotaInBytes = 1e+7;
-let quotaCallback = console.log;
-let errorCallback = console.error;
-navigator.webkitTemporaryStorage
-  .requestQuota(newQuotaInBytes,quotaCallback,errorCallback);
+	await appendUrls(deps);
+
+	// query
+	let queryCallback = (used, granted) =>
+		console.log(`Temp storage API: \tusing ${formatBytes(used)} of ${formatBytes(granted)}`);
+	navigator.webkitTemporaryStorage
+		.queryUsageAndQuota( queryCallback, console.error );
+
+	// query Storage API
+	if ('storage' in navigator && 'estimate' in navigator.storage) {
+		const estimate = await navigator.storage.estimate()
+		console.log(`Storage API: \t\tusing ${formatBytes(estimate.usage)} out of ${formatBytes(estimate.quota)}.`);
+	}
+
+	// requestQuota - probably does not work on temporary storage
+	let newQuotaInBytes = 1e+9;
+	let quotaCallback = (amount) => {
+		console.log(`New quota amount: ${formatBytes(amount)}`);
+	}
+	let errorCallback = console.error;
+	navigator.webkitTemporaryStorage
+		.requestQuota(newQuotaInBytes,quotaCallback,errorCallback);
+})()

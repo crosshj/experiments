@@ -43,7 +43,6 @@
       "zip.html": {}
     },
     "1ncubate": {
-      "ascii-diagram.md": {},
       "auth0.md": {},
       "downloadZip.js": {},
       "dropFile.js": {},
@@ -58,10 +57,6 @@
       "minimap.js": {},
       "paste-image.js": {},
       "psd-converter.js": {},
-      "recall-scroll.js": {},
-      "search.js": {},
-      "streams.js": {},
-      "templateMessages.js": {},
       "webcam.js": {},
       "webtorrent_share.html": {},
       "zip_project.html": {}
@@ -79,6 +74,13 @@
       "_mirrors.md": {},
       "_sort.flashing.md": {}
     },
+    "4rchive": {
+      "ascii-diagram.md": {},
+      "recall-scroll.js": {},
+      "search.js": {},
+      "streams.js": {},
+      "templateMessages.js": {}
+    },
     "5ketch": {
       "css-3d.html": {},
       "css-doodle.html": {}
@@ -88,10 +90,19 @@
       "gml_cm_mode.js": {},
       "graph-formats.md": {},
       "language-sql-fetch.html": {},
+      "languages-templates-progress.bmp": {},
       "preact-hyperscript.htm": {},
+      "psd.psd": {},
       "reveal.html": {},
       "slides-reveal.htm": {},
-      "wasm.binaryen.html": {}
+      "spritesheet.json": {},
+      "spritesheet.png": {},
+      "timeline.psd": {},
+      "timeline2.psd": {},
+      "wasm.binaryen.html": {},
+      "z-brush-gremlin2.jpeg": {},
+      "zbrush-gremlin.gif": {},
+      "zbrush-optimus.gif": {}
     },
     "7ool": {
       "color-picker.html": {},
@@ -173,22 +184,13 @@
         "jelly.ppm": {},
         "jr.ppm": {},
         "lame.png": {},
-        "languages-templates-progress.bmp": {},
         "Piskel-LIFE-20200506.piskel": {},
-        "psd.psd": {},
         "screaming for vengence album cover judas priest.bmp": {},
-        "spritesheet.json": {},
-        "spritesheet.png": {},
         "svg-bartok.svg": {},
         "svg-lock.svg": {},
         "svg-solar-system.svg": {},
         "the-shannara-chronicles-tree-forest-guardian-tv-series.jpg": {},
-        "timeline.psd": {},
-        "timeline2.psd": {},
-        "wasps_bees.bmp": {},
-        "z-brush-gremlin2.jpeg": {},
-        "zbrush-gremlin.gif": {},
-        "zbrush-optimus.gif": {}
+        "wasps_bees.bmp": {}
       },
       "language": {
         "ada.adb": {},
@@ -310,7 +312,7 @@
     },
     {
       "name": "ascii-diagram.md",
-      "path": ".welcome/1ncubate/ascii-diagram.md"
+      "path": ".welcome/4rchive/ascii-diagram.md"
     },
     {
       "name": "assemblyscript.as",
@@ -686,7 +688,7 @@
     },
     {
       "name": "languages-templates-progress.bmp",
-      "path": ".welcome/examples/image/languages-templates-progress.bmp"
+      "path": ".welcome/5upport/languages-templates-progress.bmp"
     },
     {
       "name": "lisp.html",
@@ -822,7 +824,7 @@
     },
     {
       "name": "psd.psd",
-      "path": ".welcome/examples/image/psd.psd"
+      "path": ".welcome/5upport/psd.psd"
     },
     {
       "name": "py.html",
@@ -858,7 +860,7 @@
     },
     {
       "name": "recall-scroll.js",
-      "path": ".welcome/1ncubate/recall-scroll.js"
+      "path": ".welcome/4rchive/recall-scroll.js"
     },
     {
       "name": "reveal.html",
@@ -894,7 +896,7 @@
     },
     {
       "name": "search.js",
-      "path": ".welcome/1ncubate/search.js"
+      "path": ".welcome/4rchive/search.js"
     },
     {
       "name": "service.json",
@@ -910,11 +912,11 @@
     },
     {
       "name": "spritesheet.json",
-      "path": ".welcome/examples/image/spritesheet.json"
+      "path": ".welcome/5upport/spritesheet.json"
     },
     {
       "name": "spritesheet.png",
-      "path": ".welcome/examples/image/spritesheet.png"
+      "path": ".welcome/5upport/spritesheet.png"
     },
     {
       "name": "sql.html",
@@ -926,7 +928,7 @@
     },
     {
       "name": "streams.js",
-      "path": ".welcome/1ncubate/streams.js"
+      "path": ".welcome/4rchive/streams.js"
     },
     {
       "name": "styles.css",
@@ -974,7 +976,7 @@
     },
     {
       "name": "templateMessages.js",
-      "path": ".welcome/1ncubate/templateMessages.js"
+      "path": ".welcome/4rchive/templateMessages.js"
     },
     {
       "name": "texturepacker.html",
@@ -986,11 +988,11 @@
     },
     {
       "name": "timeline.psd",
-      "path": ".welcome/examples/image/timeline.psd"
+      "path": ".welcome/5upport/timeline.psd"
     },
     {
       "name": "timeline2.psd",
-      "path": ".welcome/examples/image/timeline2.psd"
+      "path": ".welcome/5upport/timeline2.psd"
     },
     {
       "name": "todo-actions.jsx",
@@ -1090,15 +1092,15 @@
     },
     {
       "name": "z-brush-gremlin2.jpeg",
-      "path": ".welcome/examples/image/z-brush-gremlin2.jpeg"
+      "path": ".welcome/5upport/z-brush-gremlin2.jpeg"
     },
     {
       "name": "zbrush-gremlin.gif",
-      "path": ".welcome/examples/image/zbrush-gremlin.gif"
+      "path": ".welcome/5upport/zbrush-gremlin.gif"
     },
     {
       "name": "zbrush-optimus.gif",
-      "path": ".welcome/examples/image/zbrush-optimus.gif"
+      "path": ".welcome/5upport/zbrush-optimus.gif"
     },
     {
       "name": "zig.zig",

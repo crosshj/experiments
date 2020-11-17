@@ -1,5 +1,8 @@
 <!-- no-select -->
 
+<!-- wish this would work right now -->
+<link rel="stylesheet" href=".../shared.styl/::preview::/">
+
 ## Auth0 SPA authorization
   - the goal is to get authorization working from client-only
   - that much works, but IDP API calls still need a backend

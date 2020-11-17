@@ -30,3 +30,15 @@ file is deleted, but "no file opened" screen shows up in editor and stays that w
 
 files stay open
 should close, also should settings stay open when switching?
+
+
+## lingering settings
+
+1) open a file
+2) make changes
+3) open settings
+4) close settings
+
+expect: file that is remaining shows its text; settings body disappears
+
+actaul: settings body shows for remaining file instead of file's text

@@ -11,14 +11,15 @@ const deps = [
 	"https://unpkg.com/file-saver@2.0.0-rc.2/dist/FileSaver.min.js"
 ];
 
-const width = 1024;
-const height = 768;
+const width = 300;
+const height = 275;
 
-const canvas = new OffscreenCanvas(width, height);
+//const canvas = new OffscreenCanvas(width, height);
+const canvas = htmlToElement(`<canvas id="myCanvas" width="${width}" height="${height}"></canvas>`)
 const context = canvas.getContext('2d');
-context.fillStyle = 'black';
+context.fillStyle = '#1a1a1a';
 context.fillRect(0, 0, width, height);
-context.fillStyle = 'blue';
+context.fillStyle = '#222';
 context.fillRect((width-100)/2, (height-100)/2, 100, 100);
 
 const psd = {
@@ -53,12 +54,12 @@ const psd = {
 	button.addEventListener('click', () => {
 		saveAs(blob, 'my-file.psd');
 	});
-	
-	const psdUrl = '../examples/image/timeline.psd'
+
+	const psdUrl = '../5upport/timeline.psd'
 	const psdBuffer = await (await fetch(psdUrl)).arrayBuffer();
-	
+
 	const psdInput = readPsd(psdBuffer);
-	
-	document.body.append(psdInput.children[2].canvas)
-	
+	psdInput.children[0].canvas = canvas
+	document.body.append(psdInput.children[0].canvas)
+
 })()

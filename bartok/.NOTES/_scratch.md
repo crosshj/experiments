@@ -470,7 +470,7 @@ FILE CHANGES
 ------------
  - [X] only keep changed tabs open, reuse previous/unchanged tabs
  - [X] tabs stay open across reload
- - [ ] scroll/cursor position remembered
+ - [X] scroll/cursor position remembered
  - [X] allow closing last tab
 
 PACKAGE.JSON / CONFIG
@@ -506,6 +506,7 @@ UNSORTED
 
 - how to implement a programming language
 	- http://lisperator.net/pltut/
+	- http://angg.twu.net/miniforth-article.html - bootstraping a forth in 40 lines of Lua
 
 - bundling in browser
 	- http://webpack.github.io/playground/
@@ -515,8 +516,6 @@ UNSORTED
 
 - [IP] show binary files as HEX
 - [x] show preview in side (instead)
-
-- https://markmap.js.org/repl/ - markdown as mindmap
 
 - node in the browser (and for that matter, the other language runtimes or emulators)
 	https://blog.cloudboost.io/how-to-run-node-js-apps-in-the-browser-3f077f34f8a5
@@ -660,15 +659,17 @@ https://github.com/paulirish/memory-stats.js/blob/master/memory-stats.js
 https://web.dev/monitor-total-page-memory-usage/
 
 
-thinking / re-thinking
-======================
-
 fugue: (the UI portion of the bartok ecosystem)
+===============================================
 components:
 - dom: init dom, change/update dom
+	- https://micro-frontends.org/ - custom components, etc
 - listeners: process event, call some update function that dom has passed
 - triggers/actions: user interacting with dom causes system event to be fired
 - state?
+
+
+
 
 web assembly
 ============

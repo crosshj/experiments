@@ -22,6 +22,8 @@ https://dreampuf.github.io/GraphvizOnline
 lots of examples here (click on images for .gv which seems to be .dot)
 http://www.graphviz.org/gallery/
 
+- uses a js version of graphviz to map arguments - https://argdown.org/
+- markdown as mindmap - https://markmap.js.org/repl/
 
 
 # d3 seems to use this format (or can easily be made to use):
