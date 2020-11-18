@@ -67,7 +67,15 @@ const others = [
 	const style = () => { return `
 			<style>
 				body {
-					background: hsl(0 0% 8% / 1);;
+					background: hsl(0 0% 8% / 1);
+					height: 100vh;
+					padding-left: 1em;
+					padding-right: 1em;
+				}
+				@media (min-width: 1024px) {
+					body {
+						margin: 0 auto !important;
+					}
 				}
 				#container {
 					display: grid;
@@ -75,11 +83,10 @@ const others = [
 					width: 100%;
 					color: #bbb;
 					font-size: 1.2em;
-					background: hsl(0 0% 9% / 1);
-					margin-top: 10em;
 					box-sizing: content-box;
 					padding-top: 2em;
 					padding-bottom: 2em;
+					margin-top: -10em;
 				}
 				.list {
 					display: flex;

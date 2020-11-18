@@ -54,3 +54,19 @@ Feel free to edit anything!  In Bartok's current state, you won't hurt anything!
 Check out the [developer video log at youtube](https://www.youtube.com/playlist?list=PLzxw4c2I_GGe6q7XHWH2lXsc9VBfzsNB_).
 You can use this to keep up with Bartok as it is being improved.
 
+## primary purposes
+
+dig in to any file
+	- change on a binary level
+	- crop, resize, copy/paste, label, (+more) images
+	- convert between file formats
+
+rationalize about complicated connections
+
+create visually and textually with ease
+
+share using novel methods
+	- via code and tech
+	- via presentation mediums
+
+understand and track changes

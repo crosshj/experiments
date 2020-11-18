@@ -18,20 +18,6 @@ iframe {
   /* display: none; */
 }
 
-#settle {
-  /* display: none; */
-  font-size: 3em;
-  padding: 1em 0;
-}
-
-#settle:before {
-  content: '';
-  display: block;
-  width: 10px;
-  height: 10px;
-  background: red;
-}
-
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-corner,
   ::-webkit-scrollbar-track { background: transparent; }

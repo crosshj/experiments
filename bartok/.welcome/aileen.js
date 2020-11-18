@@ -1,41 +1,57 @@
 const deps =[
-  './shared.styl'
+	'./shared.styl'
 ];
 
 (async () => {
 
-  await appendUrls(deps);
+	await appendUrls(deps);
 
-  function aileen(){
-    (new Array(10))
-      .fill()
-      .forEach(x =>
-      console.info('Pete the ween and Zoe the B*')
-    );
-  }
+	const settle = [
+		43, //uber eats
+		28, //2 rides uber - target walmart
+		8, //BP drinks
+		46, //firehouse
+		10, //uber unkown
+		13, //starbucks
+		40, //kids allowance 11/13
+		40, //kids allowance 11/20
+		250, //grocery 11/20
+		195, // philippines
+		300, // clothes
+	].reduce((a,b) => a+b, 0);
+	console.log(settle)
+	// total ~975
 
-  await prism('javascript', aileen.toString())
-  aileen()
+	function aileen(){
+		(new Array(3))
+			.fill()
+			.forEach(x =>
+			console.info('Pete the ween and Zoe the B*')
+		);
+	}
 
-  var Harrison = [];
+	await prism('javascript', aileen.toString())
+	aileen()
 
-  for (var i = 1; i < 20; i += 4) {
-    Harrison.push(i);
-  }
+	var Harrison = [];
 
-  var Pete = [];
+	for (var i = 1; i < 3; i += 4) {
+		Harrison.push(i);
+	}
 
-  for (var z = 0; z < 45; z += 3) {
-    Pete.push(z);
-  }
+	var Pete = [];
 
-  function replacer(i, val) {
-    if(Array.isArray(val)){
-      return '['+val.join(', ')+']'
-    }
-    return val
-  }
-  await prism("json", JSON.stringify({Harrison, Pete}, replacer, 2))
+	for (var z = 0; z < 45; z += 3) {
+		Pete.push(z);
+	}
 
-  
+	function replacer(i, val) {
+		if(Array.isArray(val)){
+			return '['+val.join(', ')+']'
+		}
+		return val
+	}
+	await prism("json", JSON.stringify({Harrison, Pete}, replacer, 2))
+
+
 })();
