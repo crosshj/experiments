@@ -89,8 +89,8 @@
       "angular9.html": {},
       "gml_cm_mode.js": {},
       "graph-formats.md": {},
+      "lang-template-state.js": {},
       "language-sql-fetch.html": {},
-      "languages-templates-progress.bmp": {},
       "preact-hyperscript.htm": {},
       "psd.psd": {},
       "reveal.html": {},
@@ -112,6 +112,7 @@
       "_bartok.tools.html": {}
     },
     "aileen.js": {},
+    "encrypt-web-worker.html": {},
     "examples": {
       ".deep-folders": {
         "fee": {
@@ -262,12 +263,18 @@
     "index.js": {},
     "package.json": {},
     "paste-image.png": {},
-    "randy.js": {},
+    "rangers.advent.css": {},
+    "rangers.advent.html": {},
+    "rangers.advent.js": {},
     "Readme.md": {},
     "service.json": {},
     "shared.styl": {},
     "todo.categories.md": {},
-    "todo.untracked.md": {}
+    "todo.untracked.md": {},
+    "webgl-quad-scene.json": {},
+    "webgl-quad.html": {},
+    "webgl-quad.js": {},
+    "webgl-quad.json": {}
   },
   "files": [
     {
@@ -461,6 +468,10 @@
     {
       "name": "elm.elm",
       "path": ".welcome/examples/language/elm.elm"
+    },
+    {
+      "name": "encrypt-web-worker.html",
+      "path": ".welcome/encrypt-web-worker.html"
     },
     {
       "name": "erlang.erl",
@@ -683,12 +694,12 @@
       "path": ".welcome/examples/image/lame.png"
     },
     {
-      "name": "language-sql-fetch.html",
-      "path": ".welcome/5upport/language-sql-fetch.html"
+      "name": "lang-template-state.js",
+      "path": ".welcome/5upport/lang-template-state.js"
     },
     {
-      "name": "languages-templates-progress.bmp",
-      "path": ".welcome/5upport/languages-templates-progress.bmp"
+      "name": "language-sql-fetch.html",
+      "path": ".welcome/5upport/language-sql-fetch.html"
     },
     {
       "name": "lisp.html",
@@ -843,8 +854,16 @@
       "path": ".welcome/examples/language/raku.raku"
     },
     {
-      "name": "randy.js",
-      "path": ".welcome/randy.js"
+      "name": "rangers.advent.css",
+      "path": ".welcome/rangers.advent.css"
+    },
+    {
+      "name": "rangers.advent.html",
+      "path": ".welcome/rangers.advent.html"
+    },
+    {
+      "name": "rangers.advent.js",
+      "path": ".welcome/rangers.advent.js"
     },
     {
       "name": "rb.html",
@@ -1073,6 +1092,22 @@
     {
       "name": "webgl-helmet.gltf",
       "path": ".welcome/examples/3d/webgl-helmet.gltf"
+    },
+    {
+      "name": "webgl-quad-scene.json",
+      "path": ".welcome/webgl-quad-scene.json"
+    },
+    {
+      "name": "webgl-quad.html",
+      "path": ".welcome/webgl-quad.html"
+    },
+    {
+      "name": "webgl-quad.js",
+      "path": ".welcome/webgl-quad.js"
+    },
+    {
+      "name": "webgl-quad.json",
+      "path": ".welcome/webgl-quad.json"
     },
     {
       "name": "webtorrent_share.html",

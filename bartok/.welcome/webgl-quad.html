@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Quadcopter Sim</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<base target="_blank" href="../../">
+		
+		<style>
+			body {
+				margin: 0px;
+				overflow: hidden;
+			}
+			#reset{
+				border: 1px solid black;
+				position: absolute;
+				padding: 5px;
+				font-family: monospace;
+				margin-top: 40px;
+				margin-right: 20px;
+				background-color: rgba(182, 182, 182, 0.56);
+				cursor: pointer;
+				right: 0px;
+			}
+
+			.noselect {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+		</style> 
+	</head>
+	
+	<script>
+		class PID {
+			constructor({ p, i, d }){
+				this.p = p || 0;
+				this.i = i || 0;
+				this.d = d || 0;
+				
+				this.sumError = 0;
+				this.lastError = 0;
+				this.maxCorrect = 0.09;
+				this.i_max = 3;
+			}
+			reset(){}
+			setTarget(value){ this.target = value; }
+			
+			compute(current){
+				this.target = this.target || 0;
+				let error = this.target - current;
+				this.sumError = this.sumError + error;
+				if (this.i_max > 0 && Math.abs(this.sumError) > this.i_max) {
+					let sumSign = (this.sumError > 0) ? 1 : -1;
+					this.sumError = sumSign * this.i_max;
+				}
+				let dError = (error - this.lastError);
+				this.lastError = error;
+				const correction = (this.p*error) + (this.i * this.sumError) + (this.d * dError);
+
+				return Math.abs(correction) > this.maxCorrect
+					? (correction > 0 ? 1 : -1) * this.maxCorrect
+					: correction;
+			}
+		}
+
+		class RotationControl {
+			constructor(){
+				this.xPid = new PID({ p: 1, i: 1, d: 0.1 });
+				this.yPid = new PID({ p: 1, i: 1, d: 0.1 });
+				this.zPid = new PID({ p: 1, i: 1, d: 0.1 });
+			}
+			target({ x=0, y=0, z=0 }){
+				const d2r = d => d / -57.2958;
+				this.xPid.setTarget(d2r(x));
+				this.yPid.setTarget(d2r(y));
+				this.zPid.setTarget(d2r(z));
+			}
+			compute(rotation){
+				const { x, y, z } = rotation;
+				return {
+					xC: this.xPid.compute(x),
+					yC: this.yPid.compute(y),
+					zC: this.zPid.compute(z),
+					aC: 0
+				}
+			}
+		}
+
+		const rotControl = new RotationControl();
+		window.setRot = rotControl.target.bind(rotControl);
+
+		const aPid = new PID({ p: 0.75, i: 0.1, d: 0.25 });
+		window.setA = aPid.setTarget.bind(aPid);
+
+		window.controller = ({ rotation, position }) => {
+			const rotC = rotControl.compute(rotation);
+			const aC = aPid.compute(position.y)
+			return { ...rotC, aC }
+		};
+	
+	</script>
+	
+	<body ontouchstart="">
+		<div id="reset" class="noselect" onclick="resetQuad(copter)">RESET</div>
+
+		<script type="module">
+			import "https://unpkg.com/three@0.122.0/build/three.min.js";
+			import { OrbitControls } from "https://unpkg.com/three@0.122.0/examples/jsm/controls/OrbitControls.js"
+			import { APP } from "./webgl-quad.js";
+
+			var loader = new THREE.FileLoader(); 
+			loader.load('webgl-quad-scene.json', function ( text ) {
+
+				var player = new APP.Player({ OrbitControls }); 
+				player.load( JSON.parse( text ) );
+				//player.setSize( window.innerWidth, window.innerHeight );
+				player.play({ controller });
+				document.body.appendChild( player.dom );
+			} );
+
+		</script>
+	</body>
+</html>
+
+<!--
+
+get shadows fixed - https://threejsfundamentals.org/threejs/lessons/threejs-shadows.html
+
+background should be black
+
+set up automatic controls/balancing
+
+-->

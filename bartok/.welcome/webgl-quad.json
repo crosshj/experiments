@@ -1,0 +1,262 @@
+{
+	"camera": {
+		"metadata": {
+			"version": 4.3,
+			"type": "Object",
+			"generator": "ObjectExporter"
+		},
+		"object": {
+			"uuid": "7CC9D747-2F4C-495A-8EE7-8A717E9C0062",
+			"type": "PerspectiveCamera",
+			"name": "Camera",
+			"fov": 50,
+			"aspect": 1.4401244167962675,
+			"near": 0.1,
+			"far": 100000,
+			"matrix": [0.9999999403953552,-5.1201577699888645e-12,-0.0003981633926741779,0,-0.00020465442503336817,0.8577924966812134,-0.5139960646629333,0,0.00034154157037846744,0.5139961242675781,0.8577924370765686,0,-9.068950653076172,610.0225830078125,577.9668579101562,1]
+		}
+	},
+	"scene": {
+		"metadata": {
+			"version": 4.3,
+			"type": "Object",
+			"generator": "ObjectExporter"
+		},
+		"geometries": [
+			{
+				"uuid": "6D90C4BE-EBA6-4E21-8F54-7CFDAA61F30B",
+				"type": "PlaneBufferGeometry",
+				"width": 10,
+				"height": 10,
+				"widthSegments": 1,
+				"heightSegments": 1
+			},
+			{
+				"uuid": "AC02D2D8-8559-4B93-AA46-F6C9E6BEE970",
+				"type": "BoxGeometry",
+				"width": 100,
+				"height": 100,
+				"depth": 100,
+				"widthSegments": 1,
+				"heightSegments": 1,
+				"depthSegments": 1
+			},
+			{
+				"uuid": "B22EF0BA-D21D-4212-9908-BCFD02A7C7CB",
+				"type": "CylinderGeometry",
+				"radiusTop": 20,
+				"radiusBottom": 20,
+				"height": 100,
+				"radialSegments": 32,
+				"heightSegments": 1,
+				"openEnded": false
+			},
+			{
+				"uuid": "01514AEE-FBA6-4CD6-B548-329E9186C123",
+				"type": "CylinderGeometry",
+				"radiusTop": 20,
+				"radiusBottom": 20,
+				"height": 100,
+				"radialSegments": 32,
+				"heightSegments": 1,
+				"openEnded": false
+			},
+			{
+				"uuid": "CBB39B27-22B4-42AC-90E3-EBC104AECE6D",
+				"type": "CylinderGeometry",
+				"radiusTop": 20,
+				"radiusBottom": 20,
+				"height": 100,
+				"radialSegments": 32,
+				"heightSegments": 1,
+				"openEnded": false
+			},
+			{
+				"uuid": "0AFA6D31-1834-48AE-B28B-36B890CA168B",
+				"type": "CylinderGeometry",
+				"radiusTop": 20,
+				"radiusBottom": 20,
+				"height": 100,
+				"radialSegments": 32,
+				"heightSegments": 1,
+				"openEnded": false
+			}],
+		"materials": [
+			{
+				"uuid": "40B850B0-AD4A-48F8-986C-8648A9D3D346",
+				"type": "MeshPhongMaterial",
+				"name": "Ground Material Old",
+				"color": 2105376,
+				"ambient": 0,
+				"emissive": 0,
+				"specular": 0,
+				"shininess": 0,
+				"blending": 0,
+				"side": 1
+			},
+			{
+				"uuid": "4AE8130E-B6A8-47BC-ACCF-060973C74044",
+				"name": "Ground Material",
+				"type": "MeshPhongMaterial",
+				"color": 16777215,
+				"emissive": 0,
+				"specular": 1118481,
+				"shininess": 30,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"stencilWrite": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680
+			},
+			{
+				"uuid": "FC868CC0-7F8E-4666-94C4-63676D83DE4E",
+				"type": "MeshPhongMaterial",
+				"name": "body color",
+				"color": 8553090,
+				"ambient": 0,
+				"emissive": 0,
+				"specular": 0,
+				"shininess": 0
+			},
+			{
+				"uuid": "17E81686-E98F-4E79-874B-716075850A08",
+				"type": "MeshPhongMaterial",
+				"name": "prop 1 color",
+				"color": 65280,
+				"ambient": 16777215,
+				"emissive": 0,
+				"specular": 1118481,
+				"shininess": 30
+			},
+			{
+				"uuid": "B4B2D7C2-AAC2-4339-B957-9EA8451DF8C2",
+				"type": "MeshPhongMaterial",
+				"name": "prop 2 color",
+				"color": 16711680,
+				"ambient": 16777215,
+				"emissive": 0,
+				"specular": 1118481,
+				"shininess": 30
+			},
+			{
+				"uuid": "B52766A3-B781-451A-8160-BADB7553006D",
+				"type": "MeshPhongMaterial",
+				"name": "prop 3 color",
+				"color": 255,
+				"ambient": 16777215,
+				"emissive": 0,
+				"specular": 1118481,
+				"shininess": 30
+			},
+			{
+				"uuid": "6F25E6E6-1974-4618-A458-EBA653326EA4",
+				"type": "MeshPhongMaterial",
+				"name": "prop 4 color",
+				"color": 16776960,
+				"ambient": 16777215,
+				"emissive": 0,
+				"specular": 1118481,
+				"shininess": 30
+			}],
+		"object": {
+			"uuid": "31517222-A9A7-4EAF-B5F6-60751C0BABA3",
+			"type": "Scene",
+			"name": "Scene",
+			"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+			"children": [
+				{
+					"uuid": "A07DEC95-0E66-4003-ADF1-84788848EC74",
+					"type": "Mesh",
+					"name": "Ground",
+					"layers": 1,
+					"matrix": [1,0,0,0,0,0.040785,-0.999168,0,0,0.999168,0.040785,0,0,-0.5,0,1],
+					"geometry": "6D90C4BE-EBA6-4E21-8F54-7CFDAA61F30B",
+					"material": "4AE8130E-B6A8-47BC-ACCF-060973C74044"
+				},
+				{
+					"uuid": "63AC8F0E-E4E7-498A-B806-C3334D63454B",
+					"type": "SpotLight",
+					"name": "SpotLight 1",
+					"color": 16777215,
+					"intensity": 1,
+					"distance": 0,
+					"angle": 1,
+					"exponent": 10,
+					"matrix": [
+						1,0,0,  0,0,
+						1,0,0,  0,0,
+						1,0,0,500,0,1]
+				},
+				{
+					"uuid": "7D17795A-5E5B-41B1-90F8-9C5FFBB4D90A",
+					"type": "Group",
+					"name": "quadcopter",
+					"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,5,0,1],
+					"children": [
+						{
+							"uuid": "EF7EA9DE-1CB4-4A78-B89F-4315F4E93B25",
+							"type": "Mesh",
+							"name": "body",
+							"geometry": "AC02D2D8-8559-4B93-AA46-F6C9E6BEE970",
+							"material": "FC868CC0-7F8E-4666-94C4-63676D83DE4E",
+							"matrix": [1,0,0,0,0,0.1,0,0,0,0,1,0,0,0,0,1]
+						},
+						{
+							"uuid": "12020533-9979-4537-B969-347CDF23EEE9",
+							"type": "Mesh",
+							"name": "prop 1",
+							"geometry": "B22EF0BA-D21D-4212-9908-BCFD02A7C7CB",
+							"material": "17E81686-E98F-4E79-874B-716075850A08",
+							"matrix": [1,0,0,0,0,0.11,0,0,0,0,1,0,-50,0,50,1]
+						},
+						{
+							"uuid": "5081E97B-7DAF-4D31-8E1E-81F0AD24DE4A",
+							"type": "Mesh",
+							"name": "prop 2",
+							"geometry": "01514AEE-FBA6-4CD6-B548-329E9186C123",
+							"material": "B4B2D7C2-AAC2-4339-B957-9EA8451DF8C2",
+							"matrix": [1,0,0,0,0,0.11,0,0,0,0,1,0,-50,0,-50,1]
+						},
+						{
+							"uuid": "8164C619-8D17-4864-9B20-8CAA6EDCBC99",
+							"type": "Mesh",
+							"name": "prop 3",
+							"geometry": "CBB39B27-22B4-42AC-90E3-EBC104AECE6D",
+							"material": "B52766A3-B781-451A-8160-BADB7553006D",
+							"matrix": [1,0,0,0,0,0.11,0,0,0,0,1,0,50,0,50,1]
+						},
+						{
+							"uuid": "7629A429-1509-4301-AF8B-B7157F6D51D9",
+							"type": "Mesh",
+							"name": "prop 4",
+							"geometry": "0AFA6D31-1834-48AE-B28B-36B890CA168B",
+							"material": "6F25E6E6-1974-4618-A458-EBA653326EA4",
+							"matrix": [1,0,0,0,0,0.11,0,0,0,0,1,0,50,0,-50,1]
+						},
+						{
+							"uuid": "63AC8F0E-E4E7-498A-B806-C3334D63454B",
+							"type": "SpotLight",
+							"name": "belly light",
+							"color": 8388863,
+							"distance": 200,
+							"angle": 30,
+							"exponent": 0,
+							"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.8,0,1]
+						}]
+				}]
+		}
+	},
+	"scripts": {
+		"31517222-A9A7-4EAF-B5F6-60751C0BABA3": [
+			{
+				"name": "quadcopter",
+				"source": "window.quadcopter = this.getObjectByName( 'quadcopter' ); window.bellyLight = this.getObjectByName( 'belly light' ); quadcopter.position.y=250; function keydown(event){  console.log(event.keyCode); switch (event.keyCode) { case 37: console.log('move left'); quadcopter.position.x-=10; break; case 38: console.log('move up'); quadcopter.position.z-=10; break; case 39: console.log('move right'); quadcopter.position.x+=10; break; case 40: console.log('move down'); quadcopter.position.z+=10; break;  case 87: console.log('move higher'); quadcopter.position.y+=10; break;   case 83: console.log('move lower'); quadcopter.position.y-=10; break; default: prevent = false; } } function update( event ) {  bellyLight.target.position.x = quadcopter.position.x; bellyLight.target.position.z = quadcopter.position.z; bellyLight.target.updateMatrixWorld();  }"
+			}]
+	}
+}
