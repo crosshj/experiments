@@ -5,50 +5,42 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<base target="_blank" href="../../">
-		
-		<style>
-			body {
-				margin: 0px;
-				overflow: hidden;
-			}
-			#reset{
-				border: 1px solid black;
-				position: absolute;
-				padding: 5px;
-				font-family: monospace;
-				margin-top: 40px;
-				margin-right: 20px;
-				background-color: rgba(182, 182, 182, 0.56);
-				cursor: pointer;
-				right: 0px;
-			}
-
-			.noselect {
-				-webkit-touch-callout: none;
-				-webkit-user-select: none;
-				-khtml-user-select: none;
-				-moz-user-select: none;
-				-ms-user-select: none;
-				user-select: none;
-			}
-		</style> 
 	</head>
-	
+	<style>
+		body{margin:0;overflow:hidden}
+		#reset{border:1px;position:absolute;padding:5px;font-family:monospace;margin:40px 20px;background:#b6b6b68f;cursor:pointer;right:0}
+	</style>
+	<body>
+		<div id="reset" onclick="resetQuad(copter)" style="display:none;">RESET</div>
+	</body>
+
+	<script type="module">
+		import "https://unpkg.com/three@0.122.0/build/three.min.js";
+		import { OrbitControls } from "https://unpkg.com/three@0.122.0/examples/jsm/controls/OrbitControls.js"
+		import { APP } from "./webgl-quad.js";
+
+		var loader = new THREE.FileLoader(); 
+		loader.load('webgl-quad-scene.json', function ( text ) {
+			var player = new APP.Player({ OrbitControls }); 
+			player.load( JSON.parse( text ) );
+			player.setSize( window.innerWidth, window.innerHeight );
+			player.play({ controller });
+			document.body.appendChild( player.dom );
+		});
+	</script>
+
 	<script>
 		class PID {
-			constructor({ p, i, d }){
-				this.p = p || 0;
-				this.i = i || 0;
-				this.d = d || 0;
-				
+			constructor({ p=0, i=0, d=0 }={}){
+				this.p = p; this.i = i; this.d = d;
 				this.sumError = 0;
 				this.lastError = 0;
 				this.maxCorrect = 0.09;
 				this.i_max = 3;
 			}
-			reset(){}
+
 			setTarget(value){ this.target = value; }
-			
+
 			compute(current){
 				this.target = this.target || 0;
 				let error = this.target - current;
@@ -69,9 +61,9 @@
 
 		class RotationControl {
 			constructor(){
-				this.xPid = new PID({ p: 1, i: 1, d: 0.1 });
-				this.yPid = new PID({ p: 1, i: 1, d: 0.1 });
-				this.zPid = new PID({ p: 1, i: 1, d: 0.1 });
+				this.xPid = new PID({ p: 1, i: 0.125, d: 0 });
+				this.yPid = new PID({ p: 1, i: 0.125, d: 0 });
+				this.zPid = new PID({ p: 1, i: 0.125, d: 0 });
 			}
 			target({ x=0, y=0, z=0 }){
 				const d2r = d => d / -57.2958;
@@ -84,8 +76,7 @@
 				return {
 					xC: this.xPid.compute(x),
 					yC: this.yPid.compute(y),
-					zC: this.zPid.compute(z),
-					aC: 0
+					zC: this.zPid.compute(z)
 				}
 			}
 		}
@@ -93,7 +84,7 @@
 		const rotControl = new RotationControl();
 		window.setRot = rotControl.target.bind(rotControl);
 
-		const aPid = new PID({ p: 0.75, i: 0.1, d: 0.25 });
+		const aPid = new PID({ p: 1.4, i: 0.09, d: 0.15 });
 		window.setA = aPid.setTarget.bind(aPid);
 
 		window.controller = ({ rotation, position }) => {
@@ -101,37 +92,38 @@
 			const aC = aPid.compute(position.y)
 			return { ...rotC, aC }
 		};
+
+		// test flying
+		let hts = [1, 2, 3, 10, 3, 2, 1, 0];
+		let rot = [8, -8];
+		const interval = setInterval(() => {
+			const h = hts.pop() || 0;
+			if(!h) hts = [1, 2, 3, 10, 3, 2, 1];
+			setA(h)
+			
+			const r = rot.pop() || 0;
+			if(!r) rot = [8, -8];
+			setTimeout(()=>{
+				setRot({ z: r, x: -1*r, y: 0 })
+			},1000)
+		}, 2000)
 	
 	</script>
-	
-	<body ontouchstart="">
-		<div id="reset" class="noselect" onclick="resetQuad(copter)">RESET</div>
 
-		<script type="module">
-			import "https://unpkg.com/three@0.122.0/build/three.min.js";
-			import { OrbitControls } from "https://unpkg.com/three@0.122.0/examples/jsm/controls/OrbitControls.js"
-			import { APP } from "./webgl-quad.js";
-
-			var loader = new THREE.FileLoader(); 
-			loader.load('webgl-quad-scene.json', function ( text ) {
-
-				var player = new APP.Player({ OrbitControls }); 
-				player.load( JSON.parse( text ) );
-				//player.setSize( window.innerWidth, window.innerHeight );
-				player.play({ controller });
-				document.body.appendChild( player.dom );
-			} );
-
-		</script>
-	</body>
 </html>
 
-<!--
+<!-- old camera settings
 
-get shadows fixed - https://threejsfundamentals.org/threejs/lessons/threejs-shadows.html
-
-background should be black
-
-set up automatic controls/balancing
+	"uuid": "D87A73E8-3A30-48BB-8DAC-341560705E9E",
+	"type": "PerspectiveCamera",
+	"name": "Camera 1",
+	"layers": 1,
+	"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,13,45,1],
+	"fov": 20,
+	"zoom": 1,
+	"near": 20,
+	"far": 150,
+	"focus": 10,
+	"aspect": 1
 
 -->

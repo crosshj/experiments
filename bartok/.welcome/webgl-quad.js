@@ -83,7 +83,6 @@ var updateCopter = function({ copter, controller, camera, light } = {}){
 		light.target.updateMatrixWorld();
 	}
 
-
 	//camera.lookAt(copter.position);
 
 }
@@ -111,7 +110,10 @@ function Player({ OrbitControls }) {
 	
 
 		this.load = function ( json ) {
-			renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+			renderer = new THREE.WebGLRenderer({
+				antialias: true,
+				alpha: true
+			});
 			renderer.setPixelRatio( window.devicePixelRatio );
 			if(json.camera){
 				camera = loader.parse( json.camera );
@@ -273,18 +275,21 @@ class NewPlayer {
 	}
 	load(scene){
 		this.loader = new THREE.ObjectLoader();
-		this.renderer = new THREE.WebGLRenderer( { antialias: false, alpha: false } );
+		this.renderer = new THREE.WebGLRenderer({
+			antialias: true,
+			alpha: false,
+			powerPreference: 'high-performance'
+		});
 		//this.renderer.setPixelRatio( window.devicePixelRatio );
 		try {
 			this.scene = this.loader.parse(scene);
-			this.scene.background = new THREE.Color( 0x1a1a1a );
+			//this.scene.background = new THREE.Color(0x1a1a1a);
 			this.camera = this.scene.getObjectByName( 'Camera 1' )
 			this.copter = this.scene.getObjectByName('quadcopter')
 			this.copter.originalPosition = JSON.parse(JSON.stringify(this.copter.position));
-			this.light = this.scene.getObjectByName('Light')
+			this.light = this.scene.getObjectByName('Light');
 			
-			const skyDome = this.scene.getObjectByName('sky dome');
-			this.scene.remove(skyDome);
+			//console.log(JSON.stringify(this.scene.toJSON(), null, 2))
 		} catch(e){
 			console.log(e)
 			console.log('error setting up scene or camera ^^^')
@@ -302,7 +307,10 @@ class NewPlayer {
 		this.onSize();
 		
 		const controls = new this.OrbitControls(this.camera, this.dom);
-		controls.addEventListener( 'change', this.animate.bind(this) );
+		controls.addEventListener('change', (...args) => {
+			//TODO: adjust camera far here
+			this.renderer.render( this.scene, this.camera );
+		});
 		controls.target = new THREE.Vector3(0, 0, 0);
 		
 		window.renderer = this.renderer;
@@ -329,7 +337,7 @@ class NewPlayer {
 		this.renderer.render( this.scene, this.camera );
 		setTimeout(() => {
 			this.request = requestAnimationFrame( this.animate.bind(this) );
-		}, 100);
+		}, 50);
 	}
 	play({ controller }){
 		this.controller = controller;
