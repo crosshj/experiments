@@ -7,20 +7,15 @@ const deps =[
 	await appendUrls(deps);
 
 	const settle = [
-		43, //uber eats
-		28, //2 rides uber - target walmart
-		8, //BP drinks
-		46, //firehouse
-		10, //uber unkown
-		13, //starbucks
-		40, //kids allowance 11/13
-		40, //kids allowance 11/20
-		250, //grocery 11/20
-		195, // philippines
-		300, // clothes
+		250, // grocery
+		41, // lil caesars
+		178, // jollibee
+		121, // hotel
+		65, // korean food
+		20, // hexagonal table
 	].reduce((a,b) => a+b, 0);
 	console.log(settle)
-	// total ~975
+	// total ~675
 
 	function aileen(){
 		(new Array(3))

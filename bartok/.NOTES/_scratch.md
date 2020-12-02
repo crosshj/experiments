@@ -717,6 +717,7 @@ syntax highlighting, etc
 - https://learnworthy.net/top-10-most-popular-language-of-2019-according-to-github/
 - https://madnight.github.io/githut/#/pull_requests/2020/2
 - reason - https://reasonml.github.io/en/try (COMPILES IN BROWSER!)
+- bootstrapping a forth - https://news.ycombinator.com/item?id=24452741
 
 highest paid:
 	- Scala

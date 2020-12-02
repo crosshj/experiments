@@ -6,16 +6,12 @@
     <title>Hello World, AngularJS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.2.1/rxjs.umd.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.5.7/core.js"></script>
-    <script src="https://unpkg.com/@angular/core@9.1.1/bundles/core.umd.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.8.26/zone.min.js"></script>
-    <script src="https://unpkg.com/@angular/common@9.1.1/bundles/common.umd.js"></script>
-
-    <script src="https://unpkg.com/@angular/compiler@9.1.1/bundles/compiler.umd.js"></script>
-
-    <script src="https://unpkg.com/@angular/platform-browser@9.1.1/bundles/platform-browser.umd.js"></script>
-    <script src="https://unpkg.com/@angular/platform-browser-dynamic@9.1.1/bundles/platform-browser-dynamic.umd.js"></script>
+    <script src="https://unpkg.com/zone.js@0.10.3/dist/zone.min.js"></script>
+    <script src="https://unpkg.com/@angular/core@11.0.2/bundles/core.umd.js"></script>
+    <script src="https://unpkg.com/@angular/common@11.0.2/bundles/common.umd.js"></script>
+    <script src="https://unpkg.com/@angular/compiler@11.0.2/bundles/compiler.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser@11.0.2/bundles/platform-browser.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser-dynamic@11.0.2/bundles/platform-browser-dynamic.umd.js"></script>
   </head>
 
   <style>
@@ -41,6 +37,7 @@
   <script id="ngScript" type="text/ng">
     // app.component.ts
     const { Component, VERSION } = ng.core;
+    console.log(VERSION.full);
 
     @Component({
       selector: "app-root",
@@ -48,7 +45,7 @@
     })
     class AppComponent {
       constructor() {
-        this.title = "Hello Angular 9";
+        this.title = "Hello Angular " + VERSION.full;
       }
     }
 

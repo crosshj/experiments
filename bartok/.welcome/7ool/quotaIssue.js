@@ -25,19 +25,55 @@ function formatBytes(bytes) {
   var gigaBytes = marker * marker * marker; // One GB is 1024 MB
   var teraBytes = marker * marker * marker * marker; // One TB is 1024 GB
 
-  // return bytes if less than a KB
   if(bytes < kiloBytes) return bytes + " Bytes";
-  // return KB if less than a MB
-  else if(bytes < megaBytes) return(bytes / kiloBytes).toFixed(decimal) + " KB";
-  // return MB if less than a GB
-  else if(bytes < gigaBytes) return(bytes / megaBytes).toFixed(decimal) + " MB";
-  // return GB if less than a TB
-  else return(bytes / gigaBytes).toFixed(decimal) + " GB";
+  if(bytes < megaBytes) return(bytes / kiloBytes).toFixed(decimal) + " KB";
+  if(bytes < gigaBytes) return(bytes / megaBytes).toFixed(decimal) + " MB";
+  return(bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
-(async () => {
+/**
+ * Calculate byte size of a text snippet
+ * @author Lea Verou
+ * MIT License
+ */
 
+(function(){
+	var crlf = /(\r?\n|\r)/g;
+	const whitespace = /(\r?\n|\r|\s+)/g;
+
+	window.ByteSize = {
+		count: function(text, options) {
+			// Set option defaults
+			options = options || {};
+			options.lineBreaks = options.lineBreaks || 1;
+			options.ignoreWhitespace = options.ignoreWhitespace || false;
+
+			var length = text.length;
+			const nonAscii = length - text.replace(/[\u0100-\uFFFF]/g, '').length;
+			const lineBreaks = length - text.replace(crlf, '').length; 
+
+			if (options.ignoreWhitespace) {
+				// Strip whitespace
+				text = text.replace(whitespace, '');
+
+				return text.length + nonAscii;
+			}
+			else {
+				return length + nonAscii + Math.max(0, options.lineBreaks * (lineBreaks - 1));
+			}
+		}
+	};
+
+})();
+
+
+(async () => {
 	await appendUrls(deps);
+
+	const exampleFnText = (await (await fetch('./quotaIssue.js')).text());
+	console.info(`Size of this file: ${formatBytes(window.ByteSize.count(exampleFnText))}`)
+
+
 
 	// query
 	let queryCallback = (used, granted) =>

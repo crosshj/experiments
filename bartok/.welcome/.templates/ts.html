@@ -31,6 +31,13 @@ for a more involved compile, ie errors, etc
 	<body></body>
 
 	<script>
+		window.htmlToElement = function htmlToElement(html) {
+			var template = document.createElement('template');
+			html = html.trim(); // Never return a text node of whitespace as the result
+			template.innerHTML = html;
+			//also would be cool to remove indentation from all lines
+			return template.content.firstChild;
+		}
 		const createIframe = (url) => {
 			return new Promise((resolve, reject) => {
 				const ifrmContainer = document.createElement('div');
@@ -187,6 +194,29 @@ for a more involved compile, ie errors, etc
 	</script>
 
 	<script id="run-code">
+	const exports = {};
+	const modules = [];
+	function require(location){
+		return modules[location];
+	}
+	async function resolveDeps(code, transpiler){
+		const codeLines = code.split('\n');
+		const deps = codeLines
+			.map(x => (x.match(/require\("(.*?)"\)/)||[])[1])
+			.filter(x=>x && !modules[x]);
+		if(!deps.length) return deps;
+		for(var m = 0, length=deps.length; m < length; m++){
+			const thisDep = deps[m];
+			const text = await (await fetch(thisDep)).text();
+			const depTranspiled = transpiler(text);
+			await resolveDeps(depTranspiled, transpiler);
+			modules[thisDep] = (new Function(`
+				const exports = {};
+				${depTranspiled}
+				return exports;
+			`)())
+		}
+	}
 	(async () => {
 		const deps = [
 			"https://www.unpkg.com/typescript@4.0.3/lib/typescriptServices.js"
@@ -200,9 +230,9 @@ for a more involved compile, ie errors, etc
 				"jsx": "react",
 				"jsxFactory": "React.createElement",
 				"lib": ["es2018", "dom"],
-				"outDir": "./dist", 
+				"outDir": "./dist",
 				"rootDir": ".",
-				"strict": true, 
+				"strict": true,
 				"pretty": false,
 				"strictNullChecks": false,
 				"noImplicitAny": false,
@@ -218,13 +248,20 @@ for a more involved compile, ie errors, etc
 				"src/examples"
 			]
 		};
-		
+
 		const codeIn = document.querySelector('code_in');
 		let codeFromComment = Array.from(codeIn.childNodes)
 				.filter(x => x.nodeType === 8)
 				.map(x => x.data).join('\n');
 		if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
 			codeFromComment = `
+				import { NgModule } from '@angular/core';
+				import { CommonModule } from '@angular/common';
+				import { BrowserModule } from '@angular/platform-browser';
+				import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+				import { RouterModule } from '@angular/router';
+				import { ReactiveFormsModule } from '@angular/forms';
+				
 				appendUrls(['../shared.styl']);
 				const message: string = "hello world";
 				console.info(message);
@@ -232,6 +269,39 @@ for a more involved compile, ie errors, etc
 			`.replace(new RegExp('				', 'g'), '');
 		}
 		codeFromComment = `${codeFromComment}`;
+		
+		const angDeps = [
+			"https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.2.1/rxjs.umd.min.js",
+			"https://unpkg.com/zone.js@0.10.3/dist/zone.min.js",
+			"https://unpkg.com/@angular/core@11.0.2/bundles/core.umd.js",
+			"https://unpkg.com/@angular/common@11.0.2/bundles/common.umd.js",
+			"https://unpkg.com/@angular/router@11.0.2/bundles/router.umd.js",
+			"https://unpkg.com/@angular/forms@11.0.2/bundles/forms.umd.js",
+			"https://unpkg.com/@angular/compiler@11.0.2/bundles/compiler.umd.js",
+			"https://unpkg.com/@angular/platform-browser@11.0.2/bundles/platform-browser.umd.js",
+			"https://unpkg.com/@angular/platform-browser-dynamic@11.0.2/bundles/platform-browser-dynamic.umd.js",
+		];
+		const angularImports = {
+			"@angular/platform-browser": ng => ng.platformBrowser,
+			"@angular/core": ng => ng.core,
+			"@angular/common": ng => ng.common,
+			"@angular/forms": ng => ng.forms,
+			"@angular/router": ng => ng.router,
+			"@angular/platform-browser-dynamic": ng => ng.platformBrowserDynamic
+		};
+		const hasAngImport = Object.keys(angularImports).reduce((all, one) => {
+			all = all || codeFromComment.includes(one);
+			return all;
+		}, false)
+		if(hasAngImport){
+			await appendUrls(angDeps);
+			const keys = Object.keys(angularImports);
+			for(var m = 0, length=keys.length; m < length; m++){
+				const thisKey = keys[m];
+				const thisObj = angularImports[thisKey](window.ng);
+				modules[thisKey]=thisObj;
+			}
+		}
 
 		console.bak = console.log;
 		console.log = (...args) => {
@@ -280,6 +350,7 @@ for a more involved compile, ie errors, etc
 
 		try {
 			const transpiled = window.ts.transpile(codeFromComment, tsConfig);
+			await resolveDeps(transpiled, code => window.ts.transpile(code, tsConfig));
 			const result = runCode(transpiled);
 			if(result && result.then){
 				result.catch(console.error)
