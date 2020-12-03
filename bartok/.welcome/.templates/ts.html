@@ -31,6 +31,42 @@ for a more involved compile, ie errors, etc
 	<body></body>
 
 	<script>
+		window.tsConfig = {
+			"compilerOptions": {
+				"baseUrl": "../../",
+				"target": "es2015",
+				//"module": "commonjs",
+				"downlevelIteration": true,
+				"module": "esnext",
+				"moduleResolution": "node",
+				"jsx": "react",
+				"jsxFactory": "React.createElement",
+				"importHelpers": true,
+				"lib": ["es2018", "dom"],
+				"outDir": "./dist",
+				"rootDir": ".",
+				"strict": true,
+				"pretty": false,
+				"strictNullChecks": false,
+				"noImplicitAny": false,
+				"sourceMap": true,
+				"esModuleInterop": true,
+				"declaration": false,
+				"skipLibCheck": true,
+				"emitDecoratorMetadata": true,
+				"experimentalDecorators": true,
+			}, 
+			"include": [
+				"src"
+			], 
+			"exclude": [
+				"src/examples"
+			],
+			"angularCompilerOptions": {
+				"fullTemplateTypeCheck": true,
+				"strictInjectionParameters": true
+			}
+		};
 		window.htmlToElement = function htmlToElement(html) {
 			var template = document.createElement('template');
 			html = html.trim(); // Never return a text node of whitespace as the result
@@ -222,32 +258,6 @@ for a more involved compile, ie errors, etc
 			"https://www.unpkg.com/typescript@4.0.3/lib/typescriptServices.js"
 		];
 		await appendUrls(deps);
-		const tsConfig = {
-			"compilerOptions": {
-				"target": "es6",
-				"module": "commonjs", 
-				"moduleResolution": "node",
-				"jsx": "react",
-				"jsxFactory": "React.createElement",
-				"lib": ["es2018", "dom"],
-				"outDir": "./dist",
-				"rootDir": ".",
-				"strict": true,
-				"pretty": false,
-				"strictNullChecks": false,
-				"noImplicitAny": false,
-				"sourceMap": true,
-				"esModuleInterop": true,
-				"declaration": true,
-				"skipLibCheck": true
-			}, 
-			"include": [
-				"src"
-			], 
-			"exclude": [
-				"src/examples"
-			]
-		};
 
 		const codeIn = document.querySelector('code_in');
 		let codeFromComment = Array.from(codeIn.childNodes)
@@ -349,8 +359,8 @@ for a more involved compile, ie errors, etc
 		}
 
 		try {
-			const transpiled = window.ts.transpile(codeFromComment, tsConfig);
-			await resolveDeps(transpiled, code => window.ts.transpile(code, tsConfig));
+			const transpiled = window.ts.transpile(codeFromComment, window.tsConfig);
+			await resolveDeps(transpiled, code => window.ts.transpile(code, window.tsConfig));
 			const result = runCode(transpiled);
 			if(result && result.then){
 				result.catch(console.error)
