@@ -9,7 +9,6 @@ appendStyleSheet('https://unpkg.com/material-design-icons@3.0.1/iconfont/materia
 enableProdMode();
 document.body.append(htmlToElement(`<app-root />`));
 
-//document.head.querySelector('base').href='./'
 platformBrowserDynamic()
 	.bootstrapModule(AppModule)
 	.catch((err) => console.error(err));

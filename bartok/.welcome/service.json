@@ -271,6 +271,7 @@
             "cart.component.ts": {},
             "cart.service.ts": {}
           },
+          "CustomLocationStrategy.ts": {},
           "product-alerts": {
             "product-alerts.component.css": {},
             "product-alerts.component.html": {},
@@ -511,6 +512,10 @@
     {
       "name": "csv.csv",
       "path": ".welcome/examples/data/csv.csv"
+    },
+    {
+      "name": "CustomLocationStrategy.ts",
+      "path": ".welcome/examples/ui frameworks/angular/CustomLocationStrategy.ts"
     },
     {
       "name": "d3-graph.html",
