@@ -3,7 +3,7 @@
 	height: 90vh;
 	padding-right: 16px;
 }
-.product-list::-webkit-scrollbar-thumb { background: #3339; }
+.product-list::-webkit-scrollbar-thumb { background: #3335; }
 .product-list:hover::-webkit-scrollbar-thumb { background: #333; }
 
 .product {

@@ -1,6 +1,18 @@
 <!-- no-select -->
 
-# 2020-10-23 - things I have known myself to be sick of
+### 2020-12-03 - the road less traveled | painting yourself into a corner | hidden costs
+
+- Doing things in a non-standard way means:
+	- you may have a hard time getting help
+	- people may not understand what you have done
+	- you may not get done in time
+	- you may deal with problems that nobody else has
+	- people may not be able to relate to what you are doing
+	- you may learn a lot
+	- you may create something that nobody else has
+- Thursdays suck
+
+### 2020-10-23 - things I have known myself to be sick of
 
 - hearing people gripe or argue about the behavior of huge corporations instead of spending resources on smaller projects/vendors/companies who are better positioned to behave properly
   ( it's much more fun to think we have a say in big brother's doings versus support little brother's half-baked WIP )

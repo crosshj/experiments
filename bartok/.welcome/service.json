@@ -64,6 +64,7 @@
     "3xplore": {
       "golf1.js": {},
       "golf2.js": {},
+      "ideas.js": {},
       "mathematics.css": {},
       "mathematics.js": {},
       "react-notes.md": {},
@@ -185,6 +186,7 @@
         "jelly.ppm": {},
         "jr.ppm": {},
         "lame.png": {},
+        "little_light_of_mine_lite.png": {},
         "Piskel-LIFE-20200506.piskel": {},
         "screaming for vengence album cover judas priest.bmp": {},
         "svg-bartok.svg": {},
@@ -253,6 +255,44 @@
         "todo-state.mjs": {},
         "todo.jsx": {},
         "todo.styl": {}
+      },
+      "ui frameworks": {
+        "angular": {
+          "angularReadMe.md": {},
+          "app.component.css": {},
+          "app.component.html": {},
+          "app.component.ts": {},
+          "app.css": {},
+          "app.module.ts": {},
+          "app.ts": {},
+          "cart": {
+            "cart.component.css": {},
+            "cart.component.html": {},
+            "cart.component.ts": {},
+            "cart.service.ts": {}
+          },
+          "product-alerts": {
+            "product-alerts.component.css": {},
+            "product-alerts.component.html": {},
+            "product-alerts.component.ts": {}
+          },
+          "product-details": {
+            "product-details.component.css": {},
+            "product-details.component.html": {},
+            "product-details.component.ts": {}
+          },
+          "product-list": {
+            "product-list.component.css": {},
+            "product-list.component.html": {},
+            "product-list.component.ts": {}
+          },
+          "products.ts": {},
+          "top-bar": {
+            "top-bar.component.css": {},
+            "top-bar.component.html": {},
+            "top-bar.component.ts": {}
+          }
+        }
       }
     },
     "fullstackIntro.md": {},
@@ -273,8 +313,7 @@
     "todo.untracked.md": {},
     "webgl-quad-scene.json": {},
     "webgl-quad.html": {},
-    "webgl-quad.js": {},
-    "webgl-quad.json": {}
+    "webgl-quad.js": {}
   },
   "files": [
     {
@@ -310,8 +349,36 @@
       "path": ".welcome/5upport/angular9.html"
     },
     {
+      "name": "angularReadMe.md",
+      "path": ".welcome/examples/ui frameworks/angular/angularReadMe.md"
+    },
+    {
       "name": "apl.apl",
       "path": ".welcome/examples/language/apl.apl"
+    },
+    {
+      "name": "app.component.css",
+      "path": ".welcome/examples/ui frameworks/angular/app.component.css"
+    },
+    {
+      "name": "app.component.html",
+      "path": ".welcome/examples/ui frameworks/angular/app.component.html"
+    },
+    {
+      "name": "app.component.ts",
+      "path": ".welcome/examples/ui frameworks/angular/app.component.ts"
+    },
+    {
+      "name": "app.css",
+      "path": ".welcome/examples/ui frameworks/angular/app.css"
+    },
+    {
+      "name": "app.module.ts",
+      "path": ".welcome/examples/ui frameworks/angular/app.module.ts"
+    },
+    {
+      "name": "app.ts",
+      "path": ".welcome/examples/ui frameworks/angular/app.ts"
     },
     {
       "name": "as.html",
@@ -384,6 +451,22 @@
     {
       "name": "brainfuck.bf",
       "path": ".welcome/examples/language/brainfuck.bf"
+    },
+    {
+      "name": "cart.component.css",
+      "path": ".welcome/examples/ui frameworks/angular/cart/cart.component.css"
+    },
+    {
+      "name": "cart.component.html",
+      "path": ".welcome/examples/ui frameworks/angular/cart/cart.component.html"
+    },
+    {
+      "name": "cart.component.ts",
+      "path": ".welcome/examples/ui frameworks/angular/cart/cart.component.ts"
+    },
+    {
+      "name": "cart.service.ts",
+      "path": ".welcome/examples/ui frameworks/angular/cart/cart.service.ts"
     },
     {
       "name": "cljs.html",
@@ -602,6 +685,10 @@
       "path": ".welcome/examples/language/hyperscript.js"
     },
     {
+      "name": "ideas.js",
+      "path": ".welcome/3xplore/ideas.js"
+    },
+    {
       "name": "image.png",
       "path": ".welcome/examples/image/image.png"
     },
@@ -708,6 +795,10 @@
     {
       "name": "lisp.lisp",
       "path": ".welcome/examples/language/lisp.lisp"
+    },
+    {
+      "name": "little_light_of_mine_lite.png",
+      "path": ".welcome/examples/image/little_light_of_mine_lite.png"
     },
     {
       "name": "lua.html",
@@ -824,6 +915,46 @@
     {
       "name": "pro.html",
       "path": ".welcome/.templates/pro.html"
+    },
+    {
+      "name": "product-alerts.component.css",
+      "path": ".welcome/examples/ui frameworks/angular/product-alerts/product-alerts.component.css"
+    },
+    {
+      "name": "product-alerts.component.html",
+      "path": ".welcome/examples/ui frameworks/angular/product-alerts/product-alerts.component.html"
+    },
+    {
+      "name": "product-alerts.component.ts",
+      "path": ".welcome/examples/ui frameworks/angular/product-alerts/product-alerts.component.ts"
+    },
+    {
+      "name": "product-details.component.css",
+      "path": ".welcome/examples/ui frameworks/angular/product-details/product-details.component.css"
+    },
+    {
+      "name": "product-details.component.html",
+      "path": ".welcome/examples/ui frameworks/angular/product-details/product-details.component.html"
+    },
+    {
+      "name": "product-details.component.ts",
+      "path": ".welcome/examples/ui frameworks/angular/product-details/product-details.component.ts"
+    },
+    {
+      "name": "product-list.component.css",
+      "path": ".welcome/examples/ui frameworks/angular/product-list/product-list.component.css"
+    },
+    {
+      "name": "product-list.component.html",
+      "path": ".welcome/examples/ui frameworks/angular/product-list/product-list.component.html"
+    },
+    {
+      "name": "product-list.component.ts",
+      "path": ".welcome/examples/ui frameworks/angular/product-list/product-list.component.ts"
+    },
+    {
+      "name": "products.ts",
+      "path": ".welcome/examples/ui frameworks/angular/products.ts"
     },
     {
       "name": "prolog.pro",
@@ -1050,6 +1181,18 @@
       "path": ".welcome/todo.untracked.md"
     },
     {
+      "name": "top-bar.component.css",
+      "path": ".welcome/examples/ui frameworks/angular/top-bar/top-bar.component.css"
+    },
+    {
+      "name": "top-bar.component.html",
+      "path": ".welcome/examples/ui frameworks/angular/top-bar/top-bar.component.html"
+    },
+    {
+      "name": "top-bar.component.ts",
+      "path": ".welcome/examples/ui frameworks/angular/top-bar/top-bar.component.ts"
+    },
+    {
       "name": "ts.html",
       "path": ".welcome/.templates/ts.html"
     },
@@ -1104,10 +1247,6 @@
     {
       "name": "webgl-quad.js",
       "path": ".welcome/webgl-quad.js"
-    },
-    {
-      "name": "webgl-quad.json",
-      "path": ".welcome/webgl-quad.json"
     },
     {
       "name": "webtorrent_share.html",
