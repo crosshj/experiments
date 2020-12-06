@@ -38,6 +38,12 @@ const file = ({ dialog, win }) =>
             }
 
             //TODO: if parent folders do not exist, create them
+            const fileName = _path.slice(1).split('/').pop();
+            const parentDir = _path.slice(1).replace(new RegExp(fileName + '$'), '');
+            const resolvedParent = path.resolve(parentDir);
+            if(!fileExists(parentDir)){
+                await mkdirp(parentDir);
+            }
 
             const writeStream = fs.createWriteStream(resolvedPath);
             req.pipe(writeStream);

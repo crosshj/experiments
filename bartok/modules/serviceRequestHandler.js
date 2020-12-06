@@ -1614,9 +1614,9 @@ const providerFileChange = async ({ path, code, parent, metaStore, serviceName, 
             for (let i = 0; i < updateAsStore.length; i++) {
                 const file = updateAsStore[i];
                 const storageFile = storageFiles.find(x => x.path === file.key);
-                if(file.key.includes('/.keep')){
-                    continue;
-                }
+                // if(file.key.includes('/.keep')){
+                //     continue;
+                // }
                 if(file && (!storageFile || !storageFile.code)){
                     filesToUpdate.push(file);
                     continue;
