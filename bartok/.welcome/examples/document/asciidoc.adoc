@@ -1,0 +1,31 @@
+////
+
+https://asciidoctor.org/docs/asciidoctor.js/
+https://github.com/asciidoctor/codemirror-asciidoc
+
+https://asciidoctor.org/docs/asciidoctor-diagram/
+
+////
+
+= The First Asciidoc example: Subtitle
+Lars Vogel(c) 2016 vogella GmbH
+Version 0.2, 17.12.2015
+:sectnums:
+:toc:
+:toclevels: 4
+:toc-title: My Content
+
+:description: Example AsciiDoc document
+:keywords: AsciiDoc
+:imagesdir: ./img
+
+This is the optional preamble (an untitled section body). Useful for
+writing simple sectionless documents consisting only of a preamble.
+
+== First section
+
+Some text
+
+== Second section
+
+More test

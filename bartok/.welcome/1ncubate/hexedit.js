@@ -5,6 +5,11 @@ https://github.com/thiscouldbebetter/HexEditor
 
 */
 
+const exampleFileContents = `
+Here is some example text which should load automatically so I can iterate on this hex editor.
+
+* => 2A => 42
+`.trim();
 
 const deps = [
 	'../shared.styl',
@@ -510,9 +515,6 @@ function StringExtensions(){}
 }
 
 async function dummyFile(){
-	const exampleFileContents = `
-		Here is some example text which should load automatically so I can iterate on this hex editor
-	`.trim();
 	const buffer = new ArrayBuffer(160);
 	let int32View = new Int32Array(buffer);
 	int32View[16] = 100000001;

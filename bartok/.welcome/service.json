@@ -167,6 +167,7 @@
         "yaml.yml": {}
       },
       "document": {
+        "asciidoc.adoc": {},
         "jupyter.ipynb": {},
         "jupyter2.ipynb": {},
         "jupyter3.ipynb": {},
@@ -406,6 +407,10 @@
     {
       "name": "ascii-diagram.md",
       "path": ".welcome/4rchive/ascii-diagram.md"
+    },
+    {
+      "name": "asciidoc.adoc",
+      "path": ".welcome/examples/document/asciidoc.adoc"
     },
     {
       "name": "assemblyscript.as",
