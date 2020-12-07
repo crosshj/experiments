@@ -22,10 +22,9 @@ const routes = [
 
 @NgModule({
 	imports: [
-		BrowserModule,
-		CommonModule,
-		ReactiveFormsModule,
 		RouterModule.forRoot(routes),
+		BrowserModule,
+		ReactiveFormsModule,
 	],
 	declarations: [
 		AppComponent,

@@ -3,7 +3,6 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app.module.ts'
 
 appendStyleSheet('./app.css')
-
 appendStyleSheet('https://unpkg.com/material-design-icons@3.0.1/iconfont/material-icons.css');
 
 enableProdMode();

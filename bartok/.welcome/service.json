@@ -293,6 +293,12 @@
             "top-bar.component.html": {},
             "top-bar.component.ts": {}
           }
+        },
+        "vue": {
+          "vue-app.css": {},
+          "vue-app.js": {},
+          "vue-logo.svg": {},
+          "vue.html": {}
         }
       }
     },
@@ -1208,6 +1214,22 @@
     {
       "name": "video.mp4",
       "path": ".welcome/examples/binary/video.mp4"
+    },
+    {
+      "name": "vue-app.css",
+      "path": ".welcome/examples/ui frameworks/vue/vue-app.css"
+    },
+    {
+      "name": "vue-app.js",
+      "path": ".welcome/examples/ui frameworks/vue/vue-app.js"
+    },
+    {
+      "name": "vue-logo.svg",
+      "path": ".welcome/examples/ui frameworks/vue/vue-logo.svg"
+    },
+    {
+      "name": "vue.html",
+      "path": ".welcome/examples/ui frameworks/vue/vue.html"
     },
     {
       "name": "wasm.binaryen.html",
