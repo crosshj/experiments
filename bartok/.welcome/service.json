@@ -62,14 +62,30 @@
       "zip_project.html": {}
     },
     "3xplore": {
+      "encrypt-web-worker.html": {},
       "golf1.js": {},
       "golf2.js": {},
+      "hello": {
+        "hello.css": {},
+        "hello.html": {},
+        "hello.scss": {}
+      },
       "ideas.js": {},
       "mathematics.css": {},
       "mathematics.js": {},
+      "rangers-advent": {
+        "rangers.advent.css": {},
+        "rangers.advent.html": {},
+        "rangers.advent.js": {}
+      },
       "react-notes.md": {},
       "scratch.js": {},
       "svcv3pattern.js": {},
+      "webgl-quad": {
+        "webgl-quad-scene.json": {},
+        "webgl-quad.html": {},
+        "webgl-quad.js": {}
+      },
       "_dimensional.md": {},
       "_docu_fiddling.md": {},
       "_mirrors.md": {},
@@ -113,7 +129,6 @@
       "_bartok.tools.html": {}
     },
     "aileen.js": {},
-    "encrypt-web-worker.html": {},
     "examples": {
       ".deep-folders": {
         "fee": {
@@ -310,23 +325,14 @@
     },
     "fullstackIntro.md": {},
     "generator_notes.md": {},
-    "hello.css": {},
-    "hello.html": {},
-    "hello.scss": {},
     "index.js": {},
     "package.json": {},
     "paste-image.png": {},
-    "rangers.advent.css": {},
-    "rangers.advent.html": {},
-    "rangers.advent.js": {},
     "Readme.md": {},
     "service.json": {},
     "shared.styl": {},
     "todo.categories.md": {},
-    "todo.untracked.md": {},
-    "webgl-quad-scene.json": {},
-    "webgl-quad.html": {},
-    "webgl-quad.js": {}
+    "todo.untracked.md": {}
   },
   "files": [
     {
@@ -575,7 +581,7 @@
     },
     {
       "name": "encrypt-web-worker.html",
-      "path": ".welcome/encrypt-web-worker.html"
+      "path": ".welcome/3xplore/encrypt-web-worker.html"
     },
     {
       "name": "erlang.erl",
@@ -683,15 +689,15 @@
     },
     {
       "name": "hello.css",
-      "path": ".welcome/hello.css"
+      "path": ".welcome/3xplore/hello/hello.css"
     },
     {
       "name": "hello.html",
-      "path": ".welcome/hello.html"
+      "path": ".welcome/3xplore/hello/hello.html"
     },
     {
       "name": "hello.scss",
-      "path": ".welcome/hello.scss"
+      "path": ".welcome/3xplore/hello/hello.scss"
     },
     {
       "name": "hexedit.js",
@@ -1007,15 +1013,15 @@
     },
     {
       "name": "rangers.advent.css",
-      "path": ".welcome/rangers.advent.css"
+      "path": ".welcome/3xplore/rangers-advent/rangers.advent.css"
     },
     {
       "name": "rangers.advent.html",
-      "path": ".welcome/rangers.advent.html"
+      "path": ".welcome/3xplore/rangers-advent/rangers.advent.html"
     },
     {
       "name": "rangers.advent.js",
-      "path": ".welcome/rangers.advent.js"
+      "path": ".welcome/3xplore/rangers-advent/rangers.advent.js"
     },
     {
       "name": "rb.html",
@@ -1279,15 +1285,15 @@
     },
     {
       "name": "webgl-quad-scene.json",
-      "path": ".welcome/webgl-quad-scene.json"
+      "path": ".welcome/3xplore/webgl-quad/webgl-quad-scene.json"
     },
     {
       "name": "webgl-quad.html",
-      "path": ".welcome/webgl-quad.html"
+      "path": ".welcome/3xplore/webgl-quad/webgl-quad.html"
     },
     {
       "name": "webgl-quad.js",
-      "path": ".welcome/webgl-quad.js"
+      "path": ".welcome/3xplore/webgl-quad/webgl-quad.js"
     },
     {
       "name": "webtorrent_share.html",
