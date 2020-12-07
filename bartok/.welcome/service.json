@@ -6,6 +6,7 @@
   "version": 0.5,
   "tree": {
     ".templates": {
+      "adoc.html": {},
       "as.html": {},
       "bf.html": {},
       "bmp.html": {},
@@ -359,6 +360,10 @@
     {
       "name": "ada.adb",
       "path": ".welcome/examples/language/ada.adb"
+    },
+    {
+      "name": "adoc.html",
+      "path": ".welcome/.templates/adoc.html"
     },
     {
       "name": "aileen.js",
