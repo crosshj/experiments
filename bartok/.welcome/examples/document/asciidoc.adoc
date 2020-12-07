@@ -1,7 +1,5 @@
 ////
 
-https://asciidoctor.org/docs/asciidoctor.js/
-
 https://asciidoctor.org/docs/asciidoctor-diagram/
 
 ////
@@ -33,7 +31,7 @@ writing simple sectionless documents consisting only of a preamble.
 (C) (TM) (R) ->
 
 How to do icons like twitter icon:fire[role=red] ?
-	
+
 icon:twitter[role=aqua]
 
 #### list
@@ -294,7 +292,7 @@ That means you can include raw HTML, like this embedded Gist:
 
 .Table Title
 |===
-|Name of Column 1 |Name of Column 2 |Name of Column 3 
+|Name of Column 1 |Name of Column 2 |Name of Column 3
 
 |Cell in column 1, row 1
 |Cell in column 2, row 1
@@ -305,7 +303,7 @@ That means you can include raw HTML, like this embedded Gist:
 |Cell in column 3, row 2
 |===
 
-[%header,cols=2*] 
+[%header,cols=2*]
 |===
 |Name of Column 1
 |Name of Column 2
@@ -317,7 +315,7 @@ That means you can include raw HTML, like this embedded Gist:
 |Cell in column 2, row 2
 |===
 
-[cols="1,1,2", options="header"] 
+[cols="1,1,2", options="header"]
 .Applications
 |===
 |Name
