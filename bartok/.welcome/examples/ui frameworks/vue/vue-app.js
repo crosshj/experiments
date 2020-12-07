@@ -1,3 +1,6 @@
+/*
+	https://vuejs.org/v2/guide/
+*/
 (function(){
 	if(typeof Vue === 'undefined') return;
 

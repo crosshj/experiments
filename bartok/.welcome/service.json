@@ -294,6 +294,12 @@
             "top-bar.component.ts": {}
           }
         },
+        "ember": {
+          "ember.ts": {}
+        },
+        "svelte": {
+          "svelte.ts": {}
+        },
         "vue": {
           "vue-app.css": {},
           "vue-app.js": {},
@@ -562,6 +568,10 @@
     {
       "name": "elm.elm",
       "path": ".welcome/examples/language/elm.elm"
+    },
+    {
+      "name": "ember.ts",
+      "path": ".welcome/examples/ui frameworks/ember/ember.ts"
     },
     {
       "name": "encrypt-web-worker.html",
@@ -1110,6 +1120,10 @@
     {
       "name": "svcv3pattern.js",
       "path": ".welcome/3xplore/svcv3pattern.js"
+    },
+    {
+      "name": "svelte.ts",
+      "path": ".welcome/examples/ui frameworks/svelte/svelte.ts"
     },
     {
       "name": "svg-bartok.svg",
