@@ -4,6 +4,7 @@ export default {
     "ogg": "audio",
     "adb": "ada",
     "ads": "ada",
+    "adoc": "asciidoc",
     "bowerrc": "bower",
     "bf": "brainfuck",
     "cs": "csharp",
