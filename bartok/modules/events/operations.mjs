@@ -313,6 +313,21 @@ const updateServiceHandler = async ({ getCurrentService, getState, performOperat
 	}
 }
 
+const serviceOperation = async ({
+	service, operation, filename, folderName, parent
+}) => {
+	const options = {
+			method: 'POST',
+			body: JSON.stringify({
+				path: `/${service.name}${parent||"/"}/${filename||folderName}`,
+				command: operation,
+				service: service.name
+			})
+	};
+	const result = await (await fetch('service/change', options)).json();
+	return result;
+};
+
 const operationsHandler = ({
 	managementOp, externalStateRequest,
 	getCurrentFile, getCurrentService,
@@ -361,6 +376,15 @@ const operationsHandler = ({
 			// deleteFolder, addFolder, moveFile, moveFolder(?) needs to handle non-callback flow (operationDone)
 			const foundOp = allOperations.find(x => x.name === 'update');
 			const result = await updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp: manageOpResult });
+
+			//if this is a deleteFile or deleteFolder, provider needs to know (and shouldn't have to guess)
+			if(['deleteFile', 'deleteFolder'].includes(event.detail.operation)){
+				await serviceOperation({
+					service: currentService,
+					...event.detail
+				});
+			}
+
 			triggerOperationDone(result);
 			const chainedTrigger = getChainedTrigger(event);
 			if(chainedTrigger){
