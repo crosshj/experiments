@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+import { forwardRef, Inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LocationStrategy } from '@angular/common';
@@ -24,15 +24,16 @@ const routes = [
 	imports: [
 		RouterModule.forRoot(routes),
 		BrowserModule,
-		ReactiveFormsModule,
+		ReactiveFormsModule
 	],
+	exports: [],
 	declarations: [
 		AppComponent,
 		CartComponent,
 		TopBarComponent,
 		ProductListComponent,
 		ProductAlertsComponent,
-		ProductDetailsComponent,
+		ProductDetailsComponent
 	],
 	bootstrap: [AppComponent],
 	providers: [

@@ -34,6 +34,6 @@ export class CustomLocationStrategy extends HashLocationStrategy {
 		//console.log({ state, title, url, queryParams })
 	}
 	replaceState(state: any, title: string, url: string, queryParams: string): void {
-		console.log({ state, title, url, queryParams })
+		//console.log({ state, title, url, queryParams })
 	}
 }

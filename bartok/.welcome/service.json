@@ -289,6 +289,9 @@
             "cart.service.ts": {}
           },
           "CustomLocationStrategy.ts": {},
+          "feature-flags": {
+            "feature-flags.service.ts": {}
+          },
           "product-alerts": {
             "product-alerts.component.css": {},
             "product-alerts.component.html": {},
@@ -604,6 +607,10 @@
     {
       "name": "favicon_package2_v0.16.zip",
       "path": ".welcome/examples/image/favicon_package2_v0.16.zip"
+    },
+    {
+      "name": "feature-flags.service.ts",
+      "path": ".welcome/examples/ui frameworks/angular/feature-flags/feature-flags.service.ts"
     },
     {
       "name": "fiug-bundle.js",
