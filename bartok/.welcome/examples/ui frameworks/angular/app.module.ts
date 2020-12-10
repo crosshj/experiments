@@ -37,7 +37,7 @@ const routes = [
 	],
 	bootstrap: [AppComponent],
 	providers: [
-		{ provide: LocationStrategy, useClass: CustomLocationStrategy },
+		{ provide: LocationStrategy, useClass: CustomLocationStrategy }
 	]
 })
 export class AppModule {}

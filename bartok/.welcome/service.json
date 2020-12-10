@@ -58,6 +58,7 @@
       "minimap.js": {},
       "paste-image.js": {},
       "psd-converter.js": {},
+      "systemjs.js": {},
       "webcam.js": {},
       "webtorrent_share.html": {},
       "zip_project.html": {}
@@ -1171,6 +1172,10 @@
     {
       "name": "swift.swift",
       "path": ".welcome/examples/language/swift.swift"
+    },
+    {
+      "name": "systemjs.js",
+      "path": ".welcome/1ncubate/systemjs.js"
     },
     {
       "name": "templateMessages.js",

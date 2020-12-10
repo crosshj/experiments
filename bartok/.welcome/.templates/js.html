@@ -146,6 +146,28 @@
 				console.error('error appendUrl: ' + url);
 			}
 		}
+		
+		// like append, but in parallel except when nested
+		window.addUrls = async (urls=[]) => {
+			const queue = Array.isArray(urls)
+				? [ ...urls ]
+				: [ urls ];
+
+			const promisedQueue = queue.map(url => {
+				if(Array.isArray(url)) return window.appendUrls(url);
+
+				if(["css"].includes(url.split('.').pop()) ){
+					return appendStyleSheet(url);
+				}
+				if(["styl"].includes(url.split('.').pop()) ){
+					return appendCompiledStyleSheet(url);
+				}
+				if(url.split('.').pop() === "js"){
+					return appendScript(url);
+				}
+			})
+			return Promise.all(promisedQueue);
+		}
 
 		window.htmlToElement = function htmlToElement(html) {
 			var template = document.createElement('template');
@@ -177,19 +199,20 @@
 	</script>
 
 	<script>
-			const codeIn = document.querySelector('code_in');
-			let codeFromComment = Array.from(codeIn.childNodes)
-					.filter(x => x.nodeType === 8)
-					.map(x => x.data).join('\n');
-			if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
-				codeFromComment = `
-					appendUrls(['../shared.styl']);
-					console.info("hello world");
-					prism('javascript', 'console.log("hello world")');
-				`.replace(new RegExp('        ', 'g'), '');
-			}
-			codeFromComment = `${codeFromComment}`;
+		const codeIn = document.querySelector('code_in');
+		let codeFromComment = Array.from(codeIn.childNodes)
+				.filter(x => x.nodeType === 8)
+				.map(x => x.data).join('\n');
+		if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+			codeFromComment = `
+				appendUrls(['../shared.styl']);
+				console.info("hello world");
+				prism('javascript', 'console.log("hello world")');
+			`.replace(new RegExp('				', 'g'), '');
+		}
+		codeFromComment = `${codeFromComment}`;
 
+		const overrideConsole = `
 			console.bak = console.log;
 			console.log = (...args) => {
 				const text = args[0];
@@ -220,28 +243,44 @@
 				document.body.appendChild(el);
 				console.bakError(...args);
 			};
+	`.trim().replace(/			/g, '') + '\n\n';
 
-			//let AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
-			const runCode = (code) => {
-				const jsTemplateRun = new Function(`
-					try {
-						${code}
-					} catch(e){
-						console.error({ ...e, stack: e.stack.split('\\n') });
-					}
-				`);
-				jsTemplateRun.name = "jsTemplateRun";
-				jsTemplateRun.displayName = "jsTemplateRun";
-				return jsTemplateRun();
-			}
-
-			try {
-				const result = runCode(codeFromComment);
-				if(result && result.then){
-					result.catch(console.error)
+		//let AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
+		const runCode = (code) => {
+			const jsTemplateRun = new Function(`
+				try {
+					${code}
+				} catch(e){
+					console.error({ ...e, stack: e.stack.split('\\n') });
 				}
-			} catch(error) {
-				console.error({ ...error, message: error.message, stack: error.stack.split('\n') });
+			`);
+			jsTemplateRun.name = "jsTemplateRun";
+			jsTemplateRun.displayName = "jsTemplateRun";
+			return jsTemplateRun();
+		}
+
+		let alreadyOverriddenConsole = false;
+		window.appendNewScript = (src, id) => {
+			const xfrmScript = document.createElement('script');
+			xfrmScript.type = "module";
+			xfrmScript.id = id || 'ScriptXfrm';
+			xfrmScript.innerHTML = (!alreadyOverriddenConsole ? overrideConsole: '') +
+				src +
+				`\n//# sourceURL=${document.location.href+':'+(id || 'source')}`; 
+			alreadyOverriddenConsole = true;
+			document.head.appendChild(xfrmScript);
+		}
+
+		try {
+			appendNewScript(codeFromComment);
+			/*
+			const result = runCode(codeFromComment);
+			if(result && result.then){
+				result.catch(console.error)
 			}
+			*/
+		} catch(error) {
+			console.error({ ...error, message: error.message, stack: error.stack.split('\n') });
+		}
 	</script>
 </html>

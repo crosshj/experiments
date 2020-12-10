@@ -1,4 +1,4 @@
-import { Component, VERSION, OnInit, forwardRef, Inject } from '@angular/core';
+import { Component, NgModule, VERSION, OnInit, forwardRef, Inject } from '@angular/core';
 import { FeatureFlagService } from './feature-flags/feature-flags.service.ts';
 
 @Component({
@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
-		this.featureFlagService.getDiscount().subscribe()
+		this.featureFlagService.getDiscount()
 	}
+
 }

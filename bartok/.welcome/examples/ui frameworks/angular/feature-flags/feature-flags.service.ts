@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import * as LDClient from "launchdarkly-js-client-sdk";
 
 @Injectable({
 	providedIn: 'root'
 })
 export class FeatureFlagService {
-	discount: Subject<string>;
+	discount: BehaviorSubject<string>;
 
 	constructor(){
 		this.discount = new BehaviorSubject(0);
@@ -42,7 +42,7 @@ export class FeatureFlagService {
 			})
 	}
 
-	getDiscount(): Observable<String> {
+	getDiscount(): BehaviorSubject<String> {
 		return this.discount;
 	}
 }

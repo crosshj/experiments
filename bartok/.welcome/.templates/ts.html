@@ -35,13 +35,13 @@ for a more involved compile, ie errors, etc
 			"compilerOptions": {
 				"baseUrl": "../../",
 				"target": "es2015",
-				//"module": "commonjs",
 				"downlevelIteration": true,
-				"module": "esnext",
+				"module": "commonjs",
+				//"module": "esnext",
 				"moduleResolution": "node",
 				"jsx": "react",
 				"jsxFactory": "React.createElement",
-				"importHelpers": true,
+				//"importHelpers": true,
 				"lib": ["es2018", "dom"],
 				"outDir": "./dist",
 				"rootDir": ".",
@@ -50,6 +50,8 @@ for a more involved compile, ie errors, etc
 				"strictNullChecks": false,
 				"noImplicitAny": false,
 				"sourceMap": true,
+				"inlineSourceMap": true,
+				"inlineSources": true,
 				"esModuleInterop": true,
 				"declaration": false,
 				"skipLibCheck": true,
@@ -255,7 +257,7 @@ for a more involved compile, ie errors, etc
 	}
 	(async () => {
 		const deps = [
-			"https://www.unpkg.com/typescript@4.0.3/lib/typescriptServices.js"
+			"https://unpkg.com/typescript@4.0.3/lib/typescriptServices.js"
 		];
 		await appendUrls(deps);
 
@@ -271,7 +273,10 @@ for a more involved compile, ie errors, etc
 				import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 				import { RouterModule } from '@angular/router';
 				import { ReactiveFormsModule } from '@angular/forms';
+				import * as LDClient from "launchdarkly-js-client-sdk";
+				import { Observable, of } from 'rxjs';
 				
+				//console.log(of);
 				appendUrls(['../shared.styl']);
 				const message: string = "hello world";
 				console.info(message);
@@ -280,16 +285,19 @@ for a more involved compile, ie errors, etc
 		}
 		codeFromComment = `${codeFromComment}`;
 		
+		// TODO: maybe use system.js here instead of this...
 		const angDeps = [
-			"https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.2.1/rxjs.umd.min.js",
+			"https://unpkg.com/rxjs@6.6.3/bundles/rxjs.umd.min.js",
+			//"https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.2.1/rxjs.umd.min.js",
 			"https://unpkg.com/zone.js@0.10.3/dist/zone.min.js",
 			"https://unpkg.com/@angular/core@11.0.2/bundles/core.umd.js",
 			"https://unpkg.com/@angular/common@11.0.2/bundles/common.umd.js",
 			"https://unpkg.com/@angular/router@11.0.2/bundles/router.umd.js",
 			"https://unpkg.com/@angular/forms@11.0.2/bundles/forms.umd.js",
-			"https://unpkg.com/@angular/compiler@11.0.2/bundles/compiler.umd.js",
+			"https://unpkg.com/@angular/compiler@11.0.2/bundles/compiler.umd.js", 
 			"https://unpkg.com/@angular/platform-browser@11.0.2/bundles/platform-browser.umd.js",
 			"https://unpkg.com/@angular/platform-browser-dynamic@11.0.2/bundles/platform-browser-dynamic.umd.js",
+			"https://unpkg.com/ldclient-js@2.10.2/dist/ldclient.min.js"
 		];
 		const angularImports = {
 			"@angular/platform-browser": ng => ng.platformBrowser,
@@ -297,7 +305,9 @@ for a more involved compile, ie errors, etc
 			"@angular/common": ng => ng.common,
 			"@angular/forms": ng => ng.forms,
 			"@angular/router": ng => ng.router,
-			"@angular/platform-browser-dynamic": ng => ng.platformBrowserDynamic
+			"@angular/platform-browser-dynamic": ng => ng.platformBrowserDynamic,
+			"launchdarkly-js-client-sdk": () => LDClient,
+			"rxjs": () => rxjs
 		};
 		const hasAngImport = Object.keys(angularImports).reduce((all, one) => {
 			all = all || codeFromComment.includes(one);
@@ -313,36 +323,38 @@ for a more involved compile, ie errors, etc
 			}
 		}
 
-		console.bak = console.log;
-		console.log = (...args) => {
-			const text = args[0];
-			const el = document.createElement('pre');
-			el.innerText = text;
-			document.body.appendChild(el);
-			console.bak(...args);
-		};
+		const overrideConsole = `
+			console.bak = console.log;
+			console.log = (...args) => {
+				const text = args[0];
+				const el = document.createElement('pre');
+				el.innerText = text;
+				document.body.appendChild(el);
+				console.bak(...args);
+			};
 
-		console.bakInfo = console.info;
-		console.info = (...args) => {
-			const text = args[0];
-			const el = document.createElement('pre');
-			el.innerText = text;
-			el.className = "info";
-			document.body.appendChild(el);
-			console.bakInfo(...args);
-		};
+			console.bakInfo = console.info;
+			console.info = (...args) => {
+				const text = args[0];
+				const el = document.createElement('pre');
+				el.innerText = text;
+				el.className = "info";
+				document.body.appendChild(el);
+				console.bakInfo(...args);
+			};
 
-		console.bakError = console.error;
-		console.error = (...args) => {
-			const text = args[0];
-			const el = document.createElement('pre');
-			el.innerHTML = typeof text === 'object'
-				? JSON.stringify(text, null, 2)
-				: text;
-			el.className = "error";
-			document.body.appendChild(el);
-			console.bakError(...args);
-		};
+			console.bakError = console.error;
+			console.error = (...args) => {
+				const text = args[0];
+				const el = document.createElement('pre');
+				el.innerHTML = typeof text === 'object'
+					? JSON.stringify(text, null, 2)
+					: text;
+				el.className = "error";
+				document.body.appendChild(el);
+				console.bakError(...args);
+			};
+		`.trim().replace(/			/g, '') + '\n\n';
 
 		//let AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
 		const runCode = (code) => {
@@ -358,13 +370,24 @@ for a more involved compile, ie errors, etc
 			return jsTemplateRun();
 		}
 
+		const appendNewScript = (src, id) => {
+				const xfrmScript = document.createElement('script');
+				xfrmScript.type = "module";
+				xfrmScript.id = id || 'ScriptXfrm';
+				xfrmScript.innerHTML = overrideConsole + src + `\n//# sourceURL=${document.location.href+':source'}`; 
+				document.head.appendChild(xfrmScript);
+		};
+		
 		try {
-			const transpiled = window.ts.transpile(codeFromComment, window.tsConfig);
-			await resolveDeps(transpiled, code => window.ts.transpile(code, window.tsConfig));
+			const transpiled = window.ts.transpile(codeFromComment, window.tsConfig.compilerOptions);
+			await resolveDeps(transpiled, code => window.ts.transpile(code, window.tsConfig.compilerOptions));
+			appendNewScript(transpiled);
+			/*
 			const result = runCode(transpiled);
 			if(result && result.then){
 				result.catch(console.error)
 			}
+			*/
 		} catch(error) {
 			console.error({ ...error, message: error.message, stack: error.stack.split('\n') });
 		}
