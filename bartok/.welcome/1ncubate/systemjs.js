@@ -16,7 +16,7 @@ const eslintConfig = {
 }
 
 const eslintEvaluate = `
-const foo = 'hello'
+const foo = 'hello
 `.trim()+'\n';
 
 const code = `
@@ -54,8 +54,12 @@ const code = `
 		arrowParens: "always",
 		useTabs: true,
 	};
-	console.log('PASS: '+prettier.check(eslintEvaluate, { ...prettierOpts, plugins: [prettierTypescript] }))
-	console.log(prettier.format(eslintEvaluate, { ...prettierOpts, plugins: [prettierTypescript] }))
+	try {
+		console.log('PASS: '+prettier.check(eslintEvaluate, { ...prettierOpts, plugins: [prettierTypescript] }))
+		console.log(prettier.format(eslintEvaluate, { ...prettierOpts, plugins: [prettierTypescript] }))
+	} catch(e){
+		console.log('prettier check and format failed');
+	}
 
 	//const webpack = require('webpack'); 
 	//console.log(Object.keys(webpack));
