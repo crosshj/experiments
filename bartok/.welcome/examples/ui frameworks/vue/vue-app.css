@@ -1,3 +1,11 @@
+#imageCanvas { width: 100%; padding: 0.75em; box-sizing: border-box;}
+a.button.router-link-active {
+	background-color: #323232;
+}
+
+
+
+
 .iframe-container {
   position: relative;
 }
@@ -239,16 +247,22 @@ div.block[class*="language-"] {
   margin-top: 0.25em;
   box-sizing: border-box;
 }
-button {
-  color: inherit;
-  border: 1px solid;
-  background: transparent;
-  min-width: 15em;
-  margin-bottom: 2em;
-  padding: 10px;
-  outline: none;
+button, a.button {
+	color: inherit;
+	border: 1px solid;
+	background: transparent;
+	min-width: 8em;
+	margin-bottom: 2em;
+	padding: 10px;
+	outline: none;
+	text-decoration: none;
+	display: inline-block;
+	text-align: center;
+	box-sizing: border-box;
 }
-button:hover {
+button:hover, a.button:hover {
   background: rgba(136,136,136,0.533);
   color: #ccc;
 }
+
+.hidden { display: none; }

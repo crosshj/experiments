@@ -276,11 +276,11 @@
       },
       "ui frameworks": {
         "angular": {
+          "angular-app.css": {},
           "angularReadMe.md": {},
           "app.component.css": {},
           "app.component.html": {},
           "app.component.ts": {},
-          "app.css": {},
           "app.module.ts": {},
           "app.ts": {},
           "cart": {
@@ -322,6 +322,20 @@
           "svelte.ts": {}
         },
         "vue": {
+          "components": {
+            "controls.mjs": {},
+            "hello.mjs": {}
+          },
+          "lib": {
+            "cluster.js": {}
+          },
+          "router": {
+            "vue-router.mjs": {}
+          },
+          "store": {
+            "vue-actions.mjs": {},
+            "vue-store.mjs": {}
+          },
           "vue-app.css": {},
           "vue-app.js": {},
           "vue-logo.svg": {},
@@ -374,6 +388,10 @@
       "path": ".welcome/aileen.js"
     },
     {
+      "name": "angular-app.css",
+      "path": ".welcome/examples/ui frameworks/angular/angular-app.css"
+    },
+    {
       "name": "angular9.html",
       "path": ".welcome/5upport/angular9.html"
     },
@@ -396,10 +414,6 @@
     {
       "name": "app.component.ts",
       "path": ".welcome/examples/ui frameworks/angular/app.component.ts"
-    },
-    {
-      "name": "app.css",
-      "path": ".welcome/examples/ui frameworks/angular/app.css"
     },
     {
       "name": "app.module.ts",
@@ -510,8 +524,16 @@
       "path": ".welcome/examples/language/clojure.cljs"
     },
     {
+      "name": "cluster.js",
+      "path": ".welcome/examples/ui frameworks/vue/lib/cluster.js"
+    },
+    {
       "name": "color-picker.html",
       "path": ".welcome/7ool/color-picker.html"
+    },
+    {
+      "name": "controls.mjs",
+      "path": ".welcome/examples/ui frameworks/vue/components/controls.mjs"
     },
     {
       "name": "cpp.cpp",
@@ -712,6 +734,10 @@
     {
       "name": "hello.html",
       "path": ".welcome/3xplore/hello/hello.html"
+    },
+    {
+      "name": "hello.mjs",
+      "path": ".welcome/examples/ui frameworks/vue/components/hello.mjs"
     },
     {
       "name": "hello.scss",
@@ -1258,6 +1284,10 @@
       "path": ".welcome/examples/binary/video.mp4"
     },
     {
+      "name": "vue-actions.mjs",
+      "path": ".welcome/examples/ui frameworks/vue/store/vue-actions.mjs"
+    },
+    {
       "name": "vue-app.css",
       "path": ".welcome/examples/ui frameworks/vue/vue-app.css"
     },
@@ -1268,6 +1298,14 @@
     {
       "name": "vue-logo.svg",
       "path": ".welcome/examples/ui frameworks/vue/vue-logo.svg"
+    },
+    {
+      "name": "vue-router.mjs",
+      "path": ".welcome/examples/ui frameworks/vue/router/vue-router.mjs"
+    },
+    {
+      "name": "vue-store.mjs",
+      "path": ".welcome/examples/ui frameworks/vue/store/vue-store.mjs"
     },
     {
       "name": "vue.html",

@@ -775,3 +775,8 @@ visual studio code insiders
 ===========================
 
 - https://vscode-web-test-playground.azurewebsites.net/?enter=true
+
+animation
+=========
+
+- bodymovin / lottie-web - https://codepen.io/collection/nVYWZR/

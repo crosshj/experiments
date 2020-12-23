@@ -7,22 +7,23 @@ const deps =[
 	await appendUrls(deps);
 
 	const settle = [
-		250, // grocery
-		41, // lil caesars
-		178, // jollibee
-		121, // hotel
-		65, // korean food
-		20, // hexagonal table
+		//250, // grocery (already paid)
+		50, // uber eats KFC
+		66, // dominoes
+		55, // uber eats
+		80, // kids allowance this week and prior
+		100, // shoes/clothes
+		30, // uber to/from shoes/clothes
 	].reduce((a,b) => a+b, 0);
-	console.log(settle)
-	// total ~675
+	console.log(JSON.stringify({ settle }))
+	// total ~381
 
 	function aileen(){
 		(new Array(3))
 			.fill()
-			.forEach(x =>
-			console.info('Pete the ween and Zoe the B*')
-		);
+			.forEach(x => {
+				//console.info('Pete the ween and Zoe the B*')
+			});
 	}
 
 	await prism('javascript', aileen.toString())
@@ -48,5 +49,9 @@ const deps =[
 	}
 	await prism("json", JSON.stringify({Harrison, Pete}, replacer, 2))
 
+
+	for(var d=1; d< 5; d++){
+		console.info(d)
+	}
 
 })();

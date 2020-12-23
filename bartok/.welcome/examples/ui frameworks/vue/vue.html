@@ -1,3 +1,26 @@
+<!--
+
+algo 1:
+pick a random block on screen
+determine how fitted it is
+	- fitted, move on
+	- not fitted, find a better spot for it
+random walk to next place (but don't go back to last n places)
+
+algo 2:
+take a random block of blocks
+sort all until best fit
+random walk to next block of blocks (but don't go back to last n places)
+
+algo 3:
+identify blobs (and mark them immune to sorting)
+sort everything else
+repeat
+(result: blocks freeze in place once they are identified as part of blob)
+
+
+-->
+
 <html>
 	<head>
 		<title></title>
@@ -8,11 +31,21 @@
 		<meta name="mobile-web-app-capable" content="yes">
 		<base target="_blank" href="../../">
 		<link rel="stylesheet" href="vue-app.css">
-		<script src="https://unpkg.com/vue@2.6.12/dist/vue.min.js"></script>
+		<script src="./lib/cluster.js"></script>
+		
+		<script src="https://unpkg.com/vue@3.0.4/dist/vue.global.js"></script>
+		<script src="https://unpkg.com/vuex@4.0.0-rc.2/dist/vuex.global.js"></script>
+		<script src="https://unpkg.com/vue-router@4.0.1/dist/vue-router.global.js"></script>
+		<script src="https://www.unpkg.com/localforage@1.9.0/dist/localforage.min.js"></script>
 	</head>
 	<body>
-		<img src="vue-logo.svg" style="width: 4.5em"></img>
-		<pre id="app" class="info">{{ message }}</pre>
+		<div id="app" class="hidden">
+			<div id="router-links">
+				<router-link to="/foo" class="button">Home</router-link>
+				<router-link to="/bar" class="button">Other</router-link>
+			</div>
+			<router-view></router-view>
+		</div>
 	</body>
-	<script src="./vue-app.js"></script>
+	<script type="module" src="./vue-app.js"></script>
 </html>
