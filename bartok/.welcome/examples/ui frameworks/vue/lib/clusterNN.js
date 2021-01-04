@@ -1,5 +1,7 @@
 //https://unpkg.com/synaptic@1.1.1/dist/synaptic.min.js
 
+// https://brain.js.org/ - supposed to be GPU accelerated
+
 /*
 - reconstructing from shuffled
 	- requires "isBetterFit" vs "isFit"
@@ -142,7 +144,7 @@ function convertURIToImageData(URI) {
 			await appendUrls(deps);
 			this.storage = storage;
 			this.synaptic = window.synaptic;
-			this.network = new synaptic.Architect.Perceptron(26, 5, 1);
+			this.network = new synaptic.Architect.Perceptron(26, 4, 1);
 			this.network.trainer = new synaptic.Trainer(this.network);
 			this.set = await storage.getItem('clusterNN-train-set') || [];
 			
