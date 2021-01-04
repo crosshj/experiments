@@ -2,6 +2,10 @@
 	https://github.com/seanmtracey/quick-cluster-counts/blob/master/index.js
 */
 
+const HUGE_BLOB_SIZE = 1000000;
+const MIN_BLOB_SIZE = 100; //pixels
+const MIN_BLOB_BLOCKS = 6;
+
 (() => {
 	function unique(arr){
 	/// Returns an object with the counts of unique elements in arr
@@ -167,8 +171,7 @@
 		}
 
 		// Return the blob data:
-		const HUGE_BLOB_SIZE = 1000000;
-		const MIN_BLOB_SIZE = 500; //pixels
+
 		const allCanvasBlocks = ({ bx, by, ix, iy}) => {
 			const blocks = [];
 			for(var y=0; y+by <= iy;  y+=by){
@@ -199,7 +202,7 @@
 				_blocks[`x=${block.x} y=${block.y}`] = block;
 			})
 			
-			if(Object.keys(_blocks).length < 6) return
+			if(Object.keys(_blocks).length < MIN_BLOB_BLOCKS) return
 			//console.log(Object.keys(_blocks).join('  '))
 			blocks = { ..._blocks, ...blocks };
 		})
@@ -262,7 +265,7 @@
 	}
 	
 	const imageData = await storage.getItem('temp-image-data');
-	const { blocks } = ImageCluster(imageData, blockSize);
+	const { blocks, blobs } = ImageCluster(imageData, blockSize);
 
 	ctx.putImageData(imageData, 0, 0);
 	var id = ctx.getImageData(0, 0, width, height);
@@ -271,16 +274,29 @@
 	function random_rgba() {
 		var o = Math.round, r = Math.random, s = 255;
 		return {
-			r: o(r()*s),
-			g: o(r()*s),
-			b: o(r()*s),
+			r: 255, //o(r()*s),
+			g: 0, //o(r()*s),
+			b: 0, //o(r()*s),
 			a: 255
 		};
 	}
 
 	const { r, g, b, a } = random_rgba();
+	ctx.globalAlpha = 0.5;
+	ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
 	Object.entries(blocks).forEach(([key, block]) => {
-		ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
 		ctx.fillRect(block.x, block.y, blockSize, blockSize);
-	})
+	});
+	
+	ctx.globalAlpha = 0.3;
+	ctx.fillStyle = `rgba(0,255,0,255)`;
+	Object.entries(blobs).forEach(([key, value]) => {
+		if(value.length > HUGE_BLOB_SIZE) return
+		if(value.length < MIN_BLOB_SIZE) return
+		value.forEach(p => {
+			const { x, y } = p;
+			ctx.fillRect(x, y, 1, 1);
+		});
+	});
+
 })();

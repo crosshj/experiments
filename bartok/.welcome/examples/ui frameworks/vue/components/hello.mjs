@@ -86,7 +86,7 @@ export default {
 			const ctx = canvas.getContext('2d');
 			ctx.drawImage(img,0,0);
 			!previous && await this.$storage.setItem('vue-image-cache', canvas.toDataURL('image/png'))
-			this.processImage();
+			//this.processImage();
 		},
 		async processImage(){
 			const canvas = this.$refs.imageCanvas;

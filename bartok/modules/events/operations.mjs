@@ -378,11 +378,13 @@ const operationsHandler = ({
 			const result = await updateServiceHandler({ getCurrentService, getState, performOperation, foundOp, manOp: manageOpResult });
 
 			//if this is a deleteFile or deleteFolder, provider needs to know (and shouldn't have to guess)
+			//this probably is the only thing that needs to be done (and not what is above!)
 			if(['deleteFile', 'deleteFolder'].includes(event.detail.operation)){
-				await serviceOperation({
+				const result = await serviceOperation({
 					service: currentService,
 					...event.detail
 				});
+				console.log(JSON.stringify(result,null,2));
 			}
 
 			triggerOperationDone(result);
