@@ -10,6 +10,40 @@ https://github.com/kripken/sql.js
 </head>
 
 <!--
+/*
+	ALTERNATIVE:
+
+	consider using worker version of sql-js lib
+*/
+
+const deps = [
+	'../shared.styl',
+	"https://unpkg.com/sql.js@1.4.0/dist/sql-wasm.js"
+];
+
+(async () => {
+	await appendUrls(deps);
+
+	const SQL = await initSqlJs({
+		locateFile: file => `https://unpkg.com/sql.js@1.4.0/dist/${file}`
+	});
+	var db = new SQL.Database();
+	const sqlstr = `
+		CREATE TABLE hello (a int, b char);
+		INSERT INTO hello VALUES (0, 'hello');
+		INSERT INTO hello VALUES (1, 'world');
+	`;
+	db.run(sqlstr); // Run the query without returning anything
+
+	var res = db.exec("SELECT * FROM hello");
+	prism("json", JSON.stringify(res));
+
+})();
+
+-->
+
+
+<!--
 
 -- FETCH langAll FROM https://rangers.lerico.net/api/v2/translate?keys=en:ABILITY,en:CUSTOM,en:CUSTOM_SHORTFORM,en:PROPERTIES,en:SKILL,en:UNIT,zh:UNIT,en:UNIT,ja:UNIT,ko:UNIT,th:UNIT
 -- FETCH langUnit FROM 'https://rangers.lerico.net/api/translate/en/UNIT',
