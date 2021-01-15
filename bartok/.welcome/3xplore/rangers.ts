@@ -16,10 +16,12 @@
 
 const deps = [
 	'../shared.styl'
-];
+]; 
 
 const proxy = 'http://localhost:3333/proxy/';
 const lericoAPIRoot = "https://rangers.lerico.net/api/";
+const tometoUrl = 'https://vip.tometo.net/rank_list.php'
+
 //get-current-res.js
 //getCurrentRes
 const lericoResources = {
@@ -56,15 +58,71 @@ const lericoResources = {
 window.lerico = lericoResources;
 
 ;(async () => {
-	await appendUrls(deps);
-	await prism('javascript','', 'prism-preload');
-
 	const cachedFetch = ((cache) => async (url) => {
 		const cached = await cache.match(url);
 		const headers = { pragma: 'no-cache', 'cache-control': 'no-cache'};
 		if(!cached) await cache.put(url, await fetch(url, { headers }));
 		return await caches.match(url);
 	})(await caches.open('rangersCache'));
+
+	async function scrapeHtml(url, query){
+		const html = await (await cachedFetch(url)).text();
+		var parser = new DOMParser();
+		var doc = parser.parseFromString(html, 'text/html');
+		return Array.from(doc.querySelectorAll(query));
+	}
+	
+	const parseTometo = (rows) => {
+		return rows.slice(3).map(x => {
+			const splitted = x.textContent.split(/\n/g).filter(y=>!!y.trim()).map(z=>z.trim())
+			const [ rank, score, nameLevel, other ] = splitted;
+			const [ name, level ] = (nameLevel||'').split('LV.');
+			
+			const allPics = Array.from(x.querySelectorAll('img')).map(y => y.src)
+			const [userPic, country, ...extra] = allPics;
+			const defense = extra.map(y => y.split('/').pop().split('-thum.png')[0])
+			return {
+				rank, score, name, level, userPic, country, defense
+			};
+		});
+	};
+	
+	const mostUsedRangers = (rankings) => {
+		const used = {};
+		rankings.forEach(user => {
+			user.defense.forEach(y => {
+				const { type, number, evo } = y.match(/(?<type>[a-z])(?<number>\d*)(?<evo>[a-z])/).groups;
+				used[number] = used[number] || {};
+				used[number][evo] = used[number][evo] || 0;
+				used[number][evo]++;
+				used[number].ranks = used[number].ranks || [];
+				used[number].ranks.push(user.rank);
+				used[number].teammates = used[number].teammates || {};
+				user.defense.filter(t => t!==y).forEach(t => {
+					used[number].teammates[t] = used[number].teammates[t] || 0;
+					used[number].teammates[t]++;
+				})
+			});
+		});
+		return Object.entries(used)
+			.map(([ranger, uses]) => ({ ranger, uses }))
+			.map(x => {
+				const add = (x, y) => (Number(x)||0) + (Number(y)||0);
+				x.uses.total = [x.uses.h, x.uses.u].reduce(add, 0);
+				x.uses.teammates = Object.entries(x.uses.teammates)
+					.map(([ranger, uses]) => ({ ranger, uses }))
+					.sort((a,b) => b.uses - a.uses);
+				return x;
+			})
+			.sort((a,b) => b.uses.total - a.uses.total);
+	};
+
+	await appendUrls(deps);
+	await prism('javascript', '', 'prism-preload');
+
+	const query = 'body > table > tbody > tr';
+	const tometo = await scrapeHtml(proxy + tometoUrl, query);
+	const tometoParsed = parseTometo(tometo)
 
 	const f = async (url) => (await cachedFetch(proxy + lericoAPIRoot + url)).json();
 	const keys = Object.keys(lericoResources);
@@ -217,9 +275,93 @@ window.lerico = lericoResources;
 			.ranger .element.tree { background: #1b6800; }
 			.ranger .element.light { background: #8f8f66; }
 			.ranger .element.dark { background: #240321; }
+
+			.ranger-counts {
+				display: inline-flex;
+				background: #8883;
+				height: auto;
+				min-height: 7em;
+				margin-top: .25em;
+				flex-direction: column;
+				justify-content: space-around;
+				margin-right: 0.25em;
+			}
+			.ranger-counts .icon img {
+				margin-bottom: 0;
+				max-height: 4em;
+				object-fit: contain;
+			}
+			.ranger-counts .icon {
+				display: flex;
+			}
+			.ranger-counts .icon > div {
+				min-width: 50%;
+			}
+			.common-pairings .ranger-counts {
+				height: 3em;
+				min-height: 4.5em; width: 100%;justify-content: space-between;
+			}
+			.common-pairings .ranger-counts .icon {
+				width: 10em
+			}
+			.common-pairings .ranger-counts img {
+				margin: 0;
+				height: 3em;
+				object-fit: contain;
+			}
+			.common-pairings .ranger-counts .use-count {
+				display: none;
+			}
 		</style>
 	`);
 	document.body.append(rangerStyle);
+	//console.log(mostUsedRangers(tometoParsed));
+	//console.log(lericoResources.rangers[0])
+	window.mostUsed = mostUsedRangers(tometoParsed);
+	const mostUsedDom = htmlToElement(` 
+		<div style="margin-bottom:1em;">
+			<div>Most Used Rangers</div>
+			<div style="display: flex;flex-wrap: wrap;">
+			${mostUsed.map(x => `
+				<div class="ranger-counts" style="background: rgba(110,90,0,${(200-Math.min(...x.uses.ranks))/255});">
+					<div class="icon most-used-icon" style="width:5em">
+						${['h', 'u'].map(u => {
+							const unit = lericoResources.rangers.find(r => r.unitCode.includes('u'+x.ranger+u));
+							if(!unit || !x.uses[u]) return ``;
+							return `
+				<div>
+					<img src="${proxy}https://rangers.lerico.net/res/${unit.unitCode}/${unit.unitCode}-thum.png">
+					<div style="text-align: center;min-height:1.2em;" class="use-count">${(x.uses.h&&x.uses.u) ? x.uses[u] : ''}</div>
+				</div>
+							`;
+						}).join('\n')}
+					</div>
+					<div style="text-align: center;">${x.uses.total}</div>
+				</div>
+			`).join('')}
+			<p></p>
+</div>
+		</div>
+	`);
+	document.body.append(mostUsedDom)
+
+	window.mostUsedIcons = Array.from(document.querySelectorAll('.most-used-icon'))
+	const mostCommonPairDom = htmlToElement(`<div class="common-pairings">
+		<div>Most Common Pairings</div>
+			${mostUsed.map((x, i) => `
+				<div class="ranger-counts" style="flex-direction:row">
+				<div style="display:flex;width:6em;margin-left:0;">
+				${mostUsedIcons[i].innerHTML}
+				</div>
+				${x.uses.teammates.filter((x,i)=>i<5).map(y => `
+					<div class="icon" style="display:flex; flex-direction: column;align-items:center">
+					<img src="${proxy}https://rangers.lerico.net/res/${y.ranger}/${y.ranger}-thum.png"> [${y.uses}]
+</div>
+				`).join('\n')}</div>
+			`).join('\n')}
+		</div>
+	`);
+	document.body.append(mostCommonPairDom)
 
 //await prism("json", '//one speed ranger\n'+ JSON.stringify(groupRangerEvos(rangersWithSpeedSkill)[0], null, 2));
 

@@ -36,6 +36,8 @@ wish list:
 */
 
 
+const module = {};
+
 const deps = [
 	"https://unpkg.com/plotly.js@1.56.0/dist/plotly.min.js",
 	"../shared.styl",
@@ -119,8 +121,8 @@ function createGraph({
 	data=[], color="a33"
 }){
 	const key = `tester-${Math.random().toString().replace('0.','')}`;
-	this[key] = htmlToElement(`<div id="${key}"></div>`);
-	document.body.appendChild(this[key]);
+	module[key] = htmlToElement(`<div id="${key}"></div>`);
+	document.body.appendChild(module[key]);
 
 	const STEP = 1;
 
@@ -250,7 +252,7 @@ function createGraph({
 	};
 
 
-	const plot = Plotly.newPlot(this[key], data, layout, options);
+	const plot = Plotly.newPlot(module[key], data, layout, options);
 
 	/*
 	window.addEventListener('resize', () => {

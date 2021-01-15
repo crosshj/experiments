@@ -5,6 +5,7 @@
   "path": ".welcome",
   "version": 0.5,
   "tree": {
+    ".keep": {},
     ".templates": {
       "adoc.html": {},
       "as.html": {},
@@ -75,11 +76,13 @@
       "ideas.js": {},
       "mathematics.css": {},
       "mathematics.js": {},
+      "rangers-21-01-14.html": {},
       "rangers-advent": {
         "rangers.advent.css": {},
         "rangers.advent.html": {},
         "rangers.advent.js": {}
       },
+      "rangers.ts": {},
       "react-notes.md": {},
       "scratch.js": {},
       "svcv3pattern.js": {},
@@ -316,9 +319,37 @@
           }
         },
         "ember": {
-          "ember.ts": {}
+          "components": {
+            "ember.mycomponent.js": {}
+          },
+          "controllers": {
+            "ember-app.controller.js": {}
+          },
+          "ember-app.css": {},
+          "ember-app.js": {},
+          "ember-routes.js": {},
+          "ember.html": {},
+          "helpers": {
+            "ember.myhelper.js": {}
+          },
+          "models": {
+            "ember.mymodel.js": {}
+          },
+          "routes": {
+            "ember.myroute.js": {}
+          },
+          "services": {
+            "ember.myservice.js": {}
+          },
+          "templates": {
+            "ember-app.hbs": {}
+          }
         },
         "svelte": {
+          "components": {
+            "svelte-App.html": {},
+            "svelte-Counter.html": {}
+          },
           "svelte.ts": {}
         },
         "vue": {
@@ -326,8 +357,10 @@
             "controls.mjs": {},
             "hello.mjs": {}
           },
+          "imageRemix.md": {},
           "lib": {
-            "cluster.js": {}
+            "cluster.js": {},
+            "clusterNN.js": {}
           },
           "router": {
             "vue-router.mjs": {}
@@ -345,6 +378,7 @@
     },
     "fullstackIntro.md": {},
     "generator_notes.md": {},
+    "index.hbs": {},
     "index.js": {},
     "package.json": {},
     "paste-image.png": {},
@@ -355,6 +389,10 @@
     "todo.untracked.md": {}
   },
   "files": [
+    {
+      "name": ".keep",
+      "path": ".welcome/.keep"
+    },
     {
       "name": "_bartok.tools.html",
       "path": ".welcome/7ool/_bartok.tools.html"
@@ -528,6 +566,10 @@
       "path": ".welcome/examples/ui frameworks/vue/lib/cluster.js"
     },
     {
+      "name": "clusterNN.js",
+      "path": ".welcome/examples/ui frameworks/vue/lib/clusterNN.js"
+    },
+    {
       "name": "color-picker.html",
       "path": ".welcome/7ool/color-picker.html"
     },
@@ -612,8 +654,48 @@
       "path": ".welcome/examples/language/elm.elm"
     },
     {
-      "name": "ember.ts",
-      "path": ".welcome/examples/ui frameworks/ember/ember.ts"
+      "name": "ember-app.controller.js",
+      "path": ".welcome/examples/ui frameworks/ember/controllers/ember-app.controller.js"
+    },
+    {
+      "name": "ember-app.css",
+      "path": ".welcome/examples/ui frameworks/ember/ember-app.css"
+    },
+    {
+      "name": "ember-app.hbs",
+      "path": ".welcome/examples/ui frameworks/ember/templates/ember-app.hbs"
+    },
+    {
+      "name": "ember-app.js",
+      "path": ".welcome/examples/ui frameworks/ember/ember-app.js"
+    },
+    {
+      "name": "ember-routes.js",
+      "path": ".welcome/examples/ui frameworks/ember/ember-routes.js"
+    },
+    {
+      "name": "ember.html",
+      "path": ".welcome/examples/ui frameworks/ember/ember.html"
+    },
+    {
+      "name": "ember.mycomponent.js",
+      "path": ".welcome/examples/ui frameworks/ember/components/ember.mycomponent.js"
+    },
+    {
+      "name": "ember.myhelper.js",
+      "path": ".welcome/examples/ui frameworks/ember/helpers/ember.myhelper.js"
+    },
+    {
+      "name": "ember.mymodel.js",
+      "path": ".welcome/examples/ui frameworks/ember/models/ember.mymodel.js"
+    },
+    {
+      "name": "ember.myroute.js",
+      "path": ".welcome/examples/ui frameworks/ember/routes/ember.myroute.js"
+    },
+    {
+      "name": "ember.myservice.js",
+      "path": ".welcome/examples/ui frameworks/ember/services/ember.myservice.js"
     },
     {
       "name": "encrypt-web-worker.html",
@@ -762,6 +844,14 @@
     {
       "name": "image.png",
       "path": ".welcome/examples/image/image.png"
+    },
+    {
+      "name": "imageRemix.md",
+      "path": ".welcome/examples/ui frameworks/vue/imageRemix.md"
+    },
+    {
+      "name": "index.hbs",
+      "path": ".welcome/index.hbs"
     },
     {
       "name": "index.js",
@@ -1056,6 +1146,10 @@
       "path": ".welcome/examples/language/raku.raku"
     },
     {
+      "name": "rangers-21-01-14.html",
+      "path": ".welcome/3xplore/rangers-21-01-14.html"
+    },
+    {
       "name": "rangers.advent.css",
       "path": ".welcome/3xplore/rangers-advent/rangers.advent.css"
     },
@@ -1066,6 +1160,10 @@
     {
       "name": "rangers.advent.js",
       "path": ".welcome/3xplore/rangers-advent/rangers.advent.js"
+    },
+    {
+      "name": "rangers.ts",
+      "path": ".welcome/3xplore/rangers.ts"
     },
     {
       "name": "rb.html",
@@ -1170,6 +1268,14 @@
     {
       "name": "svcv3pattern.js",
       "path": ".welcome/3xplore/svcv3pattern.js"
+    },
+    {
+      "name": "svelte-App.html",
+      "path": ".welcome/examples/ui frameworks/svelte/components/svelte-App.html"
+    },
+    {
+      "name": "svelte-Counter.html",
+      "path": ".welcome/examples/ui frameworks/svelte/components/svelte-Counter.html"
     },
     {
       "name": "svelte.ts",

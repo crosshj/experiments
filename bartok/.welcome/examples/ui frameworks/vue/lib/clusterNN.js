@@ -3,41 +3,8 @@
 // https://brain.js.org/ - supposed to be GPU accelerated
 
 /*
-- reconstructing from shuffled
-	- requires "isBetterFit" vs "isFit"
-	- distribute to multiple cpus
-	- be smarter about looking for swaps
-		- clusters have gravity
-		- scan after random
-	- consider cluster in swap algo
-		- cluster here = "large group of connected blocks"
-		- consider diagonals when swapping
-		
-	- image border sucks
 
-- when decimating an image
-	- looks like image compression
-	- should have minimal decimation
-	- borders/details don't get swapped
-	- the block division line causes issues
-		- details on edge of block are weird
-		- details inside block are weird
-		- use other divisions? 
-			- hex - https://www.redblobgames.com/grids/hexagons/
 
-- other shapes
-	- deform the blocks while swapping
-	- use a hexagon/diamond instead of square
-
-- modularize image manipulation
-	- abstracting details & properly expose control
-	- make code more portable (see "distribute to multiple CPUs")
-
-- after a certain period, gave up on swapping occurs more frequently
-	- requires loosening swap parameters
-		- time to swap bailout
-		- max blocks to consider bailout
-	- saving image and restarting sucks
 
 */
 
