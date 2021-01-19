@@ -22,7 +22,6 @@
 
 
 # block fittedness and clustering blocks
-
 - with algorith similar to algo 1, clusters of fitted blocks form and compete
 	- fitedness within this cluster is not considered
 	- competition between these clusters means that image is not resolved further
@@ -32,7 +31,6 @@
 		- other similar clusters
 		- most unfitted areas of the image
 	- cluster should have some internal process for organizing itself to be better fitted within
-
 
 # reconstructing from shuffled
 - requires "isBetterFit" vs "isFit"
@@ -71,3 +69,7 @@
 # image border sucks
 - when block contains two blobs, it forms a border between those
 - this border is hard to match with other blocks and maybe should be treated differently
+
+# using a canvas library to get layers, etc
+- http://www.concretejs.com/
+- https://html2canvas.hertzen.com/

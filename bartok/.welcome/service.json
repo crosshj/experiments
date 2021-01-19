@@ -62,7 +62,9 @@
       "systemjs.js": {},
       "webcam.js": {},
       "webtorrent_share.html": {},
-      "zip_project.html": {}
+      "zip_project.html": {},
+      "zydeco.config.json": {},
+      "zydeco.poet.js": {}
     },
     "3xplore": {
       "encrypt-web-worker.html": {},
@@ -382,6 +384,7 @@
     "index.js": {},
     "package.json": {},
     "paste-image.png": {},
+    "poetry.md": {},
     "Readme.md": {},
     "service.json": {},
     "shared.styl": {},
@@ -1062,6 +1065,10 @@
       "path": ".welcome/.templates/png.html"
     },
     {
+      "name": "poetry.md",
+      "path": ".welcome/poetry.md"
+    },
+    {
       "name": "pony.pony",
       "path": ".welcome/examples/language/pony.pony"
     },
@@ -1500,6 +1507,14 @@
     {
       "name": "zip_project.html",
       "path": ".welcome/1ncubate/zip_project.html"
+    },
+    {
+      "name": "zydeco.config.json",
+      "path": ".welcome/1ncubate/zydeco.config.json"
+    },
+    {
+      "name": "zydeco.poet.js",
+      "path": ".welcome/1ncubate/zydeco.poet.js"
     }
   ]
 }
