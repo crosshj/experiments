@@ -15,7 +15,8 @@
 */
 
 const deps = [
-	'../shared.styl'
+	'../shared.styl',
+	'https://www.unpkg.com/localforage@1.9.0/dist/localforage.min.js'
 ]; 
 
 const proxy = 'http://localhost:3333/proxy/';
@@ -57,12 +58,112 @@ const lericoResources = {
 };
 window.lerico = lericoResources;
 
+function getStorage(){
+	const driverOrder = [
+		localforage.INDEXEDDB,
+		localforage.WEBSQL,
+		localforage.LOCALSTORAGE,
+	];
+	const storage = localforage
+		.createInstance({
+				driver: driverOrder,
+				name: 'rangers',
+				version: 1.0,
+				storeName: 'rankings', // Should be alphanumeric, with underscores.
+				description: 'rankings info for line rangers'
+		});
+	return storage;
+};
+
+class Backup {
+	constructor({ cache }={}){
+		this.cache = cache;
+		this.store = getStorage();
+		this.controls = this.getControls();
+		this.versionPopup = this.getVersionPopup();
+		this.controls.addEventListener('click', this.clickHandler.bind(this));
+	}
+	getVersionPopup(){
+		const popupDom = this.controls.querySelector('.version-popup');
+		const popup = {
+			hide: () => {
+				popupDom.classList.remove('open');
+				document.body.style.overflow = '';
+			},
+			show: () => {
+				document.body.style.overflow = 'hidden';
+				popupDom.classList.add('open');
+			}
+		};
+		document.body.addEventListener('click', (event) => {
+			if(this.controls.contains(event.target)) return;
+			popup.hide();
+		});
+		return popup;
+	}
+	
+	style = `<style>
+		.storage-controls .version-popup {display:none;position:absolute;left:0;right:0;top:40px;}
+		.storage-controls .version-popup.open {display:inline-block;}
+		.storage-controls .version-popup button {margin-bottom:3px;background: #1d1d1d;}
+		.storage-controls .version-popup button:hover,
+		.storage-controls button:focus {background: #444;}
+	</style>`
+	
+	getControls(){ return htmlToElement(`
+		<div class="storage-controls">
+			${this.style}
+			<button data-id="refresh">Refresh</button>
+			<div style="display: inline-block; position: relative;">
+				<button data-id="restore" tabindex=0>Restore</button>
+				<div class="version-popup">
+					<button data-id="switch" tabindex=0>TODO: 2021-01-23</button>
+					<button data-id="switch" tabindex=0>TODO: 2021-01-23</button>
+					<button data-id="switch" tabindex=0>TODO: 2021-01-23</button>
+					<button data-id="switch" tabindex=0>TODO: 2021-01-23</button>
+				</div>
+			</div>
+		</div>
+	`)}
+
+	clickHandler(event){
+		const handlers = {
+			refresh: () => {
+				console.log(`
+				//make a backup
+				//kill cache
+				//refresh page
+				`.replace(/				/g, ''));
+			},
+			restore: () => {
+				this.versionPopup.show();
+				console.log(`
+				//read previous versions
+				//show list 
+				`.replace(/				/g, ''));
+			},
+			switch: () => {
+				this.versionPopup.hide();
+				console.log(`
+				//switch cache
+				//refresh page
+				`.replace(/				/g, ''));
+			}
+		}
+		const thisHandler = handlers[event.target.dataset.id]
+		if(!thisHandler) return
+		thisHandler(event);
+	}
+}
+
 ;(async () => {
 	const cachedFetch = ((cache) => async (url) => {
 		const cached = await cache.match(url);
 		const headers = { pragma: 'no-cache', 'cache-control': 'no-cache'};
 		if(!cached) await cache.put(url, await fetch(url, { headers }));
-		return await caches.match(url);
+		const match = await caches.match(url);
+		window.latestMatch = match
+		return match;
 	})(await caches.open('rangersCache'));
 
 	async function scrapeHtml(url, query){
@@ -119,6 +220,9 @@ window.lerico = lericoResources;
 
 	await appendUrls(deps);
 	await prism('javascript', '', 'prism-preload');
+	
+	const backup = new Backup();
+	document.body.append(backup.controls);
 
 	const query = 'body > table > tbody > tr';
 	const tometo = await scrapeHtml(proxy + tometoUrl, query);
@@ -297,6 +401,7 @@ window.lerico = lericoResources;
 			.ranger-counts .icon > div {
 				min-width: 50%;
 			}
+			.common-pairings { width:100%; }
 			.common-pairings .ranger-counts {
 				height: 3em;
 				min-height: 4.5em; width: 100%;justify-content: space-between;
@@ -353,9 +458,9 @@ window.lerico = lericoResources;
 				<div style="display:flex;width:6em;margin-left:0;">
 				${mostUsedIcons[i].innerHTML}
 				</div>
-				${x.uses.teammates.filter((x,i)=>i<5).map(y => `
+				${x.uses.teammates.filter((x,i)=>i<8).map(y => `
 					<div class="icon" style="display:flex; flex-direction: column;align-items:center">
-					<img src="${proxy}https://rangers.lerico.net/res/${y.ranger}/${y.ranger}-thum.png"> [${y.uses}]
+					<img src="${proxy}https://rangers.lerico.net/res/${y.ranger}/${y.ranger}-thum.png"> ${(100*y.uses/x.uses.total).toFixed(2)}%
 </div>
 				`).join('\n')}</div>
 			`).join('\n')}

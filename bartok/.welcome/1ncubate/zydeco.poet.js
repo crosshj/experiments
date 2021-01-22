@@ -78,7 +78,8 @@ function getPoem(config){
 		<style>
 			@import url('${proxy}https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap');
 			@import url('${proxy}https://fonts.googleapis.com/css2?family=Lobster+Two:ital@1&display=swap');
-@import url('${proxy}https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+			@import url('${proxy}https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 			@font-face {
 				font-family: 'Amatic SC';
 				font-style: normal;

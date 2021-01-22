@@ -48,6 +48,7 @@
       "auth0.md": {},
       "downloadZip.js": {},
       "dropFile.js": {},
+      "editor.language.server.js": {},
       "editorLint.js": {},
       "editor_diff.js": {},
       "fiug-bundle.js": {},
@@ -78,6 +79,7 @@
       "ideas.js": {},
       "mathematics.css": {},
       "mathematics.js": {},
+      "neural.brain.js": {},
       "rangers-21-01-14.html": {},
       "rangers-advent": {
         "rangers.advent.css": {},
@@ -86,6 +88,8 @@
       },
       "rangers.ts": {},
       "react-notes.md": {},
+      "recurrent.neural.net.js": {},
+      "reinforcement.js": {},
       "scratch.js": {},
       "svcv3pattern.js": {},
       "webgl-quad": {
@@ -641,6 +645,10 @@
       "path": ".welcome/1ncubate/dropFile.js"
     },
     {
+      "name": "editor.language.server.js",
+      "path": ".welcome/1ncubate/editor.language.server.js"
+    },
+    {
       "name": "editor_diff.js",
       "path": ".welcome/1ncubate/editor_diff.js"
     },
@@ -1005,6 +1013,10 @@
       "path": ".welcome/examples/.deep-folders/fee/fie/foe/fum/mlerpo.md"
     },
     {
+      "name": "neural.brain.js",
+      "path": ".welcome/3xplore/neural.brain.js"
+    },
+    {
       "name": "nim.nim",
       "path": ".welcome/examples/language/nim.nim"
     },
@@ -1187,6 +1199,14 @@
     {
       "name": "recall-scroll.js",
       "path": ".welcome/4rchive/recall-scroll.js"
+    },
+    {
+      "name": "recurrent.neural.net.js",
+      "path": ".welcome/3xplore/recurrent.neural.net.js"
+    },
+    {
+      "name": "reinforcement.js",
+      "path": ".welcome/3xplore/reinforcement.js"
     },
     {
       "name": "reveal.html",
