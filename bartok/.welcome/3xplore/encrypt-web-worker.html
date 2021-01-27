@@ -132,6 +132,8 @@
 	^^^ ONLY FOR WORKER CODE!!
 -->
 
+<script src="https://unpkg.com/js-sha256@0.9.0/src/sha256.js"></script>
+
 <script>
 	const textToEncode = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vehicula eget velit vel egestas. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam non commodo ligula.`;
 	const private = `-----BEGIN RSA PRIVATE KEY-----
@@ -232,8 +234,48 @@ zkRG+YH9lY9DeKpauCsAMH75PwA5tMx1rZkgiopqCIIIk7+Q/5mppceQAw==
 				break
 		}
 	}
-	document.addEventListener("DOMContentLoaded", function(event) {
+	const cutoff = '0000000091a33a5fc95a0005e26c4b7d0dbd7bd36e9eebb90fc1642f8dbf6f13';
+	const bestHash = {
+		text: 'Dispense what green students rotate narrows clever veils [Skynet]',
+		hash: '00000000 00ef20e4 0c9f73e8 7c883b5e 387c98b7 d3abceff 793e8572 cbddd10a'
+	}
+	function getSha256(msg){
+		var hash = sha256.create();
+		hash.update(msg);
+		return hash.hex();
+	}
+	
+	function submitToLowHashDotCom(msg){
+		var myHeaders = new Headers();
+		myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
+		var urlencoded = new URLSearchParams();
+		urlencoded.append("msg", msg);
+
+		var requestOptions = {
+			method: 'POST',
+			headers: myHeaders,
+			body: urlencoded,
+			redirect: 'follow'
+		};
+
+		const proxy = 'TODO';
+		fetch(proxy + "https://lowhash.com/sagebird", requestOptions)
+			.then(response => response.text())
+			.then(result => console.log(result))
+			.catch(error => console.log('error', error));
+	}
+	
+	
+	document.addEventListener("DOMContentLoaded", function(event) {
+		log({
+			messageId: 'Low Hash',
+			result: `
+result: ${getSha256(bestHash.text)}
+expect: ${bestHash.hash.replace(/ /g, '')}
+`
+		})
+		
 		log({
 			messageId: 'encode then decode text using web worker and jsencrypt',
 			result: textToEncode

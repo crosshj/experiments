@@ -80,6 +80,7 @@
       "mathematics.css": {},
       "mathematics.js": {},
       "neural.brain.js": {},
+      "operational.transforms.js": {},
       "rangers-21-01-14.html": {},
       "rangers-advent": {
         "rangers.advent.css": {},
@@ -1027,6 +1028,10 @@
     {
       "name": "open.folder.html",
       "path": ".welcome/7ool/open.folder.html"
+    },
+    {
+      "name": "operational.transforms.js",
+      "path": ".welcome/3xplore/operational.transforms.js"
     },
     {
       "name": "package.json",

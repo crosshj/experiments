@@ -7,7 +7,7 @@
             "./",
             "./index.service.test.html",
             "./index.bootstrap.html",
-            "./index.sw.html",
+            "./index.old.html",
             "./index.html",
             "./service.manifest.json",
 
