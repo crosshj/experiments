@@ -1,12 +1,9 @@
 import { compileExpression } from 'https://cdn.skypack.dev/filtrex';
-import customFunctions from './customFunctions.js';
-
-//const { compileExpression } = filtrex;
-console.log({ compileExpression })
+import customFunctions, { getMappedItems } from './customFunctions.js';
 
 const handleDelay = 0;
 
-function ExpressionEngine({ emitStep, currentNode } = {}) {
+export function ExpressionEngine({ emitStep, currentNode } = {}) {
 		var compile = (exp, custFn, maxFails) => {
 				var fails = 0;
 				// return a function that will continuosly compile and run (as promises resolve) until true
@@ -52,6 +49,8 @@ function ExpressionEngine({ emitStep, currentNode } = {}) {
 								return res;
 								//console.log(custFn.promises.filter(x => x.func === func));
 						}
+						const safelyGot = get(propertyName);
+						if(safelyGot) return safelyGot;
 				}
 
 				var myFunc = undefined;
@@ -61,18 +60,20 @@ function ExpressionEngine({ emitStep, currentNode } = {}) {
 						if (beginRun) {
 								custFn.bindInput(data);
 						}
-						myFunc = myFunc || compileExpression(
-								exp,
-								custFn,
-								propFunction
-						);
+						const opts = {
+							extraFunctions: custFn,
+							customProp: propFunction
+						};
+						myFunc = myFunc || compileExpression(exp, opts);
 
 						const result = myFunc(data);
 						//console.log({ promises: custFn.promises });
 
+						const mappedItems = getMappedItems();
+
 						const asyncError = custFn.promises
 								.map(x => x.error).find(x => x);
-						const mappingError = false && mappedItems
+						const mappingError = mappedItems
 								.map(x => x.error).find(x => x);
 
 						const tooManyFails = fails > maxFails
@@ -116,7 +117,7 @@ function ExpressionEngine({ emitStep, currentNode } = {}) {
 
 						//RETRYING
 						const dataFromMap = {
-								TODO: 'add mapped data'
+								TODO: 'add mapped data',
 						};
 						const dataPlusMapped = Object.assign({}, data, dataFromMap);
 
@@ -130,10 +131,14 @@ function ExpressionEngine({ emitStep, currentNode } = {}) {
 						//console.log(firstUnresolved.func)
 						firstUnresolved.promise
 								//.then(sleeper(firstUnresolved.func === 'send' ? 3000 : 0))
-								.then(x => {
+								.then(result => {
 										//console.log('--- unresolved promise found, attaching');
-										//console.log({ x });
-										compiled(dataPlusMapped, callback);
+										//console.log({ result });
+										if(!firstUnresolved.name.includes('fetch:')){
+											compiled(dataPlusMapped, callback);
+											return;
+										}
+										compiled({ ...dataPlusMapped, ...result }, callback);
 								});
 				};
 

@@ -1,3 +1,5 @@
+import { tryParse } from '../helpers/utils.js';
+
 /*
 	TODO:
 	- need a delay for links and compiled function
@@ -51,7 +53,7 @@ const fetch = typeof window !== 'undefined' && window.fetch
 			resolve();
 		});
 
-function _fetch(url) {
+function _fetch(url, varName) {
 	const fetchPromise = fetch(url)
 		.then(x => x.text())
 		.then(t => {
@@ -59,7 +61,7 @@ function _fetch(url) {
 			if (!result) {
 				throw new Error('failed to parse');
 			}
-			return result;
+			return { [varName]: result };
 		});
 
 	return fetchPromise;
@@ -75,28 +77,13 @@ function _map(mapper, input, output) {
 			: DONE;
 	}
 
-	//if input is url, get result from promiseQueue
-	//TODO: if not??
-	//const queued = promiseQueue.find(x => x.name === input);
-	const queued = false;
-	if (!queued) {
-		mappedItems.push({
-			name: output,
-			result: '',
-			error: 'could not find input source for mapping'
-		});
-		return FAILED;
-	}
-	const inputValue = queued.result;
-
 	//output is a string to be used as name for variable
-	// ^^^ these variables will be bound to /called with later iterations
 	var mapping;
 	var mappingError;
 	try {
 		//TODO: what if mapper is not a function?
 		//TODO: mapper syntax (use sop?)
-		mapping = mapper(inputValue);
+		mapping = mapper(input);
 	} catch (e) {
 		mappingError = e;
 	}
@@ -107,9 +94,6 @@ function _map(mapper, input, output) {
 	};
 	mappedItems.push(mappedItem);
 
-	// console.log({
-	//     mapper, input, output, inputValue
-	// });
 	return mappedItem.error
 		? FAILED
 		: DONE;
@@ -279,7 +263,6 @@ const wrapCustomFunctions = (custFuncs, emitStep, currentNode) => {
 												})
 												.catch(err => {
 														console.log({ wrapCustomFunctionsError: err, key, funcKey });
-														//debugger
 														emitStep && emitStep({
 																name: key, result: err, status: 'error'
 														});
@@ -313,5 +296,8 @@ const wrapCustomFunctions = (custFuncs, emitStep, currentNode) => {
 		};
 		return wrapped;
 };
+
+
+export const getMappedItems = () => mappedItems;
 
 export default (emitStep, currentNode) => wrapCustomFunctions(customFunctions, emitStep, currentNode);
