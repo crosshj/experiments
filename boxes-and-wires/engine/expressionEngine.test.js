@@ -33,12 +33,12 @@ const apis = {
 	countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
 	cheerlights: 'https://api.thingspeak.com/channels/1417/field/1/last.json'
 };
-const api = 'ghibli';
+const api = 'bored';
 
 const myFuncArgs = {
 	url: apis[api],
 	mapper: (args) => {
-		if(Array.isArray) return args.map(x => x.title);
+		if(Array.isArray(args)) return args.map(x => x.title);
 		const { value, activity, field1 } = args;
 		return value || activity || field1;
 	},

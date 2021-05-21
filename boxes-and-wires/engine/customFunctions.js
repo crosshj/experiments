@@ -1,4 +1,4 @@
-import { tryParse } from '../helpers/utils.js';
+import { tryParse, flatPromise } from '../helpers/utils.js';
 
 /*
 	TODO:
@@ -24,15 +24,6 @@ const sendDelay = 0;
 const DONE = true;
 const WAITING = false;
 const FAILED = false;
-
-function flatPromise() {
-	let resolve, reject;
-	const promise = new Promise((res, rej) => {
-		resolve = res;
-		reject = rej;
-	});
-	return { promise, resolve, reject };
-}
 
 function sleeper(ms) {
 	return function(x) {
@@ -68,16 +59,16 @@ function _fetch(url, varName) {
 }
 
 const mappedItems = [];
-function _map(mapper, input, output) {
+function _map(mapper, input, outputName) {
 	//console.log('custom function [map] ran');
-	var mapped = mappedItems.find(x => x.name === output);
+	var mapped = mappedItems.find(x => x.name === outputName);
 	if (mapped) {
 		return mapped.error
 			? FAILED
 			: DONE;
 	}
 
-	//output is a string to be used as name for variable
+	//outputName is a string to be used as name for variable
 	var mapping;
 	var mappingError;
 	try {
@@ -88,7 +79,7 @@ function _map(mapper, input, output) {
 		mappingError = e;
 	}
 	const mappedItem = {
-		name: output,
+		name: outputName,
 		result: mapping,
 		error: mappingError
 	};
