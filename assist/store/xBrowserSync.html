@@ -1,0 +1,18 @@
+<style>
+	pre { white-space: pre-wrap; }
+</style>
+
+<script type="module">
+	import { createBM, getBM, updateBM } from './xbs.js';
+
+	const password = "applepeachpumpkinPIE69@#";
+	const syncId = "bc0ac8db5e3d4768b1f89f8091cedccc" || await createBM();
+
+	//await updateBM(bmId, bm);
+	document.body.innerHTML = `<pre>` + 
+		JSON.stringify(
+			await getBM(syncId, password), null, 2
+		) +
+	`</pre>`;
+
+</script>
