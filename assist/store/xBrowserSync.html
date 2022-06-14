@@ -3,10 +3,12 @@
 </style>
 
 <script type="module">
+	import { readMetadata } from './auth.js';
 	import { createBM, getBM, updateBM } from './xbs.js';
 
-	const password = "applepeachpumpkinPIE69@#";
-	const syncId = "bc0ac8db5e3d4768b1f89f8091cedccc" || await createBM();
+	const authRes = await readMetadata();
+	const password = authRes?.password;
+	const syncId = authRes?.syncId || await createBM();
 
 	//await updateBM(bmId, bm);
 	document.body.innerHTML = `<pre>` + 
