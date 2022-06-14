@@ -11,11 +11,19 @@ async function storeModule(){
 	document.querySelectorAll('store-section').forEach((el) => {
 		el.innerHTML = `
 <style>
-	pre { white-space: pre-wrap; }
+	.store-section pre { white-space: pre-wrap; }
 </style>
+
+<pre>
+- login if not logged in
+- new bookmarks if none exist
+- when new, syncId/password saved to auth0
+</pre>
+
 <pre>` +
 JSON.stringify(marks, null, 2) + 
 `</pre>`.trim();
+
 		el.classList.remove('loading');
 		setTimeout(() => el.classList.remove('transition'), 500)
 	})
