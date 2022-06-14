@@ -2,8 +2,11 @@ const startLoad = performance.now();
 
 import App from '../shared/modules/app.mjs';
 import Editor from '../shared/modules/editor.mjs';
+
 import Base64 from './modules/base64.mjs';
 import Notes from './modules/notes.mjs';
+import Store from './modules/store.mjs';
+
 import Theme from '../shared/modules/theme.mjs';
 import AppDom from '../shared/modules/appDom.mjs';
 
@@ -37,7 +40,11 @@ const opts = {
 		}, {
 			text: "Encode",
 			onclick: "window.switchTool('base64')",
-			icon: "lock"
+			icon: "build"
+		}, {
+			text: "Store",
+			onclick: "window.switchTool('store')",
+			icon: "star"
 		}],
 		"Actions": [{
 			text: "Toggle Dark",
@@ -81,6 +88,7 @@ AppDom((domErrors, appDom) => {
 				window.switchTool(toolChoice);
 				Base64();
 				Notes();
+				Store();
 
 				loadingEl.classList.add('hidden');
 				setTimeout(() => {
