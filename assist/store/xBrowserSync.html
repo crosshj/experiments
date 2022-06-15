@@ -3,18 +3,31 @@
 </style>
 
 <script type="module">
-	import { readMetadata } from './auth.js';
+	import { readMetadata, logout, login } from './auth.js';
 	import { createBM, getBM, updateBM } from './xbs.js';
 
+	window.logout = logout;
+	window.login = login;
 	const authRes = await readMetadata();
-	const password = authRes?.password;
+	console.log(authRes)
+	const { password, nickname="", email="" } = authRes;
 	const syncId = authRes?.syncId || await createBM();
+	
+	const loggedIn = syncId && password;
 
 	//await updateBM(bmId, bm);
-	document.body.innerHTML = `<pre>` + 
+	loggedIn && (document.body.innerHTML = `
+	 <button onclick="logout()">log out</button>
+	 <pre>
+user: ${nickname}
+email: ${email}
+bookmarks: ` +
 		JSON.stringify(
-			await getBM(syncId, password), null, 2
-		) +
-	`</pre>`;
+				await getBM(syncId, password), null, 2
+		) + 
+	`</pre>
+	`);
+	
+	!loggedIn && (document.body.innerHTML = `<button onclick="login()">log in</button>`);
 
 </script>

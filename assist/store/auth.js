@@ -1,4 +1,36 @@
-const auth0Url = "https://cdn.auth0.com/js/auth0-spa-js/1.7/auth0-spa-js.production.js"
+//docs: https://auth0.github.io/auth0-spa-js/
+import Auth0Client from 'https://cdn.skypack.dev/@auth0/auth0-spa-js';
+
+const opts = {
+	audience: 'https://crosshj.auth0.com/api/v2/',
+	//audience: 'https://fiug.dev/metadata',
+	scope: [
+		"openid",
+		"profile",
+		//"offline_access",
+		"name",
+		"given_name",
+		"family_name",
+		"nickname",
+		"email",
+		"email_verified",
+		"picture",
+		"created_at",
+		"identities",
+		"phone",
+		"address"
+	].join(" ")
+};
+
+let _client;
+const auth0Client = async () => {
+	_client = _client || await new Auth0Client({
+		domain: 'crosshj.auth0.com',
+		client_id: 'LJ3RP61zaDixMQXCYMXAR54ahWHImW3p',
+		redirect_uri: document.location.href
+	});
+	return _client
+};
 
 //const delay = time => new Promise(r=>setTimeout(r, time));
 //const fetchJSON = (url, opts) => fetch(url, opts).then(x => x.json());
@@ -30,30 +62,44 @@ exports.onExecutePostLogin = async (event, api) => {
 };
 
 https://auth0.com/blog/adding-custom-claims-to-id-token-with-auth0-actions/
+
+see also: https://crosshj.auth0.com/.well-known/openid-configuration
 */
 
 export async function readMetadata(){
-	await appendScript(auth0Url);
-	window.auth0Client = await createAuth0Client({
-		domain: 'crosshj.auth0.com',
-		client_id: 'LJ3RP61zaDixMQXCYMXAR54ahWHImW3p',
-		redirect_uri: document.location.href
-	});
-	let token;
-	const opts = {
-		audience: 'https://crosshj.auth0.com/api/v2/',
-		scope: ''
-	};
+	const client = await auth0Client();
+	let tokenResponse;
 	try {
-		token = await auth0Client.getTokenSilently(opts);
-		token && console.log('got token silently');
+		tokenResponse = await client.getTokenSilently({
+			...opts,
+			detailedResponse: true,
+		});
+		tokenResponse && console.log('got tokenResponse silently');
 	} catch(e){}
-	try {
-		!token && console.log('get token with popup');
-		token =	token || await auth0Client.getTokenWithPopup(opts);
-	} catch(e){}
-
+	// if(!tokenResponse){
+	// 	try {
+	// 		await client.getTokenWithPopup(opts);
+	// 		tokenResponse = await client.getTokenSilently(opts);
+	// 		tokenResponse && console.log('got tokenResponse with popup');
+	// 	} catch(e){}
+	// }
+	if(!tokenResponse || !tokenResponse.id_token) return {};
+	const { id_token: token } = tokenResponse;
 	const decoded = jwtDecode(token);
 	const metadata = decoded['https://fiug.dev/metadata'];
-	return metadata;
+	const { picture, email, nickname } = decoded;
+	return { picture, nickname, email, ...metadata };
 };
+
+export async function login(){
+	const client = await auth0Client();
+	await client.loginWithPopup(opts);
+	document.location.reload();
+}
+
+export async function logout(){
+	const client = await auth0Client();
+	await client.logout({
+		returnTo: document.location.href
+	});
+}
