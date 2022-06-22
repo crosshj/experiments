@@ -6,21 +6,43 @@ const template = await handlebars.compile({
 	path: new URL(import.meta.url).href + '/../store.hbs'
 });
 
+let authRes;
 let password;
 let syncId;
 
 window.logout = logout;
 window.login = login;
 window.updateBM = async () => {
-	//TODO: set render to loading
+	loading();
 	const data = [{
-		"title": "Hacker News",
-		"url": "https://news.ycombinator.com/",
-		"description": "desc",
+		"title": "Bookmarks",
+		"children": [
+			{
+				"title": "Hacker News",
+				"url": "https://news.ycombinator.com/",
+				"description": "read tech news here",
+				"id": 2
+			},
+			{
+				"title": "How to inspect network traffic from Chrome extensions",
+				"url": "https://stackoverflow.com/questions/50673373/how-to-inspect-network-traffic-from-chrome-extensions",
+				"description": "I have a third party chrome extension which sends some requests to a website and gets some data.\nI want to analyse network traffic for those requests.\nI tried using Chrome debugger, but that did no...",
+				"id": 3
+			}
+		],
 		"id": 1
 	}];
-	await updateBM({ data, password, syncId });
-	//TODO: refresh render
+	const results = await updateBM({ data, password, syncId });
+	const marks = await getBM(syncId, password);
+	render({ authRes, marks });
+};
+
+const loading = () => {
+	document.querySelectorAll('store-section')
+		.forEach((el) => {
+			el.innerHTML = "";
+			el.classList.add('loading');
+		});
 };
 
 const render = ({ authRes, marks }) => {
@@ -36,7 +58,7 @@ const render = ({ authRes, marks }) => {
 };
 
 async function storeModule(){
-	const authRes = await readMetadata();
+	(authRes = await readMetadata());
 	({ password, syncId } = authRes || {});
 	const marks = password && syncId
 		? await getBM(syncId, password)
