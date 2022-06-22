@@ -1,5 +1,6 @@
 //docs: https://auth0.github.io/auth0-spa-js/
 import Auth0Client from 'https://cdn.skypack.dev/@auth0/auth0-spa-js';
+import jwtDecode from "https://cdn.skypack.dev/jwt-decode";
 
 const opts = {
 	audience: 'https://crosshj.auth0.com/api/v2/',
@@ -32,9 +33,6 @@ const auth0Client = async () => {
 	return _client
 };
 
-//const delay = time => new Promise(r=>setTimeout(r, time));
-//const fetchJSON = (url, opts) => fetch(url, opts).then(x => x.json());
-
 const appendScript = (url) => new Promise((resolve, reject) => {
 	const script = document.createElement('script');
 	script.crossOrigin = "anonymous";
@@ -42,25 +40,8 @@ const appendScript = (url) => new Promise((resolve, reject) => {
 	script.src = url;
 	document.head.appendChild(script);
 });
-const jwtDecode = (token) => {
-	try {
-		return JSON.parse(atob(token.split('.')[1]));
-	} catch (e){}
-};
 
 /*
-relies on Auth0 Action executing on post-login
-
-exports.onExecutePostLogin = async (event, api) => {
-  const namespace = 'https://fiug.dev';
-  const metadata = event.user.app_metadata;
-
-  api.idToken.setCustomClaim(`${namespace}/metadata`, metadata);
-  api.accessToken.setCustomClaim(`${namespace}/metadata`, metadata);
-
-  //api.user.setAppMetadata("didAnExpensiveTask", true);
-};
-
 https://auth0.com/blog/adding-custom-claims-to-id-token-with-auth0-actions/
 
 see also: https://crosshj.auth0.com/.well-known/openid-configuration
@@ -83,9 +64,10 @@ export async function readMetadata(){
 	// 		tokenResponse && console.log('got tokenResponse with popup');
 	// 	} catch(e){}
 	// }
-	if(!tokenResponse || !tokenResponse.id_token) return {};
+	if(!tokenResponse || !tokenResponse.id_token) return;
 	const { id_token: token } = tokenResponse;
 	const decoded = jwtDecode(token);
+	if(!decoded) return;
 	const metadata = decoded['https://fiug.dev/metadata'];
 	const { picture, email, nickname } = decoded;
 	return { picture, nickname, email, ...metadata };

@@ -1,43 +1,47 @@
 import { readMetadata, logout, login } from '../store/auth.js';
-import { createBM, getBM, updateBM } from '../store/xbs.js';
+import { getBM, updateBM } from '../store/xbs.js';
+
+import handlebars from "https://unpkg.com/@fiug/handlebars-esm@4.7.7";
+const template = await handlebars.compile({
+	path: new URL(import.meta.url).href + '/../store.hbs'
+});
+
+let password;
+let syncId;
+
 window.logout = logout;
 window.login = login;
+window.updateBM = async () => {
+	//TODO: set render to loading
+	const data = [{
+		"title": "Hacker News",
+		"url": "https://news.ycombinator.com/",
+		"description": "desc",
+		"id": 1
+	}];
+	await updateBM({ data, password, syncId });
+	//TODO: refresh render
+};
+
+const render = ({ authRes, marks }) => {
+	document.querySelectorAll('store-section')
+		.forEach((el) => {
+			el.innerHTML = template({
+				user: authRes,
+				bookmarks: marks ? JSON.stringify(marks, null, 2) : ''
+			});
+			el.classList.remove('loading');
+			setTimeout(() => el.classList.remove('transition'), 500);
+		});
+};
 
 async function storeModule(){
 	const authRes = await readMetadata();
-	const { password, syncId, nickname="", email="" } = authRes;
-	const loggedIn = password && syncId;
-	const marks = loggedIn && await getBM(syncId, password);
-
-	document.querySelectorAll('store-section').forEach((el) => {
-		loggedIn && (el.innerHTML = `
-<button onclick="logout()">log out</button>
-<style>
-	store-section pre { white-space: pre-wrap; }
-</style>
-<pre>
-user: ${nickname}
-email: ${email}
-bookmarks: ${JSON.stringify(marks, null, 2)}
-</pre>
-		`.trim());
-
-		!loggedIn && (el.innerHTML = `
-<button onclick="login()">log in</button>
-		`.trim());
-
-		el.innerHTML += `
-<pre>
-todo:
-- new bookmarks if none exist
-- when new, syncId/password saved to auth0
-</pre>
-<a href="./store/xBrowserSync.html">pop this out</a>
-		`.trim();
-
-		el.classList.remove('loading');
-		setTimeout(() => el.classList.remove('transition'), 500)
-	})
+	({ password, syncId } = authRes || {});
+	const marks = password && syncId
+		? await getBM(syncId, password)
+		: undefined;
+	render({ authRes, marks });
 };
 
 export default storeModule;

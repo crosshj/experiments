@@ -1,0 +1,27 @@
+{{#if user }}
+	<button onclick="logout()">log out</button>
+	<pre>
+user: {{user.nickname}}
+email: {{user.email}}
+{{#if bookmarks }}
+
+bookmarks: {{bookmarks}}
+{{else}}
+
+bookmarks: <a onclick="updateBM()">create</a>
+{{/if}}
+	</pre>
+{{else}}
+	<button onclick="login()">log in</button>
+{{/if}}
+
+<style>
+	store-section pre { white-space: pre-wrap; }
+</style>
+
+<pre>
+todo:
+- new bookmarks if none exist
+- when new, syncId/password saved to auth0
+</pre>
+<a href="./store/xBrowserSync.html">pop this out</a>
