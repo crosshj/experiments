@@ -1,7 +1,7 @@
 import { readMetadata, logout, login } from '../store/auth.js';
 import { getBM, updateBM } from '../store/xbs.js';
 
-import handlebars from "https://unpkg.com/@fiug/handlebars-esm@4.7.7";
+import handlebars from "https://unpkg.com/@fiug/handlebars-esm@4.7.7-4";
 const template = await handlebars.compile({
 	path: new URL(import.meta.url).href + '/../store.hbs'
 });
@@ -10,51 +10,100 @@ let authRes;
 let password;
 let syncId;
 
+const defaultBookmarks = [{
+	title: "Bookmarks",
+	children: [
+		{
+			title: "Hacker News",
+			url: "https://news.ycombinator.com/",
+			description: "read tech news here",
+			id: 2
+		},
+		{
+			title: "How to inspect network traffic from Chrome extensions",
+			url: "https://stackoverflow.com/questions/50673373/how-to-inspect-network-traffic-from-chrome-extensions",
+			description: "I have a third party chrome extension which sends some requests to a website and gets some data.\nI want to analyze network traffic for those requests.",
+			id: 3
+		}
+	],
+	id: 1
+}];
+
+let bookmarksDom;
+let bookmarksObserver;
+const bookmarksMutateConfig = {
+	childList: true, // observe direct children
+	subtree: true, // and lower descendants too
+	characterDataOldValue: true // pass old data to callback
+};
+
+function treeHTML(element) {
+	var o = {};
+	const title = element.querySelector(':scope > .title');
+	if(title){
+		o.title = title.textContent;
+	}
+	if(title && title.tagName === "A"){
+		o.url = title.href;
+	}
+	const description = element.querySelector(':scope > .description');
+	if(description){
+		o.description = description.textContent;
+	}
+	const id = element.querySelector(':scope > .id');
+	if(id){
+		o.id = Number(id.textContent);
+	}
+	const children = element.querySelector(':scope > .children');
+	if(!children || !children.children) return o;
+
+	o.children = [];
+	for(const child of Array.from(children.children)){
+		o.children.push(treeHTML(child));
+	}
+	return o;
+}
+
+function bookmarksMutate(mutationRecords){
+	const scraped = treeHTML(bookmarksDom).children;
+	console.log(scraped);
+	//TODO
+}
+
 window.logout = logout;
 window.login = login;
 window.updateBM = async () => {
 	loading();
-	const data = [{
-		"title": "Bookmarks",
-		"children": [
-			{
-				"title": "Hacker News",
-				"url": "https://news.ycombinator.com/",
-				"description": "read tech news here",
-				"id": 2
-			},
-			{
-				"title": "How to inspect network traffic from Chrome extensions",
-				"url": "https://stackoverflow.com/questions/50673373/how-to-inspect-network-traffic-from-chrome-extensions",
-				"description": "I have a third party chrome extension which sends some requests to a website and gets some data.\nI want to analyse network traffic for those requests.\nI tried using Chrome debugger, but that did no...",
-				"id": 3
-			}
-		],
-		"id": 1
-	}];
+	const data = defaultBookmarks;
 	const results = await updateBM({ data, password, syncId });
 	const marks = await getBM(syncId, password);
 	render({ authRes, marks });
 };
 
 const loading = () => {
-	document.querySelectorAll('store-section')
-		.forEach((el) => {
-			el.innerHTML = "";
-			el.classList.add('loading');
-		});
+	const storeSection = document.querySelector('store-section');
+	storeSection.innerHTML = "";
+	storeSection.classList.add('loading');
 };
 
 const render = ({ authRes, marks }) => {
-	document.querySelectorAll('store-section')
-		.forEach((el) => {
-			el.innerHTML = template({
-				user: authRes,
-				bookmarks: marks ? JSON.stringify(marks, null, 2) : ''
-			});
-			el.classList.remove('loading');
-			setTimeout(() => el.classList.remove('transition'), 500);
-		});
+	const storeSection = document.querySelector('store-section');
+	bookmarksObserver && bookmarksObserver.disconnect();
+
+	const html = template({
+		user: authRes,
+		bookmarks: marks
+	});
+	storeSection.innerHTML = html;
+
+	bookmarksDom = storeSection.querySelector('#bookmarks');
+	if(bookmarksDom){
+		bookmarksObserver = new MutationObserver(bookmarksMutate);
+		bookmarksObserver.observe(bookmarksDom, bookmarksMutateConfig);
+	}
+
+	storeSection.classList.remove('loading');
+	setTimeout(() => storeSection.classList.remove('transition'), 500);
 };
 
 async function storeModule(){

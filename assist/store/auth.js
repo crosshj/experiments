@@ -47,8 +47,20 @@ https://auth0.com/blog/adding-custom-claims-to-id-token-with-auth0-actions/
 see also: https://crosshj.auth0.com/.well-known/openid-configuration
 */
 
+const extractMetadata = (x) => x['https://fiug.dev/metadata'];
+
 export async function readMetadata(){
 	const client = await auth0Client();
+	let user;
+	try{
+		user = await client.getUser();
+	}catch(e){}
+	if(user){
+		return {
+			...user,
+			...extractMetadata(user)
+		};
+	}
 	let tokenResponse;
 	try {
 		tokenResponse = await client.getTokenSilently({
@@ -68,7 +80,7 @@ export async function readMetadata(){
 	const { id_token: token } = tokenResponse;
 	const decoded = jwtDecode(token);
 	if(!decoded) return;
-	const metadata = decoded['https://fiug.dev/metadata'];
+	const metadata = extractMetadata(decoded);
 	const { picture, email, nickname } = decoded;
 	return { picture, nickname, email, ...metadata };
 };

@@ -1,27 +1,72 @@
+<style>
+	store-section pre {
+		white-space: pre-wrap;
+	}
+	.description {
+		white-space: pre-line;
+	}
+	#bookmarks {
+		font-family: monospace;
+	}
+	.bookmark .id { display: none; }
+</style>
+
 {{#if user }}
 	<button onclick="logout()">log out</button>
 	<pre>
-user: {{user.nickname}}
-email: {{user.email}}
-{{#if bookmarks }}
-
-bookmarks: {{bookmarks}}
-{{else}}
-
-bookmarks: <a onclick="updateBM()">create</a>
-{{/if}}
+		user: {{user.nickname}}
+		email: {{user.email}}
 	</pre>
+	{{~"\n"~}}
+	{{#if bookmarks }}
+		<div id="bookmarks">
+			<ul class="children">
+				{{#each bookmarks}}
+					{{> bookmark }}
+				{{/each}}
+			</ul>
+		</div>
+	{{else}}
+		<a onclick="updateBM()">create bookmarks</a>
+	{{/if}}
 {{else}}
 	<button onclick="login()">log in</button>
 {{/if}}
 
-<style>
-	store-section pre { white-space: pre-wrap; }
-</style>
 
 <pre>
 todo:
-	- add bookmarks one at a time (not faked)
-	- display bookmarks better
+ - add bookmarks one at a time (not faked)
+ - update bookmarks when changed (API)
+ - debounce keystrokes updating bookmarks
 </pre>
 <a href="./store/xBrowserSync.html">pop this out</a>
+
+{{! bookmarks partial }}
+{{#*inline "bookmark"}}
+	<li class="bookmark">
+		{{#if url}}
+			<a href="{{url}}" contenteditable="true" class="title">{{title}}</a>
+		{{else}}
+			<span contenteditable="true" class="title">{{title}}</span>
+		{{/if}}
+
+		{{#if id}}
+			<div class="id">{{id}}</div>
+		{{/if}}
+
+		{{#if description}}
+			<div contenteditable="true" class="description">
+				{{~description~}}
+			</div>
+		{{/if}}
+
+		{{#if children}}
+			<ul class="children browser-default">
+				{{#each children}}
+					{{> bookmark}}
+				{{/each}}
+			</ul>
+		{{/if}}
+	</li>
+{{/inline}}
