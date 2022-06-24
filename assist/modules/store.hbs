@@ -1,4 +1,5 @@
 <style>
+	.no-margin-top { margin-top: 0; }
 	store-section pre {
 		white-space: pre-wrap;
 	}
@@ -33,13 +34,14 @@
 	<button onclick="login()">log in</button>
 {{/if}}
 
-
-<pre>
-todo:
- - add bookmarks one at a time (not faked)
- - update bookmarks when changed (API)
- - debounce keystrokes updating bookmarks
-</pre>
+{{#if notes }}
+	<span>notes:</span>
+	<ul class="browser-default no-margin-top">
+		{{#each notes}}
+			<li>{{ this }}</li>
+		{{/each}}
+	</ul>
+{{/if}}
 <a href="./store/xBrowserSync.html">pop this out</a>
 
 {{! bookmarks partial }}

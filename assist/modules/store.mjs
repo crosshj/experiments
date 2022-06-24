@@ -10,6 +10,14 @@ let authRes;
 let password;
 let syncId;
 
+const notes = `
+
+	- add bookmarks one at a time (not faked)
+	- update bookmarks when changed (API)
+	- debounce keystrokes updating bookmarks
+
+`;
+
 const defaultBookmarks = [{
 	title: "Bookmarks",
 	children: [
@@ -37,7 +45,7 @@ const bookmarksMutateConfig = {
 	characterDataOldValue: true // pass old data to callback
 };
 
-function treeHTML(element) {
+function modelFromDom(element) {
 	var o = {};
 	const title = element.querySelector(':scope > .title');
 	if(title){
@@ -59,13 +67,13 @@ function treeHTML(element) {
 
 	o.children = [];
 	for(const child of Array.from(children.children)){
-		o.children.push(treeHTML(child));
+		o.children.push(modelFromDom(child));
 	}
 	return o;
 }
 
 function bookmarksMutate(mutationRecords){
-	const scraped = treeHTML(bookmarksDom).children;
+	const scraped = modelFromDom(bookmarksDom).children;
 	console.log(scraped);
 	//TODO
 }
@@ -92,6 +100,7 @@ const render = ({ authRes, marks }) => {
 
 	const html = template({
 		user: authRes,
+		notes: notes.trim().split('-').map(x=>x.trim()).filter(x=>!!x),
 		bookmarks: marks
 	});
 	storeSection.innerHTML = html;
