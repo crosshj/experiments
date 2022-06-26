@@ -112,7 +112,6 @@ const tryParse = text => {
 
 //https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
 function overlayColor(color) {
-	//if only first half of color is defined, repeat it
 	if (color.length < 5) {
 		color += color.slice(1);
 	}
@@ -280,14 +279,11 @@ function animateLink(link, callback, reverse) {
 						}
 				}
 		`;
-	//console.log({ linkLength, dashLength, duration});
-	//console.log(`-- START: ${link.label}`);
 	var isPaused;
 	const timeoutDone = () => {
 		if (isPaused) {
 			return;
 		}
-		//console.log(`-- END  : ${link.label}`);
 		callback && callback();
 	};
 	setTimeout(timeoutDone, duration * 1000);
@@ -576,10 +572,7 @@ function drawUnit(unit, callback) {
 
 	helpers.innerHTML = helpersHTML;
 
-	//const linksGroup = document.querySelector('#canvas #links');
-
 	canvas.appendChild(unitElement);
-	//canvas.insertBefore(unitElement, linksGroup);
 	if (callback) {
 		callback(unitElement);
 	}
@@ -602,14 +595,6 @@ function calculateControls(p) {
 	const yOffset = xDifference < 0
 		? yDifference < 0 ? -yCurve : yCurve
 		: 0
-
-	// const xMult = xDifference < 0
-	//   ? - Math.abs(xDifference / 5 )
-	//   : 0 //1 - Math.abs(xDifference) / Math.abs(yDifference);
-	// const yMult = yDifference < 0
-	//   ? - Math.abs(yDifference / 5 )
-	//   : 0 //1 - Math.abs(yDifference) / Math.abs(xDifference);
-
 	const controls = {
 		c1: {
 			x: p.m.x + (xDifference * xMult),
@@ -620,12 +605,6 @@ function calculateControls(p) {
 			y: p.c3.y - (yDifference * yMult) - yOffset
 		}
 	};
-
-
-	// console.log({
-	//   xDifference, yDifference
-	// });
-
 	return controls;
 }
 
@@ -732,7 +711,6 @@ function objToPathD(o, directions) {
 	};
 	if (directions.end && segmentsEnd[directions.end]) {
 		end = segmentsEnd[directions.end];
-		//end = `${o.c3.x} ${o.c3.y}`;
 	}
 
 	return `${start} L ${end}`;
@@ -768,7 +746,6 @@ function initialiseUnitDragging(svg, selectedElement, evt) {
 }
 
 function initialiseWireDragging(evt) {
-	//console.log('wire drag start');
 	const mousePos = getMousePosition(this.svg, evt);
 	const label = Math.random().toString(26).replace('0.', '');
 
@@ -816,7 +793,6 @@ function initialiseWireDragging(evt) {
 	tempLink.temporary = true;
 
 	const setDraggingState = (unitElement, linkElement) => {
-		//const unitElement = document.querySelector(`.box[data-label="${tempUnit.label}"]`);
 		if (!unitElement || !linkElement) {
 			debugger;
 		}
@@ -915,7 +891,6 @@ function drag(evt) {
 		selectedUnitState.x = coord.x - this.offset.x;
 		selectedUnitState.y = coord.y - this.offset.y;
 
-		//update connected links
 		state.links.forEach(link => {
 			['start', 'end'].forEach(connect => {
 				const connection = link[connect];
@@ -930,7 +905,6 @@ function drag(evt) {
 		});
 		return state;
 	});
-	//console.log(`el: ${this.selectedElement.dataset.label}, x: ${coord.x - this.offset.x}, y: ${coord.y - this.offset.y}`);
 }
 
 function endDrag(evt) {
@@ -1005,9 +979,6 @@ function endDrag(evt) {
 		draggingLink.end.parent.block = newEnd.parentLabel;
 		draggingLink.end.parent.node = newEnd.label;
 		draggingLink.end.parent.direction = oppositeDirection[newEnd.direction];
-
-		//console.log({ draggingLink, newEnd, allNodes })
-		//TODO: update end
 		this.update(() => {
 			return { units, links };
 		})
@@ -1040,7 +1011,6 @@ function makeDraggable(state) {
 // ----------------------------------------------------------------
 
 function bringToTop(targetElement) {
-	// put the element at the bottom of its parent
 	let parent = targetElement.parentNode;
 	parent.appendChild(targetElement);
 }
@@ -1083,7 +1053,6 @@ function hoverStart(event) {
 		const endHelper = getHelper(end);
 		bringToTop(linkElement);
 		this.hovered = [linkElement, end, start, endHelper, startHelper];
-		//console.log({ link, hovered: this.hovered})
 		this.hovered.forEach(el => el.classList.add('hovered'));
 	}
 	if (event.target.tagName === 'circle') {
@@ -1204,7 +1173,6 @@ function initState({ units, links }) {
 		height: unit.height,
 		nodes: unit.nodes.map(mapNodeToState.bind({ unit }))
 	}));
-	//console.log({ unit: units[0], u: u[0]})
 
 	const l = links.map(link => {
 		const stripParent = {
@@ -1230,7 +1198,6 @@ function initState({ units, links }) {
 		_link.selected = link.selected;
 		return _link;
 	});
-	//console.log({ link: links[0], l: l[0]})
 	return { units: u, links: l };
 }
 
@@ -1240,9 +1207,7 @@ function clone(obj) {
 
 function cleanScene(state) {
 	const domLinks = Array.from(document.querySelectorAll('.link'));
-	//.map(x => x.dataset.label);
 	const domUnits = Array.from(document.querySelectorAll('.box'));
-	//.map(x => x.dataset.label);
 	const stateUnitLabels = state.units.map(x => x.label);
 	const stateLinkLabels = state.links.map(x => x.label);
 
@@ -1259,14 +1224,8 @@ function cleanScene(state) {
 			link.parentNode.removeChild(link);
 		}
 	});
-
-	//TODO: remove links that are missing one or both units
-
-	//TODO: remove nodes that are missing from each unit
 }
 
-// TODO: maybe use an observer to keep dom model current
-// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 function getDom() {
 	const dom = Array.from(document.querySelectorAll('.box'))
 		.map(u => {
@@ -1351,32 +1310,12 @@ function render(_state) {
 			}
 			return all;
 		}, []);
-	//console.log({ linksToUpdate });
 
 	clone(linksToUpdate).forEach(withAnimFrame(drawLink));
 }
 
 //---------------------------------------------------------------
 function engineBindState(Engine, _state) {
-	/*
-		FROM EMIT_STEP (works right):
-
-		[ομφαλός] fetch: start - 0 ms
-		[ομφαλός] fetch: success - 2499 ms
-
-		[ομφαλός] send: start - 2500 ms
-		[जो है वही है] ack: success - 7501 ms
-		[ομφαλός] send: success - 4998 ms
-
-		[जो है वही है] send: start - 2500 ms
-		[גליטש] ack: success - 7499 ms
-		[जो है वही है] send: success - 5001 ms
-
-		[גליטש] send: start - 2499 ms
-		[ομφαλός] ack: success - 7499 ms
-		[גליטש] send: success - 5001 ms
-	*/
-
 	const cleanClass = (stateClass) => {
 		return (stateClass || '')
 			.replace(' fail', '')
@@ -1389,7 +1328,6 @@ function engineBindState(Engine, _state) {
 
 	var t0;
 	const emitStep = (data) => {
-		//debugger;
 		t0 = t0 || performance.now();
 		var t1 = performance.now();
 		var tDiff = Math.floor(t1 - t0);
@@ -1398,9 +1336,6 @@ function engineBindState(Engine, _state) {
 		const linkSpacer = data.name === 'link' && data.state === 'success'
 			? '\n\n'
 			: '';
-		console.log(`[${label}] ${data.name}: ${data.status || data.state} - ${tDiff} ms ${linkSpacer}`);
-		//console.log({ data });
-
 	};
 
 	const unitsChange = (data) => {
@@ -1431,16 +1366,6 @@ function engineBindState(Engine, _state) {
 
 	const linksChange = (data) => {
 		data.forEach(d => emitStep({name: 'link', ...d}));
-		/*
-				TODO: side effects come along with updating state here:
-						- animate link
-						- remove animation
-				this should be done in renderer, not here
-		*/
-		//console.log({ linksChange: JSON.stringify(data) })
-
-		//TODO: this needs to be done better!! (remove animation)
-		//removeAnimation();
 		_state.update(({ links }) => {
 			data.forEach(u => {
 				const stateLink = links.find(s => s.label === u.label);
@@ -1458,7 +1383,6 @@ function engineBindState(Engine, _state) {
 				}
 				if (u.state === 'fail') {
 					stateLink.class = "fail";
-					//stateLink.selected = false;
 					return;
 				}
 				if (u.state === 'success') {
@@ -1472,44 +1396,11 @@ function engineBindState(Engine, _state) {
 		});
 	};
 
-
-
-	// const unitsDeactivate = (data) => {
-	//     _state.update(({ units }) => {
-	//         data.forEach(u => {
-	//             const stateUnit = units.find(s => s.label === u.label);
-	//             //TODO: fail versus success?
-	//             stateUnit.class = stateUnit.class.replace(' pulse', '');
-	//         })
-	//         return { units };
-	//     });
-	// };
-
 	Engine.on('units-change', unitsChange);
 	Engine.on('links-change', linksChange);
 	//Engine.on('emit-step', emitStep);
 	Engine.on('emit-step', ()=>{});
 }
-
-// --------------------------------------------------------------
-// function testEngine(){
-//     console.log('test engine');
-//     const { engine } = window.ExpressionEngine;
-//     const links = [];
-//     const units = [{
-//         handle: `
-//             ack()
-//             fetch(countRegisterUrl)
-//             send(null, 'fourth')
-//         `,
-//     }];
-//     const stateDefintion = { units, links, verbose: true }; //because state won't carry function definitions
-//     const Engine = engine(stateDefintion);
-//     Engine.on('emit-step', (data) => {
-//         //console.log('step emitted');
-//         console.log(`${data.name}: ${data.status}`);
-//     });
-// }
 
 const init = ({ State, ExpressionEngine }) => (svg, units, links) => {
 	if (window.innerWidth > 750) {
