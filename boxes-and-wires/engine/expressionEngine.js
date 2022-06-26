@@ -1,16 +1,9 @@
-import {
-	compileExpression
-} from 'https://cdn.skypack.dev/filtrex';
-import customFunctions, {
-	getMappedItems
-} from './customFunctions.js';
+import { compileExpression } from "https://cdn.skypack.dev/filtrex";
+import customFunctions, { getMappedItems } from "./customFunctions.js";
 
 const handleDelay = 0;
 
-export function ExpressionEngine({
-	emitStep,
-	currentNode
-} = {}) {
+export function ExpressionEngine({ emitStep, currentNode } = {}) {
 	var compile = (exp, custFn, maxFails) => {
 		var fails = 0;
 		// return a function that will continuosly compile and run (as promises resolve) until true
@@ -31,16 +24,16 @@ export function ExpressionEngine({
 			get, // safe getter that retrieves the property from obj
 			obj // the object passed to compiled expression
 		) {
-			if (propertyName === 'null') {
+			if (propertyName === "null") {
 				return null;
 			}
-			if (propertyName === 'undefined') {
+			if (propertyName === "undefined") {
 				return undefined;
 			}
-			if (propertyName.includes('unit:')) {
-				return propertyName.replace('unit:', '');
+			if (propertyName.includes("unit:")) {
+				return propertyName.replace("unit:", "");
 			}
-			const [func, index, prop, prop2] = propertyName.split('.');
+			const [func, index, prop, prop2] = propertyName.split(".");
 			const supportedCommands = Object.keys(custFn);
 			//console.log({ func, index, path, supportedCommands })
 
@@ -48,7 +41,9 @@ export function ExpressionEngine({
 				//console.log({ func, index, prop })
 				var res = undefined;
 				try {
-					res = custFn.promises.filter(x => x.func === func)[index].result[prop];
+					res = custFn.promises.filter((x) => x.func === func)[index].result[
+						prop
+					];
 					if (prop2) {
 						res = res[prop2];
 					}
@@ -70,7 +65,7 @@ export function ExpressionEngine({
 			}
 			const opts = {
 				extraFunctions: custFn,
-				customProp: propFunction
+				customProp: propFunction,
 			};
 			myFunc = myFunc || compileExpression(exp, opts);
 
@@ -79,25 +74,20 @@ export function ExpressionEngine({
 
 			const mappedItems = getMappedItems();
 
-			const asyncError = custFn.promises
-				.map(x => x.error).find(x => x);
-			const mappingError = mappedItems
-				.map(x => x.error).find(x => x);
+			const asyncError = custFn.promises.map((x) => x.error).find((x) => x);
+			const mappingError = mappedItems.map((x) => x.error).find((x) => x);
 
-			const tooManyFails = fails > maxFails ?
-				`Maximum failures exceeded: ${maxFails}` :
-				undefined;
+			const tooManyFails =
+				fails > maxFails ? `Maximum failures exceeded: ${maxFails}` : undefined;
 
-			const finished = result ||
-				asyncError ||
-				mappingError ||
-				tooManyFails;
+			const finished = result || asyncError || mappingError || tooManyFails;
 			//console.log({ result, asyncError, mappingError })
 
 			if (finished) {
-				emitStep && emitStep({
-					name: 'end'
-				});
+				emitStep &&
+					emitStep({
+						name: "end",
+					});
 				custFn.reset();
 				//myFunc = undefined;
 
@@ -109,27 +99,25 @@ export function ExpressionEngine({
 				if (!callback) {
 					return;
 				}
-				const results = mappedItems.length > 0 || custFn.promises.length > 0 ?
-					{
-						map: mappedItems,
-						fetch: custFn.promises
-					} :
-					undefined;
+				const results =
+					mappedItems.length > 0 || custFn.promises.length > 0
+						? {
+								map: mappedItems,
+								fetch: custFn.promises,
+						  }
+						: undefined;
 
-				callback(
-					asyncError || mappingError || tooManyFails,
-					results || result
-				);
+				callback(asyncError || mappingError || tooManyFails, results || result);
 				return;
 			}
 
 			//RETRYING
 			const dataFromMap = {
-				TODO: 'add mapped data',
+				TODO: "add mapped data",
 			};
 			const dataPlusMapped = Object.assign({}, data, dataFromMap);
 
-			const firstUnresolved = custFn.promises.find(x => !x.result);
+			const firstUnresolved = custFn.promises.find((x) => !x.result);
 			if (!firstUnresolved) {
 				//console.log('--- no unresolved promises, will call');
 				fails++;
@@ -139,24 +127,28 @@ export function ExpressionEngine({
 			//console.log(firstUnresolved.func)
 			firstUnresolved.promise
 				//.then(sleeper(firstUnresolved.func === 'send' ? 3000 : 0))
-				.then(result => {
+				.then((result) => {
 					//console.log('--- unresolved promise found, attaching');
 					//console.log({ result });
-					if (!firstUnresolved.name.includes('fetch:')) {
+					if (!firstUnresolved.name.includes("fetch:")) {
 						compiled(dataPlusMapped, callback);
 						return;
 					}
-					compiled({
-						...dataPlusMapped,
-						...result
-					}, callback);
+					compiled(
+						{
+							...dataPlusMapped,
+							...result,
+						},
+						callback
+					);
 				});
-		};
+		}
 
 		return (data, callback) => {
-			emitStep && emitStep({
-				name: 'start'
-			});
+			emitStep &&
+				emitStep({
+					name: "start",
+				});
 			compiled(data, callback);
 		};
 	};
@@ -182,12 +174,12 @@ export function ExpressionEngine({
 
 		const ex = exampleExpression
 			.trim()
-			.split('\n')
-			.join(' and ')
-			.replace(/\s\s+/g, ' ');
+			.split("\n")
+			.join(" and ")
+			.replace(/\s\s+/g, " ");
 
 		if (verbose) {
-			console.log('EXPRESSION: ' + exampleExpression);
+			console.log("EXPRESSION: " + exampleExpression);
 		}
 
 		return compile(ex, customFunctions(emitStep, currentNode), maxFails);
@@ -246,49 +238,44 @@ notify about environment:
 		links-change: send, receive, fail, success,
 		units-change: active (progress?), wait, success, fail
 */
-function Environment({
-	units = [],
-	links = [],
-	verbose
-} = {}) {
-
-	const mapUnitToCompiled = (n, {
-		control
-	}) => {
-		var {
-			handle,
-			start
-		} = n;
+function Environment({ units = [], links = [], verbose } = {}) {
+	const mapUnitToCompiled = (n, { control }) => {
+		var { handle, start } = n;
 		// TODO: bind handlers to umvelt (because outside world should know about steps, ie. emit)
 		const emitStep = (data) => {
 			const dataWithUnitInfo = {
 				src: n,
-				...data
+				...data,
 			};
-			control('emit-step', dataWithUnitInfo);
+			control("emit-step", dataWithUnitInfo);
 		};
 
 		const currentNode = n.label;
-		handle = handle && new ExpressionEngine({
-			emitStep,
-			currentNode
-		})(handle, verbose);
-		start = start && new ExpressionEngine({
-			emitStep,
-			currentNode
-		})(start, verbose);
+		handle =
+			handle &&
+			new ExpressionEngine({
+				emitStep,
+				currentNode,
+			})(handle, verbose);
+		start =
+			start &&
+			new ExpressionEngine({
+				emitStep,
+				currentNode,
+			})(start, verbose);
 		const fns = {
 			handle,
-			start
+			start,
 		};
-		Object.keys(fns).forEach(p => {
+		Object.keys(fns).forEach((p) => {
 			!fns[p] && delete fns[p];
 		});
 		return Object.assign(n, {
-			...fns
+			...fns,
 		});
 	};
-	const compiledUnits = (umvelt) => units.map((u) => mapUnitToCompiled(u, umvelt));
+	const compiledUnits = (umvelt) =>
+		units.map((u) => mapUnitToCompiled(u, umvelt));
 
 	/*
 			also considered using "bailiwick" and "umbgebung"
@@ -297,15 +284,16 @@ function Environment({
 			https://yourdailygerman.com/um-german-prefix-meaning/ + velt(world)
 			"umvelt" is easier to type than "environment" (v instead of w to aid mental pronounce)
 	*/
-	const Umvelt = (function() {
+	const Umvelt = (function () {
 		const context = {
 			units: undefined,
 			links,
-			eventListeners: {}
+			eventListeners: {},
 		};
 
 		function Umvelt() {
-			this.on = (key, callback, priority) => _on(context, key, callback, priority);
+			this.on = (key, callback, priority) =>
+				_on(context, key, callback, priority);
 			this.emit = (key, data) => _emit.bind(this)(context, key, data);
 			this.start = (state) => _fakeRun.bind(this)(state, context);
 
@@ -332,9 +320,9 @@ function Environment({
 			return this.items.length == 0;
 		}
 		add(element) {
-			const priority = Array.isArray(element) ?
-				element.find(e => e.priority) :
-				element.priority;
+			const priority = Array.isArray(element)
+				? element.find((e) => e.priority)
+				: element.priority;
 
 			const isPriority = priority && priority > 0;
 			if (isPriority) {
@@ -386,9 +374,7 @@ function Environment({
 				console.log(item.log);
 			}
 
-			const delay = typeof item.delay !== 'undefined' ?
-				item.delay :
-				this.delay;
+			const delay = typeof item.delay !== "undefined" ? item.delay : this.delay;
 
 			setTimeout(() => {
 				//console.log(item.data)
@@ -411,16 +397,8 @@ function Environment({
 
 	//const loopEvents = ['start', 'end', 'send', 'ack'];
 	function _gameLoop(controller, context, key, data) {
-		const {
-			name,
-			targets,
-			message,
-			listener,
-			status,
-			state,
-			src,
-			result
-		} = data;
+		const { name, targets, message, listener, status, state, src, result } =
+			data;
 
 		// reject some events ???
 		// if(!loopEvents.includes(name)){
@@ -435,13 +413,13 @@ function Environment({
 		//event.log = `${name.toUpperCase()}:${status}`;
 		//console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
 		//console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
-		const ackSuccess = name === 'ack' && status === 'success';
-		const fetchSuccess = name === 'fetch' && status === 'success';
-		const sendEnd = name === 'send' && status === 'success';
-		const unitEnd = name === 'end' && src;
-		const unitStart = name === 'start' && src;
-		const sendStart = name === 'send' && status === 'start';
-		const ackStart = name === 'ack' && status === 'start';
+		const ackSuccess = name === "ack" && status === "success";
+		const fetchSuccess = name === "fetch" && status === "success";
+		const sendEnd = name === "send" && status === "success";
+		const unitEnd = name === "end" && src;
+		const unitStart = name === "start" && src;
+		const sendStart = name === "send" && status === "start";
+		const ackStart = name === "ack" && status === "start";
 
 		// event.priority = successfulSend || ackStart || name === 'end'
 		//     ? 1
@@ -469,19 +447,11 @@ function Environment({
 		}
 
 		event.data = data;
-		context.loop.add(event)
+		context.loop.add(event);
 	}
 
 	function _control(context, key, data) {
-		const {
-			name,
-			targets,
-			message,
-			listener,
-			status,
-			src,
-			result
-		} = data;
+		const { name, targets, message, listener, status, src, result } = data;
 		//console.log({ context, key, data, engine: this });
 
 		//TODO: if send/ack from one compiled script then
@@ -491,16 +461,16 @@ function Environment({
 
 		const emitUnitsUpdate = (updates) => {
 			// TODO: guard: updates is array, each item has label and state
-			const action = 'units-change'
+			const action = "units-change";
 			this.emit(action, updates);
 		};
 		const emitLinksUpdate = (updates) => {
 			// TODO: guard: updates is array, each item has label and state
-			const action = 'links-change'
+			const action = "links-change";
 			this.emit(action, updates);
 		};
 
-		if (name === 'ack' && status === 'start') {
+		if (name === "ack" && status === "start") {
 			var _targets = targets;
 			var _message = message;
 			if (!_targets && result) {
@@ -512,117 +482,121 @@ function Environment({
 			//console.log(`ACK:${status} [${_message}] ${_targets.join(' ,')} -> ${src.label}`);
 
 			const linkUpdates = context.state.links
-				.map(x => {
+				.map((x) => {
 					const update = {
 						label: x.label,
-						state: 'no_update'
+						state: "no_update",
 					};
 
 					if (x.start.parent.block === src.label) {
 						if (!_targets.includes(x.end.parent.block)) {
 							return update;
 						}
-						update.state = 'send';
+						update.state = "send";
 					} else if (x.end.parent.block === src.label) {
 						if (!_targets.includes(x.start.parent.block)) {
 							return update;
 						}
-						update.state = 'receive';
+						update.state = "receive";
 					}
 					return update;
 				})
-				.filter(x => x.state !== 'no_update');
+				.filter((x) => x.state !== "no_update");
 			//console.log({ links: linkUpdates, src, targets })
 			emitLinksUpdate(linkUpdates);
 			return;
 		}
 
-		if (name === 'start' && !status) {
-			emitUnitsUpdate([{
-				label: src.label,
-				state: 'active'
-			}]);
+		if (name === "start" && !status) {
+			emitUnitsUpdate([
+				{
+					label: src.label,
+					state: "active",
+				},
+			]);
 			return;
 		}
 
-		if (name === 'end' && !status) {
-			emitUnitsUpdate([{
-				label: src.label,
-				state: 'success'
-			}]);
+		if (name === "end" && !status) {
+			emitUnitsUpdate([
+				{
+					label: src.label,
+					state: "success",
+				},
+			]);
 			return;
 		}
 
-		this.emit(key, data)
+		this.emit(key, data);
 
-		if (name === 'send') {
+		if (name === "send") {
 			/*
 					TODO: also need to handle ack!
 			*/
-			if (data.status === 'error') {
+			if (data.status === "error") {
 				//debugger;
 			}
 
-			if (data.status === 'start') {
-				emitUnitsUpdate([{
-					label: src.label,
-					state: 'wait'
-				}]);
+			if (data.status === "start") {
+				emitUnitsUpdate([
+					{
+						label: src.label,
+						state: "wait",
+					},
+				]);
 			}
 			var _targets = targets;
 			if (result && result.nodesDone) {
-				_targets = result.nodesDone.map(x => x.label);
+				_targets = result.nodesDone.map((x) => x.label);
 			}
 			if (!_targets) {
-				console.log('UNHANDLED: situation in engine handling send message')
-				debugger
+				console.log("UNHANDLED: situation in engine handling send message");
+				debugger;
 				return;
 			}
 			const linkUpdates = context.state.links
-				.map(x => {
+				.map((x) => {
 					const update = {
 						label: x.label,
-						state: 'no_update'
+						state: "no_update",
 					};
 
 					if (x.start.parent.block === src.label) {
 						if (!_targets.includes(x.end.parent.block)) {
 							return update;
 						}
-						update.state = data.status === 'start' ?
-							'send' :
-							data.status;
+						update.state = data.status === "start" ? "send" : data.status;
 					} else if (x.end.parent.block === src.label) {
 						if (!_targets.includes(x.start.parent.block)) {
 							return update;
 						}
-						update.state = 'start' ?
-							'receive' :
-							data.status;
+						update.state = "start" ? "receive" : data.status;
 					}
-					if (update.state === 'error') {
-						update.state = 'fail';
+					if (update.state === "error") {
+						update.state = "fail";
 						update.data = data;
 					}
 					return update;
 				})
-				.filter(x => x.state !== 'no_update');
+				.filter((x) => x.state !== "no_update");
 			//console.log({ links: linkUpdates, src, targets })
 			emitLinksUpdate(linkUpdates);
 		}
 
-		if (name === 'send' && targets) {
+		if (name === "send" && targets) {
 			//console.log(`SEND [${data.message}] ${data.src.label} -> ${targets.join(' ,')}`);
-			const targetUnits = targets.map(label => {
-				return context.units.find(u => u.label === label && u.handle);
-			}).filter(x => !!x);
+			const targetUnits = targets
+				.map((label) => {
+					return context.units.find((u) => u.label === label && u.handle);
+				})
+				.filter((x) => !!x);
 
 			if (targetUnits.length !== targets.length) {
 				listener({
-					error: 'cannot find all nodes or handlers',
+					error: "cannot find all nodes or handlers",
 					data: {
-						targetUnits
-					}
+						targetUnits,
+					},
 				});
 				return;
 			}
@@ -631,18 +605,26 @@ function Environment({
 
 			//TODO: add function to remove listener
 			const priority = 1;
-			const {
-				remove
-			} = this.on('emit-step', (data) => {
-				listener({
-					data,
-					removeListener: remove
-				});
-			}, priority);
-			targetUnits.forEach(u => setTimeout(() => u.handle({
-				sendFrom: data.src.label,
-				sendMessage: data.message
-			}), handleDelay));
+			const { remove } = this.on(
+				"emit-step",
+				(data) => {
+					listener({
+						data,
+						removeListener: remove,
+					});
+				},
+				priority
+			);
+			targetUnits.forEach((u) =>
+				setTimeout(
+					() =>
+						u.handle({
+							sendFrom: data.src.label,
+							sendMessage: data.message,
+						}),
+					handleDelay
+				)
+			);
 		}
 	}
 
@@ -650,18 +632,21 @@ function Environment({
 		if (context.eventListeners[key] === undefined) {
 			context.eventListeners[key] = [];
 		}
-		callback._hash = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
+		callback._hash = [...Array(30)]
+			.map(() => Math.random().toString(36)[2])
+			.join("");
 		if (priority) {
 			context.eventListeners[key].unshift(callback);
 		} else {
 			context.eventListeners[key].push(callback);
 		}
 		const remove = () => {
-			context.eventListeners[key] = context.eventListeners[key]
-				.filter(x => x._hash !== callback._hash);
+			context.eventListeners[key] = context.eventListeners[key].filter(
+				(x) => x._hash !== callback._hash
+			);
 		};
 		return {
-			remove
+			remove,
 		};
 	}
 
@@ -669,31 +654,31 @@ function Environment({
 		//console.log({ key });
 		if (!context.eventListeners[key]) {
 			//debugger;
-			console.log(' listener not registered');
+			console.log(" listener not registered");
 			console.log({
 				listeners: context.eventListeners,
-				key
+				key,
 			});
 			return;
 		}
-		context.eventListeners[key].forEach(listener => {
+		context.eventListeners[key].forEach((listener) => {
 			listener(data);
 		});
 		return;
 	}
 
 	function strangeCase() {
-		const unitsPulsing = document.querySelectorAll('.box.pulse');
+		const unitsPulsing = document.querySelectorAll(".box.pulse");
 
 		if (unitsPulsing.length !== 1) {
 			return;
 		}
 
-		const unitsWaiting = document.querySelectorAll('.box.wait');
+		const unitsWaiting = document.querySelectorAll(".box.wait");
 		if (unitsWaiting.length !== 0) {
-			return
+			return;
 		}
-		const linksSelected = document.querySelectorAll('.link.selected').length;
+		const linksSelected = document.querySelectorAll(".link.selected").length;
 		if (linksSelected !== 1) {
 			return;
 		}
@@ -706,11 +691,11 @@ function Environment({
 
 		const fake = false;
 		if (!fake) {
-			const unitsWithStartHandlers = context.units.filter(x => x.start);
+			const unitsWithStartHandlers = context.units.filter((x) => x.start);
 			//console.log({ unitsWithStartHandlers });
 
 			setTimeout(() => {
-				unitsWithStartHandlers.forEach(x => x.start());
+				unitsWithStartHandlers.forEach((x) => x.start());
 			}, 2000);
 
 			return;
@@ -731,39 +716,47 @@ function Environment({
 		const eventsAll = [
 			...events(0, 1, 0),
 			...events(1, 2, 1),
-			...events(2, 0, 2)
+			...events(2, 0, 2),
 		];
 
-		const eventsPromises = eventsAll.map(e => {
-			const [action, label, state, time] = e.split('|');
-			const getPromise = () => new Promise((resolve, reject) => {
-				const fn = () => {
-					if (strangeCase()) {
-						debugger;
-					}
-					this.emit(action, [{
-						label,
-						state
-					}]);
-					setTimeout(() => {
-						resolve({
-							action,
-							label,
-							state
-						});
-					}, Number(time));
-				};
-				fn();
-			});
+		const eventsPromises = eventsAll.map((e) => {
+			const [action, label, state, time] = e.split("|");
+			const getPromise = () =>
+				new Promise((resolve, reject) => {
+					const fn = () => {
+						if (strangeCase()) {
+							debugger;
+						}
+						this.emit(action, [
+							{
+								label,
+								state,
+							},
+						]);
+						setTimeout(() => {
+							resolve({
+								action,
+								label,
+								state,
+							});
+						}, Number(time));
+					};
+					fn();
+				});
 			return getPromise;
 		});
 
-		const promiseSeries = function(tasks, callback) {
-			return tasks.reduce((promiseChain, currentTask) => {
-				return promiseChain.then(chainResults =>
-					currentTask().then(currentResult => [...chainResults, currentResult])
-				);
-			}, Promise.resolve([])).then(callback);
+		const promiseSeries = function (tasks, callback) {
+			return tasks
+				.reduce((promiseChain, currentTask) => {
+					return promiseChain.then((chainResults) =>
+						currentTask().then((currentResult) => [
+							...chainResults,
+							currentResult,
+						])
+					);
+				}, Promise.resolve([]))
+				.then(callback);
 		};
 
 		var count = 0;
@@ -771,11 +764,13 @@ function Environment({
 			promiseSeries(eventsPromises, (all) => {
 				console.log(`--- fake engine: iteration ${++count} done`);
 				if (count >= 10) {
-					console.log('FAKE ITERATION MAX: DONE!');
-					this.emit('units-change', [{
-						label: state.units[0].label,
-						state: 'success'
-					}]);
+					console.log("FAKE ITERATION MAX: DONE!");
+					this.emit("units-change", [
+						{
+							label: state.units[0].label,
+							state: "success",
+						},
+					]);
 					return;
 				}
 				doAll();
