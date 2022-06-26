@@ -101,7 +101,7 @@ const simple = {
 };
 
 
-var boxes = simple.boxes || [{
+var boxes = [{
 		label: 'shadrach',
 		x: 10,
 		y: 10,
@@ -140,13 +140,13 @@ var boxes = simple.boxes || [{
 		}, null, null, {
 				label: 'second'
 		}, null],
-		start: `
-				send(null, *)
-		`,
-		handle: `
-				ack()
-				send(null, *)
-		`
+		// start: `
+		// 		send(null, *)
+		// `,
+		// handle: `
+		// 		ack()
+		// 		send(null, *)
+		// `
 }, {
 		label: 'romulus',
 		x: 127,
@@ -162,10 +162,10 @@ var boxes = simple.boxes || [{
 						label: 'fourth'
 				}, null
 		],
-		handle: `
-				ack()
-				send(null, *)
-		`
+		// handle: `
+		// 		ack()
+		// 		send(null, *)
+		// `
 }, {
 		label: 'remus',
 		x: 220,
@@ -211,7 +211,7 @@ var boxes = simple.boxes || [{
 }];
 boxes.forEach(b => b.x += 70);
 
-var wires = simple.wires || [{
+var wires = [{
 		start: (units) => units.getNode('shadrach', 'second'),
 		end: (units) => units.getNode('meshach', 'first'),
 		selected: true
@@ -238,4 +238,5 @@ var wires = simple.wires || [{
 		end: (units) => units.getNode('masamune', 'second')
 }];
 
+// export default simple;
 export default { boxes, wires };

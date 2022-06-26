@@ -739,7 +739,7 @@ function initialiseUnitDragging(svg, selectedElement, evt) {
 	}
 
 	// Get initial translation
-	transform = transforms.getItem(0);
+	const transform = transforms.getItem(0);
 	offset.x -= transform.matrix.e;
 	offset.y -= transform.matrix.f;
 	return { transform, offset };
