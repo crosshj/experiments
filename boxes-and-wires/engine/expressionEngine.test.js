@@ -1,4 +1,3 @@
-//show-preview
 /*
 	Expression Engine (EE) is the part that acts like a custom language and VM
 		- it should handle registering custom commands
@@ -11,8 +10,14 @@
 import { ExpressionEngine } from './expressionEngine.js';
 import { STYLE,DIV,PRE,tabTrim } from '../helpers/test-utils.js';
 
-//TODO: should be sending mapped value to 2, instead mapped doesn't get populated
-//TODO: message should be ack'ed before next instruction will execute
+
+PRE(`EXPRESSION ENGINE:`);
+PRE(`
+TODO:
+	send mapped value to 2, instead mapped doesn't get populated
+	message should be ack'ed before next instruction will execute
+`.trim());
+
 
 const exampleExpression = tabTrim(`
 	fetch(url, "result")
@@ -28,12 +33,12 @@ const myFunc = engine(exampleExpression);
 //https://github.com/toddmotto/public-apis << COOL
 const apis = {
 	ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
-	bored: 'https://www.boredapi.com/api/activity/',
+	//bored: 'https://www.boredapi.com/api/activity/',
 	countRegister: 'https://api.countapi.xyz/hit/boxesandwires/visits',
 	countGet: 'https://api.countapi.xyz/get/boxesandwires/visits',
 	cheerlights: 'https://api.thingspeak.com/channels/1417/field/1/last.json'
 };
-const api = 'bored';
+const api = 'cheerlights';
 
 const myFuncArgs = {
 	url: apis[api],
@@ -46,47 +51,7 @@ const myFuncArgs = {
 
 myFunc(myFuncArgs);
 
-function attachStyle(){ STYLE(`
-:root {
-	--purple: #432e54;
-	--green: #385038;
-	--orange: #4b3c22;
-	--blue: #214a6d;
-	--grey: #333a;
-}
-body {
-	font-family: sans-serif;
-	color: #aaa;
-	margin: 3em 1em;
-}
-pre { padding: .75em 1em; }
-
-.step { display: flex; }
-.step > div {
-	padding: .4em;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.step > div, pre { background: var(--grey) }
-.step + .step { margin-top: .5em; }
-
-.op { width: 3em }
-.op.start { background: var(--green); }
-.op.fetch { background: var(--purple); }
-.op.map { background: var(--orange) }
-.op.send { background: var(--blue) }
-.fetch + .fetch,
-.map + .map,
-.send + .send { margin: 0; }
-
-.result { font-family: monospace; white-space: pre; }
-`);
-}
-
 function setup(exampleExpression){
-	attachStyle();
-
 	PRE(exampleExpression)
 
 	const emitStep = (step) => {
