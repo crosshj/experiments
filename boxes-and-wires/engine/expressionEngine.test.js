@@ -10,26 +10,6 @@
 import { ExpressionEngine } from './expressionEngine.js';
 import { STYLE,DIV,PRE,tabTrim } from '../helpers/test-utils.js';
 
-
-PRE(`EXPRESSION ENGINE:`);
-PRE(`
-TODO:
-	send mapped value to 2, instead mapped doesn't get populated
-	message should be ack'ed before next instruction will execute
-`.trim());
-
-
-const exampleExpression = tabTrim(`
-	fetch(url, "result")
-	map(mapper, result, "mapped")
-	send(mapped, 2)
-	send(mapped, 1)
-`);
-
-const emitStep = setup(exampleExpression);
-const engine = new ExpressionEngine({ emitStep });
-const myFunc = engine(exampleExpression);
-
 //https://github.com/toddmotto/public-apis << COOL
 const apis = {
 	ghibli: 'https://ghibliapi.herokuapp.com/films/?limit=10',
@@ -49,13 +29,10 @@ const myFuncArgs = {
 	},
 };
 
-myFunc(myFuncArgs);
-
-function setup(exampleExpression){
+function setup(exampleExpression, done){
 	PRE(exampleExpression)
 
 	const emitStep = (step) => {
-		console.log(step);
 		const {name, status, result} = step;
 		const _result = result?.result
 			? JSON.stringify(result.result, null, 2)
@@ -66,6 +43,34 @@ function setup(exampleExpression){
 			<div class="result">${_result}</div>
 		`);
 		stepDiv.className = `step ${name}`;
+		
+		if(name === 'end') done();
 	};
 	return emitStep;
 }
+
+const exampleExpression = tabTrim(`
+	fetch(url, "result")
+	map(mapper, result, "mapped")
+	send(mapped, 2)
+	send(mapped, 1)
+`);
+
+export default async () => {
+	PRE(`EXPRESSION ENGINE:`);
+	PRE(`
+	TODO:
+		send mapped value to 2, instead mapped doesn't get populated
+		message should be ack'ed before next instruction will execute
+	`.trim());
+
+	let testsResolve;
+	const testsDone = new Promise((resolve) => testsResolve = resolve);
+
+	const emitStep = setup(exampleExpression, testsResolve);
+	const engine = new ExpressionEngine({ emitStep });
+	const myFunc = engine(exampleExpression);
+
+	myFunc(myFuncArgs);
+	await testsDone;
+};

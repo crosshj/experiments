@@ -2,8 +2,9 @@
 import customFunctions, { getMappedItems } from './customFunctions.js';
 import { STYLE,DIV,PRE,tabTrim } from '../helpers/test-utils.js';
 
-PRE(`CUSTOM FUNCTIONS:`);
-PRE(`
+export default async () => {
+	PRE(`CUSTOM FUNCTIONS:`);
+	PRE(`
 seems to have state problems
 
 TODO:
@@ -11,14 +12,14 @@ TODO:
 	- promises, reset, bindInput
 	- wrapCustomFunctions
 	- getMappedItems
-`.trim())
+	`.trim())
 
-const emitStep = {};
-const currentNode = {};
-const fns = customFunctions(emitStep, currentNode)
+	const emitStep = {};
+	const currentNode = {};
+	const fns = customFunctions(emitStep, currentNode)
 
-PRE([
-	'customFunctions:',
-	...Object.keys(fns)
-].join('\n\t'));
-
+	PRE([
+		'customFunctions:',
+		...Object.keys(fns)
+	].join('\n\t'));
+};
