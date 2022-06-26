@@ -1,12 +1,16 @@
-import StateTest from './state/state.test.js';
-import customFunctions from './engine/customFunctions.test.js';
-import EngineTest from './engine/expressionEngine.test.js';
+import State from './state/state.js';
+import * as ExpressionEngine from './engine/expressionEngine.js';
+import Config from './state/config.js';
+const { boxes, wires } = Config;
 
-/*
-TODO:
-use testing framework from crosshj/vermiculate
-*/
+import Wires, { svg } from './user-interface/wires.js';
 
-await StateTest();
-await customFunctions();
-await EngineTest();
+(async () => {
+	const Environ = Wires({ State, ExpressionEngine });
+	Environ(svg(), boxes, wires);
+
+	// engine
+	// state
+	// config
+	// wires (ui)
+})();

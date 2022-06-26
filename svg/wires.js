@@ -1448,7 +1448,7 @@ function initScene(evt, units, links) {
 
   const _state = new State();
   //TODO: at some point this state has to be reconciled with app state?
-  _state.svg = event.target;
+  _state.svg = evt.target;
   const state = {
     read: _state.read,
     update: _state.update,

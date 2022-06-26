@@ -237,3 +237,5 @@ var wires = simple.wires || [{
 		start: (units) => units.getNode('romulus', 'first'),
 		end: (units) => units.getNode('masamune', 'second')
 }];
+
+export default { boxes, wires };

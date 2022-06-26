@@ -14,9 +14,14 @@
 <body>
   <div id="state-memory-size">do stuff, history grows</div>
   <div id="api-results">- - - -</div>
-  <!-- <div>shadrach</div> -->
+  <script>
+   function svgloaded(event){
+       debugger;
+       initScene(event, boxes, wires);
+   }
+  </script>
   <svg id="canvas" preserveAspectRatio="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
-    onload="initScene(evt, boxes, wires)">
+    onload="svgloaded(event)">
     <defs>
       <filter id="outline">
         <feMorphology operator="dilate" in="SourceGraphic" result="DILATED" radius="1" />
