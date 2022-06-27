@@ -238,5 +238,5 @@ var wires = [{
 		end: (units) => units.getNode('masamune', 'second')
 }];
 
-// export default simple;
-export default { boxes, wires };
+export default simple;
+// export default { boxes, wires };

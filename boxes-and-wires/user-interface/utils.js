@@ -31,3 +31,33 @@ export const removeStyle = (id) => {
 		sSheet.parentNode.removeChild(sSheet);
 	}
 };
+
+export function bringToTop(targetElement) {
+	let parent = targetElement.parentNode;
+	parent.appendChild(targetElement);
+};
+
+//https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
+export function overlayColor(color) {
+	if (color.length < 5) {
+		color += color.slice(1);
+	}
+	return (color.replace('#', '0x')) > (0xffffff / 2) ? '#111' : '#eee';
+}
+
+export const getTranslateX = node => {
+	const transform = node.getAttribute('transform');
+	const splitChar = transform.includes(',') ? ',' : ' ';
+	if (!transform.split(splitChar)[0]) {
+		debugger;
+	}
+	return Number(transform.split(splitChar)[0].split('(')[1]);
+};
+export const getTranslateY = node => {
+	const transform = node.getAttribute('transform');
+	const splitChar = transform.includes(',') ? ',' : ' ';
+	if (!transform.split(splitChar)[1]) {
+		debugger;
+	}
+	return Number(transform.split(splitChar)[1].split(')')[0]);
+};
