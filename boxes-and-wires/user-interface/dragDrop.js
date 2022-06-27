@@ -1,4 +1,18 @@
-import { setStyle, removeStyle, bringToTop } from './utils.js';
+import {
+	setStyle, removeStyle,
+	bringToTop, getTranslateX, getTranslateY,
+	withAnimFrame,
+} from './utils.js';
+
+import { drawLink } from './links.js';
+import { drawOrUpdateUnit } from './nodes.js';
+
+const oppositeDirection = {
+	north: 'south',
+	south: 'north',
+	east: 'west',
+	west: 'east'
+};
 
 function getMousePosition(svg, evt) {
 	var CTM = svg.getScreenCTM();
@@ -113,9 +127,7 @@ function distanceNodes(node1, node2) {
 // ---------------------------------------------------------------
 
 function startDrag(evt) {
-	if (this.selectedElement) {
-		return;
-	}
+	if (this.selectedElement) return;
 
 	const nodeDrag = {
 		test: () => evt.target.classList.contains('node'),

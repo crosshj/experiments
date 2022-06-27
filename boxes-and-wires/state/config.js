@@ -31,7 +31,7 @@ const exampleExpression = false && `
 
 //TODO: ^^^ this will go away when engine is fully working
 
-const simple = {
+export const simple = {
 		boxes:  [{
 				label: 'ομφαλός',
 				info: 'omphalos - navel',
@@ -54,9 +54,15 @@ const simple = {
 						ack()
 						send(ack.0.message, ('unit:जो है वही है'))
 				`,
-				nodes: [null, null, null, null, { label: 'fourth'}, null, {
-								label: 'sixth'
-						}]
+				nodes: [
+					null,
+					null,
+					null,
+					null,
+					{ label: 'fourth'},
+					null,
+					{ label: 'sixth'}
+				]
 		}, {
 				label: 'जो है वही है',
 				info: 'jo hai vahee hai - it is what it is',
@@ -65,9 +71,16 @@ const simple = {
 				y: 110,
 				width: 100,
 				height: 40,
-				nodes: [null, {
-						label: 'second'
-				},,,,,,{ label: 'seventh'}],
+				nodes: [
+					null,
+					{ label: 'second'},
+					null,
+					null,
+					null,
+					null,
+					null,
+					{ label: 'seventh'}
+				],
 				handle: `
 						ack()
 						send(ack.0.message, ('unit:גליטש'))
@@ -80,9 +93,12 @@ const simple = {
 				y: 10,
 				width: 100,
 				height: 40,
-				nodes: [,{
-						label: 'second'
-				},,{ label: 'fourth'}],
+				nodes: [
+					null,
+					{label: 'second'},
+					null,
+					{ label: 'fourth'}
+				],
 				handle: `
 						ack()
 						send(ack.0.message, ('unit:ομφαλός'))
@@ -237,6 +253,4 @@ var wires = [{
 		start: (units) => units.getNode('romulus', 'first'),
 		end: (units) => units.getNode('masamune', 'second')
 }];
-
-export default simple;
-// export default { boxes, wires };
+export const complex = { boxes, wires };

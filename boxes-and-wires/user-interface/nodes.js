@@ -1,9 +1,4 @@
-const oppositeDirection = {
-	north: 'south',
-	south: 'north',
-	east: 'west',
-	west: 'east'
-};
+import { overlayColor } from "./utils.js";
 
 function getNodeDirection(node) {
 	const el = node;

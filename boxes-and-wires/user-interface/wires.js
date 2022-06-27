@@ -1,12 +1,11 @@
 import {
 	tryParse, clone, setStyle, removeStyle,
-	bringToTop, getTranslateX, getTranslateY
+	bringToTop, getTranslateX, getTranslateY,
+	initState, withAnimFrame,
 } from './utils.js';
 import { drawLink, animateLink } from './links.js';
-import { drawUnit, drawOrUpdateUnit, mapNodeToState } from './nodes.js';
+import { drawOrUpdateUnit } from './nodes.js';
 import { makeDraggable } from './dragDrop.js';
-
-const withAnimFrame = (fn) => (arg) => window.requestAnimationFrame(() => fn(arg));
 
 // ----------------------------------------------------------------
 
@@ -115,45 +114,6 @@ function addLinkEffects(state) {
 
 // ----------------------------------------------------------------
 
-function initState({ units, links }) {
-	const u = units.map(unit => ({
-		label: unit.label,
-		color: unit.color,
-		class: unit.class,
-		x: unit.x,
-		y: unit.y,
-		width: unit.width,
-		height: unit.height,
-		nodes: unit.nodes.map(mapNodeToState.bind({ unit }))
-	}));
-
-	const l = links.map(link => {
-		const stripParent = {
-			getNode: (block, node) => ({ block, node })
-		};
-
-		const _link = ['start', 'end'].reduce((all, name) => {
-			const parent = link[name](stripParent);
-			const unit = u.find(unit => unit && unit.label === parent.block);
-			const node = unit.nodes.find(node => node && node.label === parent.node);
-			if (link.selected) {
-				node.selected = true;
-			}
-			all[name] = {
-				x: unit.x + node.x,
-				y: unit.y + node.y,
-				parent,
-				direction: node.direction
-			};
-			return all;
-		}, {});
-		_link.label = link.label || Math.random().toString(26).replace('0.', '');
-		_link.selected = link.selected;
-		return _link;
-	});
-	return { units: u, links: l };
-}
-
 function cleanScene(state) {
 	const domLinks = Array.from(document.querySelectorAll('.link'));
 	const domUnits = Array.from(document.querySelectorAll('.box'));
@@ -189,7 +149,7 @@ function getDom() {
 	return dom;
 };
 
-function render(_state) {
+export function render(_state) {
 	const state = typeof _state.read === 'function' ? _state.read()
 		: _state;
 
@@ -358,11 +318,11 @@ const init = ({ State, ExpressionEngine }) => (svg, units, links) => {
 
 	const _state = new State();
 	//TODO: at some point this state has to be reconciled with app state?
-	_state.svg = svg;
+	//_state.svg = svg;
 	const state = {
 		read: _state.read,
 		update: _state.update,
-		svg: _state.svg,
+		svg,
 		hovered: undefined,
 		draggedUnit: undefined,
 		draggedLink: undefined,
