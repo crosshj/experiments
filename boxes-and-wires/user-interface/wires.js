@@ -2,8 +2,8 @@ import {
 	tryParse, clone, setStyle, removeStyle,
 	bringToTop, getTranslateX, getTranslateY
 } from './utils.js';
-import { drawLink, animateLink } from './links.js';
-import { drawOrUpdateUnit } from './nodes.js';
+import { drawLink, animateLink, addLinkEffects } from './links.js';
+import { drawUnit, drawOrUpdateUnit, mapNodeToState } from './nodes.js';
 import { makeDraggable } from './dragDrop.js';
 
 const withAnimFrame = (fn) => (arg) => window.requestAnimationFrame(() => fn(arg));
@@ -99,61 +99,6 @@ function linkClick(event) {
 		console.log('TODO: also select nodes');
 		return { links };
 	});
-}
-
-function addLinkEffects(state) {
-	var svg = state.svg;
-	const hoverStartHandler = hoverStart.bind(state);
-	const hoverEndHandler = hoverEnd.bind(state);
-	const clickHandler = linkClick.bind(state);
-	svg.addEventListener("mouseover", hoverStartHandler);
-	svg.addEventListener('mouseout', hoverEndHandler);
-	svg.addEventListener('mouseleave', hoverEndHandler);
-	svg.addEventListener('click', clickHandler);
-}
-
-function mapNodeToState(node, index) {
-	if (!node) { return node; }
-	const unit = this.unit;
-	const width = Number(unit.width || 76);
-	const height = Number(unit.height || 76);
-
-	const directionMap = [
-		'west', 'west', 'west',
-		'south',
-		'east', 'east', 'east',
-		'north'
-	];
-
-	const nodeRadius = 3;
-	const offSet = 10;
-	const insetNode = nodeRadius;
-	const insetNodeLeft = insetNode + offSet;
-
-	var positions = [{
-		x: insetNodeLeft, y: offSet //top-left
-	}, {
-		x: insetNodeLeft, y: height / 2 //middle-left
-	}, {
-		x: insetNodeLeft, y: height - offSet //bottom-left
-	}, {
-		x: offSet + width / 2, y: height - insetNode + 1 //bottom-middle
-	}, {
-		x: width - insetNode + offSet, y: offSet //top-right
-	}, {
-		x: width - insetNode + offSet, y: height / 2 //middle-right
-	}, {
-		x: width - insetNode + offSet, y: height - offSet //bottom-right
-	}, {
-		x: offSet + width / 2, y: offSet / 2 - 1 //top-middle
-	}];
-
-	return {
-		label: node.label,
-		x: positions[index].x,
-		y: positions[index].y,
-		direction: directionMap[index]
-	};
 }
 
 function initState({ units, links }) {
