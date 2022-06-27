@@ -1,75 +1,4 @@
-/*
-		NOTES:
-		- move towards greater object-orientation in code (message-passing-type OO)
-
-		ROADMAP:
-		- ANIMATION
-				Show what's happening in the system by indicating activity.
-		- ORGANIZATION / MECHANICS
-				Enable greater complexity of models by grouping and allowing creation of more items.
-		- STATE
-				Show changes to system by animating/manipulating state of system over time.  This could go at least two directions: create UI elements which affect state or integrate with Redux Dev Tools.
-		- CONNECTED
-				Model should be attached to something specific: functions, network calls.  This is the life and breath of a visual model like this.
-		- SHARE
-				Exporting an animated GIF would make this tool incredibly useful for one of its main goals: illustrating complex systems visually.  Also, sharing, saving, and manipulating configuration JSON directly woulld be of great use.
-
-		TODO/TASKS:
-		- wires: CRUD
-				- wire create on mobile is awkward / broken
-				- update/delete needs wire selection
-		- boxes: CRUD
-				- update/delete needs box/unit selection
-		- group: CRUD
-				- needs box/units selection
-		- game loop
-				- difference between event-driven and game loop?
-						https://hero.handmade.network/forums/code-discussion/t/1113-event_driven_vs_game_loop
-						https://stackoverflow.com/questions/2565677/why-is-a-main-game-loop-necessary-for-developing-a-game
-		- wires:  indicators (arrows) - svg marker kinda sucks, imho - may skip this
-				https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end
-		- boxes: collision detection
-		- page: zoom/pan with memory
-		- auto-arrange scene
-		- snap to grid
-		- export animated GIF
-		- export/import source configuration
-		- sequence/history as part of configuration object
-		- HTML element (or canvas) overlayed on unit/box for better stylng?
-				https://stackoverflow.com/questions/5882716/html5-canvas-vs-svg-vs-div
-		- history slider
-		- integrate state with redux dev tools
-		- nodes: animate node and helper in sync with wire animation
-		- animation: should pause when dragging boxes/wires
-		X wires: animation
-				https://css-tricks.com/svg-line-animation-works/
-		X creation of scene from json
-		X highlighting/hovering links
-
-		ISSUES:
-		- link click (selection) does not select node and helpers
-		- link terminal should change direction when close to node
-				^^^ direction should be rendered on the fly, not part of state
-		- dragging wire should have z-index higher than units (fixed by transparent on drag feature?)
-		- link create/drag should work when started at node helper
-		X hovering node should also highlight node helper (and vice versa)
-		X only use transparent mode when node or group(unit) dragging
-		X new state pattern breaks dragging / hovering
-			X hovering fails
-			X dragging new link fails
-			X many functions fail
-			X functionality fails
-			X updating units causes duplicate
-		X dragging unit (and its links?) should be on top (and transparent)
-		X second new link creation fails
-		X moving unit quickly (or over other items) or dragging new wire sometimes causes connected links to displace
-				^^^ probably should only update moving part of link
-
-		RESOURCES:
-		- path tool - https://codepen.io/thebabydino/full/EKLNvZ
-		- path info - https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
-
-*/
+import { tryParse, clone, setStyle, removeStyle } from './utils.js';
 
 const withAnimFrame = (fn) => (arg) => window.requestAnimationFrame(() => fn(arg));
 
@@ -78,36 +7,6 @@ const oppositeDirection = {
 	south: 'north',
 	east: 'west',
 	west: 'east'
-};
-
-const setStyle = (id, rules) => {
-	var css = document.getElementById(id);
-	if (!css) {
-		css = document.createElement('style');
-		css.type = 'text/css';
-		css.id = id;
-		document.getElementsByTagName("head")[0].appendChild(css);
-	}
-	if (css.styleSheet) {
-		css.styleSheet.cssText = rules;
-	} else {
-		css.appendChild(document.createTextNode(rules));
-	}
-};
-
-const removeStyle = (id) => {
-	var sSheet = document.getElementById(id);
-	if (sSheet) {
-		sSheet.parentNode.removeChild(sSheet);
-	}
-};
-
-const tryParse = text => {
-	try {
-		return JSON.parse(text);
-	} catch (e) {
-		return undefined;
-	}
 };
 
 //https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
@@ -169,76 +68,6 @@ function getLinkDirections(link) {
 
 // -----------------------------------------------------------------------------
 
-export const svg = () => {
-	const w3Org = "http://www.w3.org/2000/svg";
-	const svg = document.createElementNS(w3Org, 'svg');
-	svg.id = "canvas";
-	svg.setAttribute('preserveAspectRatio', 'none');
-	svg.setAttribute('viewBox', '0 0 500 500');
-	svg.setAttribute("xmlns", w3Org);
-	svg.innerHTML = `
-<defs>
-	<filter id="outline">
-		<feMorphology operator="dilate" in="SourceGraphic" result="DILATED" radius="1" />
-		<feFlood flood-color="#aa00aa" flood-opacity="1" result="COLORED"></feFlood>
-		<feComposite in="COLORED" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
-		<feMerge>
-			<feMergeNode in="OUTLINE" />
-			<feMergeNode in="SourceGraphic" />
-		</feMerge>
-	</filter>
-
-	<filter id="f3" x="-3%" y="-6%" width="106%" height="112%">
-		<feFlood id="f4" flood-color="#f0f" flood-opacity="0" result="COLORED"></feFlood>
-		<feOffset result="offOut" in="COLORED" dx="0" dy="0" />
-		<feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
-		<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-	</filter>
-	<filter id="f6" x="-10%" y="-20%" width="120%" height="140%">
-		<feMorphology id="f77" operator="dilate" in="SourceGraphic" result="DILATED" radius="1" />
-		<feFlood id="f7" flood-color="#aa00aa" flood-opacity=".8" result="COLORED"></feFlood>
-		<feComposite in="COLORED" in2="DILATED" operator="in" result="OUTLINE"></feComposite>
-		<feGaussianBlur result="BLUR" in="OUTLINE" stdDeviation="1" />
-		<feBlend in="OUTLINE" in2="BLUR" mode="normal" />
-
-		<feMerge>
-			<feMergeNode in="BLUR" />
-			<feMergeNode in="SourceGraphic" />
-		</feMerge>
-	</filter>
-	<!-- <animate
-		xlink:href="#f7"
-		attributeName="flood-opacity"
-		values="1;0.40;1"
-		dur="2s"
-		repeatCount="indefinite"
-	/> -->
-	<animate
-		xlink:href="#f77"
-		attributeName="radius"
-		values="0;3;0"
-		dur="1s"
-		repeatCount="indefinite"
-	/>
-	<animate
-		xlink:href="#f7"
-		attributeName="flood-color"
-		values="#00f0;#f0ff;#00f0;"
-		dur="1s"
-		repeatCount="indefinite"
-	/>
-</defs>
-
-<g id="links">
-	<!-- LINKS ARE CREATED DYNAMICALLY -->
-</g>
-	`;
-	document.body.append(svg);
-	return svg;
-}
-
-// -----------------------------------------------------------------------------
-
 function animateLink(link, callback, reverse) {
 	//TODO: also animate node and helper
 	//NOTE: would be nice if link wire, node, and helpers could be treated as one
@@ -256,29 +85,29 @@ function animateLink(link, callback, reverse) {
 	const dashLength = 1;
 	const duration = linkLength / 100 * 2.5;
 	const style = `
-				${linkQuery} path.animated {
-						/* stroke: #fff9; */
-						stroke-linecap: round;
-						stroke-width: 7px;
-						stroke-dasharray: ${dashLength} ${linkLength};
-						animation-name: dash-${link.label};
-						animation-duration: ${duration}s; /* or: Xms */
-						animation-iteration-count: 1;
-						animation-direction: ${reverse ? 'reverse' : 'normal'}; /* or: normal */
-						animation-timing-function: linear; /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
-						animation-fill-mode: both; /* or: backwards, both, none */
-						animation-delay: 0s; /* or: Xms */
-				}
+		${linkQuery} path.animated {
+				/* stroke: #fff9; */
+				stroke-linecap: round;
+				stroke-width: 7px;
+				stroke-dasharray: ${dashLength} ${linkLength};
+				animation-name: dash-${link.label};
+				animation-duration: ${duration}s; /* or: Xms */
+				animation-iteration-count: 1;
+				animation-direction: ${reverse ? 'reverse' : 'normal'}; /* or: normal */
+				animation-timing-function: linear; /* or: ease, ease-in, ease-in-out, linear, cubic-bezier(x1, y1, x2, y2) */
+				animation-fill-mode: both; /* or: backwards, both, none */
+				animation-delay: 0s; /* or: Xms */
+		}
 
-				@keyframes dash-${link.label} {
-						from {
-								stroke-dashoffset: ${dashLength};
-						}
-						to {
-								stroke-dashoffset: ${-linkLength};
-						}
+		@keyframes dash-${link.label} {
+				from {
+						stroke-dashoffset: ${dashLength};
 				}
-		`;
+				to {
+						stroke-dashoffset: ${-linkLength};
+				}
+		}
+	`;
 	var isPaused;
 	const timeoutDone = () => {
 		if (isPaused) {
@@ -363,34 +192,24 @@ function createLinkElement(link) {
 function drawLink(link, callback) {
 	var linkElement = document.querySelector(`g[data-label="${link.label}"]`);
 	const linkStartParent = document.querySelector(
-		`.box[data-label="${link.start.parent.block}"]
-			 .node[data-label="${link.start.parent.node}"]`
+		`.box[data-label="${link.start.parent.block}"] .node[data-label="${link.start.parent.node}"]`
 	);
 	const linkEndParent = document.querySelector(
-		`.box[data-label="${link.end.parent.block}"]
-			 .node[data-label="${link.end.parent.node}"]`
+		`.box[data-label="${link.end.parent.block}"] .node[data-label="${link.end.parent.node}"]`
 	);
 
 	const linkStartParentHelper = document.querySelector(
-		`.box[data-label="${link.start.parent.block}"]
-			 .helpers [data-label="${link.start.parent.node}"]`
+		`.box[data-label="${link.start.parent.block}"] .helpers [data-label="${link.start.parent.node}"]`
 	);
 
 	const linkEndParentHelper = document.querySelector(
-		`.box[data-label="${link.end.parent.block}"]
-			 .helpers [data-label="${link.end.parent.node}"]`
+		`.box[data-label="${link.end.parent.block}"] .helpers [data-label="${link.end.parent.node}"]`
 	);
 
-	// if(callback){
-	//     console.log({ linkElement, linkEndParent, linkStartParent });
-	// }
 	// don't draw (or remove) link if it doesn't have 2 connections
 	if (!linkStartParent || !linkEndParent) {
-		if (!linkElement) {
-			return;
-		}
+		if (!linkElement) return;
 		linkElement.parentNode.removeChild(linkElement);
-		return;
 	}
 
 	if (!linkElement) {
@@ -416,9 +235,6 @@ function drawLink(link, callback) {
 		end: link.end.direction
 	};
 	const newPathD = objToPathD(pathObj, directions);
-	// if(callback){
-	//     console.log({ newPathD, pathObj, linkElement, linkEndParent, linkStartParent });
-	// }
 	linkElement.querySelector('path').setAttribute('d', newPathD);
 	//NOTE: filter on a thin, vertical element is buggy (so pulse is commented for now)
 	if (link.selected) {
@@ -436,15 +252,10 @@ function drawLink(link, callback) {
 		linkEndParentHelper.classList.remove('selected');
 		//linkElement.classList.remove('pulse');
 	}
-	//linkElement.setAttribute('class', 'link' + (link.class ? ` ${link.class}` : ''));
 
 	const animated = linkElement.querySelector('path.animated');
-	if (animated) {
-		animated.setAttribute('d', newPathD);
-	}
-	if (callback) {
-		callback(linkElement);
-	}
+	animated && animated.setAttribute('d', newPathD);
+	callback && callback(linkElement);
 }
 
 function drawOrUpdateUnit(unit, callback) {
@@ -457,7 +268,6 @@ function drawOrUpdateUnit(unit, callback) {
 
 	unitElement.setAttribute('class', 'box draggable-group' + (unit.class ? ` ${unit.class}` : ''));
 	unitElement.setAttribute('transform', `translate(${unit.x} , ${unit.y})`);
-	//console.log({ TODO: `updateUnit ${unit.label}`})
 }
 
 function drawUnit(unit, callback) {
@@ -476,14 +286,13 @@ function drawUnit(unit, callback) {
 	const overlayStyle = unit.color
 		? `fill:${overlayColor(unit.color)}`
 		: '';
-	//const rect = `<rect x="10" y="1" width="${width}" height="${height}" rx="5" ry="5"></rect>`;
 	const rect = `<rect x="10" y="1" style="${style}" width="${width}" height="${height}" rx="0" ry="0"></rect>`;
 	var unitElementHTML = unit.temporary
 		? ''
 		: `
-						${rect}
-						<text x="${width / 2 - unit.label.length * 2}" y="${height / 2 + 4}" style="${overlayStyle}" class="heavy">${unit.label}</text>
-				`;
+			${rect}
+			<text x="${width / 2 - unit.label.length * 2}" y="${height / 2 + 4}" style="${overlayStyle}" class="heavy">${unit.label}</text>
+		`;
 	const nodeRadius = 3;
 	const offSet = 10;
 	const insetNode = nodeRadius;
@@ -493,8 +302,8 @@ function drawUnit(unit, callback) {
 
 	if (unit.temporary) {
 		unitElement.innerHTML = `
-						<circle class="node dragging" data-label=${unit.nodes[0].label} cx="0" cy="0" r="3"></circle>
-				`;
+			<circle class="node dragging" data-label=${unit.nodes[0].label} cx="0" cy="0" r="3"></circle>
+		`;
 		canvas.appendChild(unitElement);
 		if (callback) {
 			callback(unitElement);
@@ -527,15 +336,13 @@ function drawUnit(unit, callback) {
 		}
 		const pos = positions.shift();
 		unitElementHTML += `
-		<circle data-label="${n.label}" class="node" cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}"></circle>
-`;
+			<circle data-label="${n.label}" class="node" cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}"></circle>
+		`;
 	});
 	unitElementHTML += '<g class="helpers"></g>'
 	unitElement.innerHTML = unitElementHTML;
 	unit.nodes.forEach(n => {
-		if (!n) {
-			return;
-		}
+		if (!n) return;
 		n.element = unitElement.querySelector(`circle[data-label="${n.label}"]`);
 		n.globalPosition = () => ({
 			x: Number(n.element.getAttribute('cx')) + getTranslateX(n.element.parentNode),
@@ -546,9 +353,7 @@ function drawUnit(unit, callback) {
 	const helpers = unitElement.querySelector('.helpers');
 	var helpersHTML = '';
 	unit.nodes.forEach(n => {
-		if (!n) {
-			return;
-		}
+		if (!n) return;
 		const el = unitElement.querySelector(`circle[data-label="${n.label}"]`);
 		if (n.selected) {
 			el.classList.add('selected');
@@ -565,17 +370,14 @@ function drawUnit(unit, callback) {
 			'west': `M ${cx} ${cy} L ${cx - offset} ${cy}`
 		};
 		helpersHTML += `
-						<path data-label="${n.label}" class="helper-segment${n.selected ? ' selected' : ''}" d="${segment[direction]}"></path>
-				`;
-		//console.log({ direction: n.direction })
+			<path data-label="${n.label}" class="helper-segment${n.selected ? ' selected' : ''}" d="${segment[direction]}"></path>
+		`;
 	});
 
 	helpers.innerHTML = helpersHTML;
 
 	canvas.appendChild(unitElement);
-	if (callback) {
-		callback(unitElement);
-	}
+	callback && callback(unitElement);
 }
 
 // -----------------------------------------------------------------------------
@@ -1201,10 +1003,6 @@ function initState({ units, links }) {
 	return { units: u, links: l };
 }
 
-function clone(obj) {
-	return JSON.parse(JSON.stringify(obj));
-}
-
 function cleanScene(state) {
 	const domLinks = Array.from(document.querySelectorAll('.link'));
 	const domUnits = Array.from(document.querySelectorAll('.box'));
@@ -1458,4 +1256,3 @@ const init = ({ State, ExpressionEngine }) => (svg, units, links) => {
 };
 
 export default init;
-

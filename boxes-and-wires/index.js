@@ -3,11 +3,12 @@ import * as ExpressionEngine from './engine/expressionEngine.js';
 import Config from './state/config.js';
 const { boxes, wires } = Config;
 
-import Wires, { svg } from './user-interface/wires.js';
+import Wires from './user-interface/wires.js';
+import SVG from './user-interface/svg.js';
 
 (async () => {
 	const Environ = Wires({ State, ExpressionEngine });
-	Environ(svg(), boxes, wires);
+	Environ(SVG(), boxes, wires);
 
 	// engine
 	// state
