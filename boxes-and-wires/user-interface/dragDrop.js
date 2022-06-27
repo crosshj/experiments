@@ -169,7 +169,7 @@ function drag(evt) {
 	evt.stopPropagation();
 
 	var coord = getMousePosition(this.svg, evt);
-	state.update((state) => {
+	this.update((state) => {
 		const selectedUnitState = state.units.find(u => u.label === this.selectedElement.dataset.label);
 		selectedUnitState.x = coord.x - this.offset.x;
 		selectedUnitState.y = coord.y - this.offset.y;
@@ -273,7 +273,7 @@ function endDrag(evt) {
 }
 
 export function makeDraggable(state) {
-	var svg = state.svg;
+	const { svg } = state;
 
 	const startDragHandler = startDrag.bind(state);
 	svg.addEventListener('mousedown', startDragHandler);

@@ -343,14 +343,3 @@ export function drawLink(link, callback) {
 	animated && animated.setAttribute('d', newPathD);
 	callback && callback(linkElement);
 }
-
-export function addLinkEffects(state) {
-	var svg = state.svg;
-	const hoverStartHandler = hoverStart.bind(state);
-	const hoverEndHandler = hoverEnd.bind(state);
-	const clickHandler = linkClick.bind(state);
-	svg.addEventListener("mouseover", hoverStartHandler);
-	svg.addEventListener('mouseout', hoverEndHandler);
-	svg.addEventListener('mouseleave', hoverEndHandler);
-	svg.addEventListener('click', clickHandler);
-}

@@ -2,13 +2,14 @@ import {
 	tryParse, clone, setStyle, removeStyle,
 	bringToTop, getTranslateX, getTranslateY
 } from './utils.js';
-import { drawLink, animateLink, addLinkEffects } from './links.js';
+import { drawLink, animateLink } from './links.js';
 import { drawUnit, drawOrUpdateUnit, mapNodeToState } from './nodes.js';
 import { makeDraggable } from './dragDrop.js';
 
 const withAnimFrame = (fn) => (arg) => window.requestAnimationFrame(() => fn(arg));
 
 // ----------------------------------------------------------------
+
 function hoverStart(event) {
 	if (this.selectedElement) {
 		return;
@@ -100,6 +101,19 @@ function linkClick(event) {
 		return { links };
 	});
 }
+
+function addLinkEffects(state) {
+	var svg = state.svg;
+	const hoverStartHandler = hoverStart.bind(state);
+	const hoverEndHandler = hoverEnd.bind(state);
+	const clickHandler = linkClick.bind(state);
+	svg.addEventListener("mouseover", hoverStartHandler);
+	svg.addEventListener('mouseout', hoverEndHandler);
+	svg.addEventListener('mouseleave', hoverEndHandler);
+	svg.addEventListener('click', clickHandler);
+}
+
+// ----------------------------------------------------------------
 
 function initState({ units, links }) {
 	const u = units.map(unit => ({
@@ -374,7 +388,6 @@ const init = ({ State, ExpressionEngine }) => (svg, units, links) => {
 
 	//TODO: would be nice if this went away > initState
 	_state.create(initState({ units, links }));
-	window.state = _state;
 
 	makeDraggable(state);
 	addLinkEffects(state);
