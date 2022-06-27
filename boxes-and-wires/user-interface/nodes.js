@@ -132,7 +132,7 @@ export function drawUnit(unit, callback) {
 
 	helpers.innerHTML = helpersHTML;
 
-	canvas.appendChild(unitElement);
+	canvas.getElementById('nodes').appendChild(unitElement);
 	callback && callback(unitElement);
 }
 
