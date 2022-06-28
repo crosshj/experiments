@@ -1,5 +1,8 @@
 // import svgjs from 'https://cdn.skypack.dev/svgjs';
 //import Snap from 'https://cdn.skypack.dev/snapsvg'
+import hammer from 'https://cdn.skypack.dev/hammerjs';
+
+
 
 /*
 pan/zoom:
@@ -108,13 +111,13 @@ const Canvas = () => {
 		panY = panY + (point.y - mouseStart.y)/100; //pan amount should also account for scale
 		updateTransform();
 	};
-	svg.addEventListener('mouseup', () => {
-		svg.removeEventListener('mousemove', drag);
+	svg.addEventListener('pointerup', () => {
+		svg.removeEventListener('pointermove', drag);
 	});
-	svg.addEventListener('mousedown', (evt) => {
+	svg.addEventListener('pointerdown', (evt) => {
 		if(evt.target !== backgroundGrid) return;
 		mouseStart = inElementSpace(evt);
-		svg.addEventListener('mousemove', drag);
+		svg.addEventListener('pointermove', drag);
 	});
 
 	svg.addEventListener('wheel', (ev) => {
@@ -137,7 +140,32 @@ const Canvas = () => {
 		}
 		updateTransform();
 	});
+
 	document.body.append(svg);
+
+// 	const disableImgEventHandlers = function () {
+// 		const events = ['onclick', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover',
+// 			'onmouseup', 'ondblclick', 'onfocus', 'onblur', 'wheel'];
+
+// 		events.forEach(function (event) {
+// 			svg.addEventListener(event, (ev) => {
+// 				ev.preventDefault();
+// 				return false;
+// 			});
+// 		});
+// 	};
+// 	disableImgEventHandlers();
+
+	const hammertime = new Hammer(svg);
+	hammertime.get('pinch').set({ enable: true });
+	hammertime.on('pan', function(ev) {
+		//console.log(ev);
+		console.log('pan');
+	});
+	hammertime.on('pinch pinchin pinchout wheel mousewheel', function(ev) {
+		ev.preventDefault()
+		console.log(ev.type);
+	});
 	return svg;
 };
 
