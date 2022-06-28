@@ -2,11 +2,11 @@
 //import Snap from 'https://cdn.skypack.dev/snapsvg'
 import hammer from 'https://cdn.skypack.dev/hammerjs';
 
-
-
 /*
 pan/zoom:
 https://onestepcode.com/zoom-pan-effect-svg/
+
+https://github.com/svgdotjs/svg.panzoom.js
 
 patterns (grid):
 https://thenewcode.com/245/SVG-Backgrounds-CrossHatching-Grids-and-Checkerboards
@@ -158,11 +158,12 @@ const Canvas = () => {
 
 	const hammertime = new Hammer(svg);
 	hammertime.get('pinch').set({ enable: true });
-	hammertime.on('pan', function(ev) {
-		//console.log(ev);
-		console.log('pan');
-	});
+	// hammertime.on('pan', function(ev) {
+	// 	//console.log(ev);
+	// 	console.log('pan');
+	// });
 	hammertime.on('pinch pinchin pinchout wheel mousewheel', function(ev) {
+		//TODO: use this for mobile pinch
 		ev.preventDefault()
 		console.log(ev.type);
 	});
