@@ -107,8 +107,9 @@ const Canvas = () => {
 	}
 	const drag = (evt) => {
 		const point = inElementSpace(evt);
-		panX = panX + (point.x - mouseStart.x)/100; //pan amount should also account for scale
-		panY = panY + (point.y - mouseStart.y)/100; //pan amount should also account for scale
+		//pan amount should also account for scale
+		panX = panX + (point.x - mouseStart.x)/100;
+		panY = panY + (point.y - mouseStart.y)/100;
 		updateTransform();
 	};
 	svg.addEventListener('pointerup', () => {
@@ -120,8 +121,9 @@ const Canvas = () => {
 		svg.addEventListener('pointermove', drag);
 	});
 
-	svg.addEventListener('wheel', (ev) => {
+	const pinch = (ev) => {
 		ev.preventDefault();
+		console.log(ev.type || "wheel")
 		// This is an empirically determined heuristic.
 		// Unfortunately I don't know of any way to do this better.
 		// Typical deltaY values from a trackpad pinch are under 1.0
@@ -139,34 +141,14 @@ const Canvas = () => {
 			//console.log(`Mouse: scale is ${scale}`);
 		}
 		updateTransform();
-	});
+	};
+	svg.addEventListener('wheel', pinch);
+	const hammertime = new Hammer(svg);
+	hammertime.get('pinch').set({ enable: true });
+	hammertime.on('pinch', pinch);
 
 	document.body.append(svg);
 
-// 	const disableImgEventHandlers = function () {
-// 		const events = ['onclick', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover',
-// 			'onmouseup', 'ondblclick', 'onfocus', 'onblur', 'wheel'];
-
-// 		events.forEach(function (event) {
-// 			svg.addEventListener(event, (ev) => {
-// 				ev.preventDefault();
-// 				return false;
-// 			});
-// 		});
-// 	};
-// 	disableImgEventHandlers();
-
-	const hammertime = new Hammer(svg);
-	hammertime.get('pinch').set({ enable: true });
-	// hammertime.on('pan', function(ev) {
-	// 	//console.log(ev);
-	// 	console.log('pan');
-	// });
-	hammertime.on('pinch pinchin pinchout wheel mousewheel', function(ev) {
-		//TODO: use this for mobile pinch
-		ev.preventDefault()
-		console.log(ev.type);
-	});
 	return svg;
 };
 
