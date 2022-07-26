@@ -1,4 +1,7 @@
-import { decompress, compress } from 'https://cdn.skypack.dev/lzutf8/';
+import * as LZUTF8 from "https://unpkg.com/lzutf8@0.6.3/build/production/lzutf8.js"
+const { decompress, compress } = LZUTF8;
+//import { decompress, compress } from 'https://cdn.skypack.dev/lzutf8/';
+
 import { toByteArray, fromByteArray } from 'https://cdn.skypack.dev/base64-js/';
 
 const base = 'https://api.xbrowsersync.org'; // see https://www.xbrowsersync.org/#services
