@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>traffic (appfree)</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<meta name="theme-color" content="#fafafa">
+		<meta name="light-theme-color" content="#227a9c">
+		<meta name="dark-theme-color" content="#120024">
+
+		<link rel="icon" href="data:;base64,=">
+		<link rel="stylesheet" href="index.css">
+		<meta name="color-scheme" content="dark light">
+	</head>
+	
+	<style>
+		.container.canvas {
+			padding-left: 0px;
+			background: transparent;
+		}
+		.controls {
+			position: absolute;
+			padding: 1em;
+			right: 1em;
+			top: 1em;
+			border: 1px solid ButtonFace;
+			border-radius: 3px;
+		}
+	</style>
+
+	<body style="margin:0; height: 100vh; width: 100vw;">
+		<!--
+		<div class="stats">
+			<div>Vehicles: <span id="stats-qty"></span></div>
+			<div>Speed: <span id="stats-speed"></span> fph</div>
+		</div>
+
+		<div class="container canvas road">
+		</div>
+		-->
+
+		<div class="container canvas map">
+		</div>
+		
+		<div class="controls">
+			<input id="darkmode" type="checkbox">
+			<label for="darkmode">Night Mode</label>
+		</div>
+	</body>
+	
+	<script>
+		const darkmodeControl = document.getElementById('darkmode');
+		const darkEnabled = window.localStorage.getItem('themeDark') === "true";
+		darkmodeControl.checked = darkEnabled;
+		darkmodeControl.addEventListener('change', () => {
+			window.localStorage.setItem('themeDark', darkmodeControl.checked);
+			document.location.reload();
+		});
+	</script>
+
+	<script type="module" src="appfree.js"></script>
+	<script nomodule>
+		document.write('browser has no module support - <a href="https://caniuse.com/#feat=es6-module">LEARN MORE</a>');
+	</script>
+</html>
