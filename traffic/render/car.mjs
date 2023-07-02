@@ -36,7 +36,7 @@ function draw({ car, ctx }){
 
 
 	// headlights
-	
+
 	// ctx.shadowColor = "black";
 	// ctx.shadowBlur = 6;
 	// ctx.shadowOffsetX = 6;
@@ -80,7 +80,7 @@ function draw({ car, ctx }){
 	ctx.arc(CENTER_OFFSET_X+-5, -TAIL_OFFSET_Y, TAIL_RADIUS, 0, TWO_PI);
 	ctx.fill();
 	ctx.closePath();
-	
+
 	// taillight passenger
 	ctx.beginPath();
 	ctx.arc(CENTER_OFFSET_X+-5, TAIL_OFFSET_Y, TAIL_RADIUS, 0, TWO_PI);

@@ -8,20 +8,20 @@ import chunks from '../data/chunks.mjs';
 import sense from './sense.mjs';
 import { distance, debounce } from './utilities.mjs';
 import {
-    set as setCenterSettings,
-    get as getCenterSettings
+	set as setCenterSettings,
+	get as getCenterSettings
 } from '../render/pan.mjs';
 
 const MAX_PARTICLES = 100;
 
 const COLOURS = [
-    '#69D2E7', //blue
-    '#A7DBD8', //lightblue
-    '#E0E4CC', //lightyellow
-    '#f7ac73', //lightorange
-    '#B794F7', //purple
-    '#86C58B', //lightgreen
-    '#A37666' //lightbrown
+	'#69D2E7', //blue
+	'#A7DBD8', //lightblue
+	'#E0E4CC', //lightyellow
+	'#f7ac73', //lightorange
+	'#B794F7', //purple
+	'#86C58B', //lightgreen
+	'#A37666' //lightbrown
 ];
 
 const init = () => {
