@@ -28,6 +28,7 @@ Particle.prototype = {
 		this.CLIENT_HEIGHT = sketch.CLIENT_HEIGHT;
 	},
 	changeLane: function (LANES_COUNT, CAR_WIDTH) {
+		if(this.speed < 1) return;
 		const transitionLength = Math.floor(10 / this.speed);
 		var changeDirection = (Math.random() >= 0.25
 				? -1 // pass left

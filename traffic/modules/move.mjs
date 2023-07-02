@@ -197,6 +197,13 @@ function chunkMove(chunk, car, intersect) {
 	return curvedTransform || transform;
 }
 
+
+function getDistance(A, B) { 
+	const xDiff = A.x - B.x; 
+	const yDiff = A.y - B.y;
+	return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+}
+
 function move(self, LANES_COUNT, CAR_WIDTH) {
 	// will move in the proper direction
 	// will stop at intersections
@@ -206,8 +213,44 @@ function move(self, LANES_COUNT, CAR_WIDTH) {
 	// will resume speed if unblocked (+ will check if unblocked)
 	// will change lane if blocked only in front
 
+
 	const senseResult = self.sense('proximity').result;
 	const { neighbors, umvelt = {} } = senseResult;
+
+	if(
+		typeof self.resumed === "undefined" &&
+		senseResult.umvelt?.chunk?.type === "intersect"
+	){
+		console.log('pause someone')
+		self.resumed = false;
+	}
+
+	if( self.resumed === false ){
+		const intersectBusy = (neighbors||[]).find(x => {
+			return x.resumed === true && getDistance(self, x) < 100;
+		});
+		if(!intersectBusy){
+			console.log('resume someone')
+			self.resumed = true;
+		}
+	}
+
+	// if(
+	// 	self.resumed !== false &&
+	// 	senseResult.umvelt?.chunk?.type === "intersect"
+	// ){
+	// 	self.resumed = true;
+	// }
+
+	if(
+		self.resumed === true &&
+		senseResult.umvelt?.chunk?.type !== "intersect"
+	){
+		console.log('clean someone')
+		self.resumed = undefined;
+	}
+
+
 	if (self.chunk && umvelt.chunk && self.chunk.index === 121 && umvelt.chunk.index !== self.chunk.index) {
 		//debugger;
 	}
@@ -222,6 +265,10 @@ function move(self, LANES_COUNT, CAR_WIDTH) {
 	//     self.x += self.CLIENT_WIDTH/2;
 	//     self.y += self.CLIENT_HEIGHT/2;
 	// }
+
+	if(self.resumed === false){
+		return;
+	}
 
 	if (
 		self.chunk && self.chunk.type === "intersect"

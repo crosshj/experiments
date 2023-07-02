@@ -6,6 +6,19 @@ idealy, we could think of car coordinates without considering these other coordi
 
 */
 
+const CC = (...args) => {
+	const OFFSET = 0.5;
+	return args.map(x => {
+		if(x > 0) return x+OFFSET
+		if(x < 0) return x-OFFSET
+		return x;
+	})
+};
+
+const CCX = (ctx, method, args) => {
+	ctx[method](...CC(...args));
+};
+
 function draw({ car, ctx }){
 	const CENTER_OFFSET_X = -2.5;
 	ctx.save();
@@ -20,14 +33,34 @@ function draw({ car, ctx }){
 		ctx.rotate((car.direction) * Math.PI/180);
 	}
 
-	// car body
+	// taillights
+	const TAIL_OFFSET_Y = 1.5
+	const TAIL_RADIUS = 1.5;
+	ctx.globalAlpha = 0.4;
+	ctx.fillStyle = "red";
+
+	// taillight driver
 	ctx.beginPath();
-	ctx.rect(
-			CENTER_OFFSET_X+car.radius*3/-2,
-			car.radius*1.8/-2,
-			car.radius*3,
-			car.radius*1.8
-	);
+	ctx.arc(CENTER_OFFSET_X+-5, -TAIL_OFFSET_Y, TAIL_RADIUS, 0, TWO_PI);
+	ctx.fill();
+	ctx.closePath();
+
+	// taillight passenger
+	ctx.beginPath();
+	ctx.arc(CENTER_OFFSET_X+-5, TAIL_OFFSET_Y, TAIL_RADIUS, 0, TWO_PI);
+	ctx.fill();
+	ctx.closePath();
+
+	// car body
+	ctx.globalAlpha = 1;
+	ctx.beginPath();
+	const bodyCoords = [
+		CENTER_OFFSET_X+car.radius*3/-2,
+		-3, //car.radius*1.8/-2,
+		car.radius*3,
+		6 //car.radius*1.8
+	];
+	ctx.rect(...bodyCoords);
 	ctx.fillStyle = car.changing && car.changing.length
 			? 'red'
 			: car.color;
@@ -58,38 +91,20 @@ function draw({ car, ctx }){
 	ctx.fill();
 	ctx.closePath();
 
-	ctx.globalAlpha = 0.15;
-	ctx.fillStyle = "#FFFFFF";
-	ctx.beginPath();
-	ctx.moveTo(CENTER_OFFSET_X+8+3, -3.5); //wide part driver
-	ctx.lineTo(CENTER_OFFSET_X+8+3, 3.5);  //wide part passenger
-	ctx.lineTo(CENTER_OFFSET_X+8-2, 3);  //narrow driver
-	ctx.lineTo(CENTER_OFFSET_X+8-2, -3); //narrow driver
-	ctx.fill();
-	ctx.closePath();
+// 	ctx.globalAlpha = 0.15;
+// 	ctx.fillStyle = "#FFFFFF";
+// 	ctx.beginPath();
+// 	ctx.moveTo(CENTER_OFFSET_X+8+3, -3.5); //wide part driver
+// 	ctx.lineTo(CENTER_OFFSET_X+8+3, 3.5);  //wide part passenger
+// 	ctx.lineTo(CENTER_OFFSET_X+8-2, 3);  //narrow driver
+// 	ctx.lineTo(CENTER_OFFSET_X+8-2, -3); //narrow driver
+// 	ctx.fill();
+// 	ctx.closePath();
 
-
-	// taillights
-	const TAIL_OFFSET_Y = 1.5
-	const TAIL_RADIUS = 1.5;
-	ctx.globalAlpha = 0.4;
-	ctx.fillStyle = "red";
-
-	// taillight driver
-	ctx.beginPath();
-	ctx.arc(CENTER_OFFSET_X+-5, -TAIL_OFFSET_Y, TAIL_RADIUS, 0, TWO_PI);
-	ctx.fill();
-	ctx.closePath();
-
-	// taillight passenger
-	ctx.beginPath();
-	ctx.arc(CENTER_OFFSET_X+-5, TAIL_OFFSET_Y, TAIL_RADIUS, 0, TWO_PI);
-	ctx.fill();
-	ctx.closePath();
 
 	// windows
-	const FRONT_WINDOW_OFFSET_X = -0.5;
-	const BACK_WINDOW_OFFSET_X = -5.5;
+	const FRONT_WINDOW_OFFSET_X = -1;
+	const BACK_WINDOW_OFFSET_X = -5;
 	ctx.globalAlpha = 0.45;
 	ctx.fillStyle = "black";
 

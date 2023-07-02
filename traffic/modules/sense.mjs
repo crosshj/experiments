@@ -77,6 +77,7 @@ function sense(map, observer, view) {
 			x: observer.x,
 			y: observer.y
 	}, () => observer.alive = false );
+
 	const lane = {};
 	const ahead = {};
 	const direction = 0;

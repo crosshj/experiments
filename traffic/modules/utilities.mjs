@@ -30,6 +30,13 @@ function extendConsole(){
 	}
 }
 
+function setConstants(){
+	const m = Math;
+	window.TWO_PI = 2 * m.PI;
+	window.HALF_PI = m.PI / 2;
+	window.QUARTER_PI = m.PI / 4;
+}
+
 export {
-	hashCode, clone, dateHash, distance, debounce, extendConsole
+	hashCode, clone, dateHash, distance, debounce, extendConsole, setConstants
 };
