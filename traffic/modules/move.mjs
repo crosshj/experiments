@@ -221,16 +221,16 @@ function move(self, LANES_COUNT, CAR_WIDTH) {
 		typeof self.resumed === "undefined" &&
 		senseResult.umvelt?.chunk?.type === "intersect"
 	){
-		console.log('pause someone')
+		// console.log('pause someone')
 		self.resumed = false;
 	}
 
 	if( self.resumed === false ){
 		const intersectBusy = (neighbors||[]).find(x => {
-			return x.resumed === true && getDistance(self, x) < 100;
+			return x.resumed === true && getDistance(self, x) < 50;
 		});
 		if(!intersectBusy){
-			console.log('resume someone')
+			// console.log('resume someone')
 			self.resumed = true;
 		}
 	}
@@ -246,7 +246,7 @@ function move(self, LANES_COUNT, CAR_WIDTH) {
 		self.resumed === true &&
 		senseResult.umvelt?.chunk?.type !== "intersect"
 	){
-		console.log('clean someone')
+		// console.log('clean someone')
 		self.resumed = undefined;
 	}
 
