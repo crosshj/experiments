@@ -23,7 +23,7 @@ b) web / Web Audio
     i) [tonejs](https://github.com/Tonejs/Tone.js)
     ii) [tuna](https://github.com/Theodeus/tuna) - effects for web audio
 c) nodejs
-    i) [web-audio-api](https://github.com/audiojs/web-audio-api)
+    i) [web-audio-api](https://github.com/audiojs/web-audio-api) - alternate [web-audio-api (Mac M1 friendly)](https://github.com/crosshj/web-audio-api)
     ii) [web-audio-engine](https://github.com/mohayonao/web-audio-engine)
     iii) [node-speaker](https://github.com/TooTallNate/node-speaker) 
 d) C/C++ (and maybe some audio lib) on whatever computer I can get this going on
