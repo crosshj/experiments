@@ -1,0 +1,12 @@
+{
+  "name": "scroller",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "watch": "npx http-server ./ -p 4343 -a 0.0.0.0 -c-1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
